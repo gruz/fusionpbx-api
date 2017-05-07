@@ -16,15 +16,15 @@ return [
     'response_factory' => \Optimus\Heimdal\ResponseFactory::class,
 
     'reporters' => [
-        /*'sentry' => [
+        'sentry' => [
             'class'  => \Optimus\Heimdal\Reporters\SentryReporter::class,
             'config' => [
-                'dsn' => '',
+                'dsn' => 'https://ddc67c85f42d48c3b3210c075376e055:feb86728b7a048389de51f74f3ba399f@sentry.io/160790',
                 // For extra options see https://docs.sentry.io/clients/php/config/
                 // php version and environment are automatically added.
                 'sentry_options' => []
             ]
-        ]*/
+        ]
     ],
 
     'server_error_production' => 'An error occurred.'

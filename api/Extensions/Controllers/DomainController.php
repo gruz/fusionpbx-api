@@ -1,23 +1,20 @@
 <?php
 
-namespace Api\Users\Controllers;
+namespace Api\Domains\Controllers;
 
 use Illuminate\Http\Request;
 use Infrastructure\Http\Controller;
-use Api\Users\Requests\CreateUserRequest;
-use Api\Users\Requests\CreateTeamRequest;
-use Api\Users\Requests\UserGroupsRequest;
-use Api\Users\Services\UserService;
-use Api\Users\Services\TeamService;
+use Api\Domains\Requests\CreateUserRequest;
+use Api\Domains\Requests\UserRolesRequest;
+use Api\Domains\Services\UserService;
 
 class UserController extends Controller
 {
     private $userService;
 
-    public function __construct(UserService $userService, TeamService $teamService)
+    public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-        $this->teamService = $teamService;
     }
 
 // REMOVE JUST FOR TESTS
@@ -81,37 +78,24 @@ class UserController extends Controller
         return $this->response($this->userService->delete($userId));
     }
 
-    public function addGroups($userId, UserGroupsRequest $request)
+    public function addRoles($userId, UserRolesRequest $request)
     {
-        $groups = $request->get('groups', []);
+        $roles = $request->get('roles', []);
 
-        return $this->response($this->userService->addGroups($userId, $groups));
+        return $this->response($this->userService->addRoles($userId, $roles));
     }
 
-    public function setGroups($userId, UserGroupsRequest $request)
+    public function setRoles($userId, UserRolesRequest $request)
     {
-        $groups = $request->get('groups', []);
+        $roles = $request->get('roles', []);
 
-        return $this->response($this->userService->setGroups($userId, $groups));
+        return $this->response($this->userService->setRoles($userId, $roles));
     }
 
-    public function removeGroups($userId, UserGroupsRequest $request)
+    public function removeRoles($userId, UserRolesRequest $request)
     {
-        $groups = $request->get('groups', []);
+        $roles = $request->get('roles', []);
 
-        return $this->response($this->userService->removeGroups($userId, $groups));
-    }
-
-    // ~ public function create(CreateUserRequest $request)
-    // ~ {
-        // ~ $data = $request->get('user', []);
-
-        // ~ return $this->response($this->userService->create($data), 201);
-    // ~ }
-		public function signup(CreateTeamRequest $request)
-    {
-        $data = $request->get('team', []);
-
-        return $this->response($this->teamService->create($data), 201);
+        return $this->response($this->userService->removeRoles($userId, $roles));
     }
 }

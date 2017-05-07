@@ -1,15 +1,13 @@
 <?php
-
 namespace Api\Users\Models;
 
-use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
 
-class User extends Authenticatable
+class Domain extends Model
 {
-    use HasApiTokens, Notifiable, FusionPBXTableModel;
+    use Notifiable, FusionPBXTableModel;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'domain_uuid',  'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
+        'domain_name', 'domain_enabled', 'domain_description', 'domain_parent_uuid'
     ];
 
     /**
@@ -26,7 +24,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'salt',
+        //'password', 'remember_token',
     ];
 
     public function groups()
@@ -43,23 +41,5 @@ class User extends Authenticatable
     public function isAgent()
     {
         return $this->groups();
-    }
-
-    public function findForPassport(array $data)
-    {
-      $user = $this->where($data)->first();
-      return $user;
-    }
-
-    public function validateForPassportPasswordGrant($password)
-    {
-      if (md5($this->salt.$password) == $this->password)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
     }
 }

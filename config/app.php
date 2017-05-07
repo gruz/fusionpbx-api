@@ -149,7 +149,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         Laravel\Passport\PassportServiceProvider::class,
-        Optimus\Api\System\TranslationServiceProvider::class,
+        //Optimus\Api\System\TranslationServiceProvider::class,
         Optimus\Api\System\ViewServiceProvider::class,
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
         Optimus\Heimdal\Provider\LaravelServiceProvider::class,
@@ -159,6 +159,7 @@ return [
          */
         Infrastructure\Auth\AuthServiceProvider::class,
         Infrastructure\Http\RouteServiceProvider::class,
+        Api\Users\TeamServiceProvider::class,
 
     ],
 
@@ -205,7 +206,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Uuid' => Webpatser\Uuid\Uuid::class,
     ],
 
 ];

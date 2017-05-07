@@ -7,12 +7,12 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
-use Api\Users\Exceptions\InvalidGroupException;
+use Api\Users\Exceptions\InvalidRoleException;
 use Api\Users\Exceptions\UserNotFoundException;
 use Api\Users\Events\UserWasCreated;
 use Api\Users\Events\UserWasDeleted;
 use Api\Users\Events\UserWasUpdated;
-use Api\Users\Repositories\GroupRepository;
+use Api\Users\Repositories\RoleRepository;
 use Api\Users\Repositories\UserRepository;
 
 class UserService
@@ -23,7 +23,7 @@ class UserService
 
     private $dispatcher;
 
-    private $groupRepository;
+    private $roleRepository;
 
     private $userRepository;
 
@@ -31,13 +31,13 @@ class UserService
         AuthManager $auth,
         DatabaseManager $database,
         Dispatcher $dispatcher,
-        GroupRepository $groupRepository,
+        RoleRepository $roleRepository,
         UserRepository $userRepository
     ) {
         $this->auth = $auth;
         $this->database = $database;
         $this->dispatcher = $dispatcher;
-        $this->groupRepository = $groupRepository;
+        $this->roleRepository = $roleRepository;
         $this->userRepository = $userRepository;
     }
 
@@ -112,78 +112,75 @@ class UserService
         $this->database->commit();
     }
 
-    public function addGroups($userId, array $groupIds)
+    public function addRoles($userId, array $roleIds)
     {
         $user = $this->getRequestedUser($userId, [
-            'includes' => ['groups']
+            'includes' => ['roles']
         ]);
 
-        $currentGroups = $user->groups->pluck('id')->toArray();
-        $groups = $this->checkValidityOfGroups($groupIds);
+        $currentRoles = $user->roles->pluck('id')->toArray();
+        $roles = $this->checkValidityOfRoles($roleIds);
 
-        $this->userRepository->setGroups($user, $groupIds);
+        $this->userRepository->setRoles($user, $roleIds);
 
-        $groups
-            ->filter(function ($group) use ($currentGroups) {
-                return !in_array($group->id, $currentGroups);
+        $roles
+            ->filter(function ($role) use ($currentRoles) {
+                return !in_array($role->id, $currentRoles);
             })
-            ->each(function ($group) use ($user) {
-                $user->groups->add($group);
+            ->each(function ($role) use ($user) {
+                $user->roles->add($role);
             });
 
         return $user;
     }
 
-    public function setGroups($userId, array $groupIds)
+    public function setRoles($userId, array $roleIds)
     {
         $user = $this->getRequestedUser($userId, [
-            'includes' => ['groups']
+            'includes' => ['roles']
         ]);
 
-        $currentGroups = $user->groups->pluck('user_uuid')->toArray();
-        $groups = $this->checkValidityOfGroups($groupIds);
+        $currentRoles = $user->roles->pluck('id')->toArray();
+        $roles = $this->checkValidityOfRoles($roleIds);
 
-        $remove = array_diff($currentGroups, $groupIds);
-        $add = array_diff($groupIds, $currentGroups);
+        $remove = array_diff($currentRoles, $roleIds);
+        $add = array_diff($roleIds, $currentRoles);
 
-        $remove = $this->mapGroupNamesToGroupIds($remove);
-        $add = $this->mapGroupNamesToGroupIds($add);
+        $this->userRepository->setRoles($user, $add, $remove);
 
-        $this->userRepository->setGroups($user, $add, $remove);
-
-        $user->setRelation('groups', new Collection($groups));
+        $user->setRelation('roles', new Collection($roles));
 
         return $user;
     }
 
-    public function removeGroups($userId, array $groupIds)
+    public function removeRoles($userId, array $roleIds)
     {
         $user = $this->getRequestedUser($userId, [
-            'includes' => ['groups']
+            'includes' => ['roles']
         ]);
 
-        $groups = $this->checkValidityOfGroups($groupIds);
+        $roles = $this->checkValidityOfRoles($roleIds);
 
-        $this->userRepository->setGroups($user, [], $groupIds);
+        $this->userRepository->setRoles($user, [], $roleIds);
 
-        $updatedGroupCollection = $user->groups->filter(function ($group) use ($groupIds) {
-            return !in_array($group->id, $groupIds);
+        $updatedRoleCollection = $user->roles->filter(function ($role) use ($roleIds) {
+            return !in_array($role->id, $roleIds);
         });
-        $user->setRelation('groups', $updatedGroupCollection);
+        $user->setRelation('roles', $updatedRoleCollection);
 
         return $user;
     }
 
-    private function checkValidityOfGroups(array $groupIds = [])
+    private function checkValidityOfRoles(array $roleIds = [])
     {
-        $groups = $this->groupRepository->getWhereIn('group_uuid', $groupIds);
+        $roles = $this->roleRepository->getWhereIn('id', $roleIds);
 
-        if (count($groupIds) !== $groups->count()) {
-            $missing = array_diff($groupIds, $groups->pluck('group_uuid')->toArray());
-            throw new InvalidGroupException($missing[0]);
+        if (count($roleIds) !== $roles->count()) {
+            $missing = array_diff($roleIds, $roles->pluck('id')->toArray());
+            throw new InvalidRoleException($missing[0]);
         }
 
-        return $groups;
+        return $roles;
     }
 
     private function getRequestedUser($userId, array $options = [])
@@ -196,23 +193,4 @@ class UserService
 
         return $user;
     }
-
-    public function mapGroupNamesToGroupIds(array $groupIds, Collection $groups = null)
-    {
-      if (empty($groups))
-      {
-        $groups = $this->checkValidityOfGroups($groupIds);
-      }
-
-      $return = [];
-
-      foreach ($groupIds as $k => $v)
-      {
-        $return[$v] = $groups->where('group_uuid', $v)->first()->group_name;
-
-      }
-
-      return $return;
-    }
-
 }

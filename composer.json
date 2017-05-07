@@ -7,13 +7,15 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.4.*",
-        "optimus/distributed-laravel": "~0.1",
-        "optimus/bruno": "~2.0",
-        "optimus/genie": "~1.0",
+        "optimus/distributed-laravel": ">=0.1",
+        "optimus/bruno": ">=2.0",
+        "optimus/genie": ">=1.0",
         "sentry/sentry": "~1.6",
-        "optimus/heimdal": "~1.0",
+        "optimus/heimdal": ">=1.0",
         "laravel/passport": "^2.0",
-        "optimus/api-consumer": "0.2.*"
+        "optimus/api-consumer": ">=0.2",
+        "webpatser/laravel-uuid": "^2.0",
+        "doctrine/dbal": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -27,6 +29,7 @@
             "database"
         ],
         "psr-4": {
+            "App\\": "app/",
             "Api\\": "api/",
             "Infrastructure\\": "infrastructure/"
         }
