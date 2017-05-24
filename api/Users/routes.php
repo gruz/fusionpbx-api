@@ -1,17 +1,18 @@
 <?php
 
 $router->get('/users', 'UserController@getAll');
-$router->get('/users/{id}', 'UserController@getById');
-$router->post('/users', 'UserController@create');
-$router->put('/users/{id}', 'UserController@update');
-$router->delete('/users/{id}', 'UserController@delete');
-$router->post('/users/{id}/groups', 'UserController@addGroups');
-$router->put('/users/{id}/groups', 'UserController@setGroups');
-$router->delete('/users/{id}/groups', 'UserController@removeGroups');
+$router->get('/user', 'UserController@getMe');
+$router->get('/user/{id}', 'UserController@getById');
+$router->post('/user', 'UserController@create');
+$router->put('/user/{id}', 'UserController@update');
+$router->delete('/user/{id}', 'UserController@delete');
+$router->post('/user/{id}/groups', 'UserController@addGroups');
+$router->put('/user/{id}/groups', 'UserController@setGroups');
+$router->delete('/user/{id}/groups', 'UserController@removeGroups');
 
 $router->get('/groups', 'GroupController@getAll');
-$router->get('/groups/{id}', 'GroupController@getById');
-$router->post('/groups', 'GroupController@create');
-$router->put('/groups/{id}', 'GroupController@update');
-$router->delete('/groups/{id}', 'GroupController@delete');
+$router->get('/group/{id}', 'GroupController@getById');
+$router->post('/group', 'GroupController@create');
+$router->put('/group/{id}', 'GroupController@update');
+$router->delete('/group/{id}', 'GroupController@delete');
 

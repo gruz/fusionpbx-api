@@ -53,7 +53,7 @@ class LoginProxy
 
         if (empty($domain))
         {
-          throw new InvalidCredentialsException();
+          throw new InvalidCredentialsException('Domain not entered');
         }
 
         $user = $this->userRepository->getWhereArray(['username' => $username, 'domain_uuid' => $domain->domain_uuid])->first();
@@ -62,6 +62,7 @@ class LoginProxy
             return $this->proxy('password', [
                 'username' => ['username' => $username, 'domain_uuid' => $domain->domain_uuid],
                 'password' => $password,
+                'user_uuid' => $user->user_uuid,
             ]);
         }
 
@@ -89,6 +90,11 @@ class LoginProxy
      */
     public function proxy($grantType, array $data = [])
     {
+        if (isset($data['user_uuid']))
+        {
+          $user_uuid = $data['user_uuid'];
+        }
+
         $data = array_merge($data, [
             'client_id'     => env('PASSWORD_CLIENT_ID'),
             'client_secret' => env('PASSWORD_CLIENT_SECRET'),
@@ -114,10 +120,17 @@ class LoginProxy
             true // HttpOnly
         );
 
-        return [
+        $ret = [
             'access_token' => $data->access_token,
-            'expires_in' => $data->expires_in
+            'expires_in' => $data->expires_in,
         ];
+
+        if (!empty($user_uuid))
+        {
+          $ret['user_uuid'] = $user_uuid;
+        }
+
+        return $ret;
     }
 
     /**

@@ -7,14 +7,12 @@ namespace Api\Users;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-
-use Api\Users\Events\DomainWasCreated;
-use Api\Users\Listeners\ClearFusionPBXCache;
+use Infrastructure\Listeners\ClearFusionPBXCache;
 
 class TeamServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        DomainWasCreated::class => [
+        TeamWasCreated::class => [
             ClearFusionPBXCache::class,
         ]
     ];

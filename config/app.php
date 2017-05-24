@@ -110,6 +110,11 @@ return [
 
     'log' => env('APP_LOG', 'single'),
 
+    // FusionPBX path
+    'fpath_document_root' => env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx'),
+    'fpath_project' => env('FUSIONPBX_PROJECT_PATH', ''),
+    'fpath_full' => env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx') . '/' . env('FUSIONPBX_PROJECT_PATH', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -138,6 +143,7 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
@@ -160,7 +166,9 @@ return [
         Infrastructure\Auth\AuthServiceProvider::class,
         Infrastructure\Http\RouteServiceProvider::class,
         Api\Users\TeamServiceProvider::class,
-
+        Api\Users\UserServiceProvider::class,
+        Api\Extensions\ExtensionServiceProvider::class,
+        App\Providers\HelperServiceProvider::class,
     ],
 
     /*

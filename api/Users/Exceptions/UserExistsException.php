@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 use Infrastructure\Traits\BaseException;
 
-class InvalidGroupException extends UnprocessableEntityHttpException
+class UserExistsException extends UnprocessableEntityHttpException
 {
   use BaseException;
 }

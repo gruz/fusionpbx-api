@@ -34,6 +34,16 @@ class User extends Authenticatable
         return $this->belongsToMany(Group::class, 'v_group_users', 'user_uuid', 'group_uuid');
     }
 
+    public function domain()
+    {
+        return $this->hasOne(Domain::class, 'domain_uuid', 'domain_uuid');
+    }
+
+    public function extensions()
+    {
+        $extensions = $this->hasMany(Extension::class, 'domain_uuid', 'domain_uuid');
+    }
+
     /**
      * Special relationship to enable a resource filter
      * 'isAgent' for the user resource.

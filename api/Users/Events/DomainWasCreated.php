@@ -7,10 +7,14 @@ use Api\Users\Models\Domain;
 
 class DomainWasCreated extends Event
 {
-    public $domain;
+    public $object;
 
-    public function __construct(Domain $domain)
+    public $clearCacheUri;
+
+    public function __construct(Domain $object, $clearCacheUri = null)
     {
-        $this->domain = $domain;
+      $this->object = $object;
+      $this->clearCacheUri = $clearCacheUri;
     }
+
 }

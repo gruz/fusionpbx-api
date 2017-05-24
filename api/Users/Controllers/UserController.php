@@ -5,7 +5,7 @@ namespace Api\Users\Controllers;
 use Illuminate\Http\Request;
 use Infrastructure\Http\Controller;
 use Api\Users\Requests\CreateUserRequest;
-use Api\Users\Requests\CreateTeamRequest;
+use Api\Users\Requests\SignupRequest;
 use Api\Users\Requests\UserGroupsRequest;
 use Api\Users\Services\UserService;
 use Api\Users\Services\TeamService;
@@ -19,28 +19,6 @@ class UserController extends Controller
         $this->userService = $userService;
         $this->teamService = $teamService;
     }
-
-// REMOVE JUST FOR TESTS
-    public function index()
-    {
-        $resourceOptions = $this->parseResourceOptions();
-        $data = $this->userService->getAll($resourceOptions);
-        $parsedData = $this->parseData($data, $resourceOptions, 'users');
-
-        return $this->response($parsedData);
-    }
-
-// REMOVE JUST FOR TESTS
-    public function show($userId)
-    {
-        $resourceOptions = $this->parseResourceOptions();
-//$userId = '"' . $userId . '"';
-        $data = $this->userService->getById($userId, $resourceOptions);
-        $parsedData = $this->parseData($data, $resourceOptions, 'user');
-
-        return $this->response($parsedData);
-    }
-
 
     public function getAll()
     {
@@ -61,6 +39,12 @@ class UserController extends Controller
 
         return $this->response($parsedData);
     }
+
+    public function getMe()
+    {
+        return $this->response($this->userService->getMe());
+    }
+
 
     public function create(CreateUserRequest $request)
     {
@@ -108,9 +92,21 @@ class UserController extends Controller
 
         // ~ return $this->response($this->userService->create($data), 201);
     // ~ }
-		public function signup(CreateTeamRequest $request)
+		public function signup(SignupRequest $request)
     {
         $data = $request->get('team', []);
+        if (empty($data))
+        {
+          $data = $request->get('user', []);
+          $data['isTeam'] = false;
+          $data['group_name'] = env('DEFAULT_USER_GROUP_NAME');
+
+          return $this->response($this->userService->create($data, false), 201);
+        }
+
+        $data['isTeam'] = true;
+        $data['user_enabled'] = 'true';
+        $data['group_name'] = env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME');
 
         return $this->response($this->teamService->create($data), 201);
     }

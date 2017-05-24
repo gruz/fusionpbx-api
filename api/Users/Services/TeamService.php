@@ -9,19 +9,27 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 
 use Api\Users\Services\UserService;
+use Api\Users\Services\DomainService;
+use App\Services\FreeSwicthSocketService as FSSocketService;
+
 use \Api\Users\Exceptions\InvalidGroupException;
 use \Api\Users\Exceptions\UserNotFoundException;
 use \Api\Users\Exceptions\DomainExistsException;
+
+
 use \Api\Users\Events\UserWasCreated;
-use \Api\Users\Events\DomainWasCreated;
 use \Api\Users\Events\UserWasDeleted;
 use \Api\Users\Events\UserWasUpdated;
+use \Api\Users\Events\DomainWasCreated;
+
 
 use \Api\Users\Repositories\GroupRepository;
 use \Api\Users\Repositories\UserRepository;
 use \Api\Users\Repositories\DomainRepository;
 use \Api\Users\Repositories\ContactRepository;
 use \Api\Users\Repositories\Contact_emailRepository;
+
+use Api\Settings\Models\Default_setting;
 
 class TeamService
 {
@@ -34,6 +42,8 @@ class TeamService
     private $groupRepository;
 
     private $userRepository;
+
+    private $domainService;
 
     private $domainRepository;
 
@@ -49,6 +59,7 @@ class TeamService
         Dispatcher $dispatcher,
         GroupRepository $groupRepository,
         UserRepository $userRepository,
+        DomainService $domainService,
         DomainRepository $domainRepository,
         ContactRepository $contactRepository,
         Contact_emailRepository $contact_emailRepository,
@@ -59,6 +70,7 @@ class TeamService
         $this->dispatcher = $dispatcher;
         $this->groupRepository = $groupRepository;
         $this->userRepository = $userRepository;
+        $this->domainService = $domainService;
         $this->domainRepository = $domainRepository;
         $this->contactRepository = $contactRepository;
         $this->contact_emailRepository = $contact_emailRepository;
@@ -82,21 +94,23 @@ class TeamService
         $this->database->beginTransaction();
 
         try {
-						$data['domain_name'] =  $data['domain_name'] . '.' . env('MOTHERSHIP_DOMAIN');
 
-						if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
-						{
-							throw new DomainExistsException($data['domain_name']);
-						}
+            if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
+            {
+              throw new DomainExistsException();
+            }
 
-						$data['domain_enabled'] =  'true';
-						$data['domain_description'] =  'Created via api at ' . date( 'Y-m-d H:i:s', time() );
+            $data['domain_enabled'] =  'true';
+            $data['domain_description'] =  'Created via api at ' . date( 'Y-m-d H:i:s', time() );
 
-            $domain = $this->domainRepository->create($data);
-
-            // ~ $this->dispatcher->fire(new DomainWasCreated($domain));
+            $domain = $this->domainService->create($data);
 
             $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
+
+            $user = $this->userService->create($data);
+
+            // ~ $data = array_merge($data, $user);
+            /*
             $data['contact_type'] = 'user';
             $data['contact_nickname'] = $data['email'];
 
@@ -129,9 +143,9 @@ class TeamService
 
             $contact->setRelation('contact_email', $contact_email);
             $user->setRelation('contact', $contact);
+            */
+
             $domain->setRelation('admin_user', $user);
-
-
 
             $domain->message = __('messages.team created', [
                 'username' => $data['username'],
@@ -139,6 +153,7 @@ class TeamService
                 'password' => $data['password']
               ]);
 
+            // This event to be created if really needed. E.g. to notify superadmins about the fact
             // ~ $this->dispatcher->fire(new TeamWasCreated($domain));
 
         } catch (Exception $e) {
@@ -149,7 +164,74 @@ class TeamService
 
         $this->database->commit();
 
+        $this->runFusionPBX_upgrade_domains($domain);
+
         return $domain;
+    }
+
+    /**
+     * TODO Name or short description
+     *
+     * Here Gruz'd call
+     * require_once app('fpath') . "/core/upgrade/upgrade_domains.php";
+     * But it checks permissions which we don't need when creating a team. So I copy only needed part from the file above
+     *
+     * @param   Api\Users\Models\Domain  $domain
+     *
+     * @return   void
+     */
+    protected function runFusionPBX_upgrade_domains($domain)
+    {
+      // Some code for reference below. Don't use it as is forced to use native FusionPBX code
+      /* Create domain folder for recordings (see fusionpbx/app/recordings/app_defaults.php 28)
+       * The code from FusionPBX looks like below. So let's rewrite it
+       *
+        //if the recordings directory doesn't exist then create it
+        if (is_array($_SESSION['switch']['recordings']) && strlen($_SESSION['switch']['recordings']['dir']."/".$domain_name) > 0) {
+          if (!is_readable($_SESSION['switch']['recordings']['dir']."/".$domain_name)) { event_socket_mkdir($_SESSION['switch']['recordings']['dir']."/".$domain_name,02770,true); }
+        }
+
+      $settings = new Default_setting;
+      $dir = $settings->where([
+        'default_setting_category' => 'switch',
+        'default_setting_subcategory' => 'recordings',
+        'default_setting_name' => 'dir',
+      ])->first()->default_setting_value . '/' . $data['domain_name'];
+
+      $socket = new FSSocketService;
+      $result = $socket->mkdir($dir);
+      *
+      */
+
+      $current_path = getcwd();
+      chdir(config('app.fpath_full'));
+      exec('php ./core/upgrade/upgrade_domains.php', $result);
+      chdir($current_path);
+      return;
+
+      /*
+      $output_format = 'text';
+      if (!defined('PROJECT_PATH'))
+      {
+        define('PROJECT_PATH', config('app.fpath_project'));
+      }
+
+      include "root.php";
+
+      $_SERVER["DOCUMENT_ROOT"] = config('app.fpath_document_root');
+
+      require_once "resources/require.php";
+      require_once "resources/check_auth.php";
+
+      require_once "resources/classes/config.php";
+      require_once "resources/classes/domains.php";
+      $domain = new \domains;
+      $domain->upgrade();
+
+      //clear the domains session array to update it
+      unset($_SESSION);
+      */
+
     }
 
     public function update($userId, array $data)
@@ -257,7 +339,7 @@ class TeamService
 
         if (count($groupIds) !== $groups->count()) {
             $missing = array_diff($groupIds, $groups->pluck('id')->toArray());
-            throw new InvalidGroupException($missing[0]);
+            throw new InvalidGroupException(['groupId' => $missing[0]]);
         }
 
         return $groups;

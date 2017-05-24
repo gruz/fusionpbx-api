@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Infrastructure\Traits\BaseException;
 
-class UserNotFoundException extends NotFoundHttpException
+class GroupNotFoundException extends NotFoundHttpException
 {
   use BaseException;
 }

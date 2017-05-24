@@ -11,7 +11,11 @@ use Api\Users\Events\UserWasDeleted;
 use Api\Users\Events\UserWasUpdated;
 use Api\Users\Events\DomainWasCreated;
 
-class UserServiceProvider extends EventServiceProvider
+use Infrastructure\Listeners\ClearFusionPBXCache;
+
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+
+class UserServiceProvider extends ServiceProvider
 {
     protected $listen = [
         GroupWasCreated::class => [
@@ -33,11 +37,7 @@ class UserServiceProvider extends EventServiceProvider
             // listeners for when a user is updated
         ],
         DomainWasCreated::class => [
-            // listeners for when a user is updated
-        ]
-        ,
-        DomainWasCreated::class => [
-            '\Api\Users\Listeners\ClearFusionPBXCache',
-        ]
+          // ~ ClearFusionPBXCache::class,
+        ],
     ];
 }

@@ -66,12 +66,13 @@ class UserRepository extends Repository
         $this->database->beginTransaction();
 
         try {
-          // TODO rework remove according to how Add works
+          // TODO Check if Remove here works.
             if (count($removeGroups) > 0) {
                 $query = $this->database->table($user->groups()->getTable());
                 $query
-                    ->where('user_id', $user->id)
-                    ->whereIn('group_id', $removeGroups)
+                    ->where('user_uud', $user->user_uuid)
+                    ->where('domain_uuid', $user->domain_uuid)
+                    ->whereIn('group_uuid', $removeGroups)
                     ->delete();
             }
 

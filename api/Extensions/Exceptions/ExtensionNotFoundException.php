@@ -1,12 +1,12 @@
 <?php
 
-namespace Api\Users\Exceptions;
+namespace Api\Extensions\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Infrastructure\Traits\BaseException;
 
-class UserNotFoundException extends NotFoundHttpException
+class ExtensionNotFoundException extends NotFoundHttpException
 {
   use BaseException;
 }
