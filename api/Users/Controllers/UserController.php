@@ -30,7 +30,7 @@ class UserController extends Controller
         return $this->response($parsedData);
     }
 
-    public function getById($userId)
+    public function getById(string $userId)
     {
         $resourceOptions = $this->parseResourceOptions();
 
@@ -42,7 +42,12 @@ class UserController extends Controller
 
     public function getMe()
     {
-        return $this->response($this->userService->getMe());
+        $resourceOptions = $this->parseResourceOptions();
+
+        $data = $this->userService->getMe($resourceOptions);
+        $parsedData = $this->parseData($data, $resourceOptions, 'users');
+
+        return $this->response($parsedData);
     }
 
 
@@ -95,11 +100,13 @@ class UserController extends Controller
 		public function signup(SignupRequest $request)
     {
         $data = $request->get('team', []);
+
         if (empty($data))
         {
           $data = $request->get('user', []);
           $data['isTeam'] = false;
           $data['group_name'] = env('DEFAULT_USER_GROUP_NAME');
+          $data['user_enabled'] = 'false';
 
           return $this->response($this->userService->create($data, false), 201);
         }

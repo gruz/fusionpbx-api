@@ -8,14 +8,16 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 
-use Api\Extensions\Services\ExtensionService;
+use Api\Extensions\Models\Extension;
 
+use Api\Extensions\Services\ExtensionService;
 
 use Api\Users\Exceptions\InvalidGroupException;
 use Api\Users\Exceptions\UserNotFoundException;
 use Api\Users\Exceptions\DomainNotFoundException;
 use Api\Users\Exceptions\UserExistsException;
 use Api\Users\Exceptions\EmailExistsException;
+
 
 use Api\Users\Events\UserWasCreated;
 use Api\Users\Events\UserWasDeleted;
@@ -55,6 +57,8 @@ class UserService
 
     private $extensionService;
 
+    private $scope;
+
     public function __construct(
         AuthManager $auth,
         DatabaseManager $database,
@@ -77,16 +81,21 @@ class UserService
         $this->extensionRepository = $extensionRepository;
         $this->domainRepository = $domainRepository;
         $this->extensionService = $extensionService;
+
+        $this->setScope();
     }
 
     public function getMe($options = [])
     {
-        return $this->auth->user();
+        //return $this->auth->user();
+        $class = Extension::class;
+        $class::$staticMakeVisible = ['password'];
+				return $this->userRepository->getWhere('user_uuid', $this->auth->user()->user_uuid);
     }
 
     public function getAll($options = [])
     {
-				return $this->userRepository->getWhere('domain_uuid', $this->auth->user()->domain_uuid);
+				return $this->userRepository->getWhereArray(['domain_uuid' => $this->auth->user()->domain_uuid, 'user_enabled' => 'true']);
     }
 
     public function getById($userId, array $options = [])
@@ -127,9 +136,11 @@ class UserService
                 throw new DomainNotFoundException();
               }
 
+              $domain = $domain->first();
+
               // Get user by domain and username - create only if there is no a user with such a name
               $user = $this->userRepository->getWhereArray([
-                'domain_uuid' => $domain['domain_uid'],
+                'domain_uuid' => $domain['domain_uuid'],
                 'username' => $data['username'],
               ]);
 
@@ -140,7 +151,7 @@ class UserService
 
               // Check for the email in the current domain
               $contact_email = $this->contact_emailRepository->getWhereArray([
-                'domain_uuid' => $domain['domain_uid'],
+                'domain_uuid' => $domain['domain_uuid'],
                 'email_address' => $data['email'],
               ]);
 
@@ -148,8 +159,6 @@ class UserService
               {
                 throw new EmailExistsException();
               }
-
-              $domain = $domain->first();
 
               $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
             }
@@ -177,6 +186,7 @@ class UserService
 
             // Finally create the user and hide an unneded field in the output
             $user = $this->userRepository->create($data);
+
             $user->addHidden(['domain_uuid', 'contact_uuid']);
 
             // Get group name
@@ -184,7 +194,7 @@ class UserService
             $data['group_uuid'] = $group->first()->group_uuid;
 
             // Assign the newly created user to the group
-            $this->setGroups($user->user_uuid, [$data['group_uuid']]);
+            $this->setOneToManyRelations('Groups', $user->user_uuid, [$data['group_uuid']]);
 
             // Set relations to later output it
             $contact->setRelation('contact_email', $contact_email);
@@ -192,10 +202,21 @@ class UserService
 
             // Create an extension
             $extension_number = $this->extensionRepository->getWhere('domain_uuid', $data['domain_uuid'])->max('extension');
-            $extension_number = (int) $extension_number + 1;
-            $password = bcrypt(uniqid());
+
+            if ($extension_number < 100)
+            {
+              $extension_number = 100;
+            }
+            else
+            {
+              $extension_number = (int) $extension_number + 1;
+            }
+
+            $password = uniqid();
+
             $extension = $this->extensionService->create(['extension' => $extension_number, 'password' => $password], $user);
-            $this->extensionService->setUsers($extension->extension_uuid, [$user->user_uuid]);
+            $extension->makeVisible('password');
+            $this->extensionService->setOneToManyRelations('Users', $extension->extension_uuid, [$user->user_uuid]);
             $user->setRelation('extension', $extension);
 
             $this->dispatcher->fire(new UserWasCreated($user));

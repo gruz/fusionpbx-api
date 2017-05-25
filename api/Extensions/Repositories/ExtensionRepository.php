@@ -48,14 +48,14 @@ class ExtensionRepository extends Repository
             if (count($addUsers) > 0) {
                 $query = $this->database->table($extension->extension_users()->getTable());
                 $query
-                    ->insert(array_map(function ($user) use ($extension) {
+                    ->insert(array_map(function ($userId) use ($extension) {
                         return [
                             'extension_user_uuid' => \Uuid::generate(),
                             'domain_uuid' => $extension->domain_uuid,
                             'extension_uuid' => $extension->extension_uuid,
-                            'user_uuid' => $user->user_uuid
+                            'user_uuid' => $userId
                         ];
-                    }, $addUsers));
+                    }, array_keys($addUsers)));
             }
         } catch (Exception $e) {
             $this->database->rollBack();

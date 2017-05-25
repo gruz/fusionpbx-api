@@ -41,7 +41,7 @@ class UserRepository extends Repository
         $data['password'] = md5($data['salt'].$data['password']);
 
         // ~ TODO Improve logic here, remove hardcoded
-        $data['user_enabled'] = 'true';
+        // ~ $data['user_enabled'] = 'true';
 
         // ~ 'domain_uuid',  'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
 

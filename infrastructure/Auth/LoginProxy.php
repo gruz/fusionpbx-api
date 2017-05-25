@@ -7,6 +7,8 @@ use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\Users\Repositories\UserRepository;
 use Api\Users\Repositories\DomainRepository;
 
+use Api\Users\Exceptions\UserDisabledException;
+
 class LoginProxy
 {
     const REFRESH_TOKEN = 'refreshToken';
@@ -59,6 +61,12 @@ class LoginProxy
         $user = $this->userRepository->getWhereArray(['username' => $username, 'domain_uuid' => $domain->domain_uuid])->first();
 
         if (!is_null($user)) {
+
+            if ($user->user_enabled != 'true')
+            {
+              throw new UserDisabledException();
+            }
+
             return $this->proxy('password', [
                 'username' => ['username' => $username, 'domain_uuid' => $domain->domain_uuid],
                 'password' => $password,

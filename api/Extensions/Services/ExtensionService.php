@@ -7,16 +7,26 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
+
 use Api\Extensions\Exceptions\InvalidExtensionException;
+use Api\Extensions\Exceptions\InvalidExtension_userException;
 use Api\Extensions\Exceptions\ExtensionNotFoundException;
 use Api\Extensions\Exceptions\ExtensionExistsException;
+
 use Api\Extensions\Events\ExtensionWasCreated;
 use Api\Extensions\Events\ExtensionWasDeleted;
 use Api\Extensions\Events\ExtensionWasUpdated;
+
 use Api\Extensions\Repositories\ExtensionRepository;
+use Api\Extensions\Repositories\Extension_userRepository;
+use Api\Users\Repositories\userRepository;
+
+use Infrastructure\Traits\OneToManyRelationCRUD;
 
 class ExtensionService
 {
+    use OneToManyRelationCRUD;
+
     private $auth;
 
     private $database;
@@ -26,12 +36,19 @@ class ExtensionService
     // ~ private $roleRepository;
 
     private $extensionRepository;
+    private $extension_userRepository;
+
+    private $userRepository;
+
+    private $scope;
 
     public function __construct(
         AuthManager $auth,
         DatabaseManager $database,
         Dispatcher $dispatcher,
         // ~ GroupRepository $roleRepository,
+        Extension_userRepository $extension_userRepository,
+        UserRepository $userRepository,
         ExtensionRepository $extensionRepository
     ) {
         $this->auth = $auth;
@@ -39,6 +56,10 @@ class ExtensionService
         $this->dispatcher = $dispatcher;
         // ~ $this->roleRepository = $roleRepository;
         $this->extensionRepository = $extensionRepository;
+        $this->extension_userRepository = $extension_userRepository;
+        $this->userRepository = $userRepository;
+
+        $this->setScope();
     }
 
     public function getAll($options = [])
@@ -135,38 +156,5 @@ class ExtensionService
         $this->database->commit();
     }
 
-    public function setUsers($extensionId, array $users)
-    {
-        $extension = $this->getRequestedUser($userId, [
-            'includes' => ['groups']
-        ]);
-
-        $currentUsers = $extensions->extension_users->pluck('user_uuid')->toArray();
-        $groups = $this->checkValidityOfUsers($groupIds);
-
-        $remove = array_diff($currentGroups, $groupIds);
-        $add = array_diff($groupIds, $currentGroups);
-
-        $remove = $this->mapGroupNamesToGroupIds($remove);
-        $add = $this->mapGroupNamesToGroupIds($add);
-
-        $this->userRepository->setGroups($user, $add, $remove);
-
-        $user->setRelation('groups', new Collection($groups));
-
-        return $user;
-    }
-
-    private function checkValidityOfGroups(array $groupIds = [])
-    {
-        $groups = $this->groupRepository->getWhereIn('group_uuid', $groupIds);
-
-        if (count($groupIds) !== $groups->count()) {
-            $missing = array_diff($groupIds, $groups->pluck('group_uuid')->toArray());
-            throw new InvalidGroupException(['groupId' => $missing[0]]);
-        }
-
-        return $groups;
-    }
 
 }

@@ -2,6 +2,8 @@
 
 namespace Api\Extensions\Models;
 
+use Api\Users\Models\User;
+
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
@@ -9,6 +11,7 @@ use Infrastructure\Traits\FusionPBXTableModel;
 class Extension extends Model
 {
     use Notifiable, FusionPBXTableModel;
+
 
     protected $attributes = array(
       'directory_visible' => 'true',
@@ -104,9 +107,14 @@ class Extension extends Model
         // ~ 'user_context',
     ];
 
+    public function users()
+    {
+        return $this->extension_users();
+    }
+
     public function extension_users()
     {
-        return $this->hasMany(Extension_user::class, 'v_extension_users', 'extension_uuid', 'extension_uuid');
+        return $this->belongsToMany(User::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
     }
 
 }

@@ -41,7 +41,7 @@ class TeamService
 
     private $groupRepository;
 
-    private $userRepository;
+    protected $userRepository;
 
     private $domainService;
 

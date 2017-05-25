@@ -6,6 +6,7 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Infrastructure\Traits\FusionPBXTableModel;
+use Api\Extensions\Models\Extension;
 
 class User extends Authenticatable
 {
@@ -41,7 +42,7 @@ class User extends Authenticatable
 
     public function extensions()
     {
-        $extensions = $this->hasMany(Extension::class, 'domain_uuid', 'domain_uuid');
+        return $this->belongsToMany(Extension::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
     }
 
     /**

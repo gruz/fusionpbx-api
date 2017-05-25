@@ -57,6 +57,12 @@ class SignupRequest extends ApiRequest
     public function get($key, $default = null)
     {
         $data = parent::get($key, $default);
+
+        if (empty($data))
+        {
+          return $data;
+        }
+
         $data = array_only($data, ['email', 'domain_name', 'password', 'username']);
 
         if (strpos($data['domain_name'], '.') === false)
