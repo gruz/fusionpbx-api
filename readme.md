@@ -1,6 +1,10 @@
+# NOTE
+
+Readme is taken from the original repo and has nothing with the current code. To be updated later. // ##mygruz20170601202211
+
 # Larapi
 
-Larapi is an API-friendly fork of Laravel, batteries included. If you want to read a more in-depth description 
+Larapi is an API-friendly fork of Laravel, batteries included. If you want to read a more in-depth description
 of the offerings and how to do modern API development in Laravel I have written a series of blogposts on the topic.
 
 [A Modern REST API in Laravel 5](http://esbenp.github.io/2016/04/11/modern-rest-api-laravel-part-0/)
@@ -8,23 +12,23 @@ of the offerings and how to do modern API development in Laravel I have written 
 Larapi comes included with...
 * Laravel 5.4
 * Laravel Passport for OAuth Authentication, including a proxy for password and refresh-token grants
-* A new directory structure optimized for separating infrastructure and domain code. Groups your controllers, models, etc. by resource-type. 
+* A new directory structure optimized for separating infrastructure and domain code. Groups your controllers, models, etc. by resource-type.
 [Read more and view the source code here](https://github.com/esbenp/distributed-laravel)
 * [Optimus\Heimdal](https://github.com/esbenp/heimdal): A modern exception handler for APIs with Sentry and Bugsnag integration out-of-the-box
 * [Optimus\Bruno](https://github.com/esbenp/bruno): A base controller class that gives sorting, filtering, eager loading and pagination for your endpoints
 * [Optimus\Genie](https://github.com/esbenp/genie): A base repository class for requesting entities from your database. Includes integration with Bruno.
 * [Optimus\Architect](https://github.com/esbenp/architect): A library for creating advanced structures of related entities
-* [Optimus\ApiConsumer](https://github.com/esbenp/laravel-api-consumer): A small class for making internal API requests 
+* [Optimus\ApiConsumer](https://github.com/esbenp/laravel-api-consumer): A small class for making internal API requests
 
 ## Motivation
 
-We maintain a fairly large Laravel API at [Traede](https://traede.com). Our philosophy is to utilize the framework as much as possible. 
-However, we also strongly feel that the amount of people that use Laravel for API development is not as large as it could be. 
-We *feel* that Laravel as a framework tries to focus more on traditional web development (i.e. rendering HTML). We try to modify the framework 
-just a little bit so it is more suited for API development. Larapi is the result of the changes we have made at Traede in order 
+We maintain a fairly large Laravel API at [Traede](https://traede.com). Our philosophy is to utilize the framework as much as possible.
+However, we also strongly feel that the amount of people that use Laravel for API development is not as large as it could be.
+We *feel* that Laravel as a framework tries to focus more on traditional web development (i.e. rendering HTML). We try to modify the framework
+just a little bit so it is more suited for API development. Larapi is the result of the changes we have made at Traede in order
 to make Laravel more enjoyable as an API framework.
 
-## Installation 
+## Installation
 
 First clone the repository
 
