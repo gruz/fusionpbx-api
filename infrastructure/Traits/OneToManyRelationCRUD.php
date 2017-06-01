@@ -104,6 +104,7 @@ trait OneToManyRelationCRUD
     // ~ public function setOneToManyRelations($userId, array $groupIds)
     public function setOneToManyRelations($scope, $oneId, array $manyIds)
     {
+
         $relation = strtolower($scope);
         $relation_singular = substr($relation, 0, -1);
 
@@ -111,8 +112,8 @@ trait OneToManyRelationCRUD
             'includes' => [$relation]
         ]);
 
-        $currentManys = $one->$relation->pluck($relation_singular . '_uuid')->toArray();
 
+        $currentManys = $one->{$relation}->pluck($relation_singular . '_uuid')->toArray();
         $manys = $this->checkValidityOfOneToManyRelations($scope, $manyIds);
 
         $remove = array_diff($currentManys, $manyIds);
@@ -120,6 +121,7 @@ trait OneToManyRelationCRUD
 
         $remove = $this->mapNamesToIds($scope, $remove);
         $add = $this->mapNamesToIds($scope, $add);
+
 
         // ~ $this->userRepository->setGroups($user, $add, $remove);
         $this->{$this->scope . 'Repository'}->{'set' . $scope}($one, $add, $remove);
@@ -171,7 +173,7 @@ trait OneToManyRelationCRUD
         return $manys;
     }
 
-    private function getRequestedObject($Id, array $options = [])
+    public function getRequestedObject($Id, array $options = [])
     {
       $object = $this->{$this->scope . 'Repository'} ->getById($Id, $options);
 
@@ -210,7 +212,7 @@ trait OneToManyRelationCRUD
 
       $suffix = '_name';
 
-      if($scope = 'Users')
+      if($scope == 'Users')
       {
         $suffix = 'name';
       }

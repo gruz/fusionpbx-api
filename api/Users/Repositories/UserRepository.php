@@ -70,7 +70,7 @@ class UserRepository extends Repository
             if (count($removeGroups) > 0) {
                 $query = $this->database->table($user->groups()->getTable());
                 $query
-                    ->where('user_uud', $user->user_uuid)
+                    ->where('user_uuid', $user->user_uuid)
                     ->where('domain_uuid', $user->domain_uuid)
                     ->whereIn('group_uuid', $removeGroups)
                     ->delete();

@@ -35,7 +35,7 @@ class UserController extends Controller
         $resourceOptions = $this->parseResourceOptions();
 
         $data = $this->userService->getById($userId, $resourceOptions);
-        $parsedData = $this->parseData($data, $resourceOptions, 'user');
+        $parsedData = $this->parseData($data, $resourceOptions, null);
 
         return $this->response($parsedData);
     }
@@ -45,7 +45,7 @@ class UserController extends Controller
         $resourceOptions = $this->parseResourceOptions();
 
         $data = $this->userService->getMe($resourceOptions);
-        $parsedData = $this->parseData($data, $resourceOptions, 'users');
+        $parsedData = $this->parseData($data, $resourceOptions, null);
 
         return $this->response($parsedData);
     }

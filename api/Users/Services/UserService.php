@@ -90,7 +90,7 @@ class UserService
         //return $this->auth->user();
         $class = Extension::class;
         $class::$staticMakeVisible = ['password'];
-				return $this->userRepository->getWhere('user_uuid', $this->auth->user()->user_uuid);
+				return $this->userRepository->getWhere('user_uuid', $this->auth->user()->user_uuid)->first();
     }
 
     public function getAll($options = [])
@@ -100,9 +100,11 @@ class UserService
 
     public function getById($userId, array $options = [])
     {
-        $user = $this->getRequestedUser($userId);
+        return $this->userRepository->getWhere('user_uuid', $userId)->first();
 
-        return $user;
+        // ~ $user = $this->getRequestedUser($userId, $options);
+
+        // ~ return $user;
     }
 
     /**

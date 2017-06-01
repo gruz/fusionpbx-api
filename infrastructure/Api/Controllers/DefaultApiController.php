@@ -10,7 +10,7 @@ class DefaultApiController extends BaseController
     public function index()
     {
         return response()->json([
-            'title'   => 'Larapi',
+            'title'   => 'FusionPBX API',
             'version' => Version::getGitTag()
         ]);
     }

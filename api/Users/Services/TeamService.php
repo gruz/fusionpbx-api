@@ -94,7 +94,6 @@ class TeamService
         $this->database->beginTransaction();
 
         try {
-
             if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
             {
               throw new DomainExistsException();
