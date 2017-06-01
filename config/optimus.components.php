@@ -3,7 +3,7 @@
 return [
     'namespaces' => [
         'Api' => base_path() . DIRECTORY_SEPARATOR . 'api',
-        'Infrastructure' => base_path() . DIRECTORY_SEPARATOR . 'infrastructure'
+        'App' => base_path() . DIRECTORY_SEPARATOR . 'app'
     ],
 
 

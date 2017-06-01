@@ -2,7 +2,7 @@
 
 namespace Api\Users\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\Users\Models\User;
 
 class UserWasDeleted extends Event

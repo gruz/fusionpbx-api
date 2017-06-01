@@ -5,7 +5,7 @@ namespace Api\Users\Models;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Infrastructure\Traits\FusionPBXTableModel;
+use App\Traits\FusionPBXTableModel;
 use Api\Extensions\Models\Extension;
 
 class User extends Authenticatable

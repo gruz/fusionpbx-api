@@ -3,7 +3,7 @@
 namespace Api\Users\Controllers;
 
 use Illuminate\Http\Request;
-use Infrastructure\Http\Controller;
+use App\Http\Controller;
 use Api\Users\Requests\CreateUserRequest;
 use Api\Users\Requests\SignupRequest;
 use Api\Users\Requests\UserGroupsRequest;

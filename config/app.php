@@ -163,8 +163,8 @@ return [
         /*
          * Application Service Providers...
          */
-        Infrastructure\Auth\AuthServiceProvider::class,
-        Infrastructure\Http\RouteServiceProvider::class,
+        App\Auth\AuthServiceProvider::class,
+        App\Http\RouteServiceProvider::class,
         Api\Users\TeamServiceProvider::class,
         Api\Users\UserServiceProvider::class,
         Api\Extensions\ExtensionServiceProvider::class,

@@ -30,8 +30,7 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Api\\": "api/",
-            "Infrastructure\\": "infrastructure/"
+            "Api\\": "api/"
         }
     },
     "autoload-dev": {

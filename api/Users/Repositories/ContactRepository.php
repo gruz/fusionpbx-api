@@ -3,7 +3,7 @@
 namespace Api\Users\Repositories;
 
 use Api\Users\Models\Contact;
-use Infrastructure\Database\Eloquent\Repository;
+use App\Database\Eloquent\Repository;
 
 class ContactRepository extends Repository
 {

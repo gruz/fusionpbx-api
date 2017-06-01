@@ -1,0 +1,12 @@
+<?php
+
+namespace DummyNamespace;
+
+use Symfony\Component\HttpKernel\Exception\DummyBaseClass;
+
+use App\Traits\BaseException;
+
+class DummyClass extends DummyBaseClass
+{
+  use BaseException;
+}

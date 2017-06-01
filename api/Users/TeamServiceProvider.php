@@ -7,7 +7,7 @@ namespace Api\Users;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-use Infrastructure\Listeners\ClearFusionPBXCache;
+use App\Listeners\ClearFusionPBXCache;
 
 class TeamServiceProvider extends ServiceProvider
 {

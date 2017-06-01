@@ -2,7 +2,7 @@
 
 namespace Api\Extensions\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\ExtensionsModelsxtension;
 
 class ExtensionWasUpdated extends Event

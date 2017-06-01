@@ -2,8 +2,8 @@
 
 namespace Api\Extensions;
 
-use Infrastructure\Events\EventServiceProvider;
-use Infrastructure\Listeners\ClearFusionPBXCache;
+use App\Events\EventServiceProvider;
+use App\Listeners\ClearFusionPBXCache;
 // ~ use Illuminate\Foundation\Support\Providers\EventServiceProvider;
 use Api\Extensions\Events\ExtensionWasCreated;
 

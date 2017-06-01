@@ -3,8 +3,8 @@
 namespace Api\Users\Models;
 
 use Api\Users\Models\User;
-use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
+use App\Database\Eloquent\Model;
+use App\Traits\FusionPBXTableModel;
 
 class Group extends Model
 {

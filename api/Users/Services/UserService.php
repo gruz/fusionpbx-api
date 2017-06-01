@@ -30,7 +30,7 @@ use Api\Users\Repositories\ContactRepository;
 use Api\Users\Repositories\Contact_emailRepository;
 use Api\Extensions\Repositories\ExtensionRepository;
 
-use Infrastructure\Traits\OneToManyRelationCRUD;
+use App\Traits\OneToManyRelationCRUD;
 
 
 class UserService

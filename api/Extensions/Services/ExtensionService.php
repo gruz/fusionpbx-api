@@ -21,7 +21,7 @@ use Api\Extensions\Repositories\ExtensionRepository;
 use Api\Extensions\Repositories\Extension_userRepository;
 use Api\Users\Repositories\userRepository;
 
-use Infrastructure\Traits\OneToManyRelationCRUD;
+use App\Traits\OneToManyRelationCRUD;
 
 class ExtensionService
 {
