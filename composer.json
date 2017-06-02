@@ -15,6 +15,7 @@
         "laravel/passport": "^2.0",
         "optimus/api-consumer": ">=0.2",
         "webpatser/laravel-uuid": "^2.0",
+        "optimus/architect": "~1.0",
         "doctrine/dbal": "^2.5"
     },
     "require-dev": {
@@ -24,6 +25,12 @@
         "symfony/css-selector": "2.8.*|3.0.*",
         "symfony/dom-crawler": "2.8.*|3.0.*"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:gruz/architect.git"
+        }
+    ],
     "autoload": {
         "classmap": [
             "database"
