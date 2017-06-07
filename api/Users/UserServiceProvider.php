@@ -11,7 +11,8 @@ use Api\Users\Events\UserWasDeleted;
 use Api\Users\Events\UserWasUpdated;
 use Api\Users\Events\DomainWasCreated;
 
-use App\Listeners\ClearFusionPBXCache;
+// ~ use App\Listeners\ClearFusionPBXCache;
+use App\Listeners\UserWasCreatedListener;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -29,6 +30,7 @@ class UserServiceProvider extends ServiceProvider
         ],
         UserWasCreated::class => [
             // listeners for when a user is created
+            UserWasCreatedListener::class,
         ],
         UserWasDeleted::class => [
             // listeners for when a user is deleted
