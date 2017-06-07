@@ -58,11 +58,16 @@ class UserController extends Controller
         return $this->response($this->userService->create($data), 201);
     }
 
-    public function update($userId, Request $request)
+    public function update($hash, Request $request)
     {
         $data = $request->get('user', []);
 
         return $this->response($this->userService->update($userId, $data));
+    }
+
+    public function activate($hash)
+    {
+        return $this->response($this->userService->activate($hash));
     }
 
     public function delete($userId)
@@ -106,7 +111,10 @@ class UserController extends Controller
           $data = $request->get('user', []);
           $data['isTeam'] = false;
           $data['group_name'] = env('DEFAULT_USER_GROUP_NAME');
-          $data['user_enabled'] = 'false';
+
+          // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
+          // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
+          $data['user_enabled'] = md5(uniqid().microtime());
 
           return $this->response($this->userService->create($data, false), 201);
         }

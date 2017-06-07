@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 
 use Api\Extensions\Models\Extension;
-
 use Api\Extensions\Services\ExtensionService;
 
 use Api\Users\Exceptions\InvalidGroupException;
@@ -17,6 +16,8 @@ use Api\Users\Exceptions\UserNotFoundException;
 use Api\Users\Exceptions\DomainNotFoundException;
 use Api\Users\Exceptions\UserExistsException;
 use Api\Users\Exceptions\EmailExistsException;
+use Api\Users\Exceptions\ActivationHashNotFoundException;
+use Api\Users\Exceptions\ActivationHashWrongException;
 
 
 use Api\Users\Events\UserWasCreated;
@@ -232,6 +233,45 @@ class UserService
         $this->database->commit();
 
         return $user;
+    }
+
+    public function activate($hash)
+    {
+        // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
+        // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
+        if (strlen($hash) != 32) {
+            throw new ActivationHashWrongException();
+        }
+
+        $user = $this->userRepository->getWhere('user_enabled', $hash)->first();
+
+        if (is_null($user)) {
+            throw new ActivationHashNotFoundException();
+        }
+
+        $data = [];
+        $data['user_enabled'] = 'true';
+
+        $this->database->beginTransaction();
+
+        try {
+            $this->userRepository->update($user, $data);
+
+            $this->dispatcher->fire(new UserWasUpdated($user));
+        } catch (Exception $e) {
+            $this->database->rollBack();
+
+            throw $e;
+        }
+
+        $this->database->commit();
+
+        $response = [
+          'message' => __('User activated'),
+          'user' => $user
+        ];
+
+        return $response;
     }
 
     public function update($userId, array $data)
