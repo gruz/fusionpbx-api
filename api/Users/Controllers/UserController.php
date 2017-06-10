@@ -109,6 +109,8 @@ class UserController extends Controller
         if (empty($data))
         {
           $data = $request->get('user', []);
+          $data = array_map('trim', $data);
+
           $data['isTeam'] = false;
           $data['group_name'] = env('DEFAULT_USER_GROUP_NAME');
 
@@ -118,6 +120,8 @@ class UserController extends Controller
 
           return $this->response($this->userService->create($data, false), 201);
         }
+
+        $data = array_map('trim', $data);
 
         $data['isTeam'] = true;
         $data['user_enabled'] = 'true';

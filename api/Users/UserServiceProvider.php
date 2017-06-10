@@ -12,7 +12,7 @@ use Api\Users\Events\UserWasUpdated;
 use Api\Users\Events\DomainWasCreated;
 
 // ~ use App\Listeners\ClearFusionPBXCache;
-use App\Listeners\UserWasCreatedListener;
+use Api\Users\Listeners\UserWasCreatedListener;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

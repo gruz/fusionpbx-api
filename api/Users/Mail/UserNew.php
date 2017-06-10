@@ -32,9 +32,10 @@ class UserNew extends Mailable
     public function build()
     {
         return $this->markdown('emails.user.new')
+        ->subject(__('A new user waiting for activation at :domain', ['domain' => $this->user->domain->domain_name]))
         ->with([
               'user' => $this->user,
-              'url' => \URL::current(),
+              'url' => \Request::root() . '/user/activate/' . $this->user['user_enabled'],
           ]);
     }
 }

@@ -1,10 +1,10 @@
 @component('mail::message')
 # @lang('A new user registered')
 
-@lang('A new user registered to your domain')
+@lang('A new user registered to your domain :domain', ['domain' => $user->domain->domain_name])
 
-<br>
-**{{ $user->username }}**
+
+@lang('Username'): **{{ $user->username }}**
 
 
 @component('mail::button', ['url' => $url ])
