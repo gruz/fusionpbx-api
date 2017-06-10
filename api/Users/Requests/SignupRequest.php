@@ -63,12 +63,21 @@ class SignupRequest extends ApiRequest
           return $data;
         }
 
-        $data = array_only($data, ['email', 'domain_name', 'password', 'username']);
+        $password = $data['password'];
+        $data = array_only($data, ['email', 'domain_name', 'username']);
+        $data['password'] = $password;
+        $data = array_map('trim', $data);
 
         if (strpos($data['domain_name'], '.') === false)
         {
           $data['domain_name'] = $data['domain_name'] . '.' . env('MOTHERSHIP_DOMAIN');
         }
+
+        $pattern = '~^([a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)+.*)$~';
+
+       if (!preg_match($pattern, $data['domain_name'])) {
+          throw new WrongSignupDataException(__('Not a valid URL `:url`', ['url' => $data['domain_name'] ]));
+       }
 
         return $data;
     }
