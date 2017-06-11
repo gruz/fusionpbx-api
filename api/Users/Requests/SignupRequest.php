@@ -65,8 +65,8 @@ class SignupRequest extends ApiRequest
 
         $password = $data['password'];
         $data = array_only($data, ['email', 'domain_name', 'username']);
-        $data['password'] = $password;
         $data = array_map('trim', $data);
+        $data['password'] = $password;
 
         if (strpos($data['domain_name'], '.') === false)
         {

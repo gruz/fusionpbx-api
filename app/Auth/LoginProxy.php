@@ -55,7 +55,7 @@ class LoginProxy
 
         if (empty($domain))
         {
-          throw new InvalidCredentialsException('Domain not entered');
+          throw new InvalidCredentialsException(__('Wrong domain name or domain doesn\'t exists'));
         }
 
         $user = $this->userRepository->getWhereArray(['username' => $username, 'domain_uuid' => $domain->domain_uuid])->first();
@@ -74,7 +74,7 @@ class LoginProxy
             ]);
         }
 
-        throw new InvalidCredentialsException();
+        throw new InvalidCredentialsException(__('User doesn\'t exists'));
     }
 
     /**
