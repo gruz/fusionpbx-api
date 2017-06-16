@@ -179,13 +179,11 @@ chmod +x /etc/network/if-pre-up.d/iptables
 ## Get and upload apple VOIP push certificate
 
 This is needed to send push notifications to wakeup Apple devices.
-Get the certificate at Apple Developer Portal and place it somewhere inside
-the laravel folder. E.g. as **app\Certs\VOIP.pem**
+Get the certificate at Apple Developer Portal and place it to **resources/certs/VOIP.pem**
 
 Edit `.env` file and place the path to the cert file as well as password if you have it setup.
 
 Search for `VOIP_APPLE_CERT_PATH` and `VOIP_APPLE_CERT_PASSPHRASE` in your `.env` file.
-```
 
 
 # Check it's working
