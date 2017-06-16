@@ -18,6 +18,7 @@ The main steps would be:
 * Update .env file
 * Add nginx virtual host
 * Setup firewall
+* Get and upload apple VOIP push certificate
 
 
 
@@ -175,6 +176,18 @@ Make it executable
 chmod +x /etc/network/if-pre-up.d/iptables
 ```
 
+## Get and upload apple VOIP push certificate
+
+This is needed to send push notifications to wakeup Apple devices.
+Get the certificate at Apple Developer Portal and place it somewhere inside
+the laravel folder. E.g. as **app\Certs\VOIP.pem**
+
+Edit `.env` file and place the path to the cert file as well as password if you have it setup.
+
+Search for `VOIP_APPLE_CERT_PATH` and `VOIP_APPLE_CERT_PASSPHRASE` in your `.env` file.
+```
+
+
 # Check it's working
 
 If you open **https://yoursite.com:444** (note HTTPS!) you should see something like
@@ -182,6 +195,35 @@ If you open **https://yoursite.com:444** (note HTTPS!) you should see something 
 ```
 {"title":"FusionPBX API","version":"0.0.1"}
 ```
+
+# Update
+
+Login to your server via ssh and go to the laravel folder
+
+```
+# cd /var/www/laravel-api/
+```
+
+Switch to `www-data` user
+```
+su -m -l www-data
+```
+
+Get latest files
+
+```
+git pull
+```
+
+Run laravel migration
+
+```
+php artisan migrate
+```
+
+Check `.env.example` file for new entries (compare it with your current file). If there are new lines at the bottom, then update your `.env` file with the new files.
+
+Check if your certificates (like VOIP push cert) are in place.
 
 # Documenations
 

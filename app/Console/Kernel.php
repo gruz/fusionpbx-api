@@ -2,8 +2,11 @@
 
 namespace App\Console;
 
-use Api\Users\Console\AddUserCommand;
-use App\Console\Commands;
+use Api\User\Console\AddUserCommand;
+
+use App\Console\Commands\MakeException;
+use App\Console\Commands\SendPush;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +19,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         AddUserCommand::class,
-        ExceptionMakeCommand::class,
+        MakeException::class,
+        SendPush::class,
     ];
 
     /**

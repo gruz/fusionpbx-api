@@ -178,9 +178,9 @@ return [
          */
         App\Auth\AuthServiceProvider::class,
         App\Http\RouteServiceProvider::class,
-        Api\Users\TeamServiceProvider::class,
-        Api\Users\UserServiceProvider::class,
-        Api\Extensions\ExtensionServiceProvider::class,
+        Api\User\TeamServiceProvider::class,
+        Api\User\UserServiceProvider::class,
+        Api\Extension\ExtensionServiceProvider::class,
         App\Providers\HelperServiceProvider::class,
     ],
 
@@ -229,5 +229,4 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Uuid' => Webpatser\Uuid\Uuid::class,
     ],
-
 ];

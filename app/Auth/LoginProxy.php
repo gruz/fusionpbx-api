@@ -4,10 +4,10 @@ namespace App\Auth;
 
 use Illuminate\Foundation\Application;
 use App\Auth\Exceptions\InvalidCredentialsException;
-use Api\Users\Repositories\UserRepository;
-use Api\Users\Repositories\DomainRepository;
+use Api\User\Repositories\UserRepository;
+use Api\User\Repositories\DomainRepository;
 
-use Api\Users\Exceptions\UserDisabledException;
+use Api\User\Exceptions\UserDisabledException;
 
 class LoginProxy
 {
