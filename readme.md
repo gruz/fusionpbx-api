@@ -207,7 +207,7 @@ Switch to `www-data` user
 # su -m -l www-data
 ```
 
-> Don't care when you get `-su: /root/.bash_profile: Permission denied`
+> Don't care when you get `-su: /root/.bash_profile: Permission denied`. Just ignore.
 
 Get latest files
 

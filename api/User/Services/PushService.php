@@ -90,6 +90,7 @@ class PushService
       {
         foreach ($user->pushtokens as $pushtoken)
         {
+          $pushtoken->username = $user->username;
           $this->push($pushtoken);
         }
 
@@ -99,13 +100,13 @@ class PushService
 
     public function push($pushtoken)
     {
-      $message = $pushtoken->user_uuid . ': ' . __(env('VOIP_MESSAGE', __('Hey, wake up!')));
+      $message = $pushtoken->username . ': ' . __(env('VOIP_MESSAGE', __('Hey, wake up!'))) . '(userid: ' . $pushtoken->user_uuid . ')';
 
       // Put the full path to your .pem file
       // Put your alert message here:
       $pemFile = base_path() . '/' . env('VOIP_APPLE_CERT_PATH', false) ;
 
-      $token = preg_replace("/[^0-9]/","",$pushtoken->token);
+      $token = preg_replace("/[^0-9a-zA-Z]/","",$pushtoken->token);
 
       ////////////////////////////////////////////////////////////////////////////////
 
