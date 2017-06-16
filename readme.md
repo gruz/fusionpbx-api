@@ -204,19 +204,21 @@ Login to your server via ssh and go to the laravel folder
 
 Switch to `www-data` user
 ```
-su -m -l www-data
+# su -m -l www-data
 ```
+
+> Don't care when you get `-su: /root/.bash_profile: Permission denied`
 
 Get latest files
 
 ```
-git pull
+$ git pull
 ```
 
 Run laravel migration
 
 ```
-php artisan migrate
+$ php artisan migrate
 ```
 
 Check `.env.example` file for new entries (compare it with your current file). If there are new lines at the bottom, then update your `.env` file with the new files.
