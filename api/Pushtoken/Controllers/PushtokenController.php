@@ -24,7 +24,8 @@ class PushtokenController extends Controller
 
     public function create(CreatePushtokenRequest $request)
     {
-        $data = $request->get($this->nameSpace, []);
+        // ~ $data = $request->get($this->nameSpace, []);
+        $data = $request->all();
 
         return $this->response($this->controllerService->create($data), 201);
     }
