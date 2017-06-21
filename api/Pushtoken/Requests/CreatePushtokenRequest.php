@@ -17,20 +17,19 @@ class CreatePushtokenRequest extends ApiRequest
 
     public function rules()
     {
-      return[];
         return [
-            'pushtoken.token_type' => 'required|string',
-            'pushtoken.token' => 'required|string',
-            'pushtoken.token_class' => 'required|string',
+            'token_type' => 'required|string',
+            'token' => 'required|string',
+            'token_class' => 'required|string',
         ];
     }
 
     public function attributes()
     {
         return [
-            'pushtoken.token_type' => __('token type, `production` or `sandbox`'),
-            'pushtoken.token' => __('device push token'),
-            'pushtoken.token_class' => __('token class, `voip` or `text`'),
+            'token_type' => __('token type, `production` or `sandbox`'),
+            'token' => __('device push token'),
+            'token_class' => __('token class, `voip` or `text`'),
         ];
     }
 
@@ -55,6 +54,8 @@ class CreatePushtokenRequest extends ApiRequest
 
         $data = array_only($data, ['token_type', 'token', 'token_class']);
         $data = array_map('trim', $data);
+
+        $data['token'] = preg_replace("/[^0-9a-zA-Z]/","",$data['token']);
 
         if (empty($data['token_type']) || !in_array($data['token_type'], ['production', 'sandbox']))
         {

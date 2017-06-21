@@ -1,0 +1,102 @@
+<?php
+
+namespace Api\Status\Requests;
+
+use App\Http\ApiRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Api\Status\Exceptions\WrongStatusDataException;
+use Api\Status\Exceptions\InvalidStatusException;
+use Api\Status\Exceptions\InvalidServiceListException;
+use Api\Status\Exceptions\InvalidStatusOSException;
+
+
+class SetStatusRequest extends ApiRequest
+{
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
+    {
+        return [
+            'status.status_lifetime' => 'integer',
+            'status.os' => 'required|string',
+            'status.status' => 'required|string',
+            'status.services' => 'required|array',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'status.status_lifetime' => __('should be integer in seconds'),
+            'status.os' => __('available os_type values [' . implode(',' , config('api.OSes')) . ']'),
+            'status.status' => __('available statuses [' . implode(',' , config('api.statuses')) . ']'),
+            'status.services' => __('available services [' . implode(',' , config('api.services')) . ']'),
+        ];
+    }
+
+    /**
+     * Override get method to return only needed parameters
+     *
+     * See https://stackoverflow.com/questions/44127826/laravel-limit-formrequest-to-certain-parameters/44127982?noredirect=1#comment75278940_44127982
+     *
+     * @param   string  $key
+     * @param   mixed   $default
+     *
+     * @return   mixed
+     */
+    public function get($key, $default = null)
+    {
+        $data = parent::get($key, $default);
+
+        if (empty($data))
+        {
+          return $data;
+        }
+
+        $data = array_only($data, ['status_lifetime', 'os', 'status', 'services']);
+
+        array_walk_recursive($data, function(& $value){
+            $value = trim($value);
+        });
+
+        if (empty($data['status_lifetime']))
+        {
+          $data['status_lifetime'] = config('api.status_lifetime');
+        }
+
+        if (empty($data['os']) || !in_array($data['os'], config('api.OSes')))
+        {
+          if (empty($data['os']))
+          {
+            $data['os'] = null;
+          }
+
+          throw new InvalidStatusOSException(['os' => $data['os']]);
+        }
+
+        if (empty($data['status']) || !in_array($data['status'],  array_keys(config('api.statuses'))))
+        {
+          if (empty($data['status']))
+          {
+            $data['status'] = null;
+          }
+
+          throw new InvalidStatusException(['status' => $data['status'], 'available_statuses' => implode(', ', array_keys(config('api.statuses')))]);
+        }
+
+        if (empty($data['services']))
+        {
+          throw new InvalidServiceListException();
+        }
+
+        return $data;
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new WrongStatusDataException($validator->errors()->toJson());
+    }
+}
