@@ -237,7 +237,7 @@ return;
       $data['users'] = [];
       $data['users'] = $users;
 
-      $this->sendAll($conn, $message = null , $action = 'collection', $data, $status = 'ok', $context = null);
+      $this->sendData($conn, $message = null , $action = 'collection', $data, $status = 'ok', $context = null);
     }
 
     /**
