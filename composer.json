@@ -16,7 +16,8 @@
         "optimus/api-consumer": ">=0.2",
         "webpatser/laravel-uuid": "^2.0",
         "optimus/architect": "~1.0",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "askedio/laravel-ratchet": "^0.6.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

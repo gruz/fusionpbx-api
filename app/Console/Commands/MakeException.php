@@ -19,6 +19,7 @@ class MakeException extends GeneratorCommand
       {--b|basename=HttpException : Look into vendor/symfony/http-kernel/Exception/ or modify `use` command after the class is generated}
       {--m|message= :  Exception message}
       {--c|code= :  Exception code for JSON response}
+      {--s|socket : Place in "..\\Exceptions\\Socket" subfolder}
       {--*|********** : ------------------------- Common options -----------------------}
       ';
 
@@ -68,6 +69,7 @@ class MakeException extends GeneratorCommand
         $path[] = str_replace('\\', '/', lcfirst($this->rootNamespace()));
 
         $path = implode('/', $path);
+
         return $path.str_replace('\\', '/', $name).'.php';
     }
 
@@ -79,7 +81,14 @@ class MakeException extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Exceptions';
+        $suffix = '';
+
+        if ($this->option('socket'))
+        {
+            $suffix = '\\Socket';
+        }
+
+        return $rootNamespace.'\\Exceptions' . $suffix;
     }
 
     /**
@@ -200,6 +209,9 @@ class MakeException extends GeneratorCommand
 
       parent::fire();
       // ~ $message = $this->ask('Enter exception message');
-      // ~ $this->info($this->type.' created successfully.');
+       $name = $this->qualifyClass($this->getNameInput());
+
+      $this->info('use ' . $name . ';');
+      $this->info('throw new \\' . $name . '();');
     }
 }

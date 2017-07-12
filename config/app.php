@@ -182,6 +182,7 @@ return [
         Api\User\UserServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,
         App\Providers\HelperServiceProvider::class,
+        Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
     ],
 
     /*

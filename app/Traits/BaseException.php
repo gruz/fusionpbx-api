@@ -19,8 +19,8 @@ trait BaseException
 
       /*
        * Since Exceptions extend base Exceptions which has different number
-       * of parameters in theit __construct methods, I use this trick
-       * to pass the corret number of parameters.
+       * of parameters in their __construct methods, I use this trick
+       * to pass the correct number of parameters.
        * E.g.
        * vendor/symfony/http-kernel/Exception/HttpException.php
        *     public function __construct($statusCode, $message = null, \Exception $previous = null, array $headers = array(), $code = 0)
