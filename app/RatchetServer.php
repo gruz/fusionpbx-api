@@ -196,7 +196,11 @@ return;
         'status' => $input->data->status,
       ];
 
-      $this->domains[$conn->domain_uuid][$conn->user_uuid]->status = $input->data->status;
+      if (isset($this->domains[$conn->domain_uuid]) && isset($this->domains[$conn->domain_uuid][$conn->user_uuid]))
+      {
+        $this->domains[$conn->domain_uuid][$conn->user_uuid]->status = $input->data->status;
+      }
+
 
       switch ($input->data->status) {
         case 'offline':
