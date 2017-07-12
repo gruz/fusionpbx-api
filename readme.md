@@ -50,10 +50,10 @@ curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/loca
 For Debian
 
 ```
-apt-get install libzmq3-dev php-pear pkg-config supervisor php-dev
+apt-get install libzmq3-dev php-pear pkg-config supervisor php7.0-dev
 pecl install zmq-beta
 touch /etc/php/7.0/cli/conf.d/21-zeromq.ini
-echo extension=zmq.so\n > /etc/php/7.0/cli/conf.d/21-zeromq.ini
+echo extension=zmq.so > /etc/php/7.0/cli/conf.d/21-zeromq.ini
 ```
 
 ## Install API project files

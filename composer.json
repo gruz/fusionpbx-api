@@ -12,7 +12,7 @@
         "optimus/genie": ">=1.0",
         "sentry/sentry": "~1.6",
         "optimus/heimdal": ">=1.0",
-        "laravel/passport": "^2.0",
+        "laravel/passport": "^3.0",
         "optimus/api-consumer": ">=0.2",
         "webpatser/laravel-uuid": "^2.0",
         "optimus/architect": "~1.0",

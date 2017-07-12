@@ -237,8 +237,7 @@ return;
       $data['users'] = [];
       $data['users'] = $users;
 
-      $this->sendAll($message = null , $action = 'collection', $data, $status = 'ok', $error_code = null, $error_data = null);
-
+      $this->sendAll($conn, $message = null , $action = 'collection', $data, $status = 'ok', $context = null);
     }
 
     /**
