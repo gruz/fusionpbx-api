@@ -160,7 +160,7 @@ class RatchetServer extends RatchetServerBase
 // ~ var_dump($this->domains);
             //$user->conn = $conn;
             $this->users[$user->user_uuid] = $user;
-            $this->sendData($conn, $message = null , $action = null, $data = [], $status = 'ok', $context = null);
+            $this->sendData($conn, $message = null , $action = null, $data = [], $status = 'ok', $context = $this->context);
 
             // ~ echo json_encode($response, JSON_PRETTY_PRINT);
 
@@ -215,6 +215,7 @@ return;
           break;
       }
 
+      $this->sendData($conn, $message = null , $action = null, null, $status = 'ok', $context = $this->context);
       $this->sendAll($message = null , $action = 'update', $data, $status = 'ok', $error_code = null, $error_data = null);
 
     }
