@@ -192,7 +192,8 @@ return;
 
       $data = [];
       $data['users'] = [];
-      $data['users'][$conn->user_uuid] = [
+      $data['users'][] = [
+        'user_uuid' => $conn->user_uuid,
         'status' => $input->data->status,
       ];
 
