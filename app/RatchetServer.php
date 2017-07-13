@@ -222,16 +222,17 @@ return;
     {
       $users = $this->domains[$conn->domain_uuid];
 
-
       foreach ($users as $user_uuid => $user)
       {
         if ($conn->user_uuid != $user_uuid && $user->status == 'invisible')
         {
-          unset($users[$user_uuid]);
+          // ~ unset($users[$user_uuid]);
+          continue;
         }
         else
         {
-          $users[$user_uuid] = [
+          $users_to_output[] = [
+            'user_uuid' => $user->user_uuid,
             'status' => $user->status,
           ];
         }
@@ -239,9 +240,9 @@ return;
 
       $data = [];
       $data['users'] = [];
-      $data['users'] = $users;
+      $data['users'] = $users_to_output;
 
-      $this->sendData($conn, $message = null , $action = 'collection', $data, $status = 'ok', $context = null);
+      $this->sendData($conn, $message = null , $action = 'update', $data, $status = 'ok', $context = null);
     }
 
     /**
