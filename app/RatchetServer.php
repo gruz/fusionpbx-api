@@ -184,7 +184,7 @@ return;
 
     protected function setStatus($conn, $input)
     {
-      if (!isset($input->data->status))
+      if (!isset($input->data->user_status))
       {
           throw new \App\Exceptions\Socket\InvalidJSONInput();
           return;
@@ -194,21 +194,21 @@ return;
       $data['users'] = [];
       $data['users'][] = [
         'user_uuid' => $conn->user_uuid,
-        'status' => $input->data->status,
+        'user_status' => $input->data->user_status,
       ];
 
       if (isset($this->domains[$conn->domain_uuid]) && isset($this->domains[$conn->domain_uuid][$conn->user_uuid]))
       {
-        $this->domains[$conn->domain_uuid][$conn->user_uuid]->status = $input->data->status;
+        $this->domains[$conn->domain_uuid][$conn->user_uuid]->user_status = $input->data->user_status;
       }
 
 
-      switch ($input->data->status) {
+      switch ($input->data->user_status) {
         case 'offline':
             $this->abort($conn);
           break;
         case 'invisible':
-          $data['users'][$conn->user_uuid]['status'] = 'offline';
+          $data['users'][$conn->user_uuid]['user_status'] = 'offline';
           break;
         default :
 
@@ -225,7 +225,7 @@ return;
 
       foreach ($users as $user_uuid => $user)
       {
-        if ($conn->user_uuid != $user_uuid && $user->status == 'invisible')
+        if ($conn->user_uuid != $user_uuid && $user->user_status == 'invisible')
         {
           // ~ unset($users[$user_uuid]);
           continue;
@@ -234,7 +234,7 @@ return;
         {
           $users_to_output[] = [
             'user_uuid' => $user->user_uuid,
-            'status' => $user->status,
+            'user_status' => $user->user_status,
           ];
         }
       }
@@ -272,7 +272,7 @@ return;
         $input = new \stdClass;
         $input->command = 'setStatus';
         $input->data = new \stdClass;
-        $input->data->status = 'offline';
+        $input->data->user_status = 'offline';
 
         $this->setStatus($conn, $input);
       }
