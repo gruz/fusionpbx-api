@@ -116,6 +116,7 @@ class RatchetServer extends RatchetServerBase
 
             $app = require __DIR__.'/../bootstrap/app.php';
             $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
+
             $response = $kernel->handle(
                 $request = \Illuminate\Http\Request::create('/user', 'GET', [], [], [], $server)
             );
@@ -124,13 +125,15 @@ class RatchetServer extends RatchetServerBase
             $controllerResult = $response->getContent();
             $kernel->terminate($request, $response);
 
+
+
             // ~ echo $controllerResult;
             $responseData = json_decode($controllerResult);
 
 
             if (empty($responseData->user_uuid))
             {
-              throw new App\Auth\Exceptions\InvalidCredentialsException();
+              throw new \App\Auth\Exceptions\InvalidCredentialsException();
               return;
             }
 

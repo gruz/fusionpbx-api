@@ -69,6 +69,8 @@ trait SocketJSONHelper
 
       $this->console->info(Carbon::now() . PHP_EOL . 'Connection ' . $conn->resourceId . " => ". $response);
 
+      $response = chr(2) . $response . chr(3);
+
       $this->send($conn, $response);
     }
 
