@@ -210,8 +210,18 @@ return;
         case 'offline':
             $this->abort($conn);
           break;
+        // ~ case 'invisible':
+          // ~ $data['users'][$conn->user_uuid]['user_status'] = 'offline';
+          // ~ break;
         case 'invisible':
-          $data['users'][$conn->user_uuid]['user_status'] = 'offline';
+          foreach ($data['users'] as $k => $user)
+          {
+            if ($data['users'][$k]['user_uuid'] == $conn->user_uuid)
+            {
+              $data['users'][$k]['user_status'] = 'offline';
+              break;
+            }
+          }
           break;
         default :
 
