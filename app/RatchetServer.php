@@ -86,7 +86,9 @@ class RatchetServer extends RatchetServerBase
           return;
         }
 
-        $input = json_decode($input);
+        $this->console->comment(sprintf('Message from %d: %s', $conn->resourceId, base64_decode($input)));
+
+        $input = json_decode(base64_decode($input));
 
         if (!$input)
         {
@@ -285,7 +287,7 @@ class RatchetServer extends RatchetServerBase
 
         // Prepare the response to output
         $controllerResult = [$responseKey => json_decode($response->getContent(), true)];
-var_dump($controllerResult);
+
         // Send response to the user
         $this->sendData($conn, $message = null , $action, $data = $controllerResult, $status = 'ok', $context = $this->context);
 
@@ -361,7 +363,7 @@ return;
           throw new \App\Exceptions\Socket\InvalidJSONInput();
           return;
       }
-var_dump(config('app.timezone'));
+
       // Shortcut
       $domain_uuid = $conn->user->domain_uuid;
       $user_uuid = $conn->user->user_uuid;
