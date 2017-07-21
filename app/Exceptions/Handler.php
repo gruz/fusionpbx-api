@@ -45,6 +45,16 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+
+        if ($this->isHttpException($e))
+        {
+            if($e instanceof \Api\User\Exceptions\ActivationHashNotFoundException)
+            {
+                return response()->view('front.activation', ['message' => $e->getMessage()], 200);
+            }
+            // ~ return $this->renderHttpException($e);
+        }
+
         return parent::render($request, $e);
     }
 }

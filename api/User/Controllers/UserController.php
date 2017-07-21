@@ -65,9 +65,11 @@ class UserController extends Controller
         return $this->response($this->userService->update($userId, $data));
     }
 
-    public function activate($hash)
+    public function activate(string $hash)
     {
-        return $this->response($this->userService->activate($hash));
+        $a = $this->response($this->userService->activate($hash));
+        dd($a);
+
     }
 
     public function delete($userId)

@@ -123,6 +123,11 @@ trait SocketJSONHelper
     {
         foreach ($this->clients as $client) {
 
+          if ($client->user->user_status == 'offline')
+          {
+              continue;
+          }
+
           $this->sendJSONResponse(
             $client,
             $status,

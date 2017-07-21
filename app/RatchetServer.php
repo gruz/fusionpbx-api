@@ -10,6 +10,8 @@ use GrahamCampbell\Throttle\Facades\Throttle;
 
 use Illuminate\Support\Facades\Auth;
 
+use Carbon\Carbon;
+
 class RatchetServer extends RatchetServerBase
 {
     use Traits\SocketJSONHelper;
@@ -47,7 +49,7 @@ class RatchetServer extends RatchetServerBase
 
     protected function auth($conn)
     {
-      if (isset($conn->user_uuid))
+      if (isset($conn->user->user_uuid))
       {
         return true;
       }
@@ -79,6 +81,11 @@ class RatchetServer extends RatchetServerBase
             }
         }
 
+        if (empty(trim($input)))
+        {
+          return;
+        }
+
         $input = json_decode($input);
 
         if (!$input)
@@ -93,25 +100,51 @@ class RatchetServer extends RatchetServerBase
           return;
         }
 
-        if ($input->command != 'login' && !$this->auth($conn)) {
+        if (!$this->auth($conn) && !in_array($input->command,  ['post.login', 'post.login2'])) {
             throw new \App\Exceptions\Socket\NeedToLoginFirst();
             return;
         }
 
-
         $data = !empty($input->data) ? $input->data : [];
         $this->context = !empty($input->context) ? $input->context : null;
-        switch ($input->command) {
-          case 'login':
 
-            if (empty($input->data) || empty($input->data->token))
+        $HTTP_method = explode ('.', $input->command, 2);
+        $HTTP_url = $HTTP_method[1];
+        $HTTP_method = strtoupper($HTTP_method[0]);
+
+        if (in_array($HTTP_url, ['put', 'post', 'get', 'delete']))
+        {
+          throw new \App\Exceptions\Socket\InvalidJSONInput();
+          return;
+        }
+
+        if (in_array($HTTP_url, ['put', 'post']) && empty($input->data))
+        {
+          throw new \App\Exceptions\Socket\InvalidJSONInput();
+          return;
+        }
+
+        if (!empty($input->data))
+        {
+          $data = (array) $input->data;
+        }
+        else
+        {
+          $data = [];
+        }
+
+        $command_stripped = explode('/', $input->command, 2);
+
+        switch ($command_stripped[0]) {
+          case 'post.login2':
+
+            if (empty($data) || empty($data['token']) || empty($data['refreshToken']) || empty($data['expires_in']))
             {
               throw new \App\Exceptions\Socket\InvalidJSONInput();
               return;
             }
 
-            $token = $input->data->token;
-
+            $token = $data['token'];
             $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $token];
 
             $app = require __DIR__.'/../bootstrap/app.php';
@@ -121,15 +154,10 @@ class RatchetServer extends RatchetServerBase
                 $request = \Illuminate\Http\Request::create('/user', 'GET', [], [], [], $server)
             );
 
-            // ~ var_dump(Auth::id());
-            $controllerResult = $response->getContent();
+
             $kernel->terminate($request, $response);
 
-
-
-            // ~ echo $controllerResult;
-            $responseData = json_decode($controllerResult);
-
+            $responseData = $response->getData();
 
             if (empty($responseData->user_uuid))
             {
@@ -139,37 +167,135 @@ class RatchetServer extends RatchetServerBase
 
             $user = $responseData;
 
-            $conn->user_uuid = $user->user_uuid;
-            $conn->domain_uuid = $user->domain_uuid;
+            $user->expires = Carbon::now()->addSeconds($data['expires_in']);
+            $user->refreshToken = $data['refreshToken'];
 
+            // Offline by default
+            $user->user_status = 'offline';
 
-            $active_users = !empty($this->domains[$user->domain_uuid]) ? $this->domains[$user->domain_uuid] : [];
+            $conn->user = $user;
 
-// ~ var_dump(($active_users));
+            $this->domains[$user->domain_uuid][$user->user_uuid] = &$conn->user;
 
-            if (isset($active_users[$user->user_uuid]))
-            {
-                unset($active_users[$user->user_uuid]);
-            }
+            $this->users[$user->user_uuid] = &$conn->user;
 
-            $response = [
-              'domain_uuid' => $user->domain_uuid,
-              'active_users' => $active_users,
-            ];
-
-            unset($active_users);
-
-            $this->domains[$user->domain_uuid][$user->user_uuid] = $user;
-// ~ var_dump($this->domains);
-            //$user->conn = $conn;
-            $this->users[$user->user_uuid] = $user;
             $this->sendData($conn, $message = null , $action = null, $data = [], $status = 'ok', $context = $this->context);
 
-            // ~ echo json_encode($response, JSON_PRETTY_PRINT);
+            return;
+
+            break;
+
+          case 'post.login':
+
+            $app = require __DIR__.'/../bootstrap/app.php';
+            $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
+
+
+            $response = $kernel->handle(
+                $request = \Illuminate\Http\Request::create($HTTP_url, $HTTP_method, $data, [], [], [])
+            );
+
+            $kernel->terminate($request, $response);
+
+            $controllerResult = $response->getData();
+
+            if (!empty($controllerResult->status) && $controllerResult->status == 'error')
+            {
+              throw new \App\Auth\Exceptions\InvalidCredentialsException();
+              return;
+            }
+
+            $user = new \stdClass;
+
+            foreach ($controllerResult as $k => $v)
+            {
+              $user->{$k} = $v;
+
+            }
+
+            // ~ $user->user_uuid = $controllerResult->user_uuid;
+            // ~ $user->domain_uuid = $controllerResult->domain_uuid;
+            // ~ $user->access_token = $controllerResult->access_token;
+            $user->refreshToken = $response->headers->getCookies()[0]->getValue();
+            $user->expires = Carbon::now()->addSeconds($controllerResult->expires_in);
+            // Offline by default
+            $user->user_status = 'offline';
+
+            $conn->user = $user;
+
+            $this->domains[$user->domain_uuid][$user->user_uuid] = &$conn->user;
+
+            $this->users[$user->user_uuid] = &$conn->user;
+
+            $this->sendData($conn, $message = null , $action = null, $data = [], $status = 'ok', $context = $this->context);
+
+            return;
+
+            break;
+
+          case 'get.user':
+            $responseKey = 'users';
+            break;
+          case 'post.status':
+            $this->setStatus($conn, $data);
+            return;
+
+            break;
+          case 'get.users':
+            $this->getUsers($conn, $data);
+            return;
 
             break;
           default :
+            $responseKey = 'data';
             $this->{$input->command}($conn, $input);
+            break;
+        }
+
+        switch ($HTTP_method) {
+          case 'GET':
+            $action = 'data';
+            break;
+          case 'POST':
+            $action = 'insert';
+            break;
+          case 'PUT':
+            $action = 'update';
+            break;
+          case 'DELETE':
+            $action = 'delete';
+            break;
+          default :
+
+            break;
+        }
+
+        // Set http header Authorization: Bearer ACCESS_TOKEN
+        $server = $this->setBearer();
+
+        $app = require __DIR__.'/../bootstrap/app.php';
+        $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
+
+        // Run Laravel controller as if from a web-browser
+        $response = $kernel->handle(
+            $request = \Illuminate\Http\Request::create($HTTP_url, $HTTP_method, $data, [], [], $server)
+        );
+
+        $kernel->terminate($request, $response);
+
+        // Prepare the response to output
+        $controllerResult = [$responseKey => json_decode($response->getContent(), true)];
+var_dump($controllerResult);
+        // Send response to the user
+        $this->sendData($conn, $message = null , $action, $data = $controllerResult, $status = 'ok', $context = $this->context);
+
+        // Send broadcast messages if needed
+        switch ($command_stripped[0]) {
+          case 'post.login':
+
+            break;
+          default :
+
             break;
         }
 
@@ -185,71 +311,140 @@ return;
         $this->abort($conn);
     }
 
+    protected function getAccessToken()
+    {
+      $conn = $this->conn;
+
+      if ($conn->user->expires <= Carbon::now())
+      {
+        $access_token = $conn->user->access_token;
+      }
+      else
+      {
+        $cookies = ['refreshToken' => $conn->user->refreshToken];
+
+        $app = require __DIR__.'/../bootstrap/app.php';
+        $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
+
+        $response = $kernel->handle(
+            $request = \Illuminate\Http\Request::create('login/refresh', 'POST', [], $cookies, [], [])
+        );
+
+        $kernel->terminate($request, $response);
+        $controllerResult = $response->getData();
+
+        $access_token = $controllerResult->access_token;
+
+        $conn->user->access_token = $controllerResult->access_token;
+        $conn->user->expires = Carbon::now()->addSeconds($controllerResult->expires_in);
+
+      }
+
+      return $access_token;
+    }
+
+    protected function setBearer()
+    {
+
+      $access_token = $this->getAccessToken();
+
+      $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $access_token];
+
+      return $server;
+    }
+
     protected function setStatus($conn, $input)
     {
-      if (!isset($input->data->user_status))
+      // If there is not status info in the JSON input, then throw extension
+      if (!isset($input['user_status']))
       {
           throw new \App\Exceptions\Socket\InvalidJSONInput();
           return;
       }
+var_dump(config('app.timezone'));
+      // Shortcut
+      $domain_uuid = $conn->user->domain_uuid;
+      $user_uuid = $conn->user->user_uuid;
 
-      $data = [];
-      $data['users'] = [];
-      $data['users'][] = [
-        'user_uuid' => $conn->user_uuid,
-        'user_status' => $input->data->user_status,
-      ];
+      $old_status = empty($conn->user->user_status) ? 'offline' : $conn->user->user_status;
 
-      if (isset($this->domains[$conn->domain_uuid]) && isset($this->domains[$conn->domain_uuid][$conn->user_uuid]))
+      // Set new user status in the internal storage
+      if (isset($this->domains[$domain_uuid]) && isset($this->domains[$domain_uuid][$user_uuid]))
       {
-        $this->domains[$conn->domain_uuid][$conn->user_uuid]->user_status = $input->data->user_status;
+        $conn->user->user_status = $input['user_status'];
+
+        if ($input['user_status'] == 'offline')
+        {
+          unset($this->domains[$domain_uuid][$user_uuid]);
+        }
       }
 
+      // Prepare an array to be returned containing one user
+      $data = [];
+      $data['users'] = [];
 
-      switch ($input->data->user_status) {
+      switch ($input['user_status']) {
         case 'offline':
-            $this->abort($conn);
-          break;
-        // ~ case 'invisible':
-          // ~ $data['users'][$conn->user_uuid]['user_status'] = 'offline';
-          // ~ break;
         case 'invisible':
-          foreach ($data['users'] as $k => $user)
-          {
-            if ($data['users'][$k]['user_uuid'] == $conn->user_uuid)
-            {
-              $data['users'][$k]['user_status'] = 'offline';
-              break;
-            }
-          }
+          $data['users'][] = [
+            'user_uuid' => $user_uuid,
+            'user_status' => 'offline',
+          ];
+
           break;
         default :
-
+          $data['users'][] = [
+            'user_uuid' => $user_uuid,
+            'user_status' => $input['user_status'],
+          ];
           break;
       }
 
       $this->sendData($conn, $message = null , $action = null, null, $status = 'ok', $context = $this->context);
-      $this->sendAll($message = null , $action = 'update', $data, $status = 'ok', $error_code = null, $error_data = null);
 
+      if ($old_status == $conn->user->user_status ||
+        (in_array($conn->user->user_status, ['offline', 'invisible']) && in_array($old_status, ['offline', 'invisible']))
+      )
+      {
+        // In this case we don't need to inform all
+      }
+      else
+      {
+        $this->sendAll($message = null , $action = 'update', $data, $status = 'ok', $error_code = null, $error_data = null);
+      }
     }
 
     protected function getUsers($conn, $input)
     {
-      $users = $this->domains[$conn->domain_uuid];
+      $users = $this->domains[$conn->user->domain_uuid];
+
+      $users_to_output = [];
 
       foreach ($users as $user_uuid => $user)
       {
-        if ($conn->user_uuid != $user_uuid && $user->user_status == 'invisible')
+        if ($conn->user->user_uuid != $user->user_uuid && $user->user_status == 'invisible')
         {
           // ~ unset($users[$user_uuid]);
           continue;
         }
         else
         {
-          $users_to_output[] = [
-            'user_uuid' => $user->user_uuid,
-            'user_status' => $user->user_status,
-          ];
+          $tmp_arr = [];
+          foreach ($user as $k => $v)
+          {
+            if (in_array($k, ['access_token', 'refreshToken', 'expires', 'expires_in']))
+            {
+              continue;
+            }
+
+            $tmp_arr[$k] = $v;
+          }
+
+          $users_to_output[] = $tmp_arr;
+          // ~ $users_to_output[] = [
+            // ~ 'user_uuid' => $user->user_uuid,
+            // ~ 'user_status' => $user->user_status,
+          // ~ ];
         }
       }
 
@@ -281,25 +476,23 @@ return;
      */
     public function onClose(ConnectionInterface $conn)
     {
-      if (!empty($conn->user_uuid))
+      if (!empty($conn->user->user_uuid))
       {
-        $input = new \stdClass;
-        $input->command = 'setStatus';
-        $input->data = new \stdClass;
-        $input->data->user_status = 'offline';
+        $input = ['user_status' => 'offline'];
 
         $this->setStatus($conn, $input);
       }
-        $this->clearConnGarbage($conn);
-        $this->clients->detach($conn);
-        $this->console->error(sprintf('Disconnected: %d', $conn->resourceId));
+
+      $this->clearConnGarbage($conn);
+      $this->clients->detach($conn);
+      $this->console->error(sprintf('Disconnected: %d', $conn->resourceId));
     }
 
     protected function clearConnGarbage(ConnectionInterface  $conn)
     {
-      if (isset($conn->user_uuid) && isset($this->domains[$conn->domain_uuid]))
+      if (isset($conn->user->user_uuid) && isset($this->domains[$conn->user->domain_uuid]))
       {
-        unset($this->domains[$conn->domain_uuid][$conn->user_uuid]);
+        unset($this->domains[$conn->user->domain_uuid][$conn->user->user_uuid]);
 
       }
     }
@@ -317,9 +510,9 @@ return;
         $message = $exception->getMessage();
         // ~ $conn->close();
 
-        if (isset($conn->user_uuid))
+        if (isset($conn->user->user_uuid))
         {
-          $user_uuid = $conn->user_uuid;
+          $user_uuid = $conn->user->user_uuid;
         }
         else
         {
@@ -395,6 +588,7 @@ return;
      */
     private function isThrottled($conn, $setting)
     {
+        $connectionThrottle = explode(':', config(sprintf('ratchet.throttle.%s', 'onMessage')));
         $connectionThrottle = explode(':', config(sprintf('ratchet.throttle.%s', $setting)));
 
         return !Throttle::attempt([

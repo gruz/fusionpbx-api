@@ -71,6 +71,7 @@ class LoginProxy
                 'username' => ['username' => $username, 'domain_uuid' => $domain->domain_uuid],
                 'password' => $password,
                 'user_uuid' => $user->user_uuid,
+                'domain_uuid' => $user->domain_uuid,
             ]);
         }
 
@@ -98,9 +99,21 @@ class LoginProxy
      */
     public function proxy($grantType, array $data = [])
     {
+        $ret = [];
+
         if (isset($data['user_uuid']))
         {
-          $user_uuid = $data['user_uuid'];
+          $ret['user_uuid'] = $data['user_uuid'];
+        }
+
+        if (isset($data['username']))
+        {
+          $ret['username'] = $data['username']['username'];
+        }
+
+        if (isset($data['domain_uuid']))
+        {
+          $ret['domain_uuid'] = $data['domain_uuid'];
         }
 
         $data = array_merge($data, [
@@ -128,15 +141,10 @@ class LoginProxy
             true // HttpOnly
         );
 
-        $ret = [
+        $ret = array_merge($ret, [
             'access_token' => $data->access_token,
             'expires_in' => $data->expires_in,
-        ];
-
-        if (!empty($user_uuid))
-        {
-          $ret['user_uuid'] = $user_uuid;
-        }
+        ]);
 
         return $ret;
     }
