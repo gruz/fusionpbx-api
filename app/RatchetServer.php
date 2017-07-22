@@ -86,9 +86,19 @@ class RatchetServer extends RatchetServerBase
           return;
         }
 
-        $this->console->comment(sprintf('Message from %d: %s', $conn->resourceId, base64_decode($input)));
+        $json_decoded = json_decode($input);
 
-        $input = json_decode(base64_decode($input));
+        if ($json_decoded === false)
+        {
+          $input = base64_decode($input);
+          $this->console->comment(sprintf('Message from %d: %s', $conn->resourceId, base64_decode($input)));
+          $input = json_decode($input);
+        }
+        else
+        {
+          $input = $json_decoded;
+        }
+
 
         if (!$input)
         {
