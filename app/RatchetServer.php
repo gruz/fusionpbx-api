@@ -313,8 +313,6 @@ class RatchetServer extends RatchetServerBase
             break;
         }
 
-var_dump($responseData);
-
         if (!empty($responseData))
         {
           if (!empty($responseKey))
@@ -576,6 +574,7 @@ return;
      */
     public function onClose(ConnectionInterface $conn)
     {
+      $this->conn = $conn;
       if (!empty($conn->user->user_uuid))
       {
         $input = ['user_status' => 'offline'];
@@ -607,6 +606,7 @@ return;
      */
     public function onError(ConnectionInterface $conn, \Exception $exception)
     {
+        $this->conn = $conn;
         $message = $exception->getMessage();
         // ~ $conn->close();
 
