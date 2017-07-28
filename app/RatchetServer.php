@@ -298,6 +298,8 @@ class RatchetServer extends RatchetServerBase
               $responseData['users']['user_status'] = 'offline';
             }
 
+            $responseData['users'] = [$responseData['users']];
+
             break;
           case 'get.users':
             // Remove users without statuses
