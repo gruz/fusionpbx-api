@@ -336,11 +336,11 @@ class RatchetServer extends RatchetServerBase
           }
 
           // Send response to the user
-          $this->sendData($conn, $message = null , $action, $data = $controllerResult, $status = 'ok', $context = $this->context);
+          $this->sendData($conn, $message = null , $sendAction, $data = $controllerResult, $status = 'ok', $context = $this->context);
         }
         else
         {
-          $this->sendData($conn, $message = null , $action = null, $data = [], $status = 'ok', $context = $this->context);
+          $this->sendData($conn, $message = null , $sendAction = null, $data = [], $status = 'ok', $context = $this->context);
         }
 
         // Send broadcast messages if needed
