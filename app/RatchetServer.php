@@ -316,6 +316,8 @@ class RatchetServer extends RatchetServerBase
                 }
               }
 
+              $responseData['users'] = array_values($responseData['users']);
+
             }
 
             break;
