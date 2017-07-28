@@ -70,6 +70,57 @@ class RatchetServer extends RatchetServerBase
     public function onMessage(ConnectionInterface $conn, $input)
     {
         $this->conn = $conn;
+
+        if (empty(trim($input)))
+        {
+          return;
+        }
+
+        $startHash = '!SmertMosklaliam#678#Start';
+        $endHash = '!SmertMosklaliam#678#End';
+
+        $hasStart = preg_match('~'.$startHash. '(.*)' .  '~s', $input, $startMatches);
+
+        $hasEnd = preg_match('~' . '(.*)' . $endHash .'~s', $input, $endMatches);
+        // Is there is both start end hashes - the message is passed at once
+        if ($hasStart && $hasEnd)
+        {
+          preg_match('~'.$startHash. '(.*)' . $endHash .  '~s', $input, $matches);
+          if (!empty($matches[1]))
+          {
+            $input = $matches[1];
+          }
+        }
+        // If there is only start hash, then store the message part to the $conn object
+        elseif ($hasStart)
+        {
+          $this->conn->message = $startMatches[1];
+          return;
+        }
+        // If there is endHash, but there was no any start message, then it's an error
+        elseif ($hasEnd && !isset($this->conn->message))
+        {
+          throw new \App\Exceptions\Socket\InvalidJSONInput();
+          return;
+        }
+        // If is no start and end hash and there is no conn->message, then there was no start - error happaned
+        elseif (!$hasStart && !$hasEnd && !isset($this->conn->message))
+        {
+          throw new \App\Exceptions\Socket\InvalidJSONInput();
+          return;
+        }
+        // If is no start and end hash and there is conn->message, then it's a next message part - append it
+        elseif (!$hasStart && !$hasEnd && isset($this->conn->message))
+        {
+          $this->conn->message .= $input;
+          return;
+        }
+        // If there is end hash and there is the started message in conn->message, the prepare the message and use it
+        elseif ($hasEnd && isset($this->conn->message))
+        {
+          $input = $this->conn->message . $endMatches[1];
+        }
+
         $this->context = null;
         $this->console->comment(sprintf('Message from %d: %s', $conn->resourceId, $input));
 
