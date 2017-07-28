@@ -308,9 +308,14 @@ class RatchetServer extends RatchetServerBase
 
               foreach ($responseData['users'] as $k => $user)
               {
-                if (!isset($user['status']) || in_array($user['status']['user_status'], ['invisible', 'offline']))
+                if (!isset($user['status']))
                 {
-                  unset($responseData['users'][$k]);
+                  $responseData['users'][$k]['user_status'] = 'offline';
+                  $responseData['users'][$k]['status'] = ['user_status' => 'offline'];
+                }
+                elseif (in_array($user['status']['user_status'], ['invisible', 'offline']))
+                {
+                  $responseData['users'][$k]['user_status'] = 'offline';
                 }
                 else
                 {
