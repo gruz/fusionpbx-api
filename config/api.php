@@ -15,10 +15,10 @@ return [
     */
     'statuses' =>
     [
-      'online' => '0',
-      'away' => '100',
-      'busy' => '200',
-      'offline' => '1000',
+      '0' => 'online',
+      '100' => 'away',
+      '200' => 'busy',
+      '1000' => 'offline',
     ],
 
     /*

@@ -20,20 +20,20 @@ class SetStatusRequest extends ApiRequest
     public function rules()
     {
         return [
-            'status.status_lifetime' => 'integer',
-            'status.os' => 'required|string',
-            'status.status' => 'required|string',
-            'status.services' => 'required|array',
+            'status_lifetime' => 'integer',
+            'os' => 'string',
+            'user_status' => 'required|string',
+            'services' => 'array',
         ];
     }
 
     public function attributes()
     {
         return [
-            'status.status_lifetime' => __('should be integer in seconds'),
-            'status.os' => __('available os_type values [' . implode(',' , config('api.OSes')) . ']'),
-            'status.status' => __('available statuses [' . implode(',' , config('api.statuses')) . ']'),
-            'status.services' => __('available services [' . implode(',' , config('api.services')) . ']'),
+            'status_lifetime' => __('should be integer in seconds'),
+            'os' => __('available os_type values [' . implode(',' , config('api.OSes')) . ']'),
+            'user_status' => __('available statuses [' . implode(',' , config('api.statuses')) . ']'),
+            'services' => __('available services [' . implode(',' , config('api.services')) . ']'),
         ];
     }
 
@@ -56,7 +56,7 @@ class SetStatusRequest extends ApiRequest
           return $data;
         }
 
-        $data = array_only($data, ['status_lifetime', 'os', 'status', 'services']);
+        $data = array_only($data, ['status_lifetime', 'os', 'user_status', 'services']);
 
         array_walk_recursive($data, function(& $value){
             $value = trim($value);
@@ -67,6 +67,7 @@ class SetStatusRequest extends ApiRequest
           $data['status_lifetime'] = config('api.status_lifetime');
         }
 
+        /*
         if (empty($data['os']) || !in_array($data['os'], config('api.OSes')))
         {
           if (empty($data['os']))
@@ -76,21 +77,24 @@ class SetStatusRequest extends ApiRequest
 
           throw new InvalidStatusOSException(['os' => $data['os']]);
         }
+        */
 
-        if (empty($data['status']) || !in_array($data['status'],  array_keys(config('api.statuses'))))
+        if (empty($data['user_status']) || !in_array($data['user_status'],  array_keys(config('api.statuses'))))
         {
-          if (empty($data['status']))
+          if (empty($data['user_status']))
           {
-            $data['status'] = null;
+            $data['user_status'] = 'offline';
           }
 
-          throw new InvalidStatusException(['status' => $data['status'], 'available_statuses' => implode(', ', array_keys(config('api.statuses')))]);
+          // ~ throw new InvalidStatusException(['status' => $data['status'], 'available_statuses' => implode(', ', array_keys(config('api.statuses')))]);
         }
 
+        /*
         if (empty($data['services']))
         {
           throw new InvalidServiceListException();
         }
+        */
 
         return $data;
     }

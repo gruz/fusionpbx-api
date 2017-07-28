@@ -32,5 +32,4 @@ class StatusRepository extends Repository
 
         return $model;
     }
-
 }

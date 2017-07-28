@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 
+use Api\Status\Services\StatusService;
+use Api\User\Services\UserService;
+
+
 class RatchetServer extends RatchetServerBase
 {
     use Traits\SocketJSONHelper;
@@ -25,14 +29,18 @@ class RatchetServer extends RatchetServerBase
 
     protected $context = null;
 
+    private $statusService;
+    private $userService;
+    private $auth;
 
-    // ~ function __construct($console)
-    // ~ {
-        // ~ parent::__construct($console);
-        // ~ // Require if you want to use MakesHttpRequests
-        // ~ $this->baseUrl = request()->getSchemeAndHttpHost();
-        // ~ $this->app     = app();
-    // ~ }
+    public function __construct($console)
+    {
+        parent::__construct($console);
+
+        $this->statusService = app(StatusService::class);
+        $this->userService = app(userService::class);
+        $this->auth = app();
+    }
 
     public function onOpen(ConnectionInterface $conn) {
         // ~ parent::onOpen($conn);
@@ -61,6 +69,7 @@ class RatchetServer extends RatchetServerBase
 
     public function onMessage(ConnectionInterface $conn, $input)
     {
+        $this->conn = $conn;
         $this->context = null;
         $this->console->comment(sprintf('Message from %d: %s', $conn->resourceId, $input));
 
@@ -147,6 +156,8 @@ class RatchetServer extends RatchetServerBase
 
         $command_stripped = explode('/', $input->command, 2);
 
+        $sendAll = false;
+
         switch ($command_stripped[0]) {
           case 'post.login2':
 
@@ -159,15 +170,7 @@ class RatchetServer extends RatchetServerBase
             $token = $data['token'];
             $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $token];
 
-            $app = require __DIR__.'/../bootstrap/app.php';
-            $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
-
-            $response = $kernel->handle(
-                $request = \Illuminate\Http\Request::create('/user', 'GET', [], [], [], $server)
-            );
-
-
-            $kernel->terminate($request, $response);
+            $response = $this->runController('/user', 'GET', [], [], [], $server);
 
             $responseData = $response->getData();
 
@@ -182,8 +185,7 @@ class RatchetServer extends RatchetServerBase
             $user->expires = Carbon::now()->addSeconds($data['expires_in']);
             $user->refreshToken = $data['refreshToken'];
 
-            // Offline by default
-            $user->user_status = 'offline';
+            $this->initStatus($user);
 
             $conn->user = $user;
 
@@ -199,16 +201,7 @@ class RatchetServer extends RatchetServerBase
 
           case 'post.login':
 
-            $app = require __DIR__.'/../bootstrap/app.php';
-            $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
-
-
-            $response = $kernel->handle(
-                $request = \Illuminate\Http\Request::create($HTTP_url, $HTTP_method, $data, [], [], [])
-            );
-
-            $kernel->terminate($request, $response);
-
+            $response = $this->runController($HTTP_url, $HTTP_method, $data, [], [], []);
             $controllerResult = $response->getData();
 
             if (!empty($controllerResult->status) && $controllerResult->status == 'error')
@@ -228,10 +221,11 @@ class RatchetServer extends RatchetServerBase
             // ~ $user->user_uuid = $controllerResult->user_uuid;
             // ~ $user->domain_uuid = $controllerResult->domain_uuid;
             // ~ $user->access_token = $controllerResult->access_token;
+
             $user->refreshToken = $response->headers->getCookies()[0]->getValue();
             $user->expires = Carbon::now()->addSeconds($controllerResult->expires_in);
-            // Offline by default
-            $user->user_status = 'offline';
+
+            $this->initStatus($user);
 
             $conn->user = $user;
 
@@ -246,18 +240,17 @@ class RatchetServer extends RatchetServerBase
             break;
 
           case 'get.user':
-            $responseKey = 'users';
+          case 'get.users':
+            //$responseKey = 'users';
+            $data['includes']  = ['status'];
             break;
           case 'post.status':
-            $this->setStatus($conn, $data);
-            return;
+            // ~ $responseKey = 'data';
+            $sendAction = 'update';
+            $sendAll = true;
 
             break;
-          case 'get.users':
-            $this->getUsers($conn, $data);
-            return;
 
-            break;
           default :
             $responseKey = 'data';
             $this->{$input->command}($conn, $input);
@@ -271,39 +264,48 @@ class RatchetServer extends RatchetServerBase
           case 'POST':
             $action = 'insert';
             break;
-          case 'PUT':
-            $action = 'update';
-            break;
           case 'DELETE':
             $action = 'delete';
             break;
+          case 'PUT':
           default :
+            $action = 'update';
 
             break;
+        }
+
+        if (!isset($sendAction))
+        {
+          $sendAction = $action;
         }
 
         // Set http header Authorization: Bearer ACCESS_TOKEN
         $server = $this->setBearer();
 
-        $app = require __DIR__.'/../bootstrap/app.php';
-        $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
+        $response = $this->runController($HTTP_url, $HTTP_method, $data, [], [], $server);
 
-        // Run Laravel controller as if from a web-browser
-        $response = $kernel->handle(
-            $request = \Illuminate\Http\Request::create($HTTP_url, $HTTP_method, $data, [], [], $server)
-        );
+        $responseData = json_decode($response->getContent(), true);
 
-        $kernel->terminate($request, $response);
 
-        // Prepare the response to output
-        $controllerResult = [$responseKey => json_decode($response->getContent(), true)];
-
-        // Send response to the user
-        $this->sendData($conn, $message = null , $action, $data = $controllerResult, $status = 'ok', $context = $this->context);
-
-        // Send broadcast messages if needed
         switch ($command_stripped[0]) {
-          case 'post.login':
+          case 'post.status':
+            // Update current connection with the user state
+            $conn->user->user_status = $responseData['users']['user_status'];
+            break;
+          case 'get.users':
+            // Remove users without statuses
+            if (!empty($responseData['users']))
+            {
+
+              foreach ($responseData['users'] as $k => $user)
+              {
+                if (!isset($user['status']) || in_array($user['status']['user_status'], ['invisible', 'offline']))
+                {
+                  unset($responseData['users'][$k]);
+                }
+              }
+
+            }
 
             break;
           default :
@@ -311,6 +313,33 @@ class RatchetServer extends RatchetServerBase
             break;
         }
 
+var_dump($responseData);
+
+        if (!empty($responseData))
+        {
+          if (!empty($responseKey))
+          {
+            $controllerResult = [$responseKey => $responseData];
+          }
+          else
+          {
+            $controllerResult = $responseData;
+          }
+
+          // Send response to the user
+          $this->sendData($conn, $message = null , $action, $data = $controllerResult, $status = 'ok', $context = $this->context);
+        }
+        else
+        {
+          $this->sendData($conn, $message = null , $action = null, $data = [], $status = 'ok', $context = $this->context);
+        }
+
+        // Send broadcast messages if needed
+
+        if ($sendAll)
+        {
+          $this->sendAll($message = null , $sendAction, $responseData, $status = 'ok', $error_code = null, $error_data = null);
+        }
 
 return;
 
@@ -323,11 +352,54 @@ return;
         $this->abort($conn);
     }
 
+    protected function initStatus(&$user)
+    {
+      $user_status = $this->statusService->findUserStatus($user->user_uuid);
+      $userObject = $this->userService->getById($user->user_uuid);
+
+      // Pass to the service auth object to reauth the user
+      $auth = app(\Illuminate\Auth\AuthManager::class);
+      // ~ $auth->onceUsingId($user->user_uuid);
+
+      //Auth::setUser($userObject, $remember = false);
+      Auth::guard('api')->setUser($userObject, $remember = false);
+
+      // ~ $this->statusService->auth = app(\Illuminate\Auth\AuthManager::class);
+
+      if (empty($user_status))
+      {
+        $statusData = [
+          'user_status' => 'offline',
+          'domain_uuid' => $user->domain_uuid,
+          'user_uuid' => $user->user_uuid,
+          'status_lifetime' => config('api.status_lifetime'),
+        ];
+
+        $user_status = $this->statusService->create($statusData);
+      }
+      else
+      {
+        // Time when the status is treated as dead
+        $deadTime = Carbon::now()->subSeconds(config('api.status_lifetime'));
+
+        if ($user_status->updated_at <= $deadTime)
+        {
+          $statusData = [
+            'user_status' => 'offline',
+          ];
+
+          $user_status = $this->statusService->update($user->user_uuid, $statusData);
+        }
+      }
+
+      $user->user_status = $user_status->user_status;
+    }
+
     protected function getAccessToken()
     {
       $conn = $this->conn;
 
-      if ($conn->user->expires <= Carbon::now())
+      if ($conn->user->expires >= Carbon::now())
       {
         $access_token = $conn->user->access_token;
       }
@@ -335,15 +407,11 @@ return;
       {
         $cookies = ['refreshToken' => $conn->user->refreshToken];
 
-        $app = require __DIR__.'/../bootstrap/app.php';
-        $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
+        $response = $this->runController('login/refresh', 'POST', [], $cookies, [], []);
 
-        $response = $kernel->handle(
-            $request = \Illuminate\Http\Request::create('login/refresh', 'POST', [], $cookies, [], [])
-        );
-
-        $kernel->terminate($request, $response);
         $controllerResult = $response->getData();
+
+        $conn->user->refreshToken = $response->headers->getCookies()[0]->getValue();
 
         $access_token = $controllerResult->access_token;
 
@@ -363,6 +431,26 @@ return;
       $server = ['HTTP_AUTHORIZATION' => 'Bearer ' . $access_token];
 
       return $server;
+    }
+
+    protected function runController($HTTP_url, $HTTP_method, $parameters = [], $cookies = [],  $files = [], $server = [])
+    {
+        if (isset($this->conn->user) && !empty($this->conn->user->user_uuid))
+        {
+          $userObject = $this->userService->getById($this->conn->user->user_uuid);
+          Auth::guard('api')->setUser($userObject, $remember = false);
+        }
+
+        $app = require __DIR__.'/../bootstrap/app.php';
+        $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
+
+        $response = $kernel->handle(
+            $request = \Illuminate\Http\Request::create($HTTP_url, $HTTP_method, $parameters, $cookies,  $files, $server)
+        );
+
+        $kernel->terminate($request, $response);
+
+        return $response;
     }
 
     protected function setStatus($conn, $input)
@@ -492,7 +580,7 @@ return;
       {
         $input = ['user_status' => 'offline'];
 
-        $this->setStatus($conn, $input);
+        //$this->setStatus($conn, $input);
       }
 
       $this->clearConnGarbage($conn);
@@ -681,4 +769,17 @@ var_dump($user);
 var_dump($token, $responseData->user_uuid);
 \Session::flush();
 return;
+
+
+// ~ var_dump($this->conn->user->user_uuid);
+// ~ var_dump(get_class_methods($kernel->getApplication()));
+// ~ var_dump(get_class_methods($kernel->getApplication()->make(\Illuminate\Auth\AuthManager::class)));
+          // ~ $kernel->guard('api')->setUser($userObject, $remember = false);
+          // ~ $auth = $app->make(\Illuminate\Auth\AuthManager::class);
+          // ~ $auth->onceUsingId($this->conn->user->user_uuid);
+          // ~ $userObject = $this->userService->getById($this->conn->user->user_uuid);
+// ~ var_dump($conn->user->user_uuid, $userObject);
+          // ~ Auth::setUser($userObject, $remember = false);
+
+
 }

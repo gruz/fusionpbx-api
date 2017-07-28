@@ -33,6 +33,7 @@ use Api\Extension\Repositories\ExtensionRepository;
 
 use App\Traits\OneToManyRelationCRUD;
 
+use Illuminate\Support\Facades\Auth;
 
 class UserService
 {
@@ -88,15 +89,15 @@ class UserService
 
     public function getMe($options = [])
     {
-        //return $this->auth->user();
+        //return Auth::user();
         $class = Extension::class;
         $class::$staticMakeVisible = ['password'];
-				return $this->userRepository->getWhere('user_uuid', $this->auth->user()->user_uuid)->first();
+				return $this->userRepository->getWhere('user_uuid', Auth::user()->user_uuid)->first();
     }
 
     public function getAll($options = [])
     {
-				return $this->userRepository->getWhereArray(['domain_uuid' => $this->auth->user()->domain_uuid, 'user_enabled' => 'true']);
+				return $this->userRepository->getWhereArray(['domain_uuid' => Auth::user()->domain_uuid, 'user_enabled' => 'true']);
     }
 
     public function getById($userId, array $options = [])

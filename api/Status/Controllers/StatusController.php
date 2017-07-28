@@ -22,10 +22,11 @@ class StatusController extends Controller
         $this->nameSpaceHelper = strtolower($this->nameSpaceHelper[0]);
     }
 
-    public function set(SetStatusRequest $request)
+    public function setStatus(SetStatusRequest $request)
     {
-        $data = $request->get($this->nameSpace, []);
+        // ~ $data = $request->get($this->nameSpace, []);
+        $data = $request->all();
 
-        return $this->response($this->controllerService->set($data), 201);
+        return $this->response($this->controllerService->setStatus($data), 201);
     }
 }

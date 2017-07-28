@@ -8,15 +8,18 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 
-use Api\Status\Events\StatusWasCreated;
-
 use Api\Status\Repositories\StatusRepository;
+
+use Api\Status\Exceptions\StatusNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 
 class StatusService
 {
-    private $auth;
+    // Must be public because is used in Ratchet to reinit Auth
+    // See ./app/RatchetServer.php function initStatus
+    public $auth;
 
     private $database;
 
@@ -41,7 +44,7 @@ class StatusService
         $this->database->beginTransaction();
 
         try {
-            $data['user_uuid'] = $this->auth->user()->user_uuid;
+            $data['user_uuid'] = Auth::user()->user_uuid;
 
             $dataObject = $this->statusRepository->getWhereArray($data)->first();
 
@@ -50,7 +53,7 @@ class StatusService
             {
               $dataObject = $this->statusRepository->create($data);
 
-              $this->dispatcher->fire(new StatusWasCreated($dataObject));
+              // ~ $this->dispatcher->fire(new StatusWasCreated($dataObject));
             }
             else
             {
@@ -68,42 +71,69 @@ class StatusService
         return $dataObject;
     }
 
-    public function set($data)
+    public function update($uuid, array $data)
+    {
+        $object = $this->findUserStatus($uuid);
+
+        if (is_null($object)) {
+            throw new StatusNotFoundException();
+        }
+
+        $this->database->beginTransaction();
+
+        try {
+            $this->statusRepository->update($object, $data);
+        } catch (Exception $e) {
+            $this->database->rollBack();
+
+            throw $e;
+        }
+
+        $this->database->commit();
+
+        return $object;
+    }
+
+    public function setStatus($data)
     {
       $this->database->beginTransaction();
 
       try {
 
-        $data['user_uuid'] = $this->auth->user()->user_uuid;
-        $data['domain_uuid'] = $this->auth->user()->domain_uuid;
+        $data['user_uuid'] = Auth::user()->user_uuid;
+        $data['domain_uuid'] = Auth::user()->domain_uuid;
 
-        sort($data['services']);
-
-        $data['services'] = json_encode($data['services']);
-
-        $dataObject = $this->statusRepository->getWhereArray($data);
-
-        if (empty($dataObject->first()))
+        if (isset($data['services']))
         {
-            $this->statusRepository->create($data);
+          sort($data['services']);
+
+          $data['services'] = json_encode($data['services']);
+        }
+
+        $dataObject = $this->statusRepository->getWhereArray(['user_uuid' => $data['user_uuid'], 'domain_uuid' => $data['domain_uuid']])->first();
+
+        if (empty($dataObject))
+        {
+          $return = $this->statusRepository->create($data);
         }
         else
         {
-          $dataObject->first->touch();
-            // ~ $this->statusRepository->update($data);
+          $dataObject->touch();
+          $return = $this->statusRepository->update($dataObject, $data);
         }
 
+        // Remove all outdated statuses
         $deadTime = Carbon::now()->subSeconds(config('api.status_lifetime'));
-
         $Status = $this->statusRepository->getModel();
         $Status->where('updated_at', '<', $deadTime)->delete();
-
+        /*
         $Status = $this->statusRepository->getModel();
         $available_statuses = $Status
               ->where('domain_uuid', $data['domain_uuid'])
               ->where('updated_at', '>=', $deadTime)
-                ->where('user_uuid', '<>', $data['user_uuid'])
+                // ~ ->where('user_uuid', '<>', $data['user_uuid'])
                 ->get();
+        */
 
       } catch (Exception $e) {
         $this->database->rollBack();
@@ -112,14 +142,20 @@ class StatusService
 
       $this->database->commit();
 
+      return ['users' => $return];
+
       $return = [];
+
 
       foreach ($available_statuses as $k => $status)
       {
+        $ret = [];
+        /*
         if (!isset($return[$status->user_uuid]))
         {
           $return[$status->user_uuid] = [];
         }
+        */
 
         $services = json_decode($status->services);
 
@@ -132,28 +168,31 @@ class StatusService
           $return[$status->user_uuid]['services'] = array_unique(array_merge($return[$status->user_uuid]['services'], $services), SORT_REGULAR);
         }
 
-        if (!isset($return[$status->user_uuid]['status']))
+        if (!isset($return[$status->user_uuid]['user_status']))
         {
-          $return[$status->user_uuid]['status'] = $status->status;
+          $return[$status->user_uuid]['user_status'] = $status->user_status;
         }
         else
         {
           $conf_statuses = config('api.statuses');
-          if ($conf_statuses[$return[$status->user_uuid]['status']] <= $conf_statuses[$status->status])
+          if ($conf_statuses[$return[$status->user_uuid]['user_status']] <= $conf_statuses[$status->user_status])
           {
             // Leave old status
           }
           else
           {
-            $return[$status->user_uuid]['status'] = $status->status;
+            $return[$status->user_uuid]['user_status'] = $status->user_status;
           }
 
         }
 
       }
 
-
       return $return;
+    }
 
+    public function findUserStatus($user_uuid)
+    {
+      return $this->statusRepository->setOrdering('updated_at', 'DESC')->getWhere('user_uuid', $user_uuid)->first();
     }
 }

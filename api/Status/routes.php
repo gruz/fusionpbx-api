@@ -1,4 +1,4 @@
 <?php
 
-$router->post('/status', 'StatusController@set');
+$router->post('/status', 'StatusController@setStatus');
 

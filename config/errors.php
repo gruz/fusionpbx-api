@@ -127,4 +127,12 @@ return [
         'message' => 'Please, login first', 
         'code' => '1029', 
     ],
+    'Api\Status\Exceptions\StatusNotFoundException' => [
+        'message' => 'User status record not found', 
+        'code' => '1030', 
+    ],
+    'Api\Status\Exceptions\WrongStatusDataException' => [
+        'message' => 'Wrong status data', 
+        'code' => '1031', 
+    ],
 ];

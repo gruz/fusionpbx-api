@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Traits\FusionPBXTableModel;
 use Api\Extension\Models\Extension;
+use Api\Status\Models\Status;
 // ~ use LaravelCustomRelation\HasCustomRelations;
 
 class User extends Authenticatable
@@ -30,11 +31,19 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password', 'salt',
+        // We here hide native user_status field, as we use another more wide table for user status
+        // and not sure how the field is intended to be used in the native FusionPBX
+        'user_status',
     ];
 
     public function groups()
     {
         return $this->belongsToMany(Group::class, 'v_group_users', 'user_uuid', 'group_uuid');
+    }
+
+    public function status()
+    {
+        return $this->hasOne(Status::class, 'user_uuid', 'user_uuid');
     }
 
     public function domain()
