@@ -303,6 +303,10 @@ class RatchetServer extends RatchetServerBase
                 {
                   unset($responseData['users'][$k]);
                 }
+                else
+                {
+                  $responseData['users'][$k]['user_status'] = $user['status']['user_status'];
+                }
               }
 
             }
