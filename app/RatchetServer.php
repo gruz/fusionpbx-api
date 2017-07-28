@@ -291,6 +291,12 @@ class RatchetServer extends RatchetServerBase
           case 'post.status':
             // Update current connection with the user state
             $conn->user->user_status = $responseData['users']['user_status'];
+
+            if ($responseData['users']['user_status'] == 'invisible')
+            {
+              $responseData['users']['user_status'] = 'offline';
+            }
+
             break;
           case 'get.users':
             // Remove users without statuses
