@@ -181,6 +181,7 @@ class RatchetServer extends RatchetServerBase
             }
 
             $user = $responseData;
+            $user->access_token = $token;
 
             $user->expires = Carbon::now()->addSeconds($data['expires_in']);
             $user->refreshToken = $data['refreshToken'];

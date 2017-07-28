@@ -19,7 +19,7 @@ class StatusService
 {
     // Must be public because is used in Ratchet to reinit Auth
     // See ./app/RatchetServer.php function initStatus
-    public $auth;
+    private $auth;
 
     private $database;
 
