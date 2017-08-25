@@ -294,7 +294,14 @@ class RatchetServer extends RatchetServerBase
           case 'get.user':
           case 'get.users':
             //$responseKey = 'users';
-            $data['includes']  = ['status'];
+            if (isset($data['includes']))
+            {
+							$data['includes']  = array_merge($data['includes'], ['status']);
+						}
+						else
+						{
+							$data['includes']  = ['status', 'extensions'];
+						}
             break;
           case 'post.status':
             // ~ $responseKey = 'data';
