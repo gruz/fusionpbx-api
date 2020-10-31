@@ -1,0 +1,3 @@
+[submodule "docker/fusionpbx-docker"]
+	path = docker/fusionpbx-docker
+	url = https://github.com/igorolhovskiy/fusionpbx-docker.git
