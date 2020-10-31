@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Arr;
 use Api\Settings\Models\Setting;
 
 class FreeSwicthSocketService
@@ -130,6 +131,8 @@ class FreeSwicthSocketService
         $_SESSION['event_socket_ip_address'] = $settings->event_socket_ip_address;
         $_SESSION['event_socket_port'] = $settings->event_socket_port;
         $_SESSION['event_socket_password'] = $settings->event_socket_password;
+
+        Arr::set($_SESSION, 'cache.method.text', 'memcache');
       }
       else
       {

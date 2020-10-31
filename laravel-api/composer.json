@@ -6,7 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.4.*",
+        "laravel/framework": "5.5.*",
         "optimus/distributed-laravel": ">=0.1",
         "optimus/bruno": ">=2.0",
         "optimus/genie": ">=1.0",
@@ -17,7 +17,7 @@
         "webpatser/laravel-uuid": "^2.0",
         "optimus/architect": "~1.0",
         "doctrine/dbal": "^2.5",
-        "askedio/laravel-ratchet": "^0.6.0"
+        "askedio/laravel-ratchet": ">=0.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -53,12 +53,10 @@
             "php artisan key:generate"
         ],
         "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
+            "Illuminate\\Foundation\\ComposerScripts::postInstall"
         ],
         "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate"
         ]
     },
     "config": {
