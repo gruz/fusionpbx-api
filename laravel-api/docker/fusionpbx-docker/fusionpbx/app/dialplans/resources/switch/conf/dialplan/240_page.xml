@@ -1,0 +1,15 @@
+<context name="{v_context}">
+	<extension name="page" number="*724" continue="false" app_uuid="2011c518-696d-4878-a9b2-b217b6311311" enabled="false">
+		<condition field="destination_number" expression="^\*724$" >
+			<action application="set" data="caller_id_name=Page" />
+			<action application="set" data="caller_id_number=" />
+			<action application="set" data="pin_number={v_pin_number}" />
+			<action application="set" data="destinations=101-103,105" />
+			<action application="set" data="moderator=false" />
+			<action application="set" data="mute=true" />
+			<action application="set" data="set api_hangup_hook=conference page-${destination_number} kick all" />
+			<action application="lua" data="page.lua" />
+		</condition>
+	</extension>
+</context>
+

@@ -1,0 +1,3 @@
+[submodule "fusionpbx"]
+	path = fusionpbx
+	url = git@github.com:samael33/fusionpbx.git

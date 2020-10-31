@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  fusionpbx:
+    build: .
+    volumes:
+      - ../fusionpbx-docker/fusionpbx:/var/www/fusionpbx
+      - ../../laravel-api:/var/www/laravel-api
+    ports:
+      - "5060:5060/udp"
+      - "80:80"
+      - "443:443"
+      - "444:444"
+    networks:
+      main:
+        aliases:
+          - fusion
+    depends_on:
+      - db
+  db:
+      image: postgres:10-alpine
+      user: "1000:100"
+      environment:
+        POSTGRES_DB: 'fusionpbx'
+        POSTGRES_USER: 'fusionpbx'
+        POSTGRES_PASSWORD: '4321'
+      volumes:
+      - ./db_data:/var/lib/postgresql/data
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      ports:
+        - "5432:5432"
+      networks:
+        main:
+          aliases:
+            - db
+networks:
+  main:

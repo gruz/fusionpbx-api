@@ -1,0 +1,8 @@
+#!/bin/bash
+# Logins to the running container.
+# Usage: bin/start
+. bin/helpers/common.sh;
+
+docker-compose stop
+# docker-compose down --remove-orphans
+cd ..;

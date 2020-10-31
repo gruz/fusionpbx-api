@@ -1,0 +1,6 @@
+#!/bin/bash
+# Laravel artisan command
+# Usage: bin/artisan
+. bin/helpers/common.sh
+
+docker-compose exec --user=1000 fusionpbx php ${LARAVEL_FOLDER}/artisan $@

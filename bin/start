@@ -1,0 +1,10 @@
+#!/bin/bash
+# Logins to the running container.
+# Usage: bin/start
+
+. bin/helpers/common.sh
+
+# docker-compose up -d --build
+docker-compose up -d
+
+cd ..;

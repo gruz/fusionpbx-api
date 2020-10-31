@@ -1,0 +1,67 @@
+#!/bin/bash
+. bin/helpers/common.sh
+
+cd ../../
+
+# Init submodules
+# git submodule init && git submodule update
+git submodule update --init --recursive
+# Build docker container from the corresponding submodule. We need is as a base for our docker container.
+docker build -t fusionpbx-docker ./docker/fusionpbx-docker
+# docker build --no-cache -t fusionpbx-docker ./docker/fusionpbx-docker
+
+# Start docker
+cd $laradock;
+rm -rf db_data;
+mkdir db_data;
+docker-compose build
+docker-compose up -d
+cd ../../
+
+# cd $FUSION_PBX_DOCKER_FOLDER
+# docker-compose exec fusionpbx chown -R www-data /var/www/fusionpbx
+
+cd ${FUSION_PBX_DOCKER_FOLDER}/fusionpbx;
+sed -i "s/\/\/add the required includes/\/\/add the required includes\nini_set('display_errors', 0);/g" ./core/install/install.php
+
+echo  "Open http://localhost and finish FusionPBX installation. During install, specify db host 'db', username 'fusionpbx', password '4321'"
+read -p "When done press enter to continue"
+
+git checkout HEAD -- core/install/install.php
+cd ../../../
+
+
+# Prepare laravel configuration
+cd $LARAVEL_FOLDER_LOCAL;
+cp .env.example .env
+cd ../
+
+bin/composer install
+bin/artisan key:generate
+bin/artisan migrate
+
+
+
+
+echo "[optional] ## Get and upload apple VOIP push certificate";
+echo "This is needed to send push notifications to wakeup Apple devices.";
+echo "Get the certificate at Apple Developer Portal and place it to '${LARAVEL_FOLDER_LOCAL}/resources/certs/VOIP.pem'"
+read -e -p "Enter you Apple VOIP cert passphase: " -i "" PHRASE
+cd $LARAVEL_FOLDER_LOCAL;
+sed -i "s/VOIP_APPLE_CERT_PASSPHRASE=/VOIP_APPLE_CERT_PASSPHRASE=${PHRASE}/g" .env
+cd ..
+
+bin/artisan passport:install >> tmp.txt;
+bin/update_env.php $LARAVEL_FOLDER_LOCAL
+
+echo 'Done. Your API should work under https://localhost:444 . Please note https - is a must'
+# cd $laradock;
+# docker-compose exec --user=1000 fusionpbx php ${LARAVEL_FOLDER}/bin/update_env.php
+# read -e -p "Enter Your Name: " -i "Ricardo" NAME
+# # read -p "Enter: " name
+# # name=${name:-Richard}
+# # echo $name
+# exit;
+
+# cd $laradock;
+

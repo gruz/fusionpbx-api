@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<include>
+        <context name="default">
+                <extension name="demo">
+                        <condition field="to" expression="^(.*)$">
+                                <!-- <action application="lua" data="test.lua"/> -->
+                                <!-- <action application="reply" data="Hello, you said: ${_body}"/> -->
+                        </condition>
+                </extension>
+        </context>   
+        <context name="public">
+                <extension name="sms-catch-all">
+                        <condition field="to" expression="^\+?(\d+)$">
+                        	    <action application="set" data="final_delivery=true"/>
+                                    <action application="lua" data="app_custom.lua sms --source=internal"/>
+                        </condition>
+                </extension>
+                <extension name="other">
+                        <condition field="to" expression="^(.*)$">
+                                <action application="set" data="final_delivery=true"/>
+                                <!-- <action application="send"/> -->
+                        </condition>
+                </extension>
+        </context>
+</include>
