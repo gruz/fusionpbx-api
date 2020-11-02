@@ -8,9 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Traits\FusionPBXTableModel;
 use Api\Extension\Models\Extension;
 use Api\Status\Models\Status;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 // ~ use LaravelCustomRelation\HasCustomRelations;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, Notifiable, FusionPBXTableModel;
     // ~ use HasCustomRelations;

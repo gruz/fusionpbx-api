@@ -1,5 +1,4 @@
 <?php
-
 $router->get('/', 'DefaultApiController@index');
 
 // ~ Route::post(['middleware' => 'auth:api'], function() {
@@ -12,3 +11,6 @@ $router->post('/signup', '\Api\User\Controllers\UserController@signup');
 // ~ $router->post('/create', '\Api\User\Controllers\UserController@create');
 // ~ Route::resource('domain', '\Api\User\Controllers\DomainController');
 // ~ Route::resource('user', '\Api\User\Controllers\UserController');
+
+// TOOD 8
+// \Illuminate\Support\Facades\Auth::routes(['verify' => true]);
