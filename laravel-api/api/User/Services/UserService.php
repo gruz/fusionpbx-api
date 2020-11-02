@@ -223,7 +223,7 @@ class UserService
             $this->extensionService->setOneToManyRelations('Users', $extension->extension_uuid, [$user->user_uuid]);
             $user->setRelation('extension', $extension);
 
-            $this->dispatcher->fire(new UserWasCreated($user));
+            $this->dispatcher->dispatch(new UserWasCreated($user));
 
         } catch (Exception $e) {
             $this->database->rollBack();
@@ -258,7 +258,7 @@ class UserService
         try {
             $this->userRepository->update($user, $data);
 
-            $this->dispatcher->fire(new UserWasUpdated($user));
+            $this->dispatcher->dispatch(new UserWasUpdated($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -284,7 +284,7 @@ class UserService
         try {
             $this->userRepository->update($user, $data);
 
-            $this->dispatcher->fire(new UserWasUpdated($user));
+            $this->dispatcher->dispatch(new UserWasUpdated($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -305,7 +305,7 @@ class UserService
         try {
             $this->userRepository->delete($userId);
 
-            $this->dispatcher->fire(new UserWasDeleted($user));
+            $this->dispatcher->dispatch(new UserWasDeleted($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 

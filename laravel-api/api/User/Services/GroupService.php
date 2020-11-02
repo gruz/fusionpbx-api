@@ -48,7 +48,7 @@ class GroupService
         try {
             $user = $this->groupRepository->create($data);
 
-            $this->dispatcher->fire(new GroupWasCreated($user));
+            $this->dispatcher->dispatch(new GroupWasCreated($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -69,7 +69,7 @@ class GroupService
         try {
             $this->groupRepository->update($user, $data);
 
-            $this->dispatcher->fire(new GroupWasUpdated($user));
+            $this->dispatcher->dispatch(new GroupWasUpdated($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -90,7 +90,7 @@ class GroupService
         try {
             $this->groupRepository->delete($groupId);
 
-            $this->dispatcher->fire(new GroupWasDeleted($user));
+            $this->dispatcher->dispatch(new GroupWasDeleted($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 

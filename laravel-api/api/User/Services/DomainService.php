@@ -46,7 +46,7 @@ class DomainService
         try {
             $domain = $this->domainRepository->create($data);
 
-            $this->dispatcher->fire(new DomainWasCreated($domain));
+            $this->dispatcher->dispatch(new DomainWasCreated($domain));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -67,7 +67,7 @@ class DomainService
         try {
             $this->domainRepository->update($domain, $data);
 
-            $this->dispatcher->fire(new DomainWasUpdated($domain));
+            $this->dispatcher->dispatch(new DomainWasUpdated($domain));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -88,7 +88,7 @@ class DomainService
         try {
             $this->domainRepository->delete($domainId);
 
-            $this->dispatcher->fire(new DomainWasDeleted($domain));
+            $this->dispatcher->dispatch(new DomainWasDeleted($domain));
         } catch (Exception $e) {
             $this->database->rollBack();
 

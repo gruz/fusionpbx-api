@@ -5,8 +5,8 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "5.7.*",
+        "php": ">=7.2",
+        "laravel/framework": "5.8.*",
         "optimus/distributed-laravel": ">=0.1",
         "optimus/bruno": ">=2.0",
         "optimus/genie": ">=1.0",
@@ -20,9 +20,9 @@
         "askedio/laravel-ratchet": ">=0.6"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
+        "fakerphp/faker": ">=1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^8.0",
         "symfony/css-selector": "2.8.*|3.0.*",
         "symfony/dom-crawler": "2.8.*|3.0.*",
         "filp/whoops" : "~2.0"

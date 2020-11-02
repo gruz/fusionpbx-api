@@ -61,7 +61,7 @@ class SettingService
         try {
             $setting = $this->extensionRepository->create($data);
 
-            $this->dispatcher->fire(new SettingWasCreated($setting));
+            $this->dispatcher->dispatch(new SettingWasCreated($setting));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -82,7 +82,7 @@ class SettingService
         try {
             $this->extensionRepository->update($setting, $data);
 
-            $this->dispatcher->fire(new SettingWasUpdated($setting));
+            $this->dispatcher->dispatch(new SettingWasUpdated($setting));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -103,7 +103,7 @@ class SettingService
         try {
             $this->extensionRepository->delete($settingId);
 
-            $this->dispatcher->fire(new SettingWasDeleted($setting));
+            $this->dispatcher->dispatch(new SettingWasDeleted($setting));
         } catch (Exception $e) {
             $this->database->rollBack();
 

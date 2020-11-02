@@ -53,7 +53,7 @@ class StatusService
             {
               $dataObject = $this->statusRepository->create($data);
 
-              // ~ $this->dispatcher->fire(new StatusWasCreated($dataObject));
+              // ~ $this->dispatcher->dispatch(new StatusWasCreated($dataObject));
             }
             else
             {

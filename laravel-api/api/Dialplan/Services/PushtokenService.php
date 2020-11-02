@@ -48,7 +48,7 @@ class PushtokenService
             {
               $dataObject = $this->pushtokenRepository->create($data);
 
-              $this->dispatcher->fire(new PushtokenWasCreated($dataObject));
+              $this->dispatcher->dispatch(new PushtokenWasCreated($dataObject));
             }
             else
             {

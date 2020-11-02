@@ -103,7 +103,7 @@ class ExtensionService
             $extension = $this->extensionRepository->create($data);
 
             $cacheURI = "directory:" . $extension->extension . "@" . $extension->user_context;
-            $this->dispatcher->fire(new ExtensionWasCreated($extension, $cacheURI));
+            $this->dispatcher->dispatch(new ExtensionWasCreated($extension, $cacheURI));
 
         } catch (Exception $e) {
             $this->database->rollBack();
@@ -125,7 +125,7 @@ class ExtensionService
         try {
             $this->extensionRepository->update($extension, $data);
 
-            $this->dispatcher->fire(new ExtensionWasUpdated($extension));
+            $this->dispatcher->dispatch(new ExtensionWasUpdated($extension));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -146,7 +146,7 @@ class ExtensionService
         try {
             $this->extensionRepository->delete($extensionId);
 
-            $this->dispatcher->fire(new ExtensionWasDeleted($extension));
+            $this->dispatcher->dispatch(new ExtensionWasDeleted($extension));
         } catch (Exception $e) {
             $this->database->rollBack();
 

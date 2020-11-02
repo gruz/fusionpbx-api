@@ -160,7 +160,7 @@ class TeamService
               ]);
 
             // This event to be created if really needed. E.g. to notify superadmins about the fact
-            // ~ $this->dispatcher->fire(new TeamWasCreated($domain));
+            // ~ $this->dispatcher->dispatch(new TeamWasCreated($domain));
 
         } catch (Exception $e) {
             $this->database->rollBack();
@@ -249,7 +249,7 @@ class TeamService
         try {
             $this->userRepository->update($user, $data);
 
-            $this->dispatcher->fire(new UserWasUpdated($user));
+            $this->dispatcher->dispatch(new UserWasUpdated($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -270,7 +270,7 @@ class TeamService
         try {
             $this->userRepository->delete($userId);
 
-            $this->dispatcher->fire(new UserWasDeleted($user));
+            $this->dispatcher->dispatch(new UserWasDeleted($user));
         } catch (Exception $e) {
             $this->database->rollBack();
 
