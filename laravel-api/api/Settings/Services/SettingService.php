@@ -7,8 +7,8 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
-use Api\Settings\Exceptions\InvalidSettingException;
-use Api\Settings\Exceptions\SettingNotFoundException;
+// use Api\Settings\Exceptions\InvalidSettingException;
+// use Api\Settings\Exceptions\SettingNotFoundException;
 use Api\Settings\Events\SettingWasCreated;
 use Api\Settings\Events\SettingWasDeleted;
 use Api\Settings\Events\SettingWasUpdated;
@@ -24,7 +24,7 @@ class SettingService
 
     // ~ private $roleRepository;
 
-    private $settingRepository;
+    // private $settingRepository;
 
     public function __construct(
         AuthManager $auth,

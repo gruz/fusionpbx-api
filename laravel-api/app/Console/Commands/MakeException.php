@@ -121,7 +121,7 @@ class MakeException extends GeneratorCommand
      *
      * @return bool|null
      */
-    public function fire()
+    public function handle()
     {
       $message = $this->option('message');
 
