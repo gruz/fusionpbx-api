@@ -36,9 +36,20 @@ trait BaseException
 
       foreach ($params as $param)
       {
+        $type = $param->getType();
+        assert($type instanceof \ReflectionNamedType);
+        $paramTypeName = $type->getName();
         if (!isset(${$param->name}))
         {
-          $parameters[] = null;
+          switch ($paramTypeName) {
+            case 'array':
+              $value = [];
+              break;
+            default:
+              $value = null;
+              break;
+          }
+          $parameters[] = $value;
         }
         else
         {

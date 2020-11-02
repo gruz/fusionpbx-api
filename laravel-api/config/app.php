@@ -121,8 +121,6 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'single'),
-
     // FusionPBX path
     'fpath_document_root' => env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx'),
     'fpath_project' => env('FUSIONPBX_PROJECT_PATH', ''),

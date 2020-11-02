@@ -6,13 +6,13 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.5.*",
+        "laravel/framework": "5.6.*",
         "optimus/distributed-laravel": ">=0.1",
         "optimus/bruno": ">=2.0",
         "optimus/genie": ">=1.0",
         "sentry/sentry": "~1.6",
         "optimus/heimdal": ">=1.0",
-        "laravel/passport": "^3.0",
+        "laravel/passport": "^6.0",
         "optimus/api-consumer": ">=0.2",
         "webpatser/laravel-uuid": "^2.0",
         "optimus/architect": "~1.0",
@@ -22,7 +22,7 @@
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~6.0",
+        "phpunit/phpunit": "^7.0",
         "symfony/css-selector": "2.8.*|3.0.*",
         "symfony/dom-crawler": "2.8.*|3.0.*",
         "filp/whoops" : "~2.0"
