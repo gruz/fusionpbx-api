@@ -3,10 +3,11 @@
 namespace Api\Pushtoken\Requests;
 
 use App\Http\ApiRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Validator;
 use Api\Pushtoken\Exceptions\WrongPushtokenDataException;
-use Api\Pushtoken\Exceptions\InvalidPushtokenClassException;
 use Api\Pushtoken\Exceptions\InvalidPushtokenTypeException;
+use Api\Pushtoken\Exceptions\InvalidPushtokenClassException;
 
 class CreatePushtokenRequest extends ApiRequest
 {
@@ -52,7 +53,7 @@ class CreatePushtokenRequest extends ApiRequest
           return $data;
         }
 
-        $data = array_only($data, ['token_type', 'token', 'token_class']);
+        $data = Arr::only($data, ['token_type', 'token', 'token_class']);
         $data = array_map('trim', $data);
 
         $data['token'] = preg_replace("/[^0-9a-zA-Z]/","",$data['token']);

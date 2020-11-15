@@ -5,14 +5,11 @@ namespace Api\User\Services;
 use Exception;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 
 use Api\Extension\Models\Extension;
 use Api\Extension\Services\ExtensionService;
 
-use Api\User\Exceptions\InvalidGroupException;
-use Api\User\Exceptions\UserNotFoundException;
 use Api\User\Exceptions\DomainNotFoundException;
 use Api\User\Exceptions\UserExistsException;
 use Api\User\Exceptions\EmailExistsException;
@@ -51,6 +48,9 @@ class UserService
 
     private $contactRepository;
 
+    /**
+     * @var Contact_emailRepository
+     */
     private $contact_emailRepository;
 
     private $extensionRepository;

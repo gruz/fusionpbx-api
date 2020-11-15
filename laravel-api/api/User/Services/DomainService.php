@@ -17,6 +17,11 @@ class DomainService
 
     private $dispatcher;
 
+    /**
+     * @var DomainRepository
+     */
+    private $domainRepository;
+
     public function __construct(
         DatabaseManager $database,
         Dispatcher $dispatcher,

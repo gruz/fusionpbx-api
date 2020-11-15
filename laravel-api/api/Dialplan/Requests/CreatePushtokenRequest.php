@@ -3,10 +3,11 @@
 namespace Api\Dialplan\Requests;
 
 use App\Http\ApiRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Validator;
 use Api\Dialplan\Exceptions\WrongPushtokenDataException;
-use Api\Dialplan\Exceptions\InvalidPushtokenClassException;
 use Api\Dialplan\Exceptions\InvalidPushtokenTypeException;
+use Api\Dialplan\Exceptions\InvalidPushtokenClassException;
 
 class CreatePushtokenRequest extends ApiRequest
 {
@@ -53,7 +54,7 @@ class CreatePushtokenRequest extends ApiRequest
           return $data;
         }
 
-        $data = array_only($data, ['token_type', 'token', 'token_class']);
+        $data = Arr::only($data, ['token_type', 'token', 'token_class']);
         $data = array_map('trim', $data);
 
         if (empty($data['token_type']) || !in_array($data['token_type'], ['production', 'sandbox']))

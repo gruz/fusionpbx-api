@@ -2,9 +2,9 @@
 
 namespace Api\User\Repositories;
 
+use Webpatser\Uuid\Uuid;
 use Api\User\Models\User;
 use App\Database\Eloquent\Repository;
-use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository extends Repository
 {
@@ -32,7 +32,7 @@ class UserRepository extends Repository
         // ~ In FusionPBX the function is defined in fusionpbx/resources/functions.php
         // ~ $salt = uuid();
         // We will use a webpatser/laravel-uuid
-        $data['salt'] = \Uuid::generate();
+        $data['salt'] = Uuid::generate();
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -81,7 +81,7 @@ class UserRepository extends Repository
                 $query
                     ->insert(array_map(function ($groupName, $groupId) use ($user) {
                         return [
-                            'group_user_uuid' => \Uuid::generate(),
+                            'group_user_uuid' => Uuid::generate(),
                             'domain_uuid' => $user->domain_uuid,
                             'group_uuid' => $groupId,
                             'group_name' => $groupName,
@@ -89,7 +89,7 @@ class UserRepository extends Repository
                         ];
                     }, $addGroups, array_keys($addGroups)));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->database->rollBack();
 
             throw $e;

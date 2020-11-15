@@ -10,17 +10,17 @@ use Illuminate\Events\Dispatcher;
 
 use Api\User\Services\UserService;
 use Api\User\Services\DomainService;
-use App\Services\FreeSwicthSocketService as FSSocketService;
+// use App\Services\FreeSwicthSocketService as FSSocketService;
 
 use \Api\User\Exceptions\InvalidGroupException;
 use \Api\User\Exceptions\UserNotFoundException;
 use \Api\User\Exceptions\DomainExistsException;
 
 
-use \Api\User\Events\UserWasCreated;
+// use \Api\User\Events\UserWasCreated;
 use \Api\User\Events\UserWasDeleted;
 use \Api\User\Events\UserWasUpdated;
-use \Api\User\Events\DomainWasCreated;
+// use \Api\User\Events\DomainWasCreated;
 
 
 use \Api\User\Repositories\GroupRepository;
@@ -44,14 +44,16 @@ class TeamService
 
     protected $userRepository;
 
+    /**
+     * @var DomainService
+     */
     private $domainService;
 
     private $domainRepository;
 
-    private $contactRepository;
-
-    private $contact_emailRepository;
-
+    /**
+     * @var DialplanRepository
+     */
     private $dialplanRepository;
 
     private $userService;

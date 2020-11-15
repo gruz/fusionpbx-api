@@ -12,7 +12,15 @@ use Api\User\Services\TeamService;
 
 class UserController extends Controller
 {
+    /**
+     * @var UserService
+     */
     private $userService;
+
+    /**
+     * @var TeamService
+     */
+    private $teamService;
 
     public function __construct(UserService $userService, TeamService $teamService)
     {
@@ -69,7 +77,6 @@ class UserController extends Controller
     {
         $a = $this->response($this->userService->activate($hash));
         dd($a);
-
     }
 
     public function delete($userId)
@@ -100,26 +107,25 @@ class UserController extends Controller
 
     // ~ public function create(CreateUserRequest $request)
     // ~ {
-        // ~ $data = $request->get('user', []);
+    // ~ $data = $request->get('user', []);
 
-        // ~ return $this->response($this->userService->create($data), 201);
+    // ~ return $this->response($this->userService->create($data), 201);
     // ~ }
-		public function signup(SignupRequest $request)
+    public function signup(SignupRequest $request)
     {
         $data = $request->get('team', []);
 
-        if (empty($data))
-        {
-          $data = $request->get('user', []);
+        if (empty($data)) {
+            $data = $request->get('user', []);
 
-          $data['isTeam'] = false;
-          $data['group_name'] = env('DEFAULT_USER_GROUP_NAME');
+            $data['isTeam'] = false;
+            $data['group_name'] = env('DEFAULT_USER_GROUP_NAME');
 
-          // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
-          // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
-          $data['user_enabled'] = md5(uniqid().microtime());
+            // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
+            // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
+            $data['user_enabled'] = md5(uniqid() . microtime());
 
-          return $this->response($this->userService->create($data, false), 201);
+            return $this->response($this->userService->create($data, false), 201);
         }
 
         $data['isTeam'] = true;

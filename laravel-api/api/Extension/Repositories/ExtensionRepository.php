@@ -2,6 +2,7 @@
 
 namespace Api\Extension\Repositories;
 
+use Webpatser\Uuid\Uuid;
 use Api\Extension\Models\Extension;
 use App\Database\Eloquent\Repository;
 
@@ -50,7 +51,7 @@ class ExtensionRepository extends Repository
                 $query
                     ->insert(array_map(function ($userId) use ($extension) {
                         return [
-                            'extension_user_uuid' => \Uuid::generate(),
+                            'extension_user_uuid' => Uuid::generate(),
                             'domain_uuid' => $extension->domain_uuid,
                             'extension_uuid' => $extension->extension_uuid,
                             'user_uuid' => $userId

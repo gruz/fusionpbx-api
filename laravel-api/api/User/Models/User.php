@@ -16,6 +16,8 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, Notifiable, FusionPBXTableModel;
     // ~ use HasCustomRelations;
 
+    // protected $keyType = 'uuid';
+
     /**
      * The attributes that are mass assignable.
      *

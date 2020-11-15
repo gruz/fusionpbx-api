@@ -3,11 +3,12 @@
 namespace Api\Status\Requests;
 
 use App\Http\ApiRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Validator;
-use Api\Status\Exceptions\WrongStatusDataException;
 use Api\Status\Exceptions\InvalidStatusException;
-use Api\Status\Exceptions\InvalidServiceListException;
 use Api\Status\Exceptions\InvalidStatusOSException;
+use Api\Status\Exceptions\WrongStatusDataException;
+use Api\Status\Exceptions\InvalidServiceListException;
 
 
 class SetStatusRequest extends ApiRequest
@@ -56,7 +57,7 @@ class SetStatusRequest extends ApiRequest
           return $data;
         }
 
-        $data = array_only($data, ['status_lifetime', 'os', 'user_status', 'services']);
+        $data = Arr::only($data, ['status_lifetime', 'os', 'user_status', 'services']);
 
         array_walk_recursive($data, function(& $value){
             $value = trim($value);

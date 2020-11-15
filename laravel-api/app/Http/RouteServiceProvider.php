@@ -20,4 +20,9 @@ class RouteServiceProvider extends ServiceProvider
 
         parent::boot($router);
     }
+
+    // Laravel 6 compatibility TODO remove with laravel 8
+    public function booted($callback) {
+        $this->app->booted($callback);
+    }
 }

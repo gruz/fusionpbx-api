@@ -3,6 +3,7 @@
 namespace Api\User\Requests;
 
 use App\Http\ApiRequest;
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Validator;
 use Api\User\Exceptions\WrongSignupDataException;
 
@@ -64,7 +65,7 @@ class SignupRequest extends ApiRequest
         }
 
         $password = $data['password'];
-        $data = array_only($data, ['email', 'domain_name', 'username']);
+        $data = Arr::only($data, ['email', 'domain_name', 'username']);
         $data = array_map('trim', $data);
         $data['password'] = $password;
 

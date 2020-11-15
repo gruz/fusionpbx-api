@@ -1,4 +1,8 @@
 <?php
+
+use Api\User\Models\Group_user;
+use Api\User\Models\User;
+use Illuminate\Support\Facades\Route;
 $router->get('/', 'DefaultApiController@index');
 
 // ~ Route::post(['middleware' => 'auth:api'], function() {
@@ -14,3 +18,13 @@ $router->post('/signup', '\Api\User\Controllers\UserController@signup');
 
 // TOOD 8
 // \Illuminate\Support\Facades\Auth::routes(['verify' => true]);
+
+$router->get('/foo', function () {
+    $user = Group_user::
+        where('61ba1990-269e-11eb-a3c8-e1ee1cacdcd6')
+        // ->has('domain')
+        ->with('groups')
+        // ->has('permissions')
+    ;
+    dd($user);
+});

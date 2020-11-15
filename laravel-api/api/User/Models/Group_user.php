@@ -2,8 +2,6 @@
 
 namespace Api\User\Models;
 
-use Api\User\Models\User;
-use Api\User\Models\Group_permission;
 use App\Database\Eloquent\Model;
 use App\Traits\FusionPBXTableModel;
 
