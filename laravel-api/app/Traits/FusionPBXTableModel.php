@@ -37,6 +37,13 @@ trait FusionPBXTableModel
       $this->incrementing = false;
       $this->timestamps = false;
 
+        /**
+         * The "type" of the primary key ID.
+         *
+         * @var string
+         */
+        $this->keyType = 'uuid';
+
     }
 
     public function __destruct()

@@ -17,13 +17,6 @@ class User extends Authenticatable implements MustVerifyEmail
     // ~ use HasCustomRelations;
 
     /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'uuid';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
