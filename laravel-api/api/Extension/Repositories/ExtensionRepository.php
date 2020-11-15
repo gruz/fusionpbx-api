@@ -58,7 +58,7 @@ class ExtensionRepository extends Repository
                         ];
                     }, array_keys($addUsers)));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->database->rollBack();
 
             throw $e;

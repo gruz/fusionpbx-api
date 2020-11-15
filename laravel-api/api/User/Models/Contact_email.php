@@ -29,7 +29,7 @@ class Contact_email extends Model
 
     public function domain()
     {
-        return $this->belongsTo(Domain::class, 'v_domians', 'domain_uuid', 'domain_uuid');
+        return $this->belongsTo(Domain::class, 'v_domains', 'domain_uuid', 'domain_uuid');
     }
 
     /**
