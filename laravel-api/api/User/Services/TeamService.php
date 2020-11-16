@@ -124,14 +124,14 @@ class TeamService
 
 
             $contact = $this->contactRepository->create($data);
-            $contact->addHidden(['domain_uuid']);
+            $contact->makeHidden(['domain_uuid']);
             $data['contact_uuid'] = $contact->getAttribute('contact_uuid');
 
             $data['email_primary'] = 1;
             $data['email_address'] = $data['email'];
 
             $contact_email = $this->contact_emailRepository->create($data);
-            $contact_email->addHidden(['domain_uuid', 'contact_uuid']);
+            $contact_email->makeHidden(['domain_uuid', 'contact_uuid']);
 
             // ~ $data['username'] = $data['email'];
             $data['user_enabled'] = 'true';
@@ -139,7 +139,7 @@ class TeamService
             // $data['add_date'] = 'admin';
 
             $user = $this->userRepository->create($data);
-            $user->addHidden(['domain_uuid', 'contact_uuid']);
+            $user->makeHidden(['domain_uuid', 'contact_uuid']);
 
             // Get default group for a new team
             $group = $this->groupRepository->getWhere('group_name', env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME'));

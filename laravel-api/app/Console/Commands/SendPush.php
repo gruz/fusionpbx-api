@@ -36,7 +36,6 @@ class SendPush extends Command
     public function __construct(PushService $pushService)
     {
         parent::__construct();
-
         $this->pushService = $pushService;
     }
 
@@ -47,8 +46,7 @@ class SendPush extends Command
      */
     public function handle()
     {
-      $destination = $this->argument('destination');
-      $this->pushService->pushUser($destination);
-        //
+        $destination = $this->argument('destination');
+        $this->pushService->pushUser($destination);
     }
 }

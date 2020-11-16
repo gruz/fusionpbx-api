@@ -175,7 +175,7 @@ class UserService
             $contact = $this->contactRepository->create($data);
 
             // Hide the field in the output
-            $contact->addHidden(['domain_uuid']);
+            $contact->makeHidden(['domain_uuid']);
 
             // Create a email for the contact
             $data['contact_uuid'] = $contact->getAttribute('contact_uuid');
@@ -186,12 +186,12 @@ class UserService
             $contact_email = $this->contact_emailRepository->create($data);
 
             // Hide the field in the output
-            $contact_email->addHidden(['domain_uuid', 'contact_uuid']);
+            $contact_email->makeHidden(['domain_uuid', 'contact_uuid']);
 
             // Finally create the user and hide an unneded field in the output
             $user = $this->userRepository->create($data);
 
-            $user->addHidden(['domain_uuid', 'contact_uuid']);
+            $user->makeHidden(['domain_uuid', 'contact_uuid']);
 
             // Get group name
             $group = $this->groupRepository->getWhere('group_name', $data['group_name']);

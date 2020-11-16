@@ -165,6 +165,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
+
         Laravel\Passport\PassportServiceProvider::class,
         \App\Providers\EventServiceProvider::class,
         //Optimus\Api\System\TranslationServiceProvider::class,
