@@ -5,10 +5,10 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.2.5",
-        "laravel/framework": "^7",
-        "laravel/passport": "^9.3.2",
-        "sentry/sentry": "~1.6",
+        "php": ">=7.3.0",
+        "laravel/framework": "^8",
+        "laravel/passport": ">=10",
+        "sentry/sentry": ">=1.6",
         "optimus/distributed-laravel": ">=0.1",
         "optimus/bruno": ">=6.0",
         "optimus/genie": ">=1.0",
@@ -16,11 +16,11 @@
         "optimus/api-consumer": ">=0.2",
         "optimus/architect": ">=1.0",
         "webpatser/laravel-uuid": ">=2.0",
-        "gruz/laravel-ratchet": "^8.0"
+        "gruz/laravel-ratchet": ">=8.0"
     },
     "require-dev": {
         "fakerphp/faker": ">=1.4",
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": ">=9"
     },
     "repositories": [
         {
@@ -29,17 +29,12 @@
         }
     ],
     "autoload": {
-        "classmap": [
-            "database"
-        ],
         "psr-4": {
             "App\\": "app/",
-            "Api\\": "api/"
+            "Api\\": "api/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         }
-    },
-    "autoload-dev": {
-        "classmap": [
-        ]
     },
     "scripts": {
         "post-root-package-install": [

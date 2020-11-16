@@ -2,7 +2,6 @@
 
 namespace Api\Pushtoken\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controller;
 use Api\Pushtoken\Requests\CreatePushtokenRequest;
 use Api\Pushtoken\Services\PushtokenService;
