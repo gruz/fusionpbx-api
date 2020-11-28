@@ -1,5 +1,6 @@
 <?php
 
+use Api\User\Models\User;
 use Api\Extension\Models\Extension;
 
 $router->get('/', [\App\Api\Controllers\DefaultApiController::class, 'index']);
@@ -20,8 +21,15 @@ $router->post('/signup', [\Api\User\Controllers\UserController::class, 'signup']
 
 $router->get('/foo', function () {
 
-    $user = Extension::with('users')
-        ->find('38c0e870-1bac-11eb-83d2-bfed3ed44692')
+    $user = User::where([
+        'domain_uuid' => '3bbdb3b0-2bfc-11eb-b2c2-bd0cc0c82120',
+      ])
+      ->where('user_enabled', '!=', 'true')
+      ->get()->toArray();
+
+
+    // $user = Extension::with('users')
+    //     ->find('38c0e870-1bac-11eb-83d2-bfed3ed44692')
 //     select "v_users".*,
 //  "v_extension_users"."user_uuid" as "pivot_user_uuid",
 //  "v_extension_users"."extension_uuid" as "pivot_extension_uuid" 

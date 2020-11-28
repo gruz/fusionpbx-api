@@ -119,16 +119,18 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getDomainAdmins()
     {
       // ~ $admins = User::where([
-      return  User::where([
+        $admins = User::where([
                   'domain_uuid' => $this->domain_uuid,
                   'user_enabled' => 'true'
                 //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
-                ])->whereHas('permissions', function($query) {
+                ])
+                // ->where('user_enabled', '!=', 'true')
+                ->whereHas('permissions', function($query) {
 
                   $query->whereIn('permission_name', ['user_add', 'user_edit']);
                 })->with(['emails']);
 
-      // ~ return $admins;
+        return $admins;
     }
 
     public function emails()

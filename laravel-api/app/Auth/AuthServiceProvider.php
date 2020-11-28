@@ -27,18 +27,20 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Passport::withoutCookieSerialization();
+        Passport::routes();
 
-        Passport::routes(function ($router) {
-            $router->forAccessTokens();
-            // Uncomment for allowing personal access tokens
-            // $router->forPersonalAccessTokens();
-            $router->forTransientTokens();
-        });
+        // Passport::withoutCookieSerialization();
+
+        // Passport::routes(function ($router) {
+        //     $router->forAccessTokens();
+        //     // Uncomment for allowing personal access tokens
+        //     // $router->forPersonalAccessTokens();
+        //     $router->forTransientTokens();
+        // });
 
 
-        Passport::tokensExpireIn(Carbon::now()->addMinutes(10));
+        // Passport::tokensExpireIn(Carbon::now()->addMinutes(10));
 
-        Passport::refreshTokensExpireIn(Carbon::now()->addDays(10));
+        // Passport::refreshTokensExpireIn(Carbon::now()->addDays(10));
     }
 }

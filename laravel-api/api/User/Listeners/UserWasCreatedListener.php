@@ -3,6 +3,7 @@
 namespace Api\User\Listeners;
 
 use Api\User\Mail\UserNew;
+use Api\User\Mail\DomainNew;
 
 class UserWasCreatedListener
 {
@@ -19,7 +20,11 @@ class UserWasCreatedListener
           $emails[] = $email->email_address;
         }
 
-        \Mail::to($emails)->send(new UserNew($event->user));
+        if ($event->user->user_uuid !== $admin->user_uuid) {
+            \Mail::to($emails)->send(new UserNew($event->user));
+        } else {
+            \Mail::to($emails)->send(new DomainNew($event->user));
+        }
 
       }
 

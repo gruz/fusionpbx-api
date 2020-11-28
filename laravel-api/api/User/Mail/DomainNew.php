@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UserNew extends Mailable
+class DomainNew extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,11 +31,10 @@ class UserNew extends Mailable
      */
     public function build()
     {
-        $body = $this->markdown('emails.user.new')
-            ->subject(__('A new user waiting for activation at :domain', ['domain' => $this->user->domain->domain_name]))
+        $body = $this->markdown('emails.domain.new')
+            ->subject(config('app.name') . ': ' . __('A new domain is created :domain', ['domain' => $this->user->domain->domain_name]))
             ->with([
                 'user' => $this->user,
-                'url' => \Request::root() . '/user/activate/' . $this->user['user_enabled'],
             ]);
 
         return $body;

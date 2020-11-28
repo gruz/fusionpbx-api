@@ -8,7 +8,7 @@
     <title>{{ config('app.name') }} - Authorization</title>
 
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
+    <link href="{{ asset('/css/app.css') }}" rel="stylesheet">
 
     <style>
         .passport-authorize .container {
@@ -39,13 +39,13 @@
 </head>
 <body class="passport-authorize">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card card-default">
+                    <div class="card-header">
                         Authorization Request
                     </div>
-                    <div class="panel-body">
+                    <div class="card-body">
                         <!-- Introduction -->
                         <p><strong>{{ $client->name }}</strong> is requesting permission to access your account.</p>
 
@@ -64,21 +64,23 @@
 
                         <div class="buttons">
                             <!-- Authorize Button -->
-                            <form method="post" action="/oauth/authorize">
-                                {{ csrf_field() }}
+                            <form method="post" action="{{ route('passport.authorizations.approve') }}">
+                                @csrf
 
                                 <input type="hidden" name="state" value="{{ $request->state }}">
                                 <input type="hidden" name="client_id" value="{{ $client->id }}">
+                                <input type="hidden" name="auth_token" value="{{ $authToken }}">
                                 <button type="submit" class="btn btn-success btn-approve">Authorize</button>
                             </form>
 
                             <!-- Cancel Button -->
-                            <form method="post" action="/oauth/authorize">
-                                {{ csrf_field() }}
-                                {{ method_field('DELETE') }}
+                            <form method="post" action="{{ route('passport.authorizations.deny') }}">
+                                @csrf
+                                @method('DELETE')
 
                                 <input type="hidden" name="state" value="{{ $request->state }}">
                                 <input type="hidden" name="client_id" value="{{ $client->id }}">
+                                <input type="hidden" name="auth_token" value="{{ $authToken }}">
                                 <button class="btn btn-danger">Cancel</button>
                             </form>
                         </div>
