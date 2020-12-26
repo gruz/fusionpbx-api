@@ -32,7 +32,7 @@ $i = 0;
 
 foreach ($env as $key => $value) {
     if (0 === strpos($value, 'DB_PASSWORD=')) {
-        $env[$key] = 'PERSONAL_CLIENT_SECRET=' . $keys[$i];
+        $env[$key] = 'DB_PASSWORD=' . $keys[$i];
         $i++;
     }
 }
