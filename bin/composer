@@ -1,6 +1,0 @@
-#!/bin/bash
-# Usage: bin/composer <PARAMETERS>
-. bin/helpers/common.sh
-# set -o xtrace
-
-docker-compose exec --user=1000 fusionpbx composer --working-dir=${LARAVEL_FOLDER} $@

@@ -10,12 +10,12 @@
             "request": "launch",
             "port": 9000,
             "pathMappings": {
-                "/var/www/laravel-api": "${workspaceFolder}/laravel-api",
-                "/var/www/fusionpbx": "${workspaceFolder}/docker/fusionpbx-docker/fusionpbx"
+                "/var/www/fusionpbx-api": "${workspaceFolder}"
             },
             "log": true,
             "ignore": [
-                // "**/vendor/**/*"
+                // "**/vendor/**/*",
+                "/var/www/fusionpbx-api/fusionpbx/**/*"
             ],
             "xdebugSettings": {
                 "max_data": 1000,

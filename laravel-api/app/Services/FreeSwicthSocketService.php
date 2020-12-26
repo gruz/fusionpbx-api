@@ -20,6 +20,7 @@ class FreeSwicthSocketService
     {
       $fp = $this->event_socket_create();
       $response = event_socket_request($fp, 'api reloadxml');
+      $response = event_socket_request($fp, 'api FLUSH CACHE');
 
       fclose($fp);
 

@@ -1,7 +1,0 @@
-#!/bin/bash
-# Logins to the running container.
-# Usage: bin/login
-. bin/helpers/common.sh
-
-docker-compose exec --user=1000 fusionpbx bash
-

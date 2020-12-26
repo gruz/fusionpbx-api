@@ -1,0 +1,30 @@
+#!/bin/bash
+echo  "Please make sure you have:"
+echo  "   * Guest Additions ISO mounted"
+echo  "   * Shared folders are set"
+echo  "   * Network switched to Bridged (probably need to reboot VB machine)"
+echo  "   * You run this command from VirtualBox machine"
+read -p "When done press enter to continue"
+
+# set -xe;
+set -x;
+mkdir -p /var/www/fusionpbx-api
+rm -rf /var/www/fusionpbx
+rm -rf /var/www/laravel-api
+ln -s /var/www/fusionpbx-api/fusionpbx /var/www/fusionpbx
+ln -s /var/www/fusionpbx-api/laravel-api/ /var/www/laravel-api
+
+echo "Installing additional libraries"
+apt install -y sudo gnupg;
+
+echo "Adding GPG keys"
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+
+echo "Installing Guest Additions"
+apt install -y build-essential dkms linux-headers-$(uname -r) sudo
+mkdir -p /mnt/cdrom
+umount -l /mnt/cdrom
+mount /dev/cdrom /mnt/cdrom
+cd /mnt/cdrom
+sh ./VBoxLinuxAdditions.run --nox11;
+systemctl reboot

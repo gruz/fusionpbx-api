@@ -20,12 +20,21 @@ $router->post('/signup', [\Api\User\Controllers\UserController::class, 'signup']
 // \Illuminate\Support\Facades\Auth::routes(['verify' => true]);
 
 $router->get('/foo', function () {
+$a = 1;
+phpinfo();
+//file_put_contents('aa.txt','aaaa');
+dd('here');
+    $current_path = getcwd();
+    chdir(config('app.fpath_full'));
+    exec('php ./core/upgrade/upgrade_domains.php', $result);
+    chdir($current_path);
 
-    $user = User::where([
-        'domain_uuid' => '3bbdb3b0-2bfc-11eb-b2c2-bd0cc0c82120',
-      ])
-      ->where('user_enabled', '!=', 'true')
-      ->get()->toArray();
+
+    // $user = User::where([
+    //     'domain_uuid' => '3bbdb3b0-2bfc-11eb-b2c2-bd0cc0c82120',
+    //   ])
+    //   ->where('user_enabled', '!=', 'true')
+    //   ->get()->toArray();
 
 
     // $user = Extension::with('users')
@@ -44,5 +53,5 @@ $router->get('/foo', function () {
         // ->with('groups')
         // ->has('permissions')
     ;
-    dd($user);
+    // dd($user);
 });

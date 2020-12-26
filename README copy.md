@@ -1,10 +1,9 @@
 - [Fusionpbx API](#fusionpbx-api)
   - [Development environment (Virtual Box)](#development-environment-virtual-box)
-    - [Clone project to locahost](#clone-project-to-locahost)
     - [Install Virtual Box software and create a Debian virtual machine](#install-virtual-box-software-and-create-a-debian-virtual-machine)
-    - [Run installation script](#run-installation-script)
-    - [Login into debian](#login-into-debian)
-    - [Install FusionPBX and API](#install-fusionpbx-and-api)
+    - [Install FusionPBX](#install-fusionpbx)
+      - [Login into your virtual machine.](#login-into-your-virtual-machine)
+      - [Run installation script](#run-installation-script)
       - [Create virtual host for API](#create-virtual-host-for-api)
       - [Enable xdebug](#enable-xdebug)
       - [Mount local folder with the API code into VM](#mount-local-folder-with-the-api-code-into-vm)
@@ -29,89 +28,57 @@
 
 ## Development environment (Virtual Box)
 
-### Clone project to locahost
-```bash
-git clone git@github.com:gruz/fusionpbx-api.git
-cd fusionpbx-api
-git fetch --all
-git checkout vb
-bin/init_local
-```
-
 ### Install Virtual Box software and create a Debian virtual machine
 
-* Install [Virtual Box](https://www.virtualbox.org/). Don't forget to add yourself to `vboxusers` group and reboot after install.
+* Install [Virtual Box](https://www.virtualbox.org/)
 * Download a Debian iso file and mount in using virtual box. I used amd 64 https://www.debian.org/distrib/netinst#smallcd
-* Create a new virtual machine using `Debian`. Select startup disk your mounted iso. ![](docs/select_iso.png)
-* Proceed with the install. I choose root password, user name and password as `fusionpbx` for development purposes. Select only needed software, no need to install DE. So disable `Debian desktop environment`, do not enable `web-server` (we don't need apache) and enable `ssh server` ![](docs/select_software.png) Don't forget to set boot device at the final installation step. ![](docs/select_boot_loader.png)
+* Create a new virtual machine usin debian. Select startup disk your mounted iso. ![](docs/select_iso.png)
+* Proceed with the install. Choose defaults when possible.  except points mentioned below. I choose root password, user name and password as `fusionpbx` for development purposes.
+  * Select only neede software, no need to install DE. So disable `Debian desktop environment`, do not enable `web-server` (we don't need apache) and enable `ssh server` ![](docs/select_software.png)
 * Set network adapter to `Bridged apdapter` ![](docs/select_network.png). You may need to reboot VM to apply new network connection. Thus the VM will be treated as a regular computer in your local network.
-* Insert guest additions ISO using `VB -> Devices` menu
-* Create a shared folder pointing to your localhost project folder with remote path `/var/www/fusionpbx-api`. Ignore possible "Not installed guest additions" message for now. ![](docs/mount_api_folder.png)
+* Install Guest Additions.
+  * Insert guest additions ISO using `VB -> Devices` menu
+  * Login into VM
+  * Install guest additions according to https://linuxize.com/post/how-to-install-virtualbox-guest-additions-on-debian-10/
+    ```bash
+    apt install build-essential dkms linux-headers-$(uname -r)
+    mkdir -p /mnt/cdrom
+    mount /dev/cdrom /mnt/cdrom
+    cd /mnt/cdrom
+    sudo sh ./VBoxLinuxAdditions.run --nox11
+    sh ./VBoxLinuxAdditions.run
+    systemctl reboot
+    ```
+* Install additional packages needed
+  ```bash
+  apt install -y wget curl php-zmq php-xdebug nodejs php-mbstring \
+    && apt-get install -y nano mc \
+    && apt install -y supervisor;
+  ```
 
-### Run installation script
-From your host computer being in project folder copy script file to VB like this
+### Install FusionPBX
 
-```bash
-scp bin/init_vb fusionpbx@192.168.0.160:/tmp
-```
+#### Login into your virtual machine. 
 
-### Login into debian
-
-In-VirtualBox terminal doesn't allow to use copy/paste. So it's preferable to ssh into the VM from the host machine to use convinient terminal.
-But first we need to know the VM IP.
-
-There are two ways. Either just hover VM window icon to get the IP
-![](docs/get_ip.png)
-or login into debian inside VM and run `hostname -I`.
-In my case it's `192.168.0.160`
+I prefer to ssh into the VM from the host machine, as the terminal in 
+VirtualBox window doesn't allow to copy/paste. But first we need to know
+the VM IP. So login into the VM using VirtualBox and run `hostname -I`.
+It gave me the IP of the VM in my local network. 
+In my case it's `192.168.0.159`
 ![](docs/hostname-I.png)
 
-> Note! Debian doesn't allow by default to login via `ssh` as `root`
+> Note! Debian doesn't allow by default to login via `ssh` as `root` 
 > so we must login as a regular user and the switch to root
 
-Next open termianl at your host machine and `ssh fusionpbx@192.168.0.160`
-where `fusionpbx` is my VM user and `192.168.0.160` is the IP of the VM.
+Next open termianl at your host machine and `ssh fusionpbx@192.168.0.159`
+where `fusionpbx` is my VM user and `192.168.0.159` is the IP of the VM.
 When logged in use `su` to switch to root user.
 
-### Install FusionPBX and API
+> NOTE! Lower it's assumed all linux commands are run in VM as root
 
-Login like `ssh fusionpbx@192.168.0.160`
+#### Run installation script
 
-Switch to root using `su` command.
-
-Run the init script. It will reboot the VM when done.
-
-```bash
-/tmp/init_vb
-```
-
-After reboot again login into VB and switch to root `ssh fusionpbx@192.168.0.160`, `su`
-
-If everything is ok, then command `ls -la /var/www/fusionpbx-api` should laravel api project folder, cloned from git (where folders `bin`, `fusionpbx`, `laravel-api`, `docs` are)
-
-```bash
-cd /var/www/fusionpbx-api
-bin/init_vb_software
-```
-
-When done you should be able to see fusionpbx site at `https://192.168.0.160` and API message at `https://192.168.0.160:444`
-
-
-
-
-
-
-
-=========================
-
-
-
-
-
-
-
-
-When being logged into the VM as root use commads provided by FusionPBX
+When being logged into the VM as root use commads provided by FusionPBX 
 doc to [install FusionPBX](https://www.fusionpbx.com/download).
 
 A small command I needed to update GPG keys
@@ -131,9 +98,9 @@ cd /usr/src/fusionpbx-install.sh/debian && ./install.sh
 
 When done, don't forget to copy the final message with login and password.
 
-In my case smth. like this:
+In my case smth. like this: 
 ```bash
-      domain name: https://192.168.0.160
+      domain name: https://192.168.0.159
       username: admin
       password: RfnxCiRh7pxfuwRkuBLX9zYnVo
 ```
@@ -205,7 +172,7 @@ sudo /sbin/iptables-save > /etc/iptables/rules.v4
 #### Enable xdebug
 
 To enable xdebug you must know your host machine IP in your local network
-and the path to the xdebug.ini file. The path
+and the path to the xdebug.ini file. The path 
 
 ```bash
 HOST_IP=$(echo $SSH_CLIENT | awk '{ print $1}')
@@ -278,7 +245,7 @@ being able to run it without `sudo` (your user is added to `docker` group).
 
 ### Setup environment
 
-Run commands in terminal and then follow steps. After done you'll have you `fusionpbx` under https://localhost
+Run commands in terminal and then follow steps. After done you'll have you `fusionpbx` under https://localhost 
 and api accessible under https://localhost:444
 
 ```bash

@@ -9,6 +9,7 @@ class DefaultApiController extends BaseController
 {
     public function index()
     {
+        $a = now();
         return response()->json([
             'title'   => 'FusionPBX API',
             'version' => Version::getGitTag()

@@ -167,7 +167,6 @@ class UserService
               $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
             }
 
-
             // Create a contact
             $data['contact_type'] = 'user';
             $data['contact_nickname'] = $data['email'];

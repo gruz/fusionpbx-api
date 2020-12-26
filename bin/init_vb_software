@@ -1,0 +1,124 @@
+#!/bin/bash
+
+echo "Installing additional libraries"
+apt install -y wget curl php-zmq php-xdebug nodejs php-mbstring \
+&& apt-get install -y nano mc \
+&& apt install -y supervisor;
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer;
+
+
+echo "Install FusionPBX"
+wget -O - https://raw.githubusercontent.com/fusionpbx/fusionpbx-install.sh/master/debian/pre-install.sh | sh;
+cd /usr/src/fusionpbx-install.sh/debian && ./install.sh
+
+echo 'Well done! Dont forget to copy the password and link above!'
+read -p "Press enter to continue"
+
+echo "Let's prepare NGINX and system for our API"
+cat << 'EOF' > /etc/nginx/sites-available/api
+server {
+        listen 444;
+        server_name fusionpbx;
+        ssl                     on;
+        ssl_certificate         /etc/ssl/certs/nginx.crt;
+        ssl_certificate_key     /etc/ssl/private/nginx.key;
+        ssl_protocols           TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers             HIGH:!ADH:!MD5:!aNULL;
+
+        #letsencrypt
+        location /.well-known/acme-challenge {
+                root /var/www/letsencrypt;
+        }
+
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+
+        client_max_body_size 80M;
+        client_body_buffer_size 128k;
+
+        location / {
+                root /var/www/laravel-api/public;
+                index index.php;
+                try_files $uri $uri/ /index.php?$query_string;
+        }
+
+
+        location ~ \.php$ {
+                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+                #fastcgi_pass 127.0.0.1:9000;
+                fastcgi_index index.php;
+                include fastcgi_params;
+                fastcgi_param   SCRIPT_FILENAME /var/www/laravel-api/public$fastcgi_script_name;
+        }
+
+        # Disable viewing .htaccess & .htpassword & .db
+        location ~ .htaccess {
+                deny all;
+        }
+        location ~ .htpassword {
+                deny all;
+        }
+        location ~^.+.(db)$ {
+                deny all;
+        }
+}
+EOF
+ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
+read -p "!!! Check vhosts"
+sudo usermod -aG vboxsf www-data
+sudo iptables -A INPUT -p tcp --dport 444 --jump ACCEPT
+sudo /sbin/iptables-save > /etc/iptables/rules.v4
+
+HOST_IP=$(echo $SSH_CLIENT | awk '{ print $1}')
+PHP_VERSION=$(php --version | head -1 | awk '{print $2}' | cut -d. -f 1-2)
+cat << EOF > /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
+zend_extension=xdebug.so
+
+xdebug.remote_host="${HOST_IP}"
+xdebug.remote_connect_back=1
+xdebug.remote_port=9000
+xdebug.idekey=PHPSTORM
+
+xdebug.remote_autostart=1
+xdebug.remote_enable=1
+xdebug.cli_color=1
+;xdebug.profiler_enable=0
+;xdebug.profiler_output_dir="~/xdebug/phpstorm/tmp/profiling"
+
+xdebug.remote_handler=dbgp
+xdebug.remote_mode=req
+
+xdebug.var_display_max_children=-1
+xdebug.var_display_max_data=-1
+xdebug.var_display_max_depth=-1
+EOF
+
+read -p "!!! Check xdebug"
+
+LARAVEL_FOLDER_LOCAL=/var/www/laravel-api
+
+cd $LARAVEL_FOLDER_LOCAL
+
+# Prepare laravel configuration
+cd $LARAVEL_FOLDER_LOCAL;
+sudo -u www-data composer install
+sudo -u www-data cp .env.example .env
+sudo -u www-data php artisan key:generate
+sudo -u www-data ../bin/update_env_db_credentials.php $LARAVEL_FOLDER_LOCAL
+sudo -u www-data php artisan migrate
+sudo -u www-data php artisan passport:install >> tmp.txt;
+sudo -u www-data ../bin/update_env_secret_keys.php $LARAVEL_FOLDER_LOCAL
+
+
+echo "[optional] ## Get and upload apple VOIP push certificate";
+echo "This is needed to send push notifications to wakeup Apple devices.";
+echo "Get the certificate at Apple Developer Portal and place it to '${LARAVEL_FOLDER_LOCAL}/resources/certs/VOIP.pem'"
+read -e -p "Enter you Apple VOIP cert passphase: " -i "" PHRASE
+cd $LARAVEL_FOLDER_LOCAL;
+sed -i "s/VOIP_APPLE_CERT_PASSPHRASE=/VOIP_APPLE_CERT_PASSPHRASE=${PHRASE}/g" .env
+
+
+echo 'Done.';
+echo 'After reboot your API should work under https://'$(hostname -I|awk '{print $1}')':444 . Please note https - is a must'
+read -p "Press enter to rebootc or ctrl+c to exit the install script"
+systemctl reboot

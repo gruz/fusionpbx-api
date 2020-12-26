@@ -4,33 +4,34 @@ namespace Api\User\Services;
 
 use Exception;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Database\DatabaseManager;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
-
 use Api\User\Services\UserService;
+use \Api\User\Events\UserWasDeleted;
+
+use \Api\User\Events\UserWasUpdated;
 use Api\User\Services\DomainService;
 // use App\Services\FreeSwicthSocketService as FSSocketService;
 
-use \Api\User\Exceptions\InvalidGroupException;
-use \Api\User\Exceptions\UserNotFoundException;
-use \Api\User\Exceptions\DomainExistsException;
+use Api\User\Events\DomainWasCreated;
+use Api\Settings\Models\Default_setting;
+use Illuminate\Database\DatabaseManager;
 
 
 // use \Api\User\Events\UserWasCreated;
-use \Api\User\Events\UserWasDeleted;
-use \Api\User\Events\UserWasUpdated;
+use \Api\User\Repositories\UserRepository;
+use \Api\User\Repositories\GroupRepository;
 // use \Api\User\Events\DomainWasCreated;
 
 
-use \Api\User\Repositories\GroupRepository;
-use \Api\User\Repositories\UserRepository;
 use \Api\User\Repositories\DomainRepository;
+use Illuminate\Database\Eloquent\Collection;
 use \Api\User\Repositories\ContactRepository;
-use \Api\User\Repositories\Contact_emailRepository;
-use \Api\Dialplan\Repositories\DialplanRepository;
+use \Api\User\Exceptions\DomainExistsException;
+use \Api\User\Exceptions\InvalidGroupException;
+use \Api\User\Exceptions\UserNotFoundException;
 
-use Api\Settings\Models\Default_setting;
+use \Api\Dialplan\Repositories\DialplanRepository;
+use \Api\User\Repositories\Contact_emailRepository;
 
 class TeamService
 {
@@ -171,6 +172,8 @@ class TeamService
         }
 
         $this->database->commit();
+
+        $this->dispatcher->dispatch(new DomainWasCreated($domain, true));
 
         $this->runFusionPBX_upgrade_domains($domain);
 
