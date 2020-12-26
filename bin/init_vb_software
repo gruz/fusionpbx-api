@@ -64,7 +64,6 @@ server {
 }
 EOF
 ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
-read -p "!!! Check vhosts"
 sudo usermod -aG vboxsf www-data
 sudo iptables -A INPUT -p tcp --dport 444 --jump ACCEPT
 sudo /sbin/iptables-save > /etc/iptables/rules.v4
@@ -92,8 +91,6 @@ xdebug.var_display_max_children=-1
 xdebug.var_display_max_data=-1
 xdebug.var_display_max_depth=-1
 EOF
-
-read -p "!!! Check xdebug"
 
 LARAVEL_FOLDER_LOCAL=/var/www/laravel-api
 
