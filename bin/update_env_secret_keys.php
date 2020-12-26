@@ -31,8 +31,8 @@ $env = explode(PHP_EOL, $env);
 $i = 0;
 
 foreach ($env as $key => $value) {
-    if (0 === strpos($value, 'DB_PASSWORD=')) {
-        $env[$key] = 'DB_PASSWORD=' . $keys[$i];
+    if (0 === strpos($value, 'PERSONAL_CLIENT_SECRET=')) {
+        $env[$key] = 'PERSONAL_CLIENT_SECRET=' . $keys[$i];
         $i++;
     }
 }

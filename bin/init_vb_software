@@ -100,8 +100,8 @@ cd $LARAVEL_FOLDER_LOCAL
 cd $LARAVEL_FOLDER_LOCAL;
 sudo -u www-data composer install
 sudo -u www-data cp .env.example .env
-sudo -u www-data php artisan key:generate
 sudo -u www-data ../bin/update_env_db_credentials.php $LARAVEL_FOLDER_LOCAL
+sudo -u www-data php artisan key:generate
 sudo -u www-data php artisan migrate
 sudo -u www-data php artisan passport:install >> tmp.txt;
 sudo -u www-data ../bin/update_env_secret_keys.php $LARAVEL_FOLDER_LOCAL
