@@ -8,7 +8,6 @@ class ClearFusionPBXCache
 {
     public function handle($event)
     {
-
       $socket = new FSSocketService;
 
       if (!empty($event->clearCacheUri))
@@ -17,6 +16,7 @@ class ClearFusionPBXCache
       }
 
       $socket->reloadXML();
+      return true;
 
       /* My old code example
       require_once dirname(__FILE__) . '/../../../fusionpbx/resources/classes/cache.php';

@@ -14,7 +14,7 @@
             },
             "log": true,
             "ignore": [
-                "**/vendor/**/*",
+                // "**/vendor/**/*",
                 "/var/www/fusionpbx-api/fusionpbx/**/*"
             ],
             "xdebugSettings": {

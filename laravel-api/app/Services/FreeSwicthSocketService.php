@@ -9,7 +9,7 @@ class FreeSwicthSocketService
 {
     public function __construct()
     {
-      $this->loadSocketParams();
+        $this->loadSocketParams();
     }
     /**
      * Reloads FreeSwitch XML
@@ -18,13 +18,13 @@ class FreeSwicthSocketService
      */
     public function reloadXML()
     {
-      $fp = $this->event_socket_create();
-      $response = event_socket_request($fp, 'api reloadxml');
-      $response = event_socket_request($fp, 'api FLUSH CACHE');
+        $fp = $this->event_socket_create();
+        $response = event_socket_request($fp, 'api reloadxml');
+        // $response = event_socket_request($fp, 'api FLUSH CACHE');
 
-      fclose($fp);
+        fclose($fp);
 
-      return $response;
+        return $response;
     }
 
     /**
@@ -38,13 +38,13 @@ class FreeSwicthSocketService
      */
     public function clearCache($uri)
     {
-      // We need to load params into the $_SESSION var here to make native FusionPBX class fire
-      $this->loadSocketParams(true);
-      require_once dirname(__FILE__) . '/../../../fusionpbx/resources/classes/cache.php';
+        // We need to load params into the $_SESSION var here to make native FusionPBX class fire
+        $this->loadSocketParams(true);
+        require_once config('app.fpath_document_root') . '/resources/classes/cache.php';
 
-      //clear the cache
-      $cache = new \cache;
-      $cache->delete($uri);
+        //clear the cache
+        $cache = new \cache;
+        $cache->delete($uri);
     }
 
     /**
@@ -58,53 +58,53 @@ class FreeSwicthSocketService
      */
     protected function event_socket_create($host = null, $port = null, $password = null)
     {
-      if (empty($host))
-      {
-        $host = $this->event_socket_ip_address;
-      }
+        if (empty($host)) {
+            $host = $this->event_socket_ip_address;
+        }
 
-      if (empty($port))
-      {
-        $port = $this->event_socket_port;
-      }
+        if (empty($port)) {
+            $port = $this->event_socket_port;
+        }
 
-      if (empty($password))
-      {
-        $password = $this->event_socket_password;
-      }
+        if (empty($password)) {
+            $password = $this->event_socket_password;
+        }
 
-      $fp = event_socket_create($host, $port, $password);
+        try {
+            $fp = event_socket_create($host, $port, $password);
+        } catch (\Exception $e) {
+            throw $e;
+        }
 
-      return $fp;
+        return $fp;
     }
 
     public function mkdir(string $dir)
     {
-      if (strlen($dir) >0 && !is_readable($dir))
-      {
-        //connect to fs
-        $fp = $this->event_socket_create();
+        if (strlen($dir) > 0 && !is_readable($dir)) {
+            //connect to fs
+            $fp = $this->event_socket_create();
 
-        if (!$fp) {
-          return false;
-        }
-
-        //send the mkdir command to freeswitch
-        if ($fp) {
-          //build and send the mkdir command to freeswitch
-            $switch_cmd = "lua mkdir.lua '$dir'";
-            $switch_result = event_socket_request($fp, 'api '.$switch_cmd);
-            fclose($fp);
-          //check result
-            if (trim($switch_result) == "-ERR no reply") {
-              return true;
+            if (!$fp) {
+                return false;
             }
-        }
-        //can not create directory
-        return false;
-      }
 
-      return true;
+            //send the mkdir command to freeswitch
+            if ($fp) {
+                //build and send the mkdir command to freeswitch
+                $switch_cmd = "lua mkdir.lua '$dir'";
+                $switch_result = event_socket_request($fp, 'api ' . $switch_cmd);
+                fclose($fp);
+                //check result
+                if (trim($switch_result) == "-ERR no reply") {
+                    return true;
+                }
+            }
+            //can not create directory
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -119,38 +119,35 @@ class FreeSwicthSocketService
      */
     public function loadSocketParams($toSession = false)
     {
-      // We need to set this wars to reuse FusionPBX code in fusionpbx/resoures/switch.php
-      if ($toSession)
-      {
-        if ((isset($_SESSION)) or isset($_SESSION['event_socket_ip_address'])) {
-          return;
+        // We need to set this wars to reuse FusionPBX code in fusionpbx/resoures/switch.php
+        if ($toSession) {
+            if ((isset($_SESSION)) or isset($_SESSION['event_socket_ip_address'])) {
+                return;
+            }
+
+            $settings = new Setting;
+            $settings = $settings->first();
+
+            $_SESSION['event_socket_ip_address'] = $settings->event_socket_ip_address;
+            $_SESSION['event_socket_port'] = $settings->event_socket_port;
+            $_SESSION['event_socket_password'] = $settings->event_socket_password;
+
+            Arr::set($_SESSION, 'cache.method.text', 'memcache');
+        } else {
+            if (isset($this->event_socket_ip_address)) {
+                return;
+            }
+
+            $settings = new Setting;
+            $settings = $settings->first();
+
+            $this->event_socket_ip_address = $settings->event_socket_ip_address;
+            $this->event_socket_port = $settings->event_socket_port;
+            $this->event_socket_password = $settings->event_socket_password;
         }
 
-        $settings = new Setting;
-        $settings = $settings->first();
 
-        $_SESSION['event_socket_ip_address'] = $settings->event_socket_ip_address;
-        $_SESSION['event_socket_port'] = $settings->event_socket_port;
-        $_SESSION['event_socket_password'] = $settings->event_socket_password;
-
-        Arr::set($_SESSION, 'cache.method.text', 'memcache');
-      }
-      else
-      {
-        if (isset($this->event_socket_ip_address)) {
-          return;
-        }
-
-        $settings = new Setting;
-        $settings = $settings->first();
-
-        $this->event_socket_ip_address = $settings->event_socket_ip_address;
-        $this->event_socket_port = $settings->event_socket_port;
-        $this->event_socket_password = $settings->event_socket_password;
-      }
-
-
-      /* Maybe we don't need to load all these variable to var
+        /* Maybe we don't need to load all these variable to var
       //get the default settings
       $settings = new Default_setting;
       $result = $settings->orderBy('default_setting_order', 'asc')->get()->toArray();

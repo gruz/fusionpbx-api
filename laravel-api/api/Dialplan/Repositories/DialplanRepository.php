@@ -38,7 +38,7 @@ class DialplanRepository extends Repository
      */
     public function createDefaultDialplanRules()
     {
-        $dialplan_dest_folder = env('FUSIONPBX_DOCUMENT_ROOT') . '/opt-laravel-api';
+        $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';
 
         if (is_dir($dialplan_dest_folder))
         {
@@ -47,7 +47,8 @@ class DialplanRepository extends Repository
 
         $dialplan_storage = $pemFile = base_path() . '/resources/fusionpbx';
 
-        exec('ln -s ' . $dialplan_storage . ' ' . $dialplan_dest_folder);
+        $cmd ='cp -r ' . $dialplan_storage . ' ' . $dialplan_dest_folder;
+        exec($cmd, $output);
 
         if (!is_dir($dialplan_dest_folder))
         {
