@@ -68,6 +68,7 @@ ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
 PG_VERSION=$(psql -V | awk '{print $3}' | sed 's/\.\(.*\)//')
 HOST_IP=$(echo $SSH_CLIENT | awk '{ print $1}')
 PHP_VERSION=$(php --version | head -1 | awk '{print $2}' | cut -d. -f 1-2)
+VB_IP=$(hostname -I|awk '{print $1}')
 
 # Open Postgres for remote connection
 sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/${PG_VERSION}/main/postgresql.conf
@@ -106,6 +107,7 @@ LARAVEL_FOLDER_LOCAL=/var/www/laravel-api
 cd $LARAVEL_FOLDER_LOCAL;
 sudo -u www-data composer install
 sudo -u www-data cp .env.example .env
+sed -i "s/MOTHERSHIP_DOMAIN=.*/MOTHERSHIP_DOMAIN=\""${VB_IP}"\"/" .env
 sudo -u www-data ../bin/update_env_db_credentials.php $LARAVEL_FOLDER_LOCAL
 sudo -u www-data php artisan key:generate
 sudo -u www-data php artisan migrate
@@ -122,6 +124,6 @@ sed -i "s/VOIP_APPLE_CERT_PASSPHRASE=/VOIP_APPLE_CERT_PASSPHRASE=${PHRASE}/g" .e
 
 
 echo 'Done.';
-echo 'After reboot your API should work under https://'$(hostname -I|awk '{print $1}')':444 . Please note https - is a must'
+echo 'After reboot your API should work under https://'${VB_IP}':444 . Please note https - is a must'
 read -p "Press enter to rebootc or ctrl+c to exit the install script"
 systemctl reboot

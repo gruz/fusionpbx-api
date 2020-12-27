@@ -28,12 +28,13 @@ foreach ($keys as $key) {
 $filePath = $argv[1]. '/.env';
 $env = file_get_contents($filePath);
 $env = explode(PHP_EOL, $env);
-$i = 0;
 
 foreach ($env as $key => $value) {
     if (0 === strpos($value, 'PERSONAL_CLIENT_SECRET=')) {
-        $env[$key] = 'PERSONAL_CLIENT_SECRET=' . $keys[$i];
-        $i++;
+        $env[$key] = 'PERSONAL_CLIENT_SECRET=' . $keys[0];
+    }
+    if (0 === strpos($value, 'PASSWORD_CLIENT_SECRET=')) {
+        $env[$key] = 'PASSWORD_CLIENT_SECRET=' . $keys[1];
     }
 }
 
