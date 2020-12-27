@@ -26,7 +26,9 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
-
+        // 'api' => [
+        //     \App\Http\Middleware\EncryptCookies::class,
+        // ]
     ];
 
     /**

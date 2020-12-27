@@ -20,10 +20,9 @@ $router->post('/signup', [\Api\User\Controllers\UserController::class, 'signup']
 // \Illuminate\Support\Facades\Auth::routes(['verify' => true]);
 
 $router->get('/foo', function () {
-$a = 1;
-phpinfo();
-//file_put_contents('aa.txt','aaaa');
-dd('here');
+    $user = User::with('groups')
+      ->get()->toArray();
+dd($user);
     $current_path = getcwd();
     chdir(config('app.fpath_full'));
     exec('php ./core/upgrade/upgrade_domains.php', $result);

@@ -29,7 +29,7 @@ class Domain extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(Group::class, 'v_group_users', 'user_uuid', 'group_uuid');
+        return $this->belongsToMany(Group::class, 'v_user_groups', 'user_uuid', 'group_uuid');
     }
 
     /**

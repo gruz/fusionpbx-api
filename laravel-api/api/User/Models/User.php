@@ -39,7 +39,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function groups()
     {
-        return $this->belongsToMany(Group::class, 'v_group_users', 'user_uuid', 'group_uuid');
+        return $this->belongsToMany(
+            Group::class,
+            'v_user_groups',
+            'user_uuid',
+            'group_uuid'
+        );
     }
 
     public function status()
@@ -63,7 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
         // This code works as expected only because of an override Group_user->getKeyName method.
         // Otherwise Laravel builds a wrong query
-        return $this->hasManyThrough(Group_permission::class, Group_user::class, 'user_uuid', 'group_name', 'user_uuid');
+        return $this->hasManyThrough(Group_permission::class, User_group::class, 'user_uuid', 'group_name', 'user_uuid');
 
         // Other Gruz tries
 

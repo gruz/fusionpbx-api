@@ -17,7 +17,7 @@ class Group extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'v_group_users', 'user_uuid', 'group_uuid');
+        return $this->belongsToMany(User::class, 'v_user_groups', 'user_uuid', 'group_uuid');
     }
 
     public function permissions()

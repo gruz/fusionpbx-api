@@ -5,7 +5,7 @@ namespace Api\User\Models;
 use App\Database\Eloquent\Model;
 use App\Traits\FusionPBXTableModel;
 
-class Group_user extends Model
+class User_group extends Model
 {
     use FusionPBXTableModel;
 

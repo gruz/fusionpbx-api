@@ -1,0 +1,11 @@
+{
+    "name": "stub/stub",
+    "description": "Stub for file autodiscover",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "/laravel-api/app/",
+            "Api\\": "/laravel-api/api/"
+        }
+    }
+}

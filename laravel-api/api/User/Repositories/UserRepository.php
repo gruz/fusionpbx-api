@@ -81,7 +81,7 @@ class UserRepository extends Repository
                 $query
                     ->insert(array_map(function ($groupName, $groupId) use ($user) {
                         return [
-                            'group_user_uuid' => Uuid::generate(),
+                            'user_group_uuid' => Uuid::generate(),
                             'domain_uuid' => $user->domain_uuid,
                             'group_uuid' => $groupId,
                             'group_name' => $groupName,
