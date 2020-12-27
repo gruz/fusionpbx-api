@@ -15,8 +15,10 @@
 ## Server installation
 
 ```bash
-git clone git@github.com:gruz/fusionpbx-api.git /var/www/fusionpbx-api
+git clone https://github.com/gruz/fusionpbx-api.git /var/www/fusionpbx-api
 cd /var/www/fusionpbx-api
+git fetch --all
+git checkout vb
 bin/init_server
 ```
 

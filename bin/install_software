@@ -48,11 +48,6 @@ while [ ! -z "$1" ];do
 shift
 done
 
-echo $INSTALL_FUSIONPBX
-echo $INSTALL_XDEBUG
-echo $OPEN_POSTGRES
-exit;
-
 echo "Installing additional libraries"
 
 apt install -y wget curl php-zmq nodejs php-mbstring \
