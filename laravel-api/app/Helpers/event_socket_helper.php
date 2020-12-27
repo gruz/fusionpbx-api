@@ -8,7 +8,7 @@
  * So to follow DRY we use it a non OOP procedures here
  * */
 if (!function_exists('event_socket_create')) {
-    require dirname(__FILE__) . '/../../../fusionpbx/resources/classes/event_socket.php';
+    require config('app.fpath_document_root') . '/resources/classes/event_socket.php';
 
     /* ##mygruz20170512010935 {
     It was:

@@ -16,6 +16,7 @@
 
 ```bash
 git clone https://github.com/gruz/fusionpbx-api.git /var/www/fusionpbx-api
+chown -R www-data:www-data /var/www/fusionpbx-api
 cd /var/www/fusionpbx-api
 git fetch --all
 git checkout vb
