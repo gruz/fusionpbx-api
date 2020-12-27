@@ -64,12 +64,20 @@ server {
 }
 EOF
 ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled/api
-sudo usermod -aG vboxsf www-data
-sudo iptables -A INPUT -p tcp --dport 444 --jump ACCEPT
-sudo /sbin/iptables-save > /etc/iptables/rules.v4
 
+PG_VERSION=$(psql -V | awk '{print $3}' | sed 's/\.\(.*\)//')
 HOST_IP=$(echo $SSH_CLIENT | awk '{ print $1}')
 PHP_VERSION=$(php --version | head -1 | awk '{print $2}' | cut -d. -f 1-2)
+
+# Open Postgres for remote connection
+sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/${PG_VERSION}/main/postgresql.conf
+printf "\nhost    all             all              "${HOST_IP}"/0        md5" >> /etc/postgresql/${PG_VERSION}/main/pg_hba.conf
+
+sudo usermod -aG vboxsf www-data
+sudo iptables -A INPUT -p tcp --dport 444 --jump ACCEPT
+sudo iptables -A INPUT -p tcp --dport 5432 --jump ACCEPT
+sudo /sbin/iptables-save > /etc/iptables/rules.v4
+
 cat << EOF > /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
 zend_extension=xdebug.so
 
@@ -93,8 +101,6 @@ xdebug.var_display_max_depth=-1
 EOF
 
 LARAVEL_FOLDER_LOCAL=/var/www/laravel-api
-
-cd $LARAVEL_FOLDER_LOCAL
 
 # Prepare laravel configuration
 cd $LARAVEL_FOLDER_LOCAL;
