@@ -27,4 +27,5 @@ umount -l /mnt/cdrom
 mount /dev/cdrom /mnt/cdrom
 cd /mnt/cdrom
 sh ./VBoxLinuxAdditions.run --nox11;
+sudo usermod -aG vboxsf www-data
 systemctl reboot

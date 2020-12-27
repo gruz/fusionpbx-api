@@ -1,5 +1,6 @@
 - [Fusionpbx API](#fusionpbx-api)
-  - [Development environment (Virtual Box)](#development-environment-virtual-box)
+  - [Server installation](#server-installation)
+  - [Development environment setup (Virtual Box)](#development-environment-setup-virtual-box)
     - [Clone project to locahost](#clone-project-to-locahost)
     - [Install Virtual Box software and create a Debian virtual machine](#install-virtual-box-software-and-create-a-debian-virtual-machine)
     - [Run installation script](#run-installation-script)
@@ -11,9 +12,20 @@
 
 # Fusionpbx API
 
-## Development environment (Virtual Box)
+## Server installation
+
+```bash
+git clone git@github.com:gruz/fusionpbx-api.git /var/www/fusionpbx-api
+cd /var/www/fusionpbx-api
+bin/init_server
+```
+
+## Development environment setup (Virtual Box)
 
 ### Clone project to locahost
+
+Get project files and init submodules (fusionpbx code is neede for api development as well)
+
 ```bash
 git clone git@github.com:gruz/fusionpbx-api.git
 cd fusionpbx-api

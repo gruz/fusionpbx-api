@@ -1,4 +1,4 @@
 #!/bin/bash
 
 DIRNAME="$(dirname "$(realpath "$0")")"
-$DIRNAME"/install_software"
+${DIRNAME}/install_software -f -d -p
