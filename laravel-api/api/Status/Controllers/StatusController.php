@@ -27,6 +27,8 @@ class StatusController extends Controller
         // ~ $data = $request->get($this->nameSpace, []);
         $data = $request->all();
 
-        return $this->response($this->controllerService->setStatus($data), 201);
+        $response = $this->controllerService->setStatus($data);
+
+        return $this->response($response, 201);
     }
 }
