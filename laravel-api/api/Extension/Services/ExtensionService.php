@@ -4,24 +4,24 @@ namespace Api\Extension\Services;
 
 use Exception;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Database\DatabaseManager;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
+use App\Traits\OneToManyRelationCRUD;
+use Illuminate\Database\DatabaseManager;
 
-use Api\Extension\Exceptions\InvalidExtensionException;
-use Api\Extension\Exceptions\InvalidExtension_userException;
-use Api\Extension\Exceptions\ExtensionNotFoundException;
-use Api\Extension\Exceptions\ExtensionExistsException;
-
+use Api\User\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Api\Extension\Events\ExtensionWasCreated;
+
 use Api\Extension\Events\ExtensionWasDeleted;
 use Api\Extension\Events\ExtensionWasUpdated;
-
 use Api\Extension\Repositories\ExtensionRepository;
-use Api\Extension\Repositories\Extension_userRepository;
-use Api\User\Repositories\userRepository;
 
-use App\Traits\OneToManyRelationCRUD;
+use Api\Extension\Exceptions\ExtensionExistsException;
+use Api\Extension\Exceptions\InvalidExtensionException;
+use Api\Extension\Exceptions\ExtensionNotFoundException;
+
+use Api\Extension\Repositories\Extension_userRepository;
+use Api\Extension\Exceptions\InvalidExtension_userException;
 
 class ExtensionService
 {
