@@ -7,10 +7,13 @@
     - [Login into debian](#login-into-debian)
     - [Install FusionPBX and API](#install-fusionpbx-and-api)
     - [Update mail settings](#update-mail-settings)
+  - [Docker setup](#docker-setup)
   - [Documenation](#documenation)
 
 
 # Fusionpbx API
+
+> It's a very early development stage for a FusionPBX API using Laravel.
 
 ## Server installation
 
@@ -19,7 +22,6 @@ git clone https://github.com/gruz/fusionpbx-api.git /var/www/fusionpbx-api
 chown -R www-data:www-data /var/www/fusionpbx-api
 cd /var/www/fusionpbx-api
 git fetch --all
-git checkout vb
 bin/init_server
 ```
 
@@ -33,7 +35,6 @@ Get project files and init submodules (fusionpbx code is neede for api developme
 git clone git@github.com:gruz/fusionpbx-api.git
 cd fusionpbx-api
 git fetch --all
-git checkout vb
 bin/init_local
 ```
 
@@ -99,6 +100,17 @@ When done you should be able to see fusionpbx site at `https://192.168.0.160` an
 
 Update `.env` file with your mail settings
 
+## Docker setup
+
+I didn't manage to create a docker for developemnt after many tries.
+
+So if you wish to help, then offer a docker setup for the project.
+
+Requirements I see:
+
+* Both FusionPBD and this API code can be examined with xdebug
+* SIP phone can register at the server
+ 
 ## Documenation
 
 Check this repository wiki
