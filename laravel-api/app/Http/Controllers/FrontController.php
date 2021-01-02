@@ -9,6 +9,7 @@ class FrontController extends BaseController
 {
 
     public function test() {
+        phpinfo();
         try {
 
             \DB::enableQueryLog(); // Enable query log

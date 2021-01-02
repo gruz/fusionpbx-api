@@ -1,4 +1,4 @@
 <?php
 
 
-$router->get('/test', 'FrontController@test', ['middleware' => 'web']);
+$router->get('/test', [ \App\Http\Controllers\FrontController::class, 'test' ], ['middleware' => 'web']);
