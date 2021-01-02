@@ -21,7 +21,6 @@
 git clone https://github.com/gruz/fusionpbx-api.git /var/www/fusionpbx-api
 chown -R www-data:www-data /var/www/fusionpbx-api
 cd /var/www/fusionpbx-api
-git fetch --all
 bin/init_server
 ```
 
@@ -34,7 +33,6 @@ Get project files and init submodules (fusionpbx code is neede for api developme
 ```bash
 git clone git@github.com:gruz/fusionpbx-api.git
 cd fusionpbx-api
-git fetch --all
 bin/init_local
 ```
 
