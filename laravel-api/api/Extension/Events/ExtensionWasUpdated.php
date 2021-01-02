@@ -3,7 +3,8 @@
 namespace Api\Extension\Events;
 
 use App\Events\Event;
-use Api\ExtensionModelsxtension;
+use Api\Extension\Models\Extension;
+
 
 class ExtensionWasUpdated extends Event
 {
