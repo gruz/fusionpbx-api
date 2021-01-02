@@ -1,4 +1,3 @@
 <?php
 
-$router->post('/pushtoken', 'PushtokenController@create');
-
+$router->post('/pushtoken', [\Api\Pushtoken\Controllers\PushtokenController::class, 'create']);
