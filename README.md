@@ -7,7 +7,7 @@
     - [Login into debian](#login-into-debian)
     - [Install FusionPBX and API](#install-fusionpbx-and-api)
     - [Update mail settings](#update-mail-settings)
-  - [Docker setup](#docker-setup)
+  - [Docker setup (please help)](#docker-setup-please-help)
   - [Documenation](#documenation)
 
 
@@ -100,7 +100,7 @@ When done you should be able to see fusionpbx site at `https://192.168.0.160` an
 
 Update `.env` file with your mail settings
 
-## Docker setup
+## Docker setup (please help)
 
 I didn't manage to create a docker for developemnt after many tries.
 
@@ -110,7 +110,7 @@ Requirements I see:
 
 * Both FusionPBD and this API code can be examined with xdebug
 * SIP phone can register at the server
- 
+
 ## Documenation
 
 Check this repository wiki
