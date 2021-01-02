@@ -1,4 +1,6 @@
 <?php
 
-$router->post('/status', 'StatusController@setStatus');
+use Api\Status\Controllers\StatusController;
+
+$router->post('/status', [ StatusController::class,  'setStatus']);
 
