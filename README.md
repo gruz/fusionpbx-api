@@ -7,7 +7,7 @@
     - [Login into debian](#login-into-debian)
     - [Install FusionPBX and API](#install-fusionpbx-and-api)
     - [Update mail settings](#update-mail-settings)
-  - [Documenations](#documenations)
+  - [Documenation](#documenation)
 
 
 # Fusionpbx API
@@ -99,6 +99,6 @@ When done you should be able to see fusionpbx site at `https://192.168.0.160` an
 
 Update `.env` file with your mail settings
 
-## Documenations
+## Documenation
 
 Check this repository wiki
