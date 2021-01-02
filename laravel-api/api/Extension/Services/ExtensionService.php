@@ -115,7 +115,12 @@ class ExtensionService
 
     public function update($extensionId, array $data)
     {
+        /**
+         * @var \Api\Extension\Models\Extension
+         */
         $extension = $this->getRequestedExtension($extensionId);
+        $extension_users = $extension->extension_users;
+        $user = $this->auth->user();
 
         $this->database->beginTransaction();
 

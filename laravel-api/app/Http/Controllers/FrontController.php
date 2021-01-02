@@ -9,6 +9,13 @@ class FrontController extends BaseController
 {
 
     public function test() {
+        \DB::enableQueryLog(); // Enable query log
+        $items = \Api\Extension\Models\Extension::with('extension_users.permissions')
+            ->where('extension_uuid', '63045580-4ce3-11eb-b21b-47744eb6524b')
+            ->get()
+            ->toArray();
+        \dd($items,\DB::getQueryLog());
+
         phpinfo();
         try {
 

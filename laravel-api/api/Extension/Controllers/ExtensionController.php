@@ -47,7 +47,11 @@ class ExtensionController extends Controller
     {
         $data = $request->get('extension', []);
 
-        return $this->response($this->extensionService->update($extensionId, $data));
+        $update = $this->extensionService->update($extensionId, $data);
+
+        $return = $this->response($update);
+
+        return $return;
     }
 
     public function delete($extensionId)

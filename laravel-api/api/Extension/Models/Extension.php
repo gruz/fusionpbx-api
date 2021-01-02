@@ -114,7 +114,7 @@ class Extension extends Model
 
     public function extension_users()
     {
-        return $this->belongsToMany(User::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
+        return $this->belongsToMany(User::class, 'v_extension_users', 'extension_uuid', 'user_uuid');
     }
 
 }
