@@ -16,12 +16,11 @@ class SignupRequest extends ApiRequest
 
     public function rules()
     {
-      if (empty(request('team')) && empty(request('user')))
-      {
-        return [
-            'team|user' => 'array|required',
-        ];
-      }
+        if (empty(request('team')) && empty(request('user'))) {
+            return [
+                'team|user' => 'array|required',
+            ];
+        }
 
         return [
             // ~ 'team' => 'array|required',
@@ -59,9 +58,8 @@ class SignupRequest extends ApiRequest
     {
         $data = parent::get($key, $default);
 
-        if (empty($data))
-        {
-          return $data;
+        if (empty($data)) {
+            return $data;
         }
 
         $password = $data['password'];
@@ -69,16 +67,15 @@ class SignupRequest extends ApiRequest
         $data = array_map('trim', $data);
         $data['password'] = $password;
 
-        if (strpos($data['domain_name'], '.') === false)
-        {
-          $data['domain_name'] = $data['domain_name'] . '.' . env('MOTHERSHIP_DOMAIN');
+        if (strpos($data['domain_name'], '.') === false) {
+            $data['domain_name'] = $data['domain_name'] . '.' . env('MOTHERSHIP_DOMAIN');
         }
 
         $pattern = '~^([a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)+.*)$~';
 
-       if (!preg_match($pattern, $data['domain_name'])) {
-          throw new WrongSignupDataException(__('Not a valid URL `:url`', ['url' => $data['domain_name'] ]));
-       }
+        if (!preg_match($pattern, $data['domain_name'])) {
+            throw new WrongSignupDataException(__('Not a valid URL `:url`', ['url' => $data['domain_name']]));
+        }
 
         return $data;
     }
