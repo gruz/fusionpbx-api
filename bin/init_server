@@ -1,0 +1,6 @@
+#!/bin/bash
+
+ln -s /var/www/fusionpbx-api/laravel-api /var/www/laravel-api
+
+DIRNAME="$(dirname "$(realpath "$0")")"
+${DIRNAME}/install_software -f -d -p
