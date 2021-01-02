@@ -40,7 +40,7 @@ class ExtensionRepository extends Repository
             if (count($removeUsers) > 0) {
                 $query = $this->database->table($extension->extension_users()->getTable());
                 $query
-                    ->where('extension_uud', $extension->extension_uuid)
+                    ->where('extension_uuid', $extension->extension_uuid)
                     ->where('domain_uuid', $extension->domain_uuid)
                     ->whereIn('user_uuid', $removeUsers)
                     ->delete();

@@ -209,10 +209,11 @@ class UserService
 
             $password = uniqid();
 
-            $extension = $this->extensionService->create(['extension' => $extension_number, 'password' => $password], $user);
-            $extension->makeVisible('password');
-            $this->extensionService->setOneToManyRelations('Users', $extension->extension_uuid, [$user->user_uuid]);
-            $user->setRelation('extension', $extension);
+            $this->extensionService->create(['extension' => $extension_number, 'password' => $password], $user);
+            // $extension = $this->extensionService->create(['extension' => $extension_number, 'password' => $password], $user);
+            // $extension->makeVisible('password');
+            // $this->extensionService->setOneToManyRelations('Users', $extension->extension_uuid, [$user->user_uuid]);
+            // $user->setRelation('extension', $extension);
 
             $this->dispatcher->dispatch(new UserWasCreated($user));
         } catch (Exception $e) {

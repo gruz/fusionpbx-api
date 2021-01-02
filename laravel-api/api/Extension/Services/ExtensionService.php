@@ -3,6 +3,7 @@
 namespace Api\Extension\Services;
 
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use App\Traits\OneToManyRelationCRUD;
@@ -73,14 +74,12 @@ class ExtensionService
         $this->database->beginTransaction();
 
         try {
-            if (empty($user))
-            {
-              $user = $this->auth->user();
+            if (empty($user)) {
+                $user = $this->auth->user();
             }
 
-            if ($this->extensionRepository->getWhereArray(['domain_uuid' => $user->domain_uuid,'extension' => $data['extension']])->count() > 0)
-            {
-              throw new ExtensionExistsException(['domain_name' => $user->domain->domain_name, 'extension' => $data['extension']]);
+            if ($this->extensionRepository->getWhereArray(['domain_uuid' => $user->domain_uuid, 'extension' => $data['extension']])->count() > 0) {
+                throw new ExtensionExistsException(['domain_name' => $user->domain->domain_name, 'extension' => $data['extension']]);
             }
 
             // TODO Check if context is passed if it exists at all.
@@ -89,14 +88,20 @@ class ExtensionService
             $data[$var] = empty($data[$var]) ? $user->domain->domain_name : $data[$var];
             $var = 'user_context';
             $data[$var] = empty($data[$var]) ? $user->domain->domain_name : $data[$var];
+
             $var = 'domain_uuid';
-            $data[$var] = empty($data[$var]) ? $user->domain_uuid : $data[$var];
+            $data[$var] = Arr::get($data, $var, $user->$var);
+
+            $var = 'user_uuid';
+            $data[$var] = Arr::get($data, $var, $user->$var);
 
             $extension = $this->extensionRepository->create($data);
+            $this->setOneToManyRelations('Users', $extension->extension_uuid, [$user->user_uuid]);
+            $user->setRelation('extension', $extension);
+
 
             $cacheURI = "directory:" . $extension->extension . "@" . $extension->user_context;
             $this->dispatcher->dispatch(new ExtensionWasCreated($extension, $cacheURI));
-
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -147,6 +152,4 @@ class ExtensionService
 
         $this->database->commit();
     }
-
-
 }
