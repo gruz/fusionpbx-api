@@ -142,7 +142,7 @@ class StatusService
 
       $this->database->commit();
 
-      return ['users' => $return];
+      return $return;
 
       $return = [];
 

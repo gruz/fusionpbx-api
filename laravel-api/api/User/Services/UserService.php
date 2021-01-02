@@ -92,17 +92,18 @@ class UserService
         //return Auth::user();
         $class = Extension::class;
         $class::$staticMakeVisible = ['password'];
-				return $this->userRepository->getWhere('user_uuid', Auth::user()->user_uuid)->first();
+        return $this->userRepository->getWhere('user_uuid', Auth::user()->user_uuid)->first();
     }
 
     public function getAll($options = [])
     {
-				return $this->userRepository->getWhereArray(['domain_uuid' => Auth::user()->domain_uuid, 'user_enabled' => 'true']);
+        return $this->userRepository->getWhereArray(['domain_uuid' => Auth::user()->domain_uuid, 'user_enabled' => 'true']);
     }
 
     public function getById($userId, array $options = [])
     {
-        return $this->userRepository->getWhere('user_uuid', $userId)->first();
+        $data = $this->userRepository->getWhere('user_uuid', $userId)->first();
+        return $data;
 
         // ~ $user = $this->getRequestedUser($userId, $options);
 
@@ -124,47 +125,41 @@ class UserService
 
         try {
             // If it's a team registration, we just create the first user in the domain.
-            if ($data['isTeam'])
-            {
-
+            if ($data['isTeam']) {
             }
             // Otherwise we check if the username of email exists in the domain
-            else
-            {
-              // Check if domain exists
-              $domain = $this->domainRepository->getWhere('domain_name', $data['domain_name']);
+            else {
+                // Check if domain exists
+                $domain = $this->domainRepository->getWhere('domain_name', $data['domain_name']);
 
-              // We cannot create a user if there is not such a domain
-              if ($domain->count() < 1)
-              {
-                throw new DomainNotFoundException();
-              }
+                // We cannot create a user if there is not such a domain
+                if ($domain->count() < 1) {
+                    throw new DomainNotFoundException();
+                }
 
-              $domain = $domain->first();
+                $domain = $domain->first();
 
-              // Get user by domain and username - create only if there is no a user with such a name
-              $user = $this->userRepository->getWhereArray([
-                'domain_uuid' => $domain['domain_uuid'],
-                'username' => $data['username'],
-              ]);
+                // Get user by domain and username - create only if there is no a user with such a name
+                $user = $this->userRepository->getWhereArray([
+                    'domain_uuid' => $domain['domain_uuid'],
+                    'username' => $data['username'],
+                ]);
 
-              if ($user->count() > 0)
-              {
-                throw new UserExistsException();
-              }
+                if ($user->count() > 0) {
+                    throw new UserExistsException();
+                }
 
-              // Check for the email in the current domain
-              $contact_email = $this->contact_emailRepository->getWhereArray([
-                'domain_uuid' => $domain['domain_uuid'],
-                'email_address' => $data['email'],
-              ]);
+                // Check for the email in the current domain
+                $contact_email = $this->contact_emailRepository->getWhereArray([
+                    'domain_uuid' => $domain['domain_uuid'],
+                    'email_address' => $data['email'],
+                ]);
 
-              if ($contact_email->count() > 0)
-              {
-                throw new EmailExistsException();
-              }
+                if ($contact_email->count() > 0) {
+                    throw new EmailExistsException();
+                }
 
-              $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
+                $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
             }
 
             // Create a contact
@@ -206,13 +201,10 @@ class UserService
             // Create an extension
             $extension_number = $this->extensionRepository->getWhere('domain_uuid', $data['domain_uuid'])->max('extension');
 
-            if ($extension_number < 100)
-            {
-              $extension_number = 100;
-            }
-            else
-            {
-              $extension_number = (int) $extension_number + 1;
+            if ($extension_number < 100) {
+                $extension_number = 100;
+            } else {
+                $extension_number = (int) $extension_number + 1;
             }
 
             $password = uniqid();
@@ -223,7 +215,6 @@ class UserService
             $user->setRelation('extension', $extension);
 
             $this->dispatcher->dispatch(new UserWasCreated($user));
-
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -267,8 +258,8 @@ class UserService
         $this->database->commit();
 
         $response = [
-          'message' => __('User activated'),
-          'user' => $user
+            'message' => __('User activated'),
+            'user' => $user
         ];
 
         return $response;
@@ -313,6 +304,4 @@ class UserService
 
         $this->database->commit();
     }
-
-
 }
