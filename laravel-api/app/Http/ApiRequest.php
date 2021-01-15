@@ -7,7 +7,10 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use \Illuminate\Support\Str;
+use Illuminate\Support\Str;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\Type;
+use Illuminate\Validation\Rule;
 
 abstract class ApiRequest extends FormRequest
 {
@@ -19,39 +22,32 @@ abstract class ApiRequest extends FormRequest
     ];
 
     /**
-     * 
+     * @var Model $model
      *  
+     * Generates basic validation rules based on db table column types.
      * */    
     protected function buildDefaultRules(Model $model) 
     {
-        /**
-         * @var Illuminate\Database\Eloquent\Model $model
-         */
-        $modelName = Str::lower(
-                     class_basename(
-                     get_class($model)));
-        $columns = $model->getTableColumnsInfo(true);
         $rules = [];
+        $modelClass = get_class($model);
+        $modelName = Str::lower(class_basename($modelClass));
+        $columns = $model->getTableColumnsInfo();
+        $uniqueColumns = $model->getUniqueColumnsFromTable($model->getTable());
 
         /**
-         * @var Doctrine\DBAL\Schema\Column $column
+         * @var Column $column
          */
         foreach ($columns as $column) {
             $columnName = $column->getName();
             
             /**
-             * @var Doctrine\DBAL\Types\Type $columnType
+             * @var Type $columnType
              */
             $columnType = $column->getType();
             $columnTypeName = $columnType->getName();
             $columnIsNotNullType = $column->getNotnull();
 
-            // We should append column name with prefix if it`s nested 
-            // or if it`s same as model name
-            // if ($columnName == $modelName) {
-            //      $columnName =  $modelName . '.' . $columnName;
-            // }
-
+            // We should append column name with prefix - API demands
             $prefixedColumnName = $modelName . '.' . $columnName;
             $rules[$prefixedColumnName] = $columnTypeName;
             $rule[] = $this->mapping[$columnTypeName] ?
@@ -60,6 +56,15 @@ abstract class ApiRequest extends FormRequest
 
             // Check if field is required or can be null.
             $rule[] = $columnIsNotNullType ? 'required' : 'nullable';
+
+            // Check if field is unique.
+            if (in_array($columnName, $uniqueColumns)) {
+                $modelObjectId = request()->route()->parameter('id');
+                $modelObject = $modelClass::find($modelObjectId);
+                $rule[] = Rule::unique($model->getTable(), $columnName)
+                          ->ignore($modelObject)
+                          ->__toString();
+            }
 
             $rules[$prefixedColumnName] = implode('|', $rule);
             unset($rule);
@@ -77,4 +82,5 @@ abstract class ApiRequest extends FormRequest
     {
         throw new HttpException(403);
     }
+
 }

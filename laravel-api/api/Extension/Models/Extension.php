@@ -117,9 +117,4 @@ class Extension extends Model
         return $this->belongsToMany(User::class, 'v_extension_users', 'extension_uuid', 'user_uuid');
     }
 
-    public function getFillable()
-    {
-        return $this->fillable;
-    }
-
 }
