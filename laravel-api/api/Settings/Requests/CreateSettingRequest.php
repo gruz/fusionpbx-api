@@ -2,7 +2,7 @@
 
 namespace Api\Settings\Requests;
 
-use App\Http\ApiRequest;
+use Infrastructure\Http\ApiRequest;
 
 class CreateSettingRequest extends ApiRequest
 {

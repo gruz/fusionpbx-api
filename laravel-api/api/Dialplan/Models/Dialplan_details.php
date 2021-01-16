@@ -3,8 +3,8 @@
 namespace Api\Dialplan\Models;
 
 use Illuminate\Notifications\Notifiable;
-use App\Database\Eloquent\Model;
-use App\Traits\FusionPBXTableModel;
+use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Traits\FusionPBXTableModel;
 
 class Dialplan_details extends Model
 {

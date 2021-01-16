@@ -2,8 +2,8 @@
 
 namespace Api\User\Models;
 
-use App\Database\Eloquent\Model;
-use App\Traits\FusionPBXTableModel;
+use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Traits\FusionPBXTableModel;
 
 class User_group extends Model
 {

@@ -28,7 +28,7 @@ use Api\User\Repositories\ContactRepository;
 use Api\User\Repositories\Contact_emailRepository;
 use Api\Extension\Repositories\ExtensionRepository;
 
-use App\Traits\OneToManyRelationCRUD;
+use Infrastructure\Traits\OneToManyRelationCRUD;
 
 use Illuminate\Support\Facades\Auth;
 

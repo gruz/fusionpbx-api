@@ -4,7 +4,7 @@ namespace Api\Extension\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use App\Traits\BaseException;
+use Infrastructure\Traits\BaseException;
 
 class ExtensionNotFoundException extends NotFoundHttpException
 {

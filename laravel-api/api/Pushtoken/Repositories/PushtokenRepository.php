@@ -3,7 +3,7 @@
 namespace Api\Pushtoken\Repositories;
 
 use Api\Pushtoken\Models\Pushtoken;
-use App\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\Repository;
 use Illuminate\Database\Eloquent\Collection;
 
 class PushtokenRepository extends Repository

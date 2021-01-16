@@ -2,7 +2,7 @@
 
 namespace Api\User\Requests;
 
-use App\Http\ApiRequest;
+use Infrastructure\Http\ApiRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Validator;
 use Api\User\Exceptions\WrongSignupDataException;

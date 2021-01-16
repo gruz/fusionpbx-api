@@ -5,7 +5,7 @@ namespace Api\User\Models;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Traits\FusionPBXTableModel;
+use Infrastructure\Traits\FusionPBXTableModel;
 use Api\Extension\Models\Extension;
 use Api\Status\Models\Status;
 use Illuminate\Contracts\Auth\MustVerifyEmail;

@@ -3,7 +3,7 @@
 namespace Api\Extension\Requests;
 
 use Api\Extension\Models\Extension;
-use App\Http\ApiRequest;
+use Infrastructure\Http\ApiRequest;
 
 class UpdateExtensionRequest extends ApiRequest
 {

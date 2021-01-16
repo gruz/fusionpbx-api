@@ -2,7 +2,7 @@
 
 namespace Api\User\Events;
 
-use App\Events\Event;
+use Infrastructure\Events\Event;
 use Api\User\Models\Group;
 
 class GroupWasDeleted extends Event

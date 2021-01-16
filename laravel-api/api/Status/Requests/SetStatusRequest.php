@@ -2,7 +2,7 @@
 
 namespace Api\Status\Requests;
 
-use App\Http\ApiRequest;
+use Infrastructure\Http\ApiRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Validator;
 use Api\Status\Exceptions\InvalidStatusException;

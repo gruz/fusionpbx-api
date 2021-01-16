@@ -2,8 +2,8 @@
 
 namespace Api\Pushtoken\Models;
 
-use App\Database\Eloquent\Model;
-use App\Traits\Uuids;
+use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Traits\Uuids;
 
 class Pushtoken extends Model
 {

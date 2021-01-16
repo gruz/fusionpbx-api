@@ -4,7 +4,7 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "App\\": "/laravel-api/app/",
+            "Infrastructure\\": "/laravel-api/infrastructure/",
             "Api\\": "/laravel-api/api/"
         }
     }

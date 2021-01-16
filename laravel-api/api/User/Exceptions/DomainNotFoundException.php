@@ -4,7 +4,7 @@ namespace Api\User\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use App\Traits\BaseException;
+use Infrastructure\Traits\BaseException;
 
 class DomainNotFoundException extends NotFoundHttpException
 {

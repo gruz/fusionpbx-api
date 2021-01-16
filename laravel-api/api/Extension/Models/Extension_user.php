@@ -3,8 +3,8 @@
 namespace Api\Extension\Models;
 
 use Illuminate\Notifications\Notifiable;
-use App\Database\Eloquent\Model;
-use App\Traits\FusionPBXTableModel;
+use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Traits\FusionPBXTableModel;
 
 class Extension_user extends Model
 {

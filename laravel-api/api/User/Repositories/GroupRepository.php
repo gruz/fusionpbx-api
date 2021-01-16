@@ -4,7 +4,7 @@ namespace Api\User\Repositories;
 
 use Api\User\Models\Group;
 use Illuminate\Database\Query\Builder;
-use App\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\Repository;
 
 class GroupRepository extends Repository
 {

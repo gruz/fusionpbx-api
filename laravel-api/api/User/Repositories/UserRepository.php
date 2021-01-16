@@ -4,7 +4,7 @@ namespace Api\User\Repositories;
 
 use Webpatser\Uuid\Uuid;
 use Api\User\Models\User;
-use App\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\Repository;
 
 class UserRepository extends Repository
 {

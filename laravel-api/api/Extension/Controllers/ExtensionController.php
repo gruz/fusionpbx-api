@@ -3,7 +3,7 @@
 namespace Api\Extension\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controller;
+use Infrastructure\Http\Controller;
 use Api\Extension\Requests\CreateExtensionRequest;
 use Api\Extension\Requests\UpdateExtensionRequest;
 use Api\Extension\Services\ExtensionService;
