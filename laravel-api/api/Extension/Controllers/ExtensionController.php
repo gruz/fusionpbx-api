@@ -5,6 +5,7 @@ namespace Api\Extension\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controller;
 use Api\Extension\Requests\CreateExtensionRequest;
+use Api\Extension\Requests\UpdateExtensionRequest;
 use Api\Extension\Services\ExtensionService;
 
 class ExtensionController extends Controller
@@ -43,7 +44,7 @@ class ExtensionController extends Controller
         return $this->response($this->extensionService->create($data), 201);
     }
 
-    public function update($extensionId, Request $request)
+    public function update($extensionId, UpdateExtensionRequest $request)
     {
         $data = $request->get('extension', []);
 

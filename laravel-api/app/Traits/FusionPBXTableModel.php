@@ -2,6 +2,8 @@
 namespace App\Traits;
 
 use App\Traits\Uuids;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 trait FusionPBXTableModel
 {
