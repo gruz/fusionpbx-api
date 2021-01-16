@@ -6,23 +6,17 @@
     "type": "project",
     "require": {
         "php": ">=7.3.0",
-        "laravel/framework": ">=8",
-        "laravel/passport": ">=10",
-        "sentry/sentry": ">=1.6",
-        "optimus/distributed-laravel": ">=0.1",
-        "optimus/bruno": ">=6.0",
-        "optimus/genie": ">=1.0",
-        "optimus/heimdal": ">=1.0",
-        "optimus/api-consumer": ">=0.2",
-        "optimus/architect": ">=1.0",
-        "webpatser/laravel-uuid": ">=2.0",
-        "gruz/laravel-ratchet": ">=8.0",
+        "laravel/passport": "^10.1",
+        "optimus/heimdal": "^3.0",
+        "optimus/distributed-laravel": "^1.0",
+        "laravel/framework": "^8.22",
+        "optimus/bruno": "^6.0",
+        "optimus/genie": "^3.3",
+        "optimus/api-consumer": "^0.4.0",
+        "optimus/architect": "^2.0",
+        "webpatser/laravel-uuid": "^4.0",
+        "gruz/laravel-ratchet": "^8.0",
         "darkaonline/l5-swagger": "^8.0"
-    },
-    "require-dev": {
-        "fakerphp/faker": ">=1.4",
-        "phpunit/phpunit": ">=9",
-        "barryvdh/laravel-ide-helper": ">=2.8"
     },
     "autoload": {
         "psr-4": {
@@ -53,5 +47,8 @@
     "config": {
         "preferred-install": "dist",
         "optimize-autoloader": true
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
     }
 }
