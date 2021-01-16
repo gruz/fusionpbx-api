@@ -5,6 +5,7 @@ namespace Infrastructure\Database\Eloquent;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Support\Facades\DB;
 use Doctrine\DBAL\Schema\Index;
+use Illuminate\Support\Facades\Cache;
 
 abstract class Model extends BaseModel
 {
@@ -18,14 +19,22 @@ abstract class Model extends BaseModel
      */
     public function getTableColumnNames() 
     {
-        $tableColumns = $this->getConnection()
-                             ->getSchemaBuilder()
-                             ->getColumnListing($this->getTable());
+        $column_names = Cache::remember(
+            __METHOD__,
+            now()->addDay(),
+            function () {
+                $tableColumns = $this->getConnection()
+                                 ->getSchemaBuilder()
+                                 ->getColumnListing($this->getTable());
         
-        $fillableProps = $this->getFillable();
-        $result = array_intersect($tableColumns, $fillableProps);
+                $fillableProps = $this->getFillable();
+                $result = array_intersect($tableColumns, $fillableProps);
 
-        return $result;
+                return $result;
+            }
+        );
+
+        return $column_names;        
     }
 
     /**
@@ -36,14 +45,23 @@ abstract class Model extends BaseModel
      */
     public function getTableColumnsInfo()
     {
-        $columns_info = [];
-        $column_names = $this->getTableColumnNames();
-        foreach ($column_names as $column_name) {
-            $info = $this->getConnection()
-                         ->getDoctrineColumn($this->getTable(), $column_name);
-            $columns_info[$column_name] = $info;
-        }
-
+        $columns_info = Cache::remember(
+            __METHOD__,
+            now()->addDay(), 
+            function () {
+                $columns_info = [];
+                $column_names = $this->getTableColumnNames();
+        
+                foreach ($column_names as $column_name) {
+                    $info = $this->getConnection()
+                                ->getDoctrineColumn($this->getTable(), $column_name);
+                    $columns_info[$column_name] = $info;
+                }
+        
+                return $columns_info;
+            }
+        );
+       
         return $columns_info;
     }
 
@@ -54,24 +72,32 @@ abstract class Model extends BaseModel
      */
     public function getUniqueColumnsFromTable($tableName) 
     {
-        /**
-         * @var Index[]
-         */
-        $indexColumns = DB::getDoctrineSchemaManager()
-                       ->listTableIndexes($tableName);
-        $uniqueColumnsText = "";
+        $uniqueColumns = Cache::remember(
+            __METHOD__,
+            now()->addDay(), 
+            function () use ($tableName) {
+                /**
+                 * @var Index[]
+                 */
+                $indexColumns = DB::getDoctrineSchemaManager()
+                                ->listTableIndexes($tableName);
+                                $uniqueColumnsText = "";
 
-        /**
-        * @var Index $index
-        */
-        foreach ($indexColumns as $index) {
-            if ($index->isUnique() && !$index->isPrimary()){
-                $uniqueIndexColumns = implode(" ", $index->getColumns());
-                $uniqueColumnsText .= $uniqueIndexColumns . " ";
+                /**
+                * @var Index $index
+                */
+                foreach ($indexColumns as $index) {
+                    if ($index->isUnique() && !$index->isPrimary()){
+                        $uniqueIndexColumns = implode(" ", $index->getColumns());
+                        $uniqueColumnsText .= $uniqueIndexColumns . " ";
+                    }
+                }
+                $uniqueColumns = array_unique(explode(" ", trim($uniqueColumnsText)));
+
+                return $uniqueColumns;
             }
-        }
-        $uniqueColumns = array_unique(explode(" ", trim($uniqueColumnsText)));
-
+        );
+        
         return $uniqueColumns;
     }
 
