@@ -49,6 +49,7 @@
         "optimize-autoloader": true
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "barryvdh/laravel-ide-helper": "^2.9"
     }
 }
