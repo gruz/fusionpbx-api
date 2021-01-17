@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Infrastructure;
 
 use Ratchet\ConnectionInterface;
 
