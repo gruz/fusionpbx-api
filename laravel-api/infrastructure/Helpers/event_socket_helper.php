@@ -8,7 +8,8 @@
  * So to follow DRY we use it a non OOP procedures here
  * */
 if (!function_exists('event_socket_create')) {
-    require config('app.fpath_document_root') . '/resources/classes/event_socket.php';
+    $path = base_path(config('app.fpath_document_root'));
+    require $path . '/resources/classes/event_socket.php';
 
     /* ##mygruz20170512010935 {
     It was:
