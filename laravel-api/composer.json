@@ -18,6 +18,10 @@
         "gruz/laravel-ratchet": "^8.0",
         "darkaonline/l5-swagger": "^8.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "barryvdh/laravel-ide-helper": "^2.9"
+    },
     "autoload": {
         "psr-4": {
             "Infrastructure\\": "infrastructure/",
@@ -47,9 +51,5 @@
     "config": {
         "preferred-install": "dist",
         "optimize-autoloader": true
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9.5",
-        "barryvdh/laravel-ide-helper": "^2.9"
     }
 }
