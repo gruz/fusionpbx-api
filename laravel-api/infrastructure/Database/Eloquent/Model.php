@@ -14,91 +14,108 @@ abstract class Model extends BaseModel
 
      /**
      * Gets column names from table associated with current model
-     * 
-     * @return array 
+     *
+     * @return array
      */
-    public function getTableColumnNames() 
+    public function getTableColumnNames()
     {
-        $column_names = Cache::remember(
-            __METHOD__,
-            now()->addDay(),
-            function () {
-                $tableColumns = $this->getConnection()
-                                 ->getSchemaBuilder()
-                                 ->getColumnListing($this->getTable());
-        
-                $fillableProps = $this->getFillable();
-                $result = array_intersect($tableColumns, $fillableProps);
+        $getData = function () {
+            $tableColumns = $this->getConnection()
+                                ->getSchemaBuilder()
+                                ->getColumnListing($this->getTable());
 
-                return $result;
-            }
-        );
+            $fillableProps = $this->getFillable();
+            $result = array_intersect($tableColumns, $fillableProps);
 
-        return $column_names;        
+            return $result;
+        };
+
+        if (config('app.debug')) {
+            $data = $getData();
+        } else {
+            $data = Cache::remember(
+                __METHOD__,
+                now()->addDay(),
+                $getData
+            );
+        }
+
+        return $data;
     }
 
     /**
-     * Gets columns info from table associated with current model 
+     * Gets columns info from table associated with current model
      * [name => [info]] array.
-     * 
+     *
      * @return array
      */
     public function getTableColumnsInfo()
     {
-        $columns_info = Cache::remember(
-            __METHOD__,
-            now()->addDay(), 
-            function () {
-                $columns_info = [];
-                $column_names = $this->getTableColumnNames();
-        
-                foreach ($column_names as $column_name) {
-                    $info = $this->getConnection()
-                                ->getDoctrineColumn($this->getTable(), $column_name);
-                    $columns_info[$column_name] = $info;
-                }
-        
-                return $columns_info;
+        $getData = function () {
+            $columns_info = [];
+            $column_names = $this->getTableColumnNames();
+
+            foreach ($column_names as $column_name) {
+                $info = $this->getConnection()
+                            ->getDoctrineColumn($this->getTable(), $column_name);
+                $columns_info[$column_name] = $info;
             }
-        );
-       
-        return $columns_info;
+
+            return $columns_info;
+        };
+
+        if (config('app.debug')) {
+            $data = $getData();
+        } else {
+            $data = Cache::remember(
+                __METHOD__,
+                now()->addDay(),
+                $getData
+            );
+        }
+
+        return $data;
     }
 
 /**
      * Gets unique constarints from table columns
-     * 
+     *
      * @return array Column names which has unique constarints in db table
      */
-    public function getUniqueColumnsFromTable($tableName) 
+    public function getUniqueColumnsFromTable($tableName)
     {
-        $uniqueColumns = Cache::remember(
-            __METHOD__,
-            now()->addDay(), 
-            function () use ($tableName) {
-                /**
-                 * @var Index[]
-                 */
-                $indexColumns = DB::getDoctrineSchemaManager()
-                                ->listTableIndexes($tableName);
-                                $uniqueColumnsText = "";
+        $getData = function () use ($tableName) {
+            /**
+             * @var Index[]
+             */
+            $indexColumns = DB::getDoctrineSchemaManager()
+                            ->listTableIndexes($tableName);
+            $uniqueColumns = [];
 
-                /**
-                * @var Index $index
-                */
-                foreach ($indexColumns as $index) {
-                    if ($index->isUnique() && !$index->isPrimary()){
-                        $uniqueIndexColumns = implode(" ", $index->getColumns());
-                        $uniqueColumnsText .= $uniqueIndexColumns . " ";
-                    }
+            /**
+            * @var Index $index
+            */
+            foreach ($indexColumns as $index) {
+                if ($index->isUnique() || $index->isPrimary()){
+                    $uniqueColumns = array_merge($uniqueColumns, $index->getColumns());
                 }
-                $uniqueColumns = array_unique(explode(" ", trim($uniqueColumnsText)));
-
-                return $uniqueColumns;
             }
-        );
-        
-        return $uniqueColumns;
+            $uniqueColumns = array_unique($uniqueColumns);
+
+            return $uniqueColumns;
+        };
+
+        if (config('app.debug')) {
+            $data = $getData();
+        } else {
+            $data = Cache::remember(
+                __METHOD__,
+                now()->addDay(),
+                $getData
+            );
+        }
+
+        return $data;
     }
 
     /**
@@ -120,7 +137,7 @@ abstract class Model extends BaseModel
     //     $colmns = static::$_columns_info;
     //     if (is_null(static::$_nullable_fields) ){
     //         foreach ($colmns as $fieldName => $fieldData) {}
-    //         static::$_nullable_fields = array_map( 
+    //         static::$_nullable_fields = array_map(
     //                 function ($fld){return $fld['notnull'];},
     //                 $colmns
     //         );
@@ -132,7 +149,7 @@ abstract class Model extends BaseModel
     // public function getDbFieldType($field)
     // {
     //     $fieldType = DB::getSchemaBuilder()->getColumnType($this->getTable(), $field);
-        
+
     //     return $fieldType;
     // }
 }

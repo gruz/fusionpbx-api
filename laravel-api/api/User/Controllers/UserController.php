@@ -112,6 +112,13 @@ class UserController extends Controller
 
     // ~ return $this->response($this->userService->create($data), 201);
     // ~ }
+
+    /**
+     * User signup
+     *
+     * @param SignupRequest $request
+     * @return void
+     */
     public function signup(SignupRequest $request)
     {
         $data = $request->get('team', []);

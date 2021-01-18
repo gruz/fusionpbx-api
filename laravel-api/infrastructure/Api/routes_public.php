@@ -13,7 +13,7 @@ $router->post('/domain/signup', [\Api\User\Controllers\UserController::class, 's
 $router->post('/user/signup', [\Api\User\Controllers\UserController::class, 'signupUser']);
 
 // ~ $router->post('register', '\Api\User\Controllers\UserController@register');
-// $router->post('/signup', [\Api\User\Controllers\UserController::class, 'signup']);
+$router->post('/signup', [\Api\User\Controllers\UserController::class, 'signup']);
 // ~ $router->post('/activate/user/{}', '\Api\User\Controllers\UserController@activate');
 // ~ $router->post('/create', '\Api\User\Controllers\UserController@create');
 // ~ Route::resource('domain', '\Api\User\Controllers\DomainController');
