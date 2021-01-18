@@ -1,0 +1,52 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "FusionPBX API",
+        "contact": {
+            "email": "vongruz@protonmail.com"
+        },
+        "version": "0.0.8-62-g192d97b"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "operationId": "Infrastructure\\Api\\Controllers\\DefaultApiController::index",
+                "responses": {
+                    "200": {
+                        "description": "Get application name and version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "title": {
+                                            "description": "APP_NAME variable",
+                                            "type": "string"
+                                        },
+                                        "version": {
+                                            "description": "Fit tag version",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "examples": [
+                                    {
+                                        "example": "Asdsads",
+                                        "summary": "App info",
+                                        "value": {
+                                            "title": "FusionPBX API",
+                                            "version": "0.0.8-62-g192d97b"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
