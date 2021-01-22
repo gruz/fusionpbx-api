@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Requests;
 
-use App\Http\ApiRequest;
+use Infrastructure\Http\ApiRequest;
 
 class CreateExtensionRequest extends ApiRequest
 {

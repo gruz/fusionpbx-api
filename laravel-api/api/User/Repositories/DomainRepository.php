@@ -3,7 +3,7 @@
 namespace Api\User\Repositories;
 
 use Api\User\Models\Domain;
-use App\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\Repository;
 
 class DomainRepository extends Repository
 {

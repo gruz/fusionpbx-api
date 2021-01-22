@@ -2,7 +2,7 @@
 
 namespace Api\Pushtoken\Requests;
 
-use App\Http\ApiRequest;
+use Infrastructure\Http\ApiRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Validator;
 use Api\Pushtoken\Exceptions\WrongPushtokenDataException;

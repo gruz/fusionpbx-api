@@ -2,7 +2,7 @@
 
 namespace Api\Dialplan\Events;
 
-use App\Events\Event;
+use Infrastructure\Events\Event;
 use Api\Dialplan\Models\Dialplan;
 
 class PushtokenWasCreated extends Event

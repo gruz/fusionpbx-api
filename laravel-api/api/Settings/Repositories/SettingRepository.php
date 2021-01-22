@@ -3,7 +3,7 @@
 namespace Api\Settings\Repositories;
 
 use Api\Settings\Models\Setting;
-use App\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\Repository;
 
 class SettingRepository extends Repository
 {

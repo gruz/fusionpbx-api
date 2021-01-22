@@ -4,7 +4,7 @@ namespace Api\Dialplan\Repositories;
 
 use Api\Dialplan\Models\Dialplan;
 use Api\Dialplan\Exceptions\CouldNotInjectDialplanException;
-use App\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\Repository;
 use Illuminate\Database\Eloquent\Collection;
 
 class DialplanRepository extends Repository

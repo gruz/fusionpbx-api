@@ -4,7 +4,7 @@ namespace Api\User\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-use App\Traits\BaseException;
+use Infrastructure\Traits\BaseException;
 
 class WrongSignupDataException extends UnprocessableEntityHttpException
 {

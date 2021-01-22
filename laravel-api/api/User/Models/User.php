@@ -2,18 +2,31 @@
 
 namespace Api\User\Models;
 
-use Laravel\Passport\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Traits\FusionPBXTableModel;
-use Api\Extension\Models\Extension;
 use Api\Status\Models\Status;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Passport\HasApiTokens;
+use Api\Extension\Models\Extension;
+use Illuminate\Notifications\Notifiable;
+use Infrastructure\Database\Eloquent\Model;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Infrastructure\Traits\FusionPBXTableModel;
+// use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
 // ~ use LaravelCustomRelation\HasCustomRelations;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Model implements 
+    MustVerifyEmailContract
+    , AuthenticatableContract
+    , AuthorizableContract
+    , CanResetPasswordContract
 {
     use HasApiTokens, Notifiable, FusionPBXTableModel;
+    use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
     // ~ use HasCustomRelations;
 
     /**

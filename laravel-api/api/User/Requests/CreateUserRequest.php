@@ -2,7 +2,7 @@
 
 namespace Api\User\Requests;
 
-use App\Http\ApiRequest;
+use Infrastructure\Http\ApiRequest;
 
 class CreateUserRequest extends ApiRequest
 {

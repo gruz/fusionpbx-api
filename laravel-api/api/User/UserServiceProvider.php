@@ -2,7 +2,7 @@
 
 namespace Api\User;
 
-// ~ use App\Events\EventServiceProvider;
+// ~ use Infrastructure\Events\EventServiceProvider;
 use Api\User\Events\UserWasCreated;
 use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;
@@ -11,7 +11,7 @@ use Api\User\Events\GroupWasDeleted;
 use Api\User\Events\GroupWasUpdated;
 use Api\User\Events\DomainWasCreated;
 
-use App\Listeners\ClearFusionPBXCache;
+use Infrastructure\Listeners\ClearFusionPBXCache;
 
 use Api\User\Listeners\UserWasCreatedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;

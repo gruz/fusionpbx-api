@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
-use App\Traits\OneToManyRelationCRUD;
+use Infrastructure\Traits\OneToManyRelationCRUD;
 use Illuminate\Database\DatabaseManager;
 use Api\User\Repositories\UserRepository;
 use Api\Extension\Events\ExtensionWasCreated;

@@ -3,7 +3,7 @@
 namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controller;
+use Infrastructure\Http\Controller;
 use Api\User\Requests\CreateGroupRequest;
 use Api\User\Services\GroupService;
 

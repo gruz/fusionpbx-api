@@ -10,7 +10,7 @@ use \Api\User\Events\UserWasDeleted;
 
 use \Api\User\Events\UserWasUpdated;
 use Api\User\Services\DomainService;
-// use App\Services\FreeSwicthSocketService as FSSocketService;
+// use Infrastructure\Services\FreeSwicthSocketService as FSSocketService;
 
 use Api\User\Events\DomainWasCreated;
 use Api\Settings\Models\Default_setting;
@@ -175,7 +175,7 @@ class TeamService
 
         $this->dispatcher->dispatch(new DomainWasCreated($domain, true));
 
-        $this->runFusionPBX_upgrade_domains($domain);
+        // $this->runFusionPBX_upgrade_domains($domain);
 
         return $domain;
     }

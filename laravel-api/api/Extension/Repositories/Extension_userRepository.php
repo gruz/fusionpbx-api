@@ -3,7 +3,7 @@
 namespace Api\Extension\Repositories;
 
 use Api\Extension\Models\Extension_user;
-use App\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\Repository;
 
 class Extension_userRepository extends Repository
 {

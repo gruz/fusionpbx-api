@@ -3,7 +3,7 @@
 namespace Api\Status\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controller;
+use Infrastructure\Http\Controller;
 use Api\Status\Requests\SetStatusRequest;
 use Api\Status\Services\StatusService;
 

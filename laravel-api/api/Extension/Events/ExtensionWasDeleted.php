@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Events;
 
-use App\Events\Event;
+use Infrastructure\Events\Event;
 use Api\ExtensionModelsxtension;
 
 class ExtensionWasDeleted extends Event
