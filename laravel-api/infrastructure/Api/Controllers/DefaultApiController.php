@@ -4,6 +4,7 @@ namespace Infrastructure\Api\Controllers;
 
 use Infrastructure\Http\Controller as BaseController;
 use Infrastructure\Version;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Info(

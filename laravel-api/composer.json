@@ -16,7 +16,8 @@
         "optimus/architect": "^2.0",
         "webpatser/laravel-uuid": "^4.0",
         "gruz/laravel-ratchet": "^8.0",
-        "darkaonline/l5-swagger": "^8.0"
+        "darkaonline/l5-swagger": "^8.0",
+        "doctrine/annotations": "^1.11"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

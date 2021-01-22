@@ -5,9 +5,42 @@ use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
 
+/**
+ * @OA\Schema()
+ */
 class Domain extends Model
 {
     use Notifiable, FusionPBXTableModel;
+
+    /**
+     * The product name
+     * @var string
+     * @OA\Property(
+     *  example="site.com"
+     * )
+     */
+    public $domain_name;
+
+    /**
+     * The product name
+     * @var boolean
+     * @OA\Property()
+     */
+    public $domain_enabled;
+
+    /**
+     * The product name
+     * @var string
+     * @OA\Property()
+     */
+    public $domain_description;
+
+    /**
+     * The product name
+     * @var string
+     * @OA\Property()
+     */
+    public $domain_parent_uuid;
 
     /**
      * The attributes that are mass assignable.
