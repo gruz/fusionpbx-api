@@ -41,11 +41,22 @@ class HelperServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->fixPBXRootPath();
         $path = app_path() . '/Helpers/*.php';
         $helpers = glob($path);
 
         foreach ($helpers as $filename) {
             require_once($filename);
         }
+    }
+
+    private function fixPBXRootPath() {
+        $rootFPBXPath = config('app.fpath_document_root');
+
+        if (!$rootFPBXPath = realpath($rootFPBXPath)) {
+            $rootFPBXPath = base_path($rootFPBXPath);
+        }
+
+        $rootFPBXPath = config('app.fpath_document_root', $rootFPBXPath);
     }
 }

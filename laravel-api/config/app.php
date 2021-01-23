@@ -137,7 +137,7 @@ return [
     */
 
     // FusionPBX path
-    'fpath_document_root' => base_path(env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx')),
+    'fpath_document_root' => env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx'),
     'fpath_project' => env('FUSIONPBX_PROJECT_PATH', ''),
     'fpath_full' => env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx') . '/' . env('FUSIONPBX_PROJECT_PATH', ''),
 
