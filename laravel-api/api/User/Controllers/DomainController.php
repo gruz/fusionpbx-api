@@ -6,7 +6,6 @@ use Api\User\Services\TeamService;
 use Api\User\Services\UserService;
 use Infrastructure\Http\Controller;
 use Api\User\Requests\SignupDomainRequest;
-use OpenApi\Annotations as OA;
 
 class DomainController extends Controller
 {
