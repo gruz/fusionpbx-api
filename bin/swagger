@@ -1,0 +1,5 @@
+#!/bin/bash
+# Go to laravel folder and call this command like: ../bin/swagger
+# You must have `inotify` installed. The command is nice when you edit
+# swagger comments much and want to monitor if not errors happen
+while inotifywait -r -e modify -e create -e moved_to .; do  php artisan l5-swagger:generate; done
