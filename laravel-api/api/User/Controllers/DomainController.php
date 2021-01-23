@@ -23,10 +23,6 @@ class DomainController extends Controller
     /**
      * @OA\Post(
      *  tags={"Domain", "User"},
-     *   @OA\Parameter(name="filter",in="query", @OA\JsonContent(
-     *      @OA\Property(property="type", type="string"),
-     *      @OA\Property(property="color", type="string"),
-     *   )),
      *  security={"api_key"},
      *     path="/signup/domain",
      *     summary="Create a domain",

@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-76-g9490808"
+        "version": "0.0.8-78-gb03912d"
     },
     "paths": {
         "/": {
@@ -124,27 +124,6 @@
                 ],
                 "summary": "Create a domain",
                 "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
-                "parameters": [
-                    {
-                        "name": "filter",
-                        "in": "query",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "type": {
-                                            "type": "string"
-                                        },
-                                        "color": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                ],
                 "requestBody": {
                     "description": "Client side search object",
                     "required": true,
