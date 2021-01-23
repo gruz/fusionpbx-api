@@ -9,7 +9,8 @@
  * */
 if (!function_exists('event_socket_create')) {
     $path = config('app.fpath_document_root');
-    require $path . '/resources/classes/event_socket.php';
+    $file = $path . '/resources/classes/event_socket.php';
+    require $file;
 
     /* ##mygruz20170512010935 {
     It was:

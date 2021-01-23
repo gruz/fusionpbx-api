@@ -53,10 +53,11 @@ class HelperServiceProvider extends ServiceProvider
     private function fixPBXRootPath() {
         $rootFPBXPath = config('app.fpath_document_root');
 
-        if (!$rootFPBXPath = realpath($rootFPBXPath)) {
-            $rootFPBXPath = base_path($rootFPBXPath);
+        if (!realpath($rootFPBXPath)) {
+            $rootFPBXPath = realpath(base_path($rootFPBXPath));
         }
 
-        $rootFPBXPath = config('app.fpath_document_root', $rootFPBXPath);
+        config(['app.fpath_document_root' => $rootFPBXPath]);
+        $rootFPBXPath = config('app.fpath_document_root');
     }
 }
