@@ -6,5 +6,4 @@ Homestead.json
 .env
 .DS_Store
 /storage/*.key
-composer.lock
 /resources/certs/*
