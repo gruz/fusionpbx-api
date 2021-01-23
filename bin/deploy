@@ -1,0 +1,6 @@
+#!/bin/bash
+git reset --hard HEAD
+git pull
+cd laravel-api
+composer install
+php artisan config:clear
