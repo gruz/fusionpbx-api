@@ -13,7 +13,19 @@ class Domain extends Model
     use Notifiable, FusionPBXTableModel;
 
     /**
-     * The product name
+     * Domain id
+     * @var uuid
+     * @OA\Property(
+     *  schema="domain_uuid",
+     *  readOnly=true,
+     *  example="54cd6070-3b0d-11e7-bf5a-4be762d404ce"
+     * )
+     */
+
+     public $domain_uuid;
+
+    /**
+     * Domain or subdomain name
      * @var string
      * @OA\Property(
      *  example="site.com"
@@ -22,23 +34,29 @@ class Domain extends Model
     public $domain_name;
 
     /**
-     * The product name
+     * If domain is active
      * @var boolean
-     * @OA\Property()
+     * @OA\Property(
+     *  example=false
+     * )
      */
     public $domain_enabled;
 
     /**
-     * The product name
+     * Domain desctiption. Automatically generated upon domain creation if nothing passed
      * @var string
-     * @OA\Property()
+     * @OA\Property(
+     *      example="Created via api at 2017-05-17 14:30:10",
+     * )
      */
     public $domain_description;
 
     /**
-     * The product name
-     * @var string
-     * @OA\Property()
+     * Parant domain id
+     * @var uuid|null
+     * @OA\Property(
+        example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2"
+     * )
      */
     public $domain_parent_uuid;
 

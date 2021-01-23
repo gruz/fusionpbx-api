@@ -5,15 +5,19 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-68-g634177e"
+        "version": "0.0.8-72-gd0ad3c9"
     },
     "paths": {
         "/": {
             "get": {
+                "tags": [
+                    "Default"
+                ],
+                "description": "Get application name and version",
                 "operationId": "Infrastructure\\Api\\Controllers\\DefaultApiController::index",
                 "responses": {
                     "200": {
-                        "description": "Get application name and version",
+                        "description": "Application name and version",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -42,13 +46,105 @@
                             }
                         }
                     }
+                },
+                "security": []
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "tags": [
+                    "Example"
+                ],
+                "description": "EXAMPLE Controller",
+                "operationId": "App\\ProductController::getProduct",
+                "responses": {
+                    "200": {
+                        "description": "A single product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/search": {
+            "get": {
+                "tags": [
+                    "Example"
+                ],
+                "summary": "Controller that takes all `Product` properties as query parameter.",
+                "description": "EXAMPLE Controller",
+                "operationId": "App\\ProductController::findProducts",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of matching products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
         "/signup/domain": {
             "post": {
+                "tags": [
+                    "Domain",
+                    "User"
+                ],
                 "summary": "Create a domain",
-                "description": "Creates a domain. Depending on the configuration the domain `domain_name` \n     *                      can be a subdomain of the main domain or an independent domain",
+                "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
+                "parameters": [
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "color": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Client side search object",
                     "required": true,
@@ -66,60 +162,97 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "title": {
-                                            "description": "APP_NAME variable",
-                                            "type": "string"
-                                        },
-                                        "version": {
-                                            "description": "Fit tag version",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                },
-                                "examples": [
-                                    {
-                                        "summary": "App info",
-                                        "value": {
-                                            "title": "FusionPBX API",
-                                            "version": "0.0.8-62-g192d97b"
-                                        }
-                                    }
-                                ]
+                                    "$ref": "#/components/schemas/Domain"
+                                }
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "scalar": "api_key"
+                    }
+                ]
             }
         }
     },
     "components": {
         "schemas": {
+            "Product": {
+                "title": "Product",
+                "description": "A simple product model",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of a product in our catalog.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "format": "int64",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
             "Domain": {
                 "properties": {
+                    "domain_uuid": {
+                        "schema": "domain_uuid",
+                        "description": "Domain id",
+                        "readOnly": true,
+                        "example": "54cd6070-3b0d-11e7-bf5a-4be762d404ce"
+                    },
                     "domain_name": {
-                        "description": "The product name",
+                        "description": "Domain or subdomain name",
                         "type": "string",
                         "example": "site.com"
                     },
                     "domain_enabled": {
-                        "description": "The product name",
-                        "type": "boolean"
+                        "description": "If domain is active",
+                        "type": "boolean",
+                        "example": false
                     },
                     "domain_description": {
-                        "description": "The product name",
-                        "type": "string"
+                        "description": "Domain desctiption. Automatically generated upon domain creation if nothing passed",
+                        "type": "string",
+                        "example": "Created via api at 2017-05-17 14:30:10"
                     },
                     "domain_parent_uuid": {
-                        "description": "The product name",
-                        "type": "string"
+                        "description": "Parant domain id",
+                        "example": "54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
+                        "nullable": true
                     }
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "api_key": {
+                "type": "apiKey",
+                "name": "api_key",
+                "in": "header"
+            }
         }
     },
+    "tags": [
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Domain",
+            "description": "Manage domains"
+        },
+        {
+            "name": "User",
+            "description": "Manage users"
+        },
+        {
+            "name": "Extension",
+            "description": "Manage extensions"
+        }
+    ],
     "security": [
         []
     ]

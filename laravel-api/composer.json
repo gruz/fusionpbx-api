@@ -16,7 +16,7 @@
         "optimus/architect": "^2.0",
         "webpatser/laravel-uuid": "^4.0",
         "gruz/laravel-ratchet": "^8.0",
-        "darkaonline/l5-swagger": "^8.0",
+        "darkaonline/l5-swagger": "dev-master",
         "doctrine/annotations": "^1.11"
     },
     "require-dev": {
@@ -52,5 +52,11 @@
     "config": {
         "preferred-install": "dist",
         "optimize-autoloader": true
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:gruz/L5-Swagger.git"
+        }
+    ]
 }

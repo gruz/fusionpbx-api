@@ -16,14 +16,44 @@ use OpenApi\Annotations as OA;
  * )
  */
 
+/**
+ * @OA\Tag(
+ *     name="Default",
+ * )
+ * @OA\Tag(
+ *     name="Domain",
+ *     description="Manage domains",
+ * )
+ * @OA\Tag(
+ *     name="User",
+ *     description="Manage users",
+ * )
+ * @OA\Tag(
+ *     name="Extension",
+ *     description="Manage extensions",
+ * )
+*/
+
+/**
+ * @OA\SecurityScheme(
+ *   securityScheme="api_key",
+ *   type="apiKey",
+ *   in="header",
+ *   name="api_key"
+ * )
+ */
+
 class DefaultApiController extends BaseController
 {
     /**
      * @OA\Get(
-     *   path="/",
+     *  tags={"Default"},
+     *  description="Get application name and version",
+     *  path="/",
+     *  security={},
      *      @OA\Response(
+     *      description="Application name and version",
      *      response=200,
-     *      description="Get application name and version",
      *      @OA\MediaType(
      *           mediaType="application/json",
      *           @OA\Schema(
