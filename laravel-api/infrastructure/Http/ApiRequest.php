@@ -51,7 +51,7 @@ abstract class ApiRequest extends FormRequest
             // We should append column name with prefix - API demands
             $prefixedColumnName = $modelName . '.' . $columnName;
             $rules[$prefixedColumnName] = $columnTypeName;
-            $rule[] = \Illuminate\Support\Arr::get($this->mapping, $columnTypeName, $columnTypeName);
+            $rule[] = Arr::get($this->mapping, $columnTypeName, $columnTypeName);
             // $rule[] = $this->mapping[$columnTypeName] ?
             //     $this->mapping[$columnTypeName] :
             //     $columnTypeName;
