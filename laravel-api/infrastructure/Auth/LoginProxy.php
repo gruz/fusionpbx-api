@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
 use Api\User\Repositories\DomainRepository;
+use Illuminate\Support\Facades\Password;
 
 use Api\User\Exceptions\UserDisabledException;
 
@@ -167,5 +168,35 @@ class LoginProxy
         $accessToken->revoke();
 
         $this->cookie->queue($this->cookie->forget(self::REFRESH_TOKEN));
+    }
+
+    public function attemptGenerateResetLink($email, $domain_name)
+    {
+        $domain = $this->domainRepository->getWhere('domain_name', $domain_name)->first();
+
+        if (empty($domain))
+        {
+          throw new InvalidCredentialsException(__('Wrong domain name or domain doesn\'t exists'));
+        }
+
+        $user = $this->userRepository->getWhereArray(['email' => $email, 'domain_uuid' => $domain->domain_uuid])->first();
+
+        if (!is_null($user)) {
+
+            if ($user->user_enabled != 'true')
+            {
+              throw new UserDisabledException();
+            }
+
+            $this->request->validate(['email' => 'required|email']);
+
+            $status = Password::sendResetLink(
+                $this->request->only('email')
+            );
+    
+            return $status;
+        }
+
+        throw new InvalidCredentialsException(__('User doesn\'t exists'));
     }
 }
