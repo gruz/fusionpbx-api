@@ -1,6 +1,7 @@
 <?php
-namespace Api\User\Models;
+namespace Api\Domain\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
@@ -55,6 +56,7 @@ class Domain extends Model
      * Parant domain id
      * @var uuid|null
      * @OA\Property(
+     *  x={"final"=true},
         example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2"
      * )
      */
@@ -78,6 +80,11 @@ class Domain extends Model
         //'password', 'remember_token',
     ];
 
+    /**
+     * Groups relation
+     *
+     * @return BelongsToMany
+     */
     public function groups()
     {
         return $this->belongsToMany(Group::class, 'v_user_groups', 'user_uuid', 'group_uuid');

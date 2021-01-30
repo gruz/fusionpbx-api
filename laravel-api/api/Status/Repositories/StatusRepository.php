@@ -13,17 +13,6 @@ class StatusRepository extends Repository
         return new Status();
     }
 
-    public function create(array $data)
-    {
-        $model = $this->getModel();
-
-        $model->fill($data);
-
-        $model->save();
-
-        return $model;
-    }
-
     public function update(Status $model, array $data)
     {
         $model->fill($data);

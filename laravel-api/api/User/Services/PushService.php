@@ -8,13 +8,13 @@ use Illuminate\Events\Dispatcher;
 
 use Api\User\Exceptions\UserNotFoundException;
 use Api\User\Exceptions\WrongDestinationException;
-use Api\User\Exceptions\DomainNotFoundException;
+use Api\Domain\Exceptions\DomainNotFoundException;
 
 use Api\Extension\Exceptions\ExtensionNotFoundException;
 
 use Api\User\Events\PushWasSent;
 use Api\User\Repositories\UserRepository;
-use Api\User\Repositories\DomainRepository;
+use Api\Domain\Repositories\DomainRepository;
 use Api\User\Services\UserService;
 
 use Api\User\Models\User;

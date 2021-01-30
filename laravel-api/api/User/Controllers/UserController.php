@@ -140,6 +140,6 @@ class UserController extends Controller
         $data['user_enabled'] = 'true';
         $data['group_name'] = env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME');
 
-        return $this->response($this->teamService->create($data), 201);
+        return $this->response($this->teamService->createDeperacted($data), 201);
     }
 }

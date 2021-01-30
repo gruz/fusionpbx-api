@@ -1,15 +1,15 @@
 <?php
 
-namespace Api\User\Requests;
+namespace Api\Domain\Requests;
 
 use Api\User\Models\User;
-use Api\User\Models\Domain;
+use Api\Domain\Models\Domain;
 use Illuminate\Support\Arr;
 use Infrastructure\Http\ApiRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Api\User\Exceptions\WrongSignupDataException;
 
-class SignupDomainRequest extends ApiRequest
+class DomainSignupRequest extends ApiRequest
 {
     public function authorize()
     {
@@ -23,7 +23,6 @@ class SignupDomainRequest extends ApiRequest
         $rules1 = $this->buildDefaultRules($model);
         $model = new User();
         $rules2 = $this->buildDefaultRules($model);
-        dd($rules1, $rules2);
 
         if (empty(request('team')) && empty(request('user'))) {
             return [

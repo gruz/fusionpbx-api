@@ -1,12 +1,12 @@
 <?php
 
-namespace Api\User\Exceptions;
+namespace Api\Domain\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 use Infrastructure\Traits\BaseException;
 
-class DomainExistsException extends UnprocessableEntityHttpException
+class DomainCreationNoAdminUserException extends UnprocessableEntityHttpException
 {
   use BaseException;
 }

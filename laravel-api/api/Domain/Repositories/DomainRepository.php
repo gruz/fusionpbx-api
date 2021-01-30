@@ -1,8 +1,8 @@
 <?php
 
-namespace Api\User\Repositories;
+namespace Api\Domain\Repositories;
 
-use Api\User\Models\Domain;
+use Api\Domain\Models\Domain;
 use Infrastructure\Database\Eloquent\Repository;
 
 class DomainRepository extends Repository

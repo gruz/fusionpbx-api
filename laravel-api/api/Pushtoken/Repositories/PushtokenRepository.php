@@ -12,16 +12,4 @@ class PushtokenRepository extends Repository
     {
         return new Pushtoken();
     }
-
-    public function create(array $data)
-    {
-        $model = $this->getModel();
-
-        $model->fill($data);
-
-        $model->save();
-
-        return $model;
-    }
-
 }

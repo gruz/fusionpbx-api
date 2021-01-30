@@ -10,7 +10,7 @@ use Illuminate\Events\Dispatcher;
 use Api\Extension\Models\Extension;
 use Api\Extension\Services\ExtensionService;
 
-use Api\User\Exceptions\DomainNotFoundException;
+use Api\Domain\Exceptions\DomainNotFoundException;
 use Api\User\Exceptions\UserExistsException;
 use Api\User\Exceptions\EmailExistsException;
 use Api\User\Exceptions\ActivationHashNotFoundException;
@@ -23,7 +23,7 @@ use Api\User\Events\UserWasUpdated;
 
 use Api\User\Repositories\GroupRepository;
 use Api\User\Repositories\UserRepository;
-use Api\User\Repositories\DomainRepository;
+use Api\Domain\Repositories\DomainRepository;
 use Api\User\Repositories\ContactRepository;
 use Api\User\Repositories\Contact_emailRepository;
 use Api\Extension\Repositories\ExtensionRepository;

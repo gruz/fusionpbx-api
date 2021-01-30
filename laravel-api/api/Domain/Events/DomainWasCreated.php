@@ -1,9 +1,9 @@
 <?php
 
-namespace Api\User\Events;
+namespace Api\Domain\Events;
 
 use Infrastructure\Events\Event;
-use Api\User\Models\Domain;
+use Api\Domain\Models\Domain;
 
 class DomainWasCreated extends Event
 {

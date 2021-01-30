@@ -5,7 +5,7 @@ namespace Infrastructure\Auth;
 use Illuminate\Foundation\Application;
 use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
-use Api\User\Repositories\DomainRepository;
+use Api\Domain\Repositories\DomainRepository;
 
 use Api\User\Exceptions\UserDisabledException;
 

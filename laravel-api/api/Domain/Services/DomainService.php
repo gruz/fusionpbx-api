@@ -1,15 +1,15 @@
 <?php
 
-namespace Api\User\Services;
+namespace Api\Domain\Services;
 
 use Exception;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Events\Dispatcher;
-use Api\User\Exceptions\DomainNotFoundException;
-use Api\User\Events\DomainWasCreated;
+use Api\Domain\Exceptions\DomainNotFoundException;
+use Api\Domain\Events\DomainWasCreated;
 use Api\User\Events\DomainWasDeleted;
 use Api\User\Events\DomainWasUpdated;
-use Api\User\Repositories\DomainRepository;
+use Api\Domain\Repositories\DomainRepository;
 
 class DomainService
 {

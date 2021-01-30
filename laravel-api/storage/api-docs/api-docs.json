@@ -5,9 +5,126 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-80-gee99c25"
+        "version": "0.0.8-83-g2802bf0"
     },
     "paths": {
+        "/signup/domain": {
+            "post": {
+                "tags": [
+                    "Domain",
+                    "User"
+                ],
+                "summary": "Create a domain",
+                "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
+                "parameters": [
+                    {
+                        "name": "domain_uuid",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "domain_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "domain_enabled",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "domain_description",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "domain_parent_uuid",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Client side search object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Domain"
+                                    },
+                                    {
+                                        "$ref": "#/components/schemas/User"
+                                    },
+                                    {
+                                        "properties": {
+                                            "iidd": {
+                                                "type": "integer"
+                                            },
+                                            "created_at": {
+                                                "$ref": "#/components/schemas/Domain/properties/domain_uuid"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "x-model-input-fields": [
+                                    "#/components/schemas/Domain",
+                                    "#/components/schemas/User"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Get application name and version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Domain"
+                                        },
+                                        {
+                                            "properties": {
+                                                "iidd": {
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "$ref": "#/components/schemas/Domain/properties/domain_uuid"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/": {
             "get": {
                 "tags": [
@@ -49,132 +166,10 @@
                 },
                 "security": []
             }
-        },
-        "/products/{id}": {
-            "get": {
-                "tags": [
-                    "Example"
-                ],
-                "description": "EXAMPLE Controller",
-                "operationId": "App\\ProductController::getProduct",
-                "responses": {
-                    "200": {
-                        "description": "A single product",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Product"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/products/search": {
-            "get": {
-                "tags": [
-                    "Example"
-                ],
-                "summary": "Controller that takes all `Product` properties as query parameter.",
-                "description": "EXAMPLE Controller",
-                "operationId": "App\\ProductController::findProducts",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of matching products",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Product"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/signup/domain": {
-            "post": {
-                "tags": [
-                    "Domain",
-                    "User"
-                ],
-                "summary": "Create a domain",
-                "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
-                "requestBody": {
-                    "description": "Client side search object",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Domain"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Get application name and version",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Domain"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "scalar": "api_key"
-                    }
-                ]
-            }
         }
     },
     "components": {
         "schemas": {
-            "Product": {
-                "title": "Product",
-                "description": "A simple product model",
-                "properties": {
-                    "id": {
-                        "description": "The unique identifier of a product in our catalog.",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "format": "int64",
-                        "example": 1
-                    }
-                },
-                "type": "object"
-            },
             "Domain": {
                 "properties": {
                     "domain_uuid": {
@@ -201,11 +196,13 @@
                     "domain_parent_uuid": {
                         "description": "Parant domain id",
                         "example": "54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
-                        "nullable": true
+                        "nullable": true,
+                        "x-final": true
                     }
                 },
                 "type": "object"
-            }
+            },
+            "User": {}
         },
         "securitySchemes": {
             "api_key": {
