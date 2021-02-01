@@ -5,10 +5,10 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-83-g2802bf0"
+        "version": "0.0.8-84-g50f747e"
     },
     "paths": {
-        "/signup/domain": {
+        "/domain/signup": {
             "post": {
                 "tags": [
                     "Domain",
@@ -16,81 +16,77 @@
                 ],
                 "summary": "Create a domain",
                 "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
-                "parameters": [
-                    {
-                        "name": "domain_uuid",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "domain_name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "domain_enabled",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "domain_description",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "domain_parent_uuid",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
                 "requestBody": {
-                    "description": "Client side search object",
+                    "description": "Domain information",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "properties": {
+                                    "domain_parent_uuid": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "domain_name": {
+                                        "type": "string"
+                                    },
+                                    "domain_enabled": {
+                                        "type": "boolean"
+                                    },
+                                    "domain_description": {
+                                        "type": "string"
+                                    }
+                                },
                                 "allOf": [
                                     {
                                         "$ref": "#/components/schemas/Domain"
                                     },
                                     {
-                                        "$ref": "#/components/schemas/User"
-                                    },
-                                    {
                                         "properties": {
-                                            "iidd": {
-                                                "type": "integer"
-                                            },
-                                            "created_at": {
-                                                "$ref": "#/components/schemas/Domain/properties/domain_uuid"
+                                            "users": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "domain_uuid": {
+                                                            "type": "string",
+                                                            "format": "uuid"
+                                                        },
+                                                        "username": {
+                                                            "type": "string"
+                                                        },
+                                                        "password": {
+                                                            "type": "string"
+                                                        },
+                                                        "salt": {
+                                                            "type": "string"
+                                                        },
+                                                        "contact_uuid": {
+                                                            "type": "string",
+                                                            "format": "uuid"
+                                                        },
+                                                        "user_enabled": {
+                                                            "type": "string"
+                                                        },
+                                                        "add_user": {
+                                                            "type": "string"
+                                                        },
+                                                        "add_date": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "#/components/schemas/User"
+                                                        },
+                                                        {
+                                                            "$ref": "#/components/schemas/User_setting"
+                                                        }
+                                                    ]
+                                                }
                                             }
                                         },
                                         "type": "object"
                                     }
-                                ],
-                                "x-model-input-fields": [
-                                    "#/components/schemas/Domain",
-                                    "#/components/schemas/User"
                                 ]
                             }
                         }
@@ -104,15 +100,9 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/Domain"
-                                        },
-                                        {
                                             "properties": {
                                                 "iidd": {
                                                     "type": "integer"
-                                                },
-                                                "created_at": {
-                                                    "$ref": "#/components/schemas/Domain/properties/domain_uuid"
                                                 }
                                             },
                                             "type": "object"
@@ -172,21 +162,10 @@
         "schemas": {
             "Domain": {
                 "properties": {
-                    "domain_uuid": {
-                        "schema": "domain_uuid",
-                        "description": "Domain id",
-                        "readOnly": true,
-                        "example": "54cd6070-3b0d-11e7-bf5a-4be762d404ce"
-                    },
                     "domain_name": {
-                        "description": "Domain or subdomain name",
+                        "description": "Domain name",
                         "type": "string",
-                        "example": "site.com"
-                    },
-                    "domain_enabled": {
-                        "description": "If domain is active",
-                        "type": "boolean",
-                        "example": false
+                        "format": "hostname"
                     },
                     "domain_description": {
                         "description": "Domain desctiption. Automatically generated upon domain creation if nothing passed",
@@ -194,15 +173,15 @@
                         "example": "Created via api at 2017-05-17 14:30:10"
                     },
                     "domain_parent_uuid": {
-                        "description": "Parant domain id",
+                        "description": "Parent domain id",
                         "example": "54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
-                        "nullable": true,
-                        "x-final": true
+                        "nullable": true
                     }
                 },
                 "type": "object"
             },
-            "User": {}
+            "User": {},
+            "User_setting": {}
         },
         "securitySchemes": {
             "api_key": {

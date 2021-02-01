@@ -14,34 +14,14 @@ class Domain extends Model
     use Notifiable, FusionPBXTableModel;
 
     /**
-     * Domain id
-     * @var uuid
-     * @OA\Property(
-     *  schema="domain_uuid",
-     *  readOnly=true,
-     *  example="54cd6070-3b0d-11e7-bf5a-4be762d404ce"
-     * )
-     */
-
-     public $domain_uuid;
-
-    /**
-     * Domain or subdomain name
+     * Domain name
+     *
      * @var string
      * @OA\Property(
-     *  example="site.com"
+     *  format="hostname",
      * )
      */
     public $domain_name;
-
-    /**
-     * If domain is active
-     * @var boolean
-     * @OA\Property(
-     *  example=false
-     * )
-     */
-    public $domain_enabled;
 
     /**
      * Domain desctiption. Automatically generated upon domain creation if nothing passed
@@ -53,14 +33,23 @@ class Domain extends Model
     public $domain_description;
 
     /**
-     * Parant domain id
+     * Parent domain id
      * @var uuid|null
      * @OA\Property(
-     *  x={"final"=true},
-        example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2"
+     *   example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2"
      * )
      */
     public $domain_parent_uuid;
+
+    // public function __construct(array $attributes = [])
+    // {
+    //     parent::__construct($attributes);
+        
+    //     $this->attributes['domain_description']  = config('domain.description');
+    // }
+
+    // protected $attributes = [
+    // ];
 
     /**
      * The attributes that are mass assignable.

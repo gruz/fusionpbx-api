@@ -30,39 +30,37 @@ class DomainController extends Controller
     /**
     @OA\Post(
         tags={"Domain", "User"},
-        x={"query-args-$ref"="#/components/schemas/Domain"},
-        path="/signup/domain",
+        path="/domain/signup",
         summary="Create a domain",
         description="Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
         @OA\RequestBody(
-            description="Client side search object",
+            description="Domain information",
             required=true,
             @OA\JsonContent(
                 allOf={
                     @OA\Schema(ref="#/components/schemas/Domain"),
-                    @OA\Schema(ref="#/components/schemas/User"),
                     @OA\Schema(
-                        @OA\Property(property="iidd", type="integer"),
-                        @OA\Property(property="created_at", ref="#/components/schemas/Domain/properties/domain_uuid")
-                        )
-                    },
-                    x={
-                        "model-input-fields"={
-                            "#/components/schemas/Domain",
-                            "#/components/schemas/User",
-                        },
-                    },
+                        @OA\Property(
+                            property="users",
+                            type="array",
+                            @OA\Items(
+                                allOf={
+                                    @OA\Schema(ref="#/components/schemas/User"),
+                                    @OA\Schema(ref="#/components/schemas/User_setting"),
+                                }
+                            ),
+                        ),
+                    ),
+                },
             ),
         ),
         @OA\Response(
-        response=200,
-        description="Get application name and version",
-        @OA\JsonContent(
+            response=200,
+            description="Get application name and version",
+            @OA\JsonContent(
                 allOf={
-                    @OA\Schema(ref="#/components/schemas/Domain"),
                     @OA\Schema(
                         @OA\Property(property="iidd", type="integer"),
-                        @OA\Property(property="created_at", ref="#/components/schemas/Domain/properties/domain_uuid")
                     )
                 }
             ),
