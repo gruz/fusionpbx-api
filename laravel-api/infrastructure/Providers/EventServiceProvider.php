@@ -5,6 +5,8 @@ namespace Infrastructure\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Infrastructure\Events\ResetPasswordLinkWasRequested;
+use Infrastructure\Listeners\ResetPasswordLinkWasRequestedListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        ResetPasswordLinkWasRequested::class => [
+            // listeners for when a password reset link was requested
+            ResetPasswordLinkWasRequestedListener::class
+        ]
     ];
 
     /**

@@ -5,6 +5,7 @@ namespace Api\User\Models;
 use Api\Status\Models\Status;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
+use Doctrine\DBAL\Driver\IBMDB2\Result;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
@@ -35,7 +36,9 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        'domain_uuid',  'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
+        'domain_uuid',  'username', 'password', 'salt', 'contact_uuid',
+        'user_enabled', 'add_user', 'add_date',
+        //'user_email'
     ];
 
     /**
@@ -194,4 +197,37 @@ class User extends Model implements
         return false;
       }
     }
+
+    /**
+     * Method to return the email for password reset
+     *     
+     * @return string Returns the User Email Address
+     */
+    public function getEmailForPasswordReset() {
+
+        $email = $this->getAttribute('user_email');
+        if (!$email) {
+            // 1 Throught Contacts 
+            $email = $this->emails()
+            ->get()
+            ->first()
+            ->toArray()['email_address'];
+
+            // 2 Throught model property
+            // $email = $this->user_email; 
+        }
+        
+        return $email;
+    }
+    
+    // /**
+    //  * Send the password reset notification.
+    //  *
+    //  * @param  string  $token
+    //  * @return void
+    //  */
+    // public function sendPasswordResetNotification($token)
+    // {
+    //     $this->notify(new ResetPasswordNotification($token));
+    // }
 }
