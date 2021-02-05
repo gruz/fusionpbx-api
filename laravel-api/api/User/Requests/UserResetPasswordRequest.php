@@ -1,10 +1,10 @@
 <?php
 
-namespace Infrastructure\Auth\Requests;
+namespace Api\User\Requests;
 
 use Infrastructure\Http\ApiRequest;
 
-class PasswordForgotRequest extends ApiRequest
+class UserResetPasswordRequest extends ApiRequest
 {
     public function authorize()
     {
@@ -14,8 +14,8 @@ class PasswordForgotRequest extends ApiRequest
     public function rules()
     {
         return [
-            'domain_name'    => 'required',
-            'user_email' => 'required|email'
+            'user_email'    => 'required|email',
+            'password' => 'required'
         ];
     }
 

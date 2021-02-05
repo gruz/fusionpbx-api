@@ -3,12 +3,15 @@
 namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
-use Infrastructure\Http\Controller;
-use Api\User\Requests\CreateUserRequest;
-use Api\User\Requests\SignupRequest;
-use Api\User\Requests\UserGroupsRequest;
 use Api\User\Services\UserService;
 use Api\User\Services\TeamService;
+use Infrastructure\Http\Controller;
+use Api\User\Requests\SignupRequest;
+use Api\User\Services\UserPasswordService;
+use Api\User\Requests\CreateUserRequest;
+use Api\User\Requests\UserGroupsRequest;
+use Api\User\Requests\UserResetPasswordRequest;
+use Api\User\Requests\UserForgotPasswordRequest;
 
 class UserController extends Controller
 {
@@ -22,10 +25,18 @@ class UserController extends Controller
      */
     private $teamService;
 
-    public function __construct(UserService $userService, TeamService $teamService)
+    /**
+    * @var UserPasswordService
+    */
+    private $passwordService;
+
+    public function __construct(UserService $userService,
+                                TeamService $teamService,
+                                UserPasswordService $passwordService)
     {
         $this->userService = $userService;
         $this->teamService = $teamService;
+        $this->passwordService = $passwordService;
     }
 
     public function getAll()
@@ -141,5 +152,32 @@ class UserController extends Controller
         $data['group_name'] = env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME');
 
         return $this->response($this->teamService->createDeperacted($data), 201);
+    }
+
+    /**
+     * User forgot password 
+     *
+     * @param UserForgotPasswordRequest $request
+     * @return void
+     */
+    public function forgotPassword(UserForgotPasswordRequest $request) 
+    {
+        $email = $request->get('user_email');   
+        $domain_name = $request->get('domain_name');
+
+        return $this->response($this->passwordService->generateResetToken($email, $domain_name));
+    }
+
+    /**
+     * User reset password 
+     *
+     * @param UserResetPasswordRequest $request
+     * @return void
+     */
+    public function resetPassword(UserResetPasswordRequest $request) 
+    {
+        $email = $request->get('user_email');   
+
+        return $this->response($this->passwordService->resetPassword($email));
     }
 }

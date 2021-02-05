@@ -1,11 +1,11 @@
 <?php
 
-namespace Infrastructure\Auth\Services;
+namespace Api\User\Services;
 
 use Illuminate\Foundation\Application;
 use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
-use Api\User\Repositories\DomainRepository;
+use Api\Domain\Repositories\DomainRepository;
 use Api\User\Repositories\Contact_emailRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
@@ -13,12 +13,12 @@ use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use Api\User\Exceptions\UserDisabledException;
 use Illuminate\Events\Dispatcher;
-use Infrastructure\Events\ResetPasswordLinkWasRequested;
+use Api\User\Events\ResetPasswordLinkWasRequested;
 use Webpatser\Uuid\Uuid;
 use Infrastructure\Auth\Exceptions\ContactEmailNotFoundException;
 use Infrastructure\Auth\Exceptions\DomainNotFoundException;
 
-class PasswordService
+class UserPasswordService
 {
 
     private $request;
@@ -106,7 +106,7 @@ class PasswordService
             $token = Password::createToken($userBasedOnCredentials);
 
             // send user notification about password reset action with link to reset
-            // $this->dispatcher->dispatch(new ResetPasswordLinkWasRequested($user, $token));
+            $this->dispatcher->dispatch(new ResetPasswordLinkWasRequested($user, $token));
 
             return [
                 'username' => $user->username,
@@ -127,7 +127,7 @@ class PasswordService
 
         if ($contact_email->count() < 1) {
             // throw new EmailNotFoundException();
-            throw new Exception("Contact with provided email have not been found.");
+            throw new InvalidCredentialsException("Contact with provided email have not been found.");
         }
 
         $user = $this->userRepository

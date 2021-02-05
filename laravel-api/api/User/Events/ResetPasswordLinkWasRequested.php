@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Events;
+namespace Api\User\Events;
 
 use Infrastructure\Events\Event;
 use Api\User\Models\User;

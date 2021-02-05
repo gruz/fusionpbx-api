@@ -1,11 +1,11 @@
 <?php
 
-namespace Infrastructure\Listeners;
+namespace Api\User\Listeners;
 
 use Api\User\Mail\UserNew;
 use Api\User\Mail\DomainNew;
 use Illuminate\Support\Facades\Password;
-use Infrastructure\Mail\ResetPasswordLink;
+use Api\User\Mail\ResetPasswordLink;
 
 
 class ResetPasswordLinkWasRequestedListener

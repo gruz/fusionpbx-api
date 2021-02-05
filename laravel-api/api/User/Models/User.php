@@ -5,6 +5,7 @@ namespace Api\User\Models;
 use Api\Status\Models\Status;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
+use Api\Domain\Models\Domain;
 use Doctrine\DBAL\Driver\IBMDB2\Result;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
