@@ -24,9 +24,11 @@ abstract class Model extends BaseModel
     public function getTableColumnNames($ignoreFillable = false)
     {
         $getData = function () use ($ignoreFillable) {
+            $table = $this->getTable();
+
             $tableColumns = $this->getConnection()
                 ->getSchemaBuilder()
-                ->getColumnListing($this->getTable());
+                ->getColumnListing($table);
 
             if ($ignoreFillable) {
                 $result = $tableColumns;
@@ -145,19 +147,18 @@ abstract class Model extends BaseModel
 
     // public function is_nullable(string $field_name)
     // {
-    //     if (is_null(static::$_columns_info) ){
+    //     if (is_null(static::$_columns_info)) {
     //         static::$_columns_info = $this->getTableColumnsInfo(true);
-    //         // static::$_columns_info = DB::table($db_name.'.columns')
-    //         //     ->where('table_name',$this->getTable())
-    //         //     ->get();
     //     }
+
+    //     // dd(static::$_columns_info);
     //     $colmns = static::$_columns_info;
-    //     if (is_null(static::$_nullable_fields) ){
-    //         foreach ($colmns as $fieldName => $fieldData) {}
-    //         static::$_nullable_fields = array_map(
-    //                 function ($fld){return $fld['notnull'];},
-    //                 $colmns
-    //         );
+    //     if (is_null(static::$_nullable_fields)) {
+    //         foreach ($colmns as $fieldName => $fieldData) {
+    //             if (!$fieldData->getNotNull()) {
+    //                 static::$_nullable_fields[] = $field_name;
+    //             }
+    //         }
     //     }
 
     //     return in_array($field_name, static::$_nullable_fields);
@@ -169,4 +170,5 @@ abstract class Model extends BaseModel
 
     //     return $fieldType;
     // }
+
 }

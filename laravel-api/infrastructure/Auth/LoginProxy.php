@@ -5,12 +5,7 @@ namespace Infrastructure\Auth;
 use Illuminate\Foundation\Application;
 use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
-use Api\User\Repositories\DomainRepository;
-use Api\User\Repositories\Contact_emailRepository;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
+use Api\Domain\Repositories\DomainRepository;
 use Api\User\Exceptions\UserDisabledException;
 use Illuminate\Events\Dispatcher;
 use Infrastructure\Events\ResetPasswordLinkWasRequested;
@@ -38,21 +33,17 @@ class LoginProxy
 
     private $domainRepository;
 
-    private $contact_emailRepository;
-
     private $dispatcher;
 
     public function __construct(
       Application $app,
       UserRepository $userRepository,
       DomainRepository $domainRepository,
-      Contact_emailRepository $contact_emailRepository,
       Dispatcher $dispatcher
     )
     {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
-        $this->contact_emailRepository = $contact_emailRepository;
         $this->dispatcher = $dispatcher;
 
         $this->apiConsumer = $app->make('apiconsumer');

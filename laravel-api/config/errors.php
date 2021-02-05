@@ -27,7 +27,7 @@ return [
         'message' => 'Extension :extension for domain :domain_name already exists', 
         'code' => '1004', 
     ],
-    'Api\User\Exceptions\DomainExistsException' => [
+    'Api\Domain\Exceptions\DomainExistsException' => [
         'message' => 'Domain already exists', 
         'code' => '1005', 
     ],
@@ -43,7 +43,7 @@ return [
         'message' => 'WrongSignupDataException', 
         'code' => '1008', 
     ],
-    'Api\User\Exceptions\DomainNotFoundException' => [
+    'Api\Domain\Exceptions\DomainNotFoundException' => [
         'message' => 'Domain not found', 
         'code' => '1009', 
     ],

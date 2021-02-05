@@ -1,6 +1,7 @@
 <?php
-namespace Api\User\Models;
+namespace Api\Domain\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
@@ -13,34 +14,14 @@ class Domain extends Model
     use Notifiable, FusionPBXTableModel;
 
     /**
-     * Domain id
-     * @var uuid
-     * @OA\Property(
-     *  schema="domain_uuid",
-     *  readOnly=true,
-     *  example="54cd6070-3b0d-11e7-bf5a-4be762d404ce"
-     * )
-     */
-
-     public $domain_uuid;
-
-    /**
-     * Domain or subdomain name
+     * Domain name
+     *
      * @var string
      * @OA\Property(
-     *  example="site.com"
+     *  format="hostname",
      * )
      */
     public $domain_name;
-
-    /**
-     * If domain is active
-     * @var boolean
-     * @OA\Property(
-     *  example=false
-     * )
-     */
-    public $domain_enabled;
 
     /**
      * Domain desctiption. Automatically generated upon domain creation if nothing passed
@@ -52,13 +33,23 @@ class Domain extends Model
     public $domain_description;
 
     /**
-     * Parant domain id
+     * Parent domain id
      * @var uuid|null
      * @OA\Property(
-        example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2"
+     *   example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2"
      * )
      */
     public $domain_parent_uuid;
+
+    // public function __construct(array $attributes = [])
+    // {
+    //     parent::__construct($attributes);
+
+    //     $this->attributes['domain_description']  = config('domain.description');
+    // }
+
+    // protected $attributes = [
+    // ];
 
     /**
      * The attributes that are mass assignable.
@@ -66,7 +57,9 @@ class Domain extends Model
      * @var array
      */
     protected $fillable = [
-        'domain_name', 'domain_enabled', 'domain_description', 'domain_parent_uuid'
+        'domain_name',
+        'domain_description',
+        'domain_parent_uuid'
     ];
 
     /**
@@ -78,6 +71,11 @@ class Domain extends Model
         //'password', 'remember_token',
     ];
 
+    /**
+     * Groups relation
+     *
+     * @return BelongsToMany
+     */
     public function groups()
     {
         return $this->belongsToMany(Group::class, 'v_user_groups', 'user_uuid', 'group_uuid');

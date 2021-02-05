@@ -5,9 +5,158 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-80-gee99c25"
+        "version": "0.0.8-85-gdbc3fc2"
     },
     "paths": {
+        "/domain/signup": {
+            "post": {
+                "tags": [
+                    "Domain",
+                    "User"
+                ],
+                "summary": "Create a domain",
+                "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
+                "requestBody": {
+                    "description": "Domain information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "domain_parent_uuid": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "domain_name": {
+                                        "type": "string"
+                                    },
+                                    "domain_description": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_category": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_subcategory": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_name": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_value": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_order": {
+                                        "type": "number"
+                                    },
+                                    "domain_setting_enabled": {
+                                        "type": "boolean"
+                                    },
+                                    "domain_setting_description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Domain"
+                                    },
+                                    {
+                                        "$ref": "#/components/schemas/Domain_setting"
+                                    },
+                                    {
+                                        "properties": {
+                                            "users": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "domain_uuid": {
+                                                            "type": "string",
+                                                            "format": "uuid"
+                                                        },
+                                                        "username": {
+                                                            "type": "string"
+                                                        },
+                                                        "password": {
+                                                            "type": "string"
+                                                        },
+                                                        "salt": {
+                                                            "type": "string"
+                                                        },
+                                                        "contact_uuid": {
+                                                            "type": "string",
+                                                            "format": "uuid"
+                                                        },
+                                                        "user_enabled": {
+                                                            "type": "string"
+                                                        },
+                                                        "add_user": {
+                                                            "type": "string"
+                                                        },
+                                                        "add_date": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_category": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_subcategory": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_value": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_order": {
+                                                            "type": "number"
+                                                        },
+                                                        "user_setting_enabled": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "user_setting_description": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "#/components/schemas/User"
+                                                        },
+                                                        {
+                                                            "$ref": "#/components/schemas/User_setting"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Get application name and version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "iidd": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/": {
             "get": {
                 "tags": [
@@ -49,149 +198,16 @@
                 },
                 "security": []
             }
-        },
-        "/products/{id}": {
-            "get": {
-                "tags": [
-                    "Example"
-                ],
-                "description": "EXAMPLE Controller",
-                "operationId": "App\\ProductController::getProduct",
-                "responses": {
-                    "200": {
-                        "description": "A single product",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Product"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/products/search": {
-            "get": {
-                "tags": [
-                    "Example"
-                ],
-                "summary": "Controller that takes all `Product` properties as query parameter.",
-                "description": "EXAMPLE Controller",
-                "operationId": "App\\ProductController::findProducts",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of matching products",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Product"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/signup/domain": {
-            "post": {
-                "tags": [
-                    "Domain",
-                    "User"
-                ],
-                "summary": "Create a domain",
-                "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
-                "requestBody": {
-                    "description": "Client side search object",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Domain"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Get application name and version",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Domain"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "scalar": "api_key"
-                    }
-                ]
-            }
         }
     },
     "components": {
         "schemas": {
-            "Product": {
-                "title": "Product",
-                "description": "A simple product model",
-                "properties": {
-                    "id": {
-                        "description": "The unique identifier of a product in our catalog.",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "format": "int64",
-                        "example": 1
-                    }
-                },
-                "type": "object"
-            },
             "Domain": {
                 "properties": {
-                    "domain_uuid": {
-                        "schema": "domain_uuid",
-                        "description": "Domain id",
-                        "readOnly": true,
-                        "example": "54cd6070-3b0d-11e7-bf5a-4be762d404ce"
-                    },
                     "domain_name": {
-                        "description": "Domain or subdomain name",
+                        "description": "Domain name",
                         "type": "string",
-                        "example": "site.com"
-                    },
-                    "domain_enabled": {
-                        "description": "If domain is active",
-                        "type": "boolean",
-                        "example": false
+                        "format": "hostname"
                     },
                     "domain_description": {
                         "description": "Domain desctiption. Automatically generated upon domain creation if nothing passed",
@@ -199,13 +215,16 @@
                         "example": "Created via api at 2017-05-17 14:30:10"
                     },
                     "domain_parent_uuid": {
-                        "description": "Parant domain id",
+                        "description": "Parent domain id",
                         "example": "54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
                         "nullable": true
                     }
                 },
                 "type": "object"
-            }
+            },
+            "Domain_setting": {},
+            "User": {},
+            "User_setting": {}
         },
         "securitySchemes": {
             "api_key": {

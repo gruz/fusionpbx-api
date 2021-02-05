@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\User\Exceptions;
+namespace Api\Domain\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

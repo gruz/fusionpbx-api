@@ -20,6 +20,9 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+/**
+ * @OA\Schema()
+ */
 class User extends Model implements 
     MustVerifyEmailContract
     , AuthenticatableContract
@@ -36,9 +39,7 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        'domain_uuid',  'username', 'password', 'salt', 'contact_uuid',
-        'user_enabled', 'add_user', 'add_date',
-        //'user_email'
+        'domain_uuid', 'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
     ];
 
     /**

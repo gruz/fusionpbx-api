@@ -3,35 +3,27 @@
 namespace Api\User\Services;
 
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use Api\User\Services\UserService;
-use \Api\User\Events\UserWasDeleted;
-
-use \Api\User\Events\UserWasUpdated;
-use Api\User\Services\DomainService;
-// use Infrastructure\Services\FreeSwicthSocketService as FSSocketService;
-
-use Api\User\Events\DomainWasCreated;
-use Api\Settings\Models\Default_setting;
+use Api\User\Events\UserWasDeleted;
+use Api\User\Events\UserWasUpdated;
+use Api\Domain\Services\DomainService;
+use Api\Domain\Events\DomainWasCreated;
 use Illuminate\Database\DatabaseManager;
-
-
-// use \Api\User\Events\UserWasCreated;
-use \Api\User\Repositories\UserRepository;
-use \Api\User\Repositories\GroupRepository;
-// use \Api\User\Events\DomainWasCreated;
-
-
-use \Api\User\Repositories\DomainRepository;
+use Api\User\Repositories\UserRepository;
+use Api\User\Repositories\GroupRepository;
+use Api\User\Repositories\ContactRepository;
 use Illuminate\Database\Eloquent\Collection;
-use \Api\User\Repositories\ContactRepository;
-use \Api\User\Exceptions\DomainExistsException;
-use \Api\User\Exceptions\InvalidGroupException;
-use \Api\User\Exceptions\UserNotFoundException;
-
-use \Api\Dialplan\Repositories\DialplanRepository;
-use \Api\User\Repositories\Contact_emailRepository;
+use Api\Domain\Repositories\DomainRepository;
+use Api\User\Exceptions\InvalidGroupException;
+use Api\User\Exceptions\UserNotFoundException;
+use Api\Domain\Exceptions\DomainExistsException;
+use Api\Dialplan\Repositories\DialplanRepository;
+use Api\User\Repositories\Contact_emailRepository;
+use Api\Domain\Exceptions\DomainCreationNoUsersException;
+use Api\Domain\Exceptions\DomainCreationNoAdminUserException;
 
 class TeamService
 {
@@ -98,6 +90,74 @@ class TeamService
     }
 
     public function create($data)
+    {
+        $this->database->beginTransaction();
+
+        try {
+            if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
+            {
+              throw new DomainExistsException();
+            }
+
+            $users = collect(Arr::get($data, 'users'));
+
+            if ($users->empty()) {
+                throw new DomainCreationNoUsersException();
+            }
+
+            $adminUserPresent = $users->where('is_admin')->count();
+
+            if (!$adminUserPresent) {
+                throw new DomainCreationNoAdminUserException();
+            }
+
+            $data['domain_enabled'] =  config('fpbx.domain.enabled');
+            $data['domain_description'] =  config('fpbx.domain.description');
+
+            $domain = $this->domainService->create($data);
+
+            $this->dialplanRepository->createDefaultDialplanRules($data);
+
+            $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
+
+            $userDataForResponse = [];
+
+            foreach ($users as $userData) {
+                $user = $this->userService->create($userData);
+                $isAdmin = Arr::get($userData,'is_admin', false);
+                if ($isAdmin) {
+                    $domain->setRelation('admin_user', $user);
+                }
+                $userDataForResponse[] = [
+                    'domain_name' => $data['domain_name'],
+                    'username' => $userData['username'],
+                    'password' => $userData['password']
+                ];
+            }
+
+            $domain->message = __('messages.team created',
+                $userDataForResponse
+            );
+
+        } catch (Exception $e) {
+            $this->database->rollBack();
+
+            throw $e;
+        }
+
+        $this->database->commit();
+
+        $this->dispatcher->dispatch(new DomainWasCreated($domain, true));
+
+        // $this->runFusionPBX_upgrade_domains($domain);
+
+        return $domain;
+    }
+
+    /**
+     * @deprecated Will be removed because of adding in a new way // ##mygruz20210130124229
+     */
+    public function createDeperacted($data)
     {
         $this->database->beginTransaction();
 
@@ -187,7 +247,7 @@ class TeamService
      * require_once app('fpath') . "/core/upgrade/upgrade_domains.php";
      * But it checks permissions which we don't need when creating a team. So I copy only needed part from the file above
      *
-     * @param   Api\User\Models\Domain  $domain
+     * @param   Api\Domain\Models\Domain  $domain
      *
      * @return   void
      */
