@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Cache;
 
 abstract class Model extends BaseModel
 {
-
-    
     // protected static $_columns_info = NULL;
     // protected static $_nullable_fields = NULL;
 
@@ -26,9 +24,11 @@ abstract class Model extends BaseModel
     public function getTableColumnNames($ignoreFillable = false)
     {
         $getData = function () use ($ignoreFillable) {
+            $table = $this->getTable();
+
             $tableColumns = $this->getConnection()
                 ->getSchemaBuilder()
-                ->getColumnListing($this->getTable());
+                ->getColumnListing($table);
 
             if ($ignoreFillable) {
                 $result = $tableColumns;

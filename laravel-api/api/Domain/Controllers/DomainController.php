@@ -39,6 +39,7 @@ class DomainController extends Controller
             @OA\JsonContent(
                 allOf={
                     @OA\Schema(ref="#/components/schemas/Domain"),
+                    @OA\Schema(ref="#/components/schemas/Domain_setting"),
                     @OA\Schema(
                         @OA\Property(
                             property="users",

@@ -44,7 +44,7 @@ class Domain extends Model
     // public function __construct(array $attributes = [])
     // {
     //     parent::__construct($attributes);
-        
+
     //     $this->attributes['domain_description']  = config('domain.description');
     // }
 
@@ -57,7 +57,9 @@ class Domain extends Model
      * @var array
      */
     protected $fillable = [
-        'domain_name', 'domain_enabled', 'domain_description', 'domain_parent_uuid'
+        'domain_name',
+        'domain_description',
+        'domain_parent_uuid'
     ];
 
     /**

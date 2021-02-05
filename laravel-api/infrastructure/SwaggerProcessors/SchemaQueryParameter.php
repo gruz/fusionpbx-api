@@ -43,54 +43,11 @@ class SchemaQueryParameter
             foreach ($annotations as $annotation) {
                 if (
                     $annotation instanceof Schema &&
-                    // !$annotation instanceof Property &&
                     $annotation->ref !== UNDEFINED
                 ) {
-
                     if ($schema = $this->schemaForRef($schemas, $annotation->ref)) {
-                        // d($annotation);
                         $this->expandModelSchema($annotation, $schema);
-                        // $this->cleanUp($annotation);
                     }
-                }
-            }
-        }
-        return;
-
-        // foreach ($schemas as $key => $schema) {
-        //     if ($schema->_context->extends !== 'Model') {
-        //         continue;
-        //     }
-        //     // $this->expandModelSchema($schema);
-        //     d($schema, $schema->schema, $schema->ref, $schema->x);
-
-        // }
-        // $operations = $analysis->getAnnotationsOfType(MediaType::class);
-        $operations = $analysis->getAnnotationsOfType(JsonContent::class);
-
-        // return;
-        // $operations = $analysis->getAnnotationsOfType(JsonContent::class);
-
-        foreach ($operations as $operation) {
-            if ($operation->x !== UNDEFINED && array_key_exists(self::MODEL_INPUT_FIELDS, $operation->x)) {
-                foreach ($operation->x[self::MODEL_INPUT_FIELDS] as $schemaPath) {
-                    if ($schema = $this->schemaForRef($schemas, $schemaPath)) {
-                        $this->expand($operation, $schema);
-                        $this->cleanUp($operation);
-                    }
-                }
-            }
-        }
-
-        return;
-
-        $operations = $analysis->getAnnotationsOfType(Operation::class);
-
-        foreach ($operations as $operation) {
-            if ($operation->x !== UNDEFINED && array_key_exists(self::X_QUERY_AGS_REF, $operation->x)) {
-                if ($schema = $this->schemaForRef($schemas, $operation->x[self::X_QUERY_AGS_REF])) {
-                    $this->expandQueryArgs($operation, $schema);
-                    $this->cleanUp($operation);
                 }
             }
         }
@@ -115,30 +72,14 @@ class SchemaQueryParameter
 
         $fillable = $model->getFillable();
 
-        // foreach ($columns as $colmunName => $columnData) {
-        //     if (!in_array($colmunName, $fillable)) {
-        //         unset($columns[$colmunName]);
-        //     }
-        // }
-
         $propertiesBag = &$annotation->_context->nested->properties;
 
         $propertiesBag = $propertiesBag === UNDEFINED ? [] : $propertiesBag;
-        $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
-        // dd($alreadyDescribedProperties);
+        // $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
 
-        // d($schema->properties, $availabeProperties);
-        // return;
         foreach ($columns as $columnName => $column) {
             $props = [
                 'property' => $columnName,
-                // 'in' => 'query',
-                // 'required' => false,
-                // 'type' => $type,
-                // 'schema' => [
-                //     'type' => 'integer',
-                //     'format' => 'int64',
-                // ]
             ];
 
             $type = $this->mapType($column->getType()->getName());
@@ -189,6 +130,7 @@ class SchemaQueryParameter
         // d($operation);
 
         $operation->properties = $operation->properties === UNDEFINED ? [] : $operation->properties;
+
         foreach ($columns as $columnName => $column) {
             $type = $this->mapType($column->getType()->getName());
             $properties = new Property([
@@ -202,24 +144,6 @@ class SchemaQueryParameter
                 ]
             ]);
             $operation->properties[] = $properties;
-        }
-        // d($operation);
-
-
-        return;
-
-        $operation->parameters = $operation->parameters === UNDEFINED ? [] : $operation->parameters;
-        foreach ($schema->properties as $property) {
-            $parameter = new Parameter([
-                'name' => $property->property,
-                'in' => 'query',
-                'required' => false,
-                'schema' => [
-                    'type' => 'integer',
-                    'format' => 'int64',
-                ]
-            ]);
-            $operation->parameters[] = $parameter;
         }
     }
 
@@ -235,13 +159,16 @@ class SchemaQueryParameter
     private function mapType(string $dbType)
     {
         $mapping = [
+            'decimal' => [
+                'type' => 'number'
+            ],
             'text' => [
                 'type' => 'string'
             ],
             'guid' =>  [
                 'type' => 'string',
                 'format' => 'uuid',
-            ]
+            ],
         ];
 
         return Arr::get($mapping, $dbType, [ 'type' => $dbType ] );
@@ -259,40 +186,5 @@ class SchemaQueryParameter
         }
 
         return null;
-    }
-
-    /**
-     * Expand the given operation by injecting parameters for all properties of the given schema.
-     */
-    protected function expandQueryArgs(Operation $operation, Schema $schema)
-    {
-        if ($schema->properties === UNDEFINED || !$schema->properties) {
-            return;
-        }
-
-        $operation->parameters = $operation->parameters === UNDEFINED ? [] : $operation->parameters;
-        foreach ($schema->properties as $property) {
-            $parameter = new Parameter([
-                'name' => $property->property,
-                'in' => 'query',
-                'required' => false,
-                'schema' => [
-                    'type' => 'integer',
-                    'format' => 'int64',
-                ]
-            ]);
-            $operation->parameters[] = $parameter;
-        }
-    }
-
-    /**
-     * Clean up.
-     */
-    protected function cleanUp($operation)
-    {
-        unset($operation->x[self::X_QUERY_AGS_REF]);
-        if (!$operation->x) {
-            $operation->x = UNDEFINED;
-        }
     }
 }

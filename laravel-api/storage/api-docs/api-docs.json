@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-84-g50f747e"
+        "version": "0.0.8-85-gdbc3fc2"
     },
     "paths": {
         "/domain/signup": {
@@ -30,16 +30,37 @@
                                     "domain_name": {
                                         "type": "string"
                                     },
-                                    "domain_enabled": {
+                                    "domain_description": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_category": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_subcategory": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_name": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_value": {
+                                        "type": "string"
+                                    },
+                                    "domain_setting_order": {
+                                        "type": "number"
+                                    },
+                                    "domain_setting_enabled": {
                                         "type": "boolean"
                                     },
-                                    "domain_description": {
+                                    "domain_setting_description": {
                                         "type": "string"
                                     }
                                 },
                                 "allOf": [
                                     {
                                         "$ref": "#/components/schemas/Domain"
+                                    },
+                                    {
+                                        "$ref": "#/components/schemas/Domain_setting"
                                     },
                                     {
                                         "properties": {
@@ -71,6 +92,27 @@
                                                             "type": "string"
                                                         },
                                                         "add_date": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_category": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_subcategory": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_value": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_setting_order": {
+                                                            "type": "number"
+                                                        },
+                                                        "user_setting_enabled": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "user_setting_description": {
                                                             "type": "string"
                                                         }
                                                     },
@@ -180,6 +222,7 @@
                 },
                 "type": "object"
             },
+            "Domain_setting": {},
             "User": {},
             "User_setting": {}
         },

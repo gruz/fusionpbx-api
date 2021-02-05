@@ -40,6 +40,13 @@ trait FusionPBXTableModel
         $this->incrementing = false;
         $this->timestamps = false;
 
+
+        $add_fillable = config('fpbx.table.' . $this->table . '.add_fillable', []);
+        $this->fillable = array_merge($this->fillable, $add_fillable);
+
+        $remove_fillable = config('fpbx.table.' . $this->table . '.remove_fillable', []);
+        $this->fillable = array_diff($this->fillable, $remove_fillable);
+
         /**
          * The "type" of the primary key ID.
          *
