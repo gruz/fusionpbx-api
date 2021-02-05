@@ -36,19 +36,5 @@ class LoginController extends Controller
 
         return $this->response(null, 204);
     }
-
-    public function forgotPassword(Request $request) 
-    {
-        $email = $request->get('user_email');   
-        $domain_name = $request->get('domain_name');
-        return $this->response($this->loginProxy->attemptGenerateResetLink($email, $domain_name));
-    }
-
-    public function resetPassword(Request $request) 
-    {
-        $email = $request->get('user_email');   
-
-        return $this->response($this->loginProxy->attemptResetPassword($email));
-    }
-
+    
 }
