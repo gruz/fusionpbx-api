@@ -8,6 +8,7 @@ use const OpenApi\UNDEFINED;
 use OpenApi\Annotations\Items;
 use OpenApi\Annotations\Schema;
 use OpenApi\Annotations\Property;
+use OpenApi\Annotations\Response;
 use OpenApi\Annotations\MediaType;
 use OpenApi\Annotations\Operation;
 use OpenApi\Annotations\Parameter;
@@ -34,6 +35,16 @@ class SchemaQueryParameter
          */
         $schemas = $analysis->getAnnotationsOfType(Schema::class, true);
 
+        foreach ($schemas as $schema) {
+            if ($schema->schema !== UNDEFINED) {
+
+                $this->buildSchemaFromModel($schema);
+                // d($schema->schema, $schema);
+            }
+        }
+
+        return;
+
         /**
          * @var RequestBody[]
          */
@@ -46,104 +57,175 @@ class SchemaQueryParameter
                     $annotation->ref !== UNDEFINED
                 ) {
                     if ($schema = $this->schemaForRef($schemas, $annotation->ref)) {
-                        $this->expandModelSchema($annotation, $schema);
+                        $i = 0;
+                        $type = null;
+                        $startPoint = $annotation->_context->nested;
+                        while (!$type) {
+                            $i++;
+                            if ($startPoint instanceof RequestBody) {
+                                $type = 'request';
+                                break;
+                            }
+                            if ($startPoint instanceof Response) {
+                                $type = 'response';
+                                break;
+                            }
+
+                            $startPoint = $startPoint->_context->nested;
+
+                            if ($i > 100) { // JIC
+                                break;
+                            };
+                        }
+
+                        $this->expandModelSchema($annotation, $schema, $type);
                     }
                 }
             }
         }
     }
 
-    /**
-     * Expand the given operation by injecting parameters for all properties of the given schema.
-     */
-    protected function expandModelSchema(Schema $annotation, Schema $schema, $input = true)
-    {
-        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
+    protected function buildSchemaFromModel(Schema $schema) {
+        $model = $this->getModelFromSchema($schema);
 
-        /**
-         * @var Model
-         */
-        $model = new $modelClassName;
         if (!$model instanceof Model) {
             return;
         }
 
-        $columns = $model->getTableColumnsInfo();
+        $columns = $model->getTableColumnsInfo(true);
+        $columnNames = array_keys($columns);
 
-        $fillable = $model->getFillable();
-
-        $propertiesBag = &$annotation->_context->nested->properties;
-
+        $propertiesBag = &$schema->properties;
         $propertiesBag = $propertiesBag === UNDEFINED ? [] : $propertiesBag;
-        // $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
+
+        $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
 
         foreach ($columns as $columnName => $column) {
+            if (in_array($columnName, $alreadyDescribedProperties)) {
+                continue;
+            }
+
+            if ($columnName === 'add_user') {
+                $a = 1;
+            }
+
+            if (!$model->isFillable($columnName) && !$model->isVisible($columnName)) {
+                continue;
+            }
+
             $props = [
                 'property' => $columnName,
             ];
 
-            $type = $this->mapType($column->getType()->getName());
-            $props = array_merge($props, $type);
-
-            if (!in_array($columnName, $fillable)) {
+            if ($model->isFillable($columnName) && !$model->isVisible($columnName)) {
+                $props['writeOnly'] = true;
+            } elseif (!$model->isFillable($columnName) && $model->isVisible($columnName)) {
                 $props['readOnly'] = true;
             }
 
+            $fieldType = $this->mapType($column->getType()->getName());
+            $props = array_merge($props, $fieldType);
+
             $properties = new Property($props);
             $propertiesBag[] = $properties;
+            $alreadyDescribedProperties[] = $columnName;
 
             // if ($model->is_nullable($columnName)) {
             //     $annotation->_context->nested->required = $annotation->_context->nested->required === UNDEFINED ? [] : $annotation->_context->nested->required;
             //     $annotation->_context->nested->required[] = $columnName;
             // }
         }
+
+
     }
 
     /**
      * Expand the given operation by injecting parameters for all properties of the given schema.
      */
-    protected function expand(AbstractAnnotation $operation, Schema $schema)
+    protected function expandModelSchema(Schema $annotation, Schema $schema, $type)
     {
-        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
 
-        /**
-         * @var Model
-         */
-        $model = new $modelClassName;
+        $model = $this->getModelFromSchema($schema);
 
         if (!$model instanceof Model) {
             return;
         }
 
-        $columns = $model->getTableColumnsInfo();
+        // d($modelClassName . '||' . $type);
 
-        $fillable = $model->getFillable();
+        $model->getVisible();
 
-        foreach ($columns as $colmunName => $columnData) {
-            if (!in_array($colmunName, $fillable)) {
-                unset($columns[$colmunName]);
-            }
+        $limitFields = false;
+
+        switch ($type) {
+            case 'request':
+                $columns = $model->getTableColumnsInfo();
+                $includeColumns = $model->getFillable();
+                $limitFields = true;
+                break;
+            case 'response':
+                $columns = $model->getTableColumnsInfo(true);
+                $visible = $model->getVisible();
+                $hidden = $model->getHidden();
+                if (empty($visible) && empty($hidden)) {
+                    $includeColumns = [];
+                } elseif (!empty($visible)) {
+                    $includeColumns = $visible;
+                    $limitFields = true;
+                } elseif (!empty($hidden)) {
+                    $includeColumns = array_diff(array_keys($columns), $hidden);
+                    $limitFields = true;
+                }
+
+                // d($includeColumns);
+                break;
         }
 
-        // d($schema->schema, $columns);
+        $propertiesBag = &$annotation->_context->nested->properties;
 
-        // d($operation);
-
-        $operation->properties = $operation->properties === UNDEFINED ? [] : $operation->properties;
+        $propertiesBag = $propertiesBag === UNDEFINED ? [] : $propertiesBag;
+        $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
 
         foreach ($columns as $columnName => $column) {
-            $type = $this->mapType($column->getType()->getName());
-            $properties = new Property([
+            if (in_array($columnName, $alreadyDescribedProperties)) {
+                continue;
+            }
+            $props = [
                 'property' => $columnName,
-                // 'in' => 'query',
-                // 'required' => false,
-                'type' => $type,
-                'schema' => [
-                    'type' => 'integer',
-                    'format' => 'int64',
-                ]
-            ]);
-            $operation->properties[] = $properties;
+            ];
+
+            // if ('response' === $type && $columnName === 'domain_uuid') {
+            //     d($modelClassName, $columnName, $limitFields, $includeColumns);
+            // }
+
+            if ($limitFields && !in_array($columnName, $includeColumns)) {
+                switch ($type) {
+                    case 'request':
+                        $props['readOnly'] = true;
+                        break;
+
+                    case 'response':
+                        continue 2;
+                        break;
+                }
+            }
+
+            // if ('response' === $type && $columnName === 'domain_uuid') {
+            //     d($columnName);
+            // }
+
+            $fieldType = $this->mapType($column->getType()->getName());
+            $props = array_merge($props, $fieldType);
+
+
+            $properties = new Property($props);
+            $propertiesBag[] = $properties;
+            $alreadyDescribedProperties[] = $columnName;
+
+            // if ($model->is_nullable($columnName)) {
+            //     $annotation->_context->nested->required = $annotation->_context->nested->required === UNDEFINED ? [] : $annotation->_context->nested->required;
+            //     $annotation->_context->nested->required[] = $columnName;
+            // }
         }
     }
 
@@ -171,7 +253,7 @@ class SchemaQueryParameter
             ],
         ];
 
-        return Arr::get($mapping, $dbType, [ 'type' => $dbType ] );
+        return Arr::get($mapping, $dbType, ['type' => $dbType]);
     }
 
     /**
@@ -186,5 +268,17 @@ class SchemaQueryParameter
         }
 
         return null;
+    }
+
+    protected function getModelFromSchema(Schema $schema)
+    {
+        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
+
+        /**
+         * @var Model
+         */
+        $model = new $modelClassName;
+
+        return $model;
     }
 }

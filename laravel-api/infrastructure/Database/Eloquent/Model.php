@@ -138,11 +138,30 @@ abstract class Model extends BaseModel
     }
 
     /**
-     * Get fillable model properties
+     * Checks if filed is visible
      */
-    public function getFillable()
+    public function isVisible($field)
     {
-        return $this->fillable;
+        $visible = $this->getVisible();
+        $hidden = $this->getHidden();
+
+        if (empty($visible) && empty($hidden)) {
+            return true;
+        }
+
+        if (in_array($field, $hidden)) {
+            return false;
+        }
+
+        if (in_array($field, $visible)) {
+            return true;
+        }
+
+        if (empty($visible)) {
+            return true;
+        }
+
+        return false;;
     }
 
     // public function is_nullable(string $field_name)

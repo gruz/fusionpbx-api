@@ -22,7 +22,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 /**
  * @OA\Schema()
  */
-class User extends Model implements 
+class User extends Model implements
     MustVerifyEmailContract
     , AuthenticatableContract
     , AuthorizableContract
@@ -38,7 +38,13 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        'domain_uuid', 'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
+        'domain_uuid',
+        'username',
+        'password',
+        'contact_uuid',
+        'user_enabled',
+        'add_user',
+        'add_date',
     ];
 
     /**
@@ -47,10 +53,11 @@ class User extends Model implements
      * @var array
      */
     protected $hidden = [
-        'password', 'salt',
+        'password', 
+        'salt',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
-        'user_status',
+        // 'user_status',
     ];
 
     public function groups()

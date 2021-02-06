@@ -36,7 +36,7 @@ class Domain extends Model
      * Parent domain id
      * @var uuid|null
      * @OA\Property(
-     *   example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2"
+     *   example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
      * )
      */
     public $domain_parent_uuid;
@@ -60,15 +60,6 @@ class Domain extends Model
         'domain_name',
         'domain_description',
         'domain_parent_uuid'
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        //'password', 'remember_token',
     ];
 
     /**

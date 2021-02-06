@@ -5,9 +5,51 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-85-gdbc3fc2"
+        "version": "0.0.8-86-gc9130a7"
     },
     "paths": {
+        "/domain/signup1": {
+            "post": {
+                "tags": [
+                    "Domain",
+                    "User"
+                ],
+                "summary": "Create a domain",
+                "responses": {
+                    "default": {
+                        "description": "登录",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Domain"
+                                },
+                                "examples": {
+                                    "200": {
+                                        "summary": "登录成功",
+                                        "value": {
+                                            "code": 200,
+                                            "message": "登录成功",
+                                            "data": {
+                                                "user_token": "fwefnn2342423",
+                                                "role_type": "admin"
+                                            }
+                                        }
+                                    },
+                                    "403": {
+                                        "summary": "登录失败",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "登录失败",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/domain/signup": {
             "post": {
                 "tags": [
@@ -15,107 +57,31 @@
                     "User"
                 ],
                 "summary": "Create a domain",
-                "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
+                "description": "\n# Domain Settings and User Settings\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```\n        ",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "properties": {
-                                    "domain_parent_uuid": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                    },
-                                    "domain_name": {
-                                        "type": "string"
-                                    },
-                                    "domain_description": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_category": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_subcategory": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_name": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_value": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_order": {
-                                        "type": "number"
-                                    },
-                                    "domain_setting_enabled": {
-                                        "type": "boolean"
-                                    },
-                                    "domain_setting_description": {
-                                        "type": "string"
-                                    }
-                                },
                                 "allOf": [
                                     {
                                         "$ref": "#/components/schemas/Domain"
                                     },
                                     {
-                                        "$ref": "#/components/schemas/Domain_setting"
+                                        "properties": {
+                                            "settings": {
+                                                "type": "array",
+                                                "items": {}
+                                            }
+                                        },
+                                        "type": "object"
                                     },
                                     {
                                         "properties": {
                                             "users": {
                                                 "type": "array",
                                                 "items": {
-                                                    "properties": {
-                                                        "domain_uuid": {
-                                                            "type": "string",
-                                                            "format": "uuid"
-                                                        },
-                                                        "username": {
-                                                            "type": "string"
-                                                        },
-                                                        "password": {
-                                                            "type": "string"
-                                                        },
-                                                        "salt": {
-                                                            "type": "string"
-                                                        },
-                                                        "contact_uuid": {
-                                                            "type": "string",
-                                                            "format": "uuid"
-                                                        },
-                                                        "user_enabled": {
-                                                            "type": "string"
-                                                        },
-                                                        "add_user": {
-                                                            "type": "string"
-                                                        },
-                                                        "add_date": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_category": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_subcategory": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_name": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_value": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_order": {
-                                                            "type": "number"
-                                                        },
-                                                        "user_setting_enabled": {
-                                                            "type": "boolean"
-                                                        },
-                                                        "user_setting_description": {
-                                                            "type": "string"
-                                                        }
-                                                    },
                                                     "allOf": [
                                                         {
                                                             "$ref": "#/components/schemas/User"
@@ -130,25 +96,66 @@
                                         "type": "object"
                                     }
                                 ]
+                            },
+                            "examples": {
+                                "Create domain": [],
+                                "Create domain with language settings": {
+                                    "summary": "Create domain with language settings",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Get application name and version",
+                        "description": "Domain created response",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
+                                            "$ref": "#/components/schemas/Domain"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Domain_setting"
+                                        },
+                                        {
                                             "properties": {
-                                                "iidd": {
-                                                    "type": "integer"
+                                                "users": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/User"
+                                                            },
+                                                            {
+                                                                "$ref": "#/components/schemas/User_setting"
+                                                            }
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "type": "object"
                                         }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
                                     ]
                                 }
                             }
@@ -218,13 +225,153 @@
                         "description": "Parent domain id",
                         "example": "54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
                         "nullable": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_enabled": {
+                        "type": "boolean",
+                        "readOnly": true
                     }
                 },
                 "type": "object"
             },
-            "Domain_setting": {},
-            "User": {},
-            "User_setting": {}
+            "Domain_setting": {
+                "properties": {
+                    "domain_setting_category": {
+                        "title": "Order status",
+                        "description": "Order status",
+                        "type": "string",
+                        "default": "call_block",
+                        "enum": [
+                            "call_block",
+                            "approved",
+                            "delivered"
+                        ]
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_setting_subcategory": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "domain_setting_name": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "domain_setting_value": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "domain_setting_order": {
+                        "type": "number",
+                        "writeOnly": true
+                    },
+                    "domain_setting_enabled": {
+                        "type": "boolean",
+                        "writeOnly": true
+                    },
+                    "domain_setting_description": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "user_email": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_status": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "api_key": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "user_enabled": {
+                        "type": "string"
+                    },
+                    "add_user": {
+                        "type": "string"
+                    },
+                    "add_date": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": "datetime",
+                        "readOnly": true
+                    }
+                }
+            },
+            "User_setting": {
+                "properties": {
+                    "user_setting_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_setting_category": {
+                        "type": "string"
+                    },
+                    "user_setting_subcategory": {
+                        "type": "string"
+                    },
+                    "user_setting_name": {
+                        "type": "string"
+                    },
+                    "user_setting_value": {
+                        "type": "string"
+                    },
+                    "user_setting_order": {
+                        "type": "number"
+                    },
+                    "user_setting_enabled": {
+                        "type": "boolean"
+                    },
+                    "user_setting_description": {
+                        "type": "string"
+                    }
+                }
+            }
         },
         "securitySchemes": {
             "api_key": {
