@@ -13,6 +13,9 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Api\User\Exceptions\WrongSignupDataException;
 use Exception;
 
+/**
+ * @OA\Schema()
+ */
 class DomainController extends Controller
 {
     /**
@@ -24,68 +27,37 @@ class DomainController extends Controller
     {
         $this->userService = $userService;
         $this->teamService = $teamService;
-        new OA\JsonContent([]);
     }
 
     /**
      * @OA\Schema(
      *  schema="DomainCreateSchema",
-                allOf={
-                    @OA\Schema(
-                        ref="#/components/schemas/Domain",
+        allOf={
+            @OA\Schema(ref="#/components/schemas/Domain"),
+            @OA\Schema(
+                @OA\Property(
+                    property="settings",
+                    type="array",
+                    @OA\Items(
+                        allOf={
+                            @OA\Schema(ref="#/components/schemas/Domain_setting"),
+                        }
                     ),
-                    @OA\Schema(
-                        @OA\Property(
-                            property="settings",
-                            type="array",
-                            @OA\Items(
-                                allOf={
-                                    @OA\Schema(ref="#/components/schemas/Domain_setting"),
-                                }
-                            ),
-                        ),
+                ),
+            ),
+            @OA\Schema(
+                @OA\Property(
+                    property="users",
+                    type="array",
+                    @OA\Items(
+                        allOf={
+                            @OA\Schema(@OA\Property( property="is_admin", type="boolean", default="false", description="At least one user must be an admin when creating a new domain" )),
+                            @OA\Schema(ref="#/components/schemas/UserCreateSchema"),
+                        }
                     ),
-                    @OA\Schema(
-                        @OA\Property(
-                            property="users",
-                            type="array",
-                            @OA\Items(
-                                allOf={
-                                    @OA\Schema(
-                                        ref="#/components/schemas/User",
-                                    ),
-                                    @OA\Schema(@OA\Property( property="is_admin", type="boolean", default="false" )),
-                                    @OA\Schema(
-                                        @OA\Property(
-                                            property="contacts",
-                                            type="array",
-                                            @OA\Items(
-                                                allOf={
-                                                    @OA\Schema(
-                                                        ref="#/components/schemas/Contact",
-                                                    ),
-                                                }
-                                            ),
-                                        ),
-                                    ),
-                                    @OA\Schema(
-                                        @OA\Property(
-                                            property="extensions",
-                                            type="array",
-                                            @OA\Items(
-                                                allOf={
-                                                    @OA\Schema(
-                                                        ref="#/components/schemas/Extension",
-                                                    ),
-                                                }
-                                            ),
-                                        ),
-                                    ),
-                                }
-                            ),
-                        ),
-                    ),
-                },
+                ),
+            ),
+        },
      * )
      */
 
@@ -94,7 +66,7 @@ class DomainController extends Controller
         tags={"Domain", "User"},
         path="/domain/signup",
         summary="Create a domain",
-        description="
+        description="`TODO Finish description`
 # Domain Settings and User Settings
 
 When creating a domain you must provide at least one
@@ -121,6 +93,7 @@ So to override a setting (e.g. set another UI language), your domain setting obj
                 examples={
                     "Create domain all fields": {},
                     "Create domain basic example": {
+                        "summary" : "`TODO example`",
                         "value": {
                             "code": 403,
                             "message": "登录失败",

@@ -10,6 +10,35 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Services\UserService;
 use Api\User\Services\TeamService;
 
+/**
+ * @OA\Schema()
+ *
+@OA\Schema(schema="UserCreateSchema", allOf={
+    @OA\Schema(ref="#/components/schemas/User"),
+    @OA\Schema(@OA\Property( property="reseller_reference_code", type="string", description="Reseller reference code`TODO properly save on user creation`" )),
+    @OA\Schema(@OA\Property(
+        property="contacts",
+        type="array",
+        @OA\Items(
+            allOf={
+                @OA\Schema(ref="#/components/schemas/Contact"),
+            }
+        ),
+    )),
+    @OA\Schema(
+        @OA\Property(
+            property="extensions",
+            type="array",
+            @OA\Items(
+                allOf={
+                    @OA\Schema(ref="#/components/schemas/Extension"),
+                    @OA\Schema(ref="#/components/schemas/Voicemail"),
+                }
+            ),
+        ),
+    ),
+}),
+*/
 class UserController extends Controller
 {
     /**
@@ -112,6 +141,64 @@ class UserController extends Controller
 
     // ~ return $this->response($this->userService->create($data), 201);
     // ~ }
+
+    /**
+    @OA\Post(
+        tags={"Domain", "User"},
+        path="/user/signup",
+        summary="User signup",
+        description="Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                examples={
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="Domain created response",
+            @OA\JsonContent(
+                allOf={
+                    @OA\Schema(ref="#/components/schemas/DomainCreateSchema"),
+                },
+                examples={
+                    "Create domain basic example1": {
+                        "summary": "Create domain with language settings",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=400,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(
+                example={
+                    "messages": {
+                        "Missing admin user",
+                        "No password for email",
+                    },
+                },
+            ),
+        ),
+    )
+     */
 
     /**
      * User signup

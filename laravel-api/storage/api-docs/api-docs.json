@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-88-g26ae779"
+        "version": "0.0.8-89-g152a109"
     },
     "paths": {
         "/domain/signup": {
@@ -15,7 +15,7 @@
                     "User"
                 ],
                 "summary": "Create a domain",
-                "description": "\n# Domain Settings and User Settings\n\nWhen creating a domain you must provide at least one\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```\n        ",
+                "description": "`TODO Finish description`\n# Domain Settings and User Settings\n\nWhen creating a domain you must provide at least one\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```\n        ",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
@@ -31,6 +31,79 @@
                             "examples": {
                                 "Create domain all fields": [],
                                 "Create domain basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domain created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/DomainCreateSchema"
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "Create domain basic example1": {
+                                        "summary": "Create domain with language settings",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "登录失败",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/signup": {
+            "post": {
+                "tags": [
+                    "Domain",
+                    "User"
+                ],
+                "summary": "User signup",
+                "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
                                     "value": {
                                         "code": 403,
                                         "message": "登录失败",
@@ -128,6 +201,7 @@
     },
     "components": {
         "schemas": {
+            "DomainController": {},
             "DomainCreateSchema": {
                 "allOf": [
                     {
@@ -155,11 +229,9 @@
                                 "items": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/User"
-                                        },
-                                        {
                                             "properties": {
                                                 "is_admin": {
+                                                    "description": "At least one user must be an admin when creating a new domain",
                                                     "type": "boolean",
                                                     "default": "false"
                                                 }
@@ -167,34 +239,7 @@
                                             "type": "object"
                                         },
                                         {
-                                            "properties": {
-                                                "contacts": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Contact"
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        {
-                                            "properties": {
-                                                "extensions": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Extension"
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/UserCreateSchema"
                                         }
                                     ]
                                 }
@@ -534,6 +579,56 @@
                     }
                 }
             },
+            "UserController": {},
+            "UserCreateSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "contacts": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "extensions": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Extension"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Voicemail"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
             "Contact": {
                 "properties": {
                     "contact_uuid": {
@@ -688,6 +783,102 @@
                     },
                     "user_setting_description": {
                         "type": "string"
+                    }
+                }
+            },
+            "Voicemail": {
+                "properties": {
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_id": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_password": {
+                        "type": "string"
+                    },
+                    "greeting_id": {
+                        "type": "number"
+                    },
+                    "voicemail_alternate_greet_id": {
+                        "type": "number"
+                    },
+                    "voicemail_mail_to": {
+                        "type": "string"
+                    },
+                    "voicemail_sms_to": {
+                        "type": "string"
+                    },
+                    "voicemail_transcription_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_attach_file": {
+                        "type": "string"
+                    },
+                    "voicemail_file": {
+                        "type": "string"
+                    },
+                    "voicemail_local_after_email": {
+                        "type": "string"
+                    },
+                    "voicemail_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_description": {
+                        "type": "string"
+                    },
+                    "voicemail_name_base64": {
+                        "type": "string"
+                    },
+                    "voicemail_tutorial": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Voicemail_option": {
+                "properties": {
+                    "voicemail_option_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_option_digits": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_action": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_param": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_order": {
+                        "type": "number",
+                        "readOnly": true
+                    },
+                    "voicemail_option_description": {
+                        "type": "string",
+                        "readOnly": true
                     }
                 }
             }
