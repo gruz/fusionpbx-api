@@ -276,6 +276,10 @@ class SchemaQueryParameter
     {
         $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
 
+        if (!is_subclass_of($modelClassName, Model::class)) {
+            return null;
+        }
+
         /**
          * @var Model
          */

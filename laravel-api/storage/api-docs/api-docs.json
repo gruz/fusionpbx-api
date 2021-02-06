@@ -5,51 +5,9 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-87-gf96e948"
+        "version": "0.0.8-88-g26ae779"
     },
     "paths": {
-        "/domain/signup1": {
-            "post": {
-                "tags": [
-                    "Domain",
-                    "User"
-                ],
-                "summary": "Create a domain",
-                "responses": {
-                    "default": {
-                        "description": "登录",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Domain"
-                                },
-                                "examples": {
-                                    "200": {
-                                        "summary": "登录成功",
-                                        "value": {
-                                            "code": 200,
-                                            "message": "登录成功",
-                                            "data": {
-                                                "user_token": "fwefnn2342423",
-                                                "role_type": "admin"
-                                            }
-                                        }
-                                    },
-                                    "403": {
-                                        "summary": "登录失败",
-                                        "value": {
-                                            "code": 403,
-                                            "message": "登录失败",
-                                            "data": null
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/domain/signup": {
             "post": {
                 "tags": [
@@ -57,7 +15,7 @@
                     "User"
                 ],
                 "summary": "Create a domain",
-                "description": "\n# Domain Settings and User Settings\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```\n        ",
+                "description": "\n# Domain Settings and User Settings\n\nWhen creating a domain you must provide at least one\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```\n        ",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
@@ -66,82 +24,13 @@
                             "schema": {
                                 "allOf": [
                                     {
-                                        "$ref": "#/components/schemas/Domain"
-                                    },
-                                    {
-                                        "properties": {
-                                            "settings": {
-                                                "type": "array",
-                                                "items": {
-                                                    "allOf": [
-                                                        {
-                                                            "$ref": "#/components/schemas/Domain_setting"
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        },
-                                        "type": "object"
-                                    },
-                                    {
-                                        "properties": {
-                                            "users": {
-                                                "type": "array",
-                                                "items": {
-                                                    "allOf": [
-                                                        {
-                                                            "$ref": "#/components/schemas/User"
-                                                        },
-                                                        {
-                                                            "properties": {
-                                                                "is_admin": {
-                                                                    "type": "boolean"
-                                                                }
-                                                            },
-                                                            "type": "object"
-                                                        },
-                                                        {
-                                                            "properties": {
-                                                                "contacts": {
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "allOf": [
-                                                                            {
-                                                                                "$ref": "#/components/schemas/Contact"
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            },
-                                                            "type": "object"
-                                                        },
-                                                        {
-                                                            "properties": {
-                                                                "extensions": {
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "allOf": [
-                                                                            {
-                                                                                "$ref": "#/components/schemas/Extension"
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                }
-                                                            },
-                                                            "type": "object"
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        },
-                                        "type": "object"
+                                        "$ref": "#/components/schemas/DomainCreateSchema"
                                     }
                                 ]
                             },
                             "examples": {
-                                "Create domain with language settings": [],
-                                "Create domain": {
-                                    "summary": "Create domain with language settings",
+                                "Create domain all fields": [],
+                                "Create domain basic example": {
                                     "value": {
                                         "code": 403,
                                         "message": "登录失败",
@@ -160,36 +49,25 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/Domain"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/Domain_setting"
-                                        },
-                                        {
-                                            "properties": {
-                                                "users": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/User"
-                                                            },
-                                                            {
-                                                                "$ref": "#/components/schemas/User_setting"
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/DomainCreateSchema"
                                         }
                                     ]
+                                },
+                                "examples": {
+                                    "Create domain basic example1": {
+                                        "summary": "Create domain with language settings",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "登录失败",
+                                            "data": null
+                                        }
+                                    }
                                 }
                             }
                         }
                     },
                     "400": {
-                        "description": "`TODO` Could not created domain",
+                        "description": "`TODO Stub` Could not created domain",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -250,6 +128,82 @@
     },
     "components": {
         "schemas": {
+            "DomainCreateSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Domain"
+                    },
+                    {
+                        "properties": {
+                            "settings": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Domain_setting"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        {
+                                            "properties": {
+                                                "is_admin": {
+                                                    "type": "boolean",
+                                                    "default": "false"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "contacts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Contact"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "extensions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Extension"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
             "Domain": {
                 "properties": {
                     "domain_name": {
