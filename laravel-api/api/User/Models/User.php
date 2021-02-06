@@ -45,6 +45,7 @@ class User extends Model implements
         'user_enabled',
         'add_user',
         'add_date',
+        'user_email',
     ];
 
     /**
@@ -53,7 +54,7 @@ class User extends Model implements
      * @var array
      */
     protected $hidden = [
-        'password', 
+        'password',
         'salt',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX

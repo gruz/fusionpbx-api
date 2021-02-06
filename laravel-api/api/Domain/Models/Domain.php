@@ -34,9 +34,11 @@ class Domain extends Model
 
     /**
      * Parent domain id
+     *
      * @var uuid|null
+     *
      * @OA\Property(
-     *   example="54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
+     *   nullable=true,
      * )
      */
     public $domain_parent_uuid;

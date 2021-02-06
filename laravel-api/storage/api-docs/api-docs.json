@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-86-gc9130a7"
+        "version": "0.0.8-87-gf96e948"
     },
     "paths": {
         "/domain/signup1": {
@@ -72,7 +72,13 @@
                                         "properties": {
                                             "settings": {
                                                 "type": "array",
-                                                "items": {}
+                                                "items": {
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "#/components/schemas/Domain_setting"
+                                                        }
+                                                    ]
+                                                }
                                             }
                                         },
                                         "type": "object"
@@ -87,7 +93,42 @@
                                                             "$ref": "#/components/schemas/User"
                                                         },
                                                         {
-                                                            "$ref": "#/components/schemas/User_setting"
+                                                            "properties": {
+                                                                "is_admin": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        {
+                                                            "properties": {
+                                                                "contacts": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "allOf": [
+                                                                            {
+                                                                                "$ref": "#/components/schemas/Contact"
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        {
+                                                            "properties": {
+                                                                "extensions": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "allOf": [
+                                                                            {
+                                                                                "$ref": "#/components/schemas/Extension"
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
                                                         }
                                                     ]
                                                 }
@@ -98,8 +139,8 @@
                                 ]
                             },
                             "examples": {
-                                "Create domain": [],
-                                "Create domain with language settings": {
+                                "Create domain with language settings": [],
+                                "Create domain": {
                                     "summary": "Create domain with language settings",
                                     "value": {
                                         "code": 403,
@@ -223,7 +264,6 @@
                     },
                     "domain_parent_uuid": {
                         "description": "Parent domain id",
-                        "example": "54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
                         "nullable": true
                     },
                     "domain_uuid": {
@@ -239,49 +279,375 @@
                 "type": "object"
             },
             "Domain_setting": {
+                "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n\n ```\nSELECT x.* FROM public.v_default_settings x\n    WHERE default_setting_category in ('domain' , 'email')\n    ORDER BY default_setting_category\n```",
                 "properties": {
                     "domain_setting_category": {
-                        "title": "Order status",
-                        "description": "Order status",
+                        "description": "Domain settings category",
                         "type": "string",
-                        "default": "call_block",
                         "enum": [
-                            "call_block",
-                            "approved",
-                            "delivered"
+                            "domain",
+                            "email"
+                        ],
+                        "example": "domain"
+                    },
+                    "domain_setting_subcategory": {
+                        "description": "Domain settings sub category",
+                        "type": "string",
+                        "oneOf": [
+                            {
+                                "enum": [
+                                    "dial_string",
+                                    "template",
+                                    "menu",
+                                    "language",
+                                    "time_zone",
+                                    "cidr",
+                                    "country",
+                                    "bridge",
+                                    "paging",
+                                    "time_format"
+                                ],
+                                "example": "language"
+                            },
+                            {
+                                "enum": [
+                                    "smtp_auth",
+                                    "method",
+                                    "smtp_port",
+                                    "smtp_from",
+                                    "smtp_from_name",
+                                    "smtp_hostname",
+                                    "smtp_host",
+                                    "smtp_username",
+                                    "smtp_password",
+                                    "smtp_secure",
+                                    "smtp_validate_certificate"
+                                ],
+                                "example": "smtp_from_name"
+                            }
                         ]
+                    },
+                    "domain_setting_name": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "enum": [
+                            "text",
+                            "name",
+                            "uuid",
+                            "code",
+                            "name",
+                            "array",
+                            "code",
+                            "text",
+                            "numeric",
+                            "text"
+                        ],
+                        "example": "code"
+                    },
+                    "domain_setting_value": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "example": "uk-ua"
                     },
                     "domain_uuid": {
                         "type": "string",
                         "format": "uuid",
                         "readOnly": true
                     },
-                    "domain_setting_subcategory": {
+                    "domain_setting_uuid": {
                         "type": "string",
-                        "writeOnly": true
+                        "format": "uuid",
+                        "readOnly": true
                     },
-                    "domain_setting_name": {
+                    "app_uuid": {
                         "type": "string",
-                        "writeOnly": true
-                    },
-                    "domain_setting_value": {
-                        "type": "string",
-                        "writeOnly": true
+                        "format": "uuid",
+                        "readOnly": true
                     },
                     "domain_setting_order": {
-                        "type": "number",
-                        "writeOnly": true
+                        "type": "number"
                     },
                     "domain_setting_enabled": {
                         "type": "boolean",
-                        "writeOnly": true
+                        "default": true
                     },
                     "domain_setting_description": {
-                        "type": "string",
-                        "writeOnly": true
+                        "type": "string"
                     }
                 },
                 "type": "object"
+            },
+            "Extension": {
+                "properties": {
+                    "extension_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "extension": {
+                        "type": "string"
+                    },
+                    "number_alias": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "accountcode": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_name": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_number": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_name": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_number": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_name": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_number": {
+                        "type": "string"
+                    },
+                    "directory_first_name": {
+                        "type": "string"
+                    },
+                    "directory_last_name": {
+                        "type": "string"
+                    },
+                    "directory_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "directory_exten_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "limit_max": {
+                        "type": "string",
+                        "default": 5
+                    },
+                    "limit_destination": {
+                        "type": "string",
+                        "default": "error/user_busy"
+                    },
+                    "missed_call_app": {
+                        "type": "string"
+                    },
+                    "missed_call_data": {
+                        "type": "string"
+                    },
+                    "user_context": {
+                        "type": "string"
+                    },
+                    "toll_allow": {
+                        "type": "string"
+                    },
+                    "call_timeout": {
+                        "type": "number",
+                        "default": 30
+                    },
+                    "call_group": {
+                        "type": "string"
+                    },
+                    "call_screen_enabled": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "user_record": {
+                        "type": "string"
+                    },
+                    "hold_music": {
+                        "type": "string",
+                        "default": "local_stream://default"
+                    },
+                    "auth_acl": {
+                        "type": "string"
+                    },
+                    "cidr": {
+                        "type": "string"
+                    },
+                    "sip_force_contact": {
+                        "type": "string"
+                    },
+                    "nibble_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_force_expires": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "mwi_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_bypass_media": {
+                        "type": "string"
+                    },
+                    "unique_id": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "dial_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_user": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_domain": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "do_not_disturb": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "follow_me_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "forward_caller_id_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "follow_me_enabled": {
+                        "type": "string"
+                    },
+                    "follow_me_destinations": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "absolute_codec_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "force_ping": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Contact": {
+                "properties": {
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "contact_parent_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "contact_type": {
+                        "type": "string"
+                    },
+                    "contact_organization": {
+                        "type": "string"
+                    },
+                    "contact_name_prefix": {
+                        "type": "string"
+                    },
+                    "contact_name_given": {
+                        "type": "string"
+                    },
+                    "contact_name_middle": {
+                        "type": "string"
+                    },
+                    "contact_name_family": {
+                        "type": "string"
+                    },
+                    "contact_name_suffix": {
+                        "type": "string"
+                    },
+                    "contact_nickname": {
+                        "type": "string"
+                    },
+                    "contact_title": {
+                        "type": "string"
+                    },
+                    "contact_role": {
+                        "type": "string"
+                    },
+                    "contact_category": {
+                        "type": "string"
+                    },
+                    "contact_url": {
+                        "type": "string"
+                    },
+                    "contact_time_zone": {
+                        "type": "string"
+                    },
+                    "contact_note": {
+                        "type": "string"
+                    },
+                    "last_mod_date": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "last_mod_user": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
             },
             "User": {
                 "properties": {
@@ -302,8 +668,7 @@
                         "writeOnly": true
                     },
                     "user_email": {
-                        "type": "string",
-                        "readOnly": true
+                        "type": "string"
                     },
                     "contact_uuid": {
                         "type": "string",

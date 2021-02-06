@@ -91,16 +91,15 @@ So to override a setting (e.g. set another UI language), your domain setting obj
                 allOf={
                     @OA\Schema(
                         ref="#/components/schemas/Domain",
-                        x={"hidden"={
-                            "aa", "aa"
-                        }},
                     ),
                     @OA\Schema(
                         @OA\Property(
                             property="settings",
                             type="array",
                             @OA\Items(
-                                @OA\Schema(ref="#/components/schemas/Domain_setting"),
+                                allOf={
+                                    @OA\Schema(ref="#/components/schemas/Domain_setting"),
+                                }
                             ),
                         ),
                     ),
@@ -110,16 +109,44 @@ So to override a setting (e.g. set another UI language), your domain setting obj
                             type="array",
                             @OA\Items(
                                 allOf={
-                                    @OA\Schema(ref="#/components/schemas/User"),
-                                    @OA\Schema(ref="#/components/schemas/User_setting"),
+                                    @OA\Schema(
+                                        ref="#/components/schemas/User",
+                                    ),
+                                    @OA\Schema(@OA\Property( property="is_admin", type="boolean" )),
+                                    @OA\Schema(
+                                        @OA\Property(
+                                            property="contacts",
+                                            type="array",
+                                            @OA\Items(
+                                                allOf={
+                                                    @OA\Schema(
+                                                        ref="#/components/schemas/Contact",
+                                                    ),
+                                                }
+                                            ),
+                                        ),
+                                    ),
+                                    @OA\Schema(
+                                        @OA\Property(
+                                            property="extensions",
+                                            type="array",
+                                            @OA\Items(
+                                                allOf={
+                                                    @OA\Schema(
+                                                        ref="#/components/schemas/Extension",
+                                                    ),
+                                                }
+                                            ),
+                                        ),
+                                    ),
                                 }
                             ),
                         ),
                     ),
                 },
                 examples={
-                    "Create domain": {},
-                    "Create domain with language settings": {
+                    "Create domain with language settings": {},
+                    "Create domain": {
                         "summary": "Create domain with language settings",
                         "value": {
                             "code": 403,

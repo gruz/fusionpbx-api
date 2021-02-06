@@ -37,9 +37,7 @@ class SchemaQueryParameter
 
         foreach ($schemas as $schema) {
             if ($schema->schema !== UNDEFINED) {
-
                 $this->buildSchemaFromModel($schema);
-                // d($schema->schema, $schema);
             }
         }
 
@@ -85,7 +83,11 @@ class SchemaQueryParameter
         }
     }
 
-    protected function buildSchemaFromModel(Schema $schema) {
+    protected function buildSchemaFromModel(Schema $schema) 
+    {
+        if ($schema->schema === 'Contact') {
+            $a = 1;
+        }
         $model = $this->getModelFromSchema($schema);
 
         if (!$model instanceof Model) {
@@ -93,7 +95,7 @@ class SchemaQueryParameter
         }
 
         $columns = $model->getTableColumnsInfo(true);
-        $columnNames = array_keys($columns);
+        $defaults = $model->getAttributes();
 
         $propertiesBag = &$schema->properties;
         $propertiesBag = $propertiesBag === UNDEFINED ? [] : $propertiesBag;
@@ -103,10 +105,6 @@ class SchemaQueryParameter
         foreach ($columns as $columnName => $column) {
             if (in_array($columnName, $alreadyDescribedProperties)) {
                 continue;
-            }
-
-            if ($columnName === 'add_user') {
-                $a = 1;
             }
 
             if (!$model->isFillable($columnName) && !$model->isVisible($columnName)) {
@@ -121,6 +119,10 @@ class SchemaQueryParameter
                 $props['writeOnly'] = true;
             } elseif (!$model->isFillable($columnName) && $model->isVisible($columnName)) {
                 $props['readOnly'] = true;
+            }
+
+            if (array_key_exists($columnName, $defaults)) {
+                $props['default'] = $defaults[$columnName];
             }
 
             $fieldType = $this->mapType($column->getType()->getName());

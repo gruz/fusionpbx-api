@@ -5,6 +5,9 @@ use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
 
+/**
+ * @OA\Schema()
+ */
 class Contact extends Model
 {
     use Notifiable, FusionPBXTableModel;
@@ -14,8 +17,15 @@ class Contact extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'domain_uuid', 'contact_type', 'contact_nickname'
+    // protected $fillable = [
+        // 'domain_uuid', 'contact_type', 'contact_nickname'
+    // ];
+    protected $guarded = [
+        'contact_uuid',
+        'domain_uuid',
+        'contact_parent_uuid',
+        'last_mod_date',
+        'last_mod_user',
     ];
 
     /**
@@ -23,9 +33,7 @@ class Contact extends Model
      *
      * @var array
      */
-    protected $hidden = [
-        //'password', 'remember_token',
-    ];
+    // protected $hidden = [];
 
     public function emails()
     {
