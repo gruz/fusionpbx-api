@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-89-g152a109"
+        "version": "0.0.8-90-ge0a5706"
     },
     "paths": {
         "/domain/signup": {
@@ -63,6 +63,64 @@
                                             "data": null
                                         }
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/extension": {
+            "post": {
+                "tags": [
+                    "Extension",
+                    "User"
+                ],
+                "summary": "Extension create",
+                "description": "Creates an extension and attaches it to a user (optionally)",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Extension"
+                            },
+                            "examples": {
+                                "Create an exnetsion": [],
+                                "Create an exnetsion basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Extension created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Extension"
                                 }
                             }
                         }

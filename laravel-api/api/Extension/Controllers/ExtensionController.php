@@ -37,6 +37,48 @@ class ExtensionController extends Controller
         return $this->response($parsedData);
     }
 
+    /**
+    @OA\Post(
+        tags={"Extension", "User"},
+        path="/extension",
+        summary="Extension create",
+        description="Creates an extension and attaches it to a user (optionally)",
+        @OA\RequestBody(
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/Extension",
+                examples={
+                    "Create an exnetsion": {},
+                    "Create an exnetsion basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="Extension created response",
+            @OA\JsonContent(ref="#/components/schemas/Extension"),
+        ),
+        @OA\Response(
+            response=400,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(
+                example={
+                    "messages": {
+                        "Missing admin user",
+                        "No password for email",
+                    },
+                },
+            ),
+        ),
+    )
+     */
     public function create(CreateExtensionRequest $request)
     {
         $data = $request->get('extension', []);

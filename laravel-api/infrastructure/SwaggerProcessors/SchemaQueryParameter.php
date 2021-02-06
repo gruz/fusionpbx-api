@@ -85,9 +85,6 @@ class SchemaQueryParameter
 
     protected function buildSchemaFromModel(Schema $schema) 
     {
-        if ($schema->schema === 'Contact') {
-            $a = 1;
-        }
         $model = $this->getModelFromSchema($schema);
 
         if (!$model instanceof Model) {

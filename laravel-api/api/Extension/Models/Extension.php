@@ -10,10 +10,11 @@ use Infrastructure\Traits\FusionPBXTableModel;
 
 /**
  * @OA\Schema()
- */class Extension extends Model
+ */
+
+ class Extension extends Model
 {
     use Notifiable, FusionPBXTableModel;
-
 
     protected $attributes = [
       'directory_visible' => 'true',
