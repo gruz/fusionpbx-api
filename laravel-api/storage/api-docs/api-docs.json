@@ -5,14 +5,13 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-90-ge0a5706"
+        "version": "0.0.8-91-g24bc9a6"
     },
     "paths": {
         "/domain/signup": {
             "post": {
                 "tags": [
-                    "Domain",
-                    "User"
+                    "Domain"
                 ],
                 "summary": "Create a domain",
                 "description": "`TODO Finish description`\n# Domain Settings and User Settings\n\nWhen creating a domain you must provide at least one\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```\n        ",
@@ -84,11 +83,100 @@
                 }
             }
         },
+        "/domain/{id}": {
+            "put": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Update a domain `TODO Implement`",
+                "description": "Depending on permissions will allow or not updating certain values",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/domain_uuid"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Domain information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/DomainSchema"
+                                    }
+                                ]
+                            },
+                            "examples": {
+                                "Domain all fields": [],
+                                "Create domain basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domain created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Domain"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Delete a domain `TODO descendant delete with users, extensions etc` ",
+                "description": "Not implemented yet",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/domain_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
         "/extension": {
             "post": {
                 "tags": [
-                    "Extension",
-                    "User"
+                    "Extension"
                 ],
                 "summary": "Extension create",
                 "description": "Creates an extension and attaches it to a user (optionally)",
@@ -142,10 +230,140 @@
                 }
             }
         },
+        "/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user list in domain",
+                "description": "`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
+                "operationId": "Api\\User\\Controllers\\UserController::getAll",
+                "parameters": [
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "groups",
+                                    "status",
+                                    "domain",
+                                    "permissions",
+                                    "emails",
+                                    "extensions"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user_uuid}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user info by ID",
+                "operationId": "Api\\User\\Controllers\\UserController::getById",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/user_uuid"
+                    },
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/user_includes"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/user/activate/{hash}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
+                "operationId": "Api\\User\\Controllers\\UserController::activate",
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "User activation link",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/User/{user_uuid}": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition` ",
+                "description": "Not implemented yet",
+                "operationId": "Api\\User\\Controllers\\UserController::delete",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/user_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
         "/user/signup": {
             "post": {
                 "tags": [
-                    "Domain",
                     "User"
                 ],
                 "summary": "User signup",
@@ -260,7 +478,7 @@
     "components": {
         "schemas": {
             "DomainController": {},
-            "DomainCreateSchema": {
+            "DomainSchema": {
                 "allOf": [
                     {
                         "$ref": "#/components/schemas/Domain"
@@ -279,6 +497,23 @@
                             }
                         },
                         "type": "object"
+                    }
+                ]
+            },
+            "DomainCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "is_subdomain": {
+                                "description": "Determines is the current domain should be a top level domain or a subdomain of the mothership domain",
+                                "type": "boolean",
+                                "default": "false"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DomainSchema"
                     },
                     {
                         "properties": {
@@ -637,56 +872,6 @@
                     }
                 }
             },
-            "UserController": {},
-            "UserCreateSchema": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    {
-                        "properties": {
-                            "reseller_reference_code": {
-                                "description": "Reseller reference code`TODO properly save on user creation`",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "contacts": {
-                                "type": "array",
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/Contact"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "extensions": {
-                                "type": "array",
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/Extension"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/Voicemail"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
             "Contact": {
                 "properties": {
                     "contact_uuid": {
@@ -844,6 +1029,76 @@
                     }
                 }
             },
+            "user_includes": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "groups",
+                        "status",
+                        "domain",
+                        "permissions",
+                        "emails",
+                        "extensions"
+                    ]
+                }
+            },
+            "UserCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                    }
+                ]
+            },
+            "UserWithRelatedItemsSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    {
+                        "properties": {
+                            "contacts": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "extensions": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Extension"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Voicemail"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
             "Voicemail": {
                 "properties": {
                     "domain_uuid": {
@@ -938,6 +1193,30 @@
                         "type": "string",
                         "readOnly": true
                     }
+                }
+            }
+        },
+        "parameters": {
+            "domain_uuid": {
+                "name": "domain_uuid",
+                "in": "path",
+                "description": "Domain UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            },
+            "user_uuid": {
+                "name": "user_uuid",
+                "in": "path",
+                "description": "User UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
                 }
             }
         },

@@ -10,35 +10,6 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Services\UserService;
 use Api\User\Services\TeamService;
 
-/**
- * @OA\Schema()
- *
-@OA\Schema(schema="UserCreateSchema", allOf={
-    @OA\Schema(ref="#/components/schemas/User"),
-    @OA\Schema(@OA\Property( property="reseller_reference_code", type="string", description="Reseller reference code`TODO properly save on user creation`" )),
-    @OA\Schema(@OA\Property(
-        property="contacts",
-        type="array",
-        @OA\Items(
-            allOf={
-                @OA\Schema(ref="#/components/schemas/Contact"),
-            }
-        ),
-    )),
-    @OA\Schema(
-        @OA\Property(
-            property="extensions",
-            type="array",
-            @OA\Items(
-                allOf={
-                    @OA\Schema(ref="#/components/schemas/Extension"),
-                    @OA\Schema(ref="#/components/schemas/Voicemail"),
-                }
-            ),
-        ),
-    ),
-}),
-*/
 class UserController extends Controller
 {
     /**
@@ -57,6 +28,33 @@ class UserController extends Controller
         $this->teamService = $teamService;
     }
 
+    /**
+    @OA\Get(
+        tags={"User"},
+        path="/users",
+        summary="Get user list in domain",
+        description="`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(
+                type="array",
+                @OA\Items(type="string",
+                    enum = { "groups", "status", "domain", "permissions", "emails","extensions", },
+                )
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(type="array",
+                @OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+            ),
+        ),
+    )
+     */
     public function getAll()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -67,6 +65,23 @@ class UserController extends Controller
         return $this->response($parsedData);
     }
 
+    /**
+    @OA\Get(
+        tags={"User"},
+        summary="Get user info by ID",
+        path="/user/{user_uuid}",
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(ref="#/components/schemas/user_includes")
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function getById(string $userId)
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -102,13 +117,44 @@ class UserController extends Controller
         return $this->response($this->userService->update($userId, $data));
     }
 
+    /**
+    @OA\Get(
+        tags={"User"},
+        path="/user/activate/{hash}",
+        summary="Activate user by email link. In cases it's and admin user, activate domain as well",
+        @OA\Parameter(
+            name="hash",
+            in="path",
+            description="User activation link",
+            required=true,
+            @OA\Schema(
+                type="string",
+                format="uuid",
+                example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
+            )
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function activate(string $hash)
     {
         $response = $this->response($this->userService->activate($hash));
-        // dd($response);
+
         return $response;
     }
 
+    /**
+    @OA\Delete(
+        tags={"User"},
+        path="/User/{user_uuid}",
+        summary="Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition` ",
+        description="Not implemented yet",
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function delete($userId)
     {
         return $this->response($this->userService->delete($userId));
@@ -144,7 +190,7 @@ class UserController extends Controller
 
     /**
     @OA\Post(
-        tags={"Domain", "User"},
+        tags={"User"},
         path="/user/signup",
         summary="User signup",
         description="Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",

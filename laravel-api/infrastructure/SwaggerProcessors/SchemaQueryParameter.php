@@ -25,8 +25,7 @@ use OpenApi\Annotations\AbstractAnnotation;
  */
 class SchemaQueryParameter
 {
-    const X_QUERY_AGS_REF = 'query-args-$ref';
-    const MODEL_INPUT_FIELDS = 'model-input-fields';
+    const MODEL_ADD_INCLUDES = 'model-add-includes';
 
     public function __invoke(Analysis $analysis)
     {
@@ -40,50 +39,9 @@ class SchemaQueryParameter
                 $this->buildSchemaFromModel($schema);
             }
         }
-
-        return;
-
-        /**
-         * @var RequestBody[]
-         */
-        $requests = $analysis->getAnnotationsOfType(RequestBody::class);
-        foreach ($requests as $request) {
-            $annotations = $request->_context->nested->_context->annotations;
-            foreach ($annotations as $annotation) {
-                if (
-                    $annotation instanceof Schema &&
-                    $annotation->ref !== UNDEFINED
-                ) {
-                    if ($schema = $this->schemaForRef($schemas, $annotation->ref)) {
-                        $i = 0;
-                        $type = null;
-                        $startPoint = $annotation->_context->nested;
-                        while (!$type) {
-                            $i++;
-                            if ($startPoint instanceof RequestBody) {
-                                $type = 'request';
-                                break;
-                            }
-                            if ($startPoint instanceof Response) {
-                                $type = 'response';
-                                break;
-                            }
-
-                            $startPoint = $startPoint->_context->nested;
-
-                            if ($i > 100) { // JIC
-                                break;
-                            };
-                        }
-
-                        $this->expandModelSchema($annotation, $schema, $type);
-                    }
-                }
-            }
-        }
     }
 
-    protected function buildSchemaFromModel(Schema $schema) 
+    protected function buildSchemaFromModel(Schema $schema)
     {
         $model = $this->getModelFromSchema($schema);
 
@@ -134,98 +92,6 @@ class SchemaQueryParameter
             //     $annotation->_context->nested->required[] = $columnName;
             // }
         }
-
-
-    }
-
-    /**
-     * Expand the given operation by injecting parameters for all properties of the given schema.
-     */
-    protected function expandModelSchema(Schema $annotation, Schema $schema, $type)
-    {
-
-        $model = $this->getModelFromSchema($schema);
-
-        if (!$model instanceof Model) {
-            return;
-        }
-
-        // d($modelClassName . '||' . $type);
-
-        $model->getVisible();
-
-        $limitFields = false;
-
-        switch ($type) {
-            case 'request':
-                $columns = $model->getTableColumnsInfo();
-                $includeColumns = $model->getFillable();
-                $limitFields = true;
-                break;
-            case 'response':
-                $columns = $model->getTableColumnsInfo(true);
-                $visible = $model->getVisible();
-                $hidden = $model->getHidden();
-                if (empty($visible) && empty($hidden)) {
-                    $includeColumns = [];
-                } elseif (!empty($visible)) {
-                    $includeColumns = $visible;
-                    $limitFields = true;
-                } elseif (!empty($hidden)) {
-                    $includeColumns = array_diff(array_keys($columns), $hidden);
-                    $limitFields = true;
-                }
-
-                // d($includeColumns);
-                break;
-        }
-
-        $propertiesBag = &$annotation->_context->nested->properties;
-
-        $propertiesBag = $propertiesBag === UNDEFINED ? [] : $propertiesBag;
-        $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
-
-        foreach ($columns as $columnName => $column) {
-            if (in_array($columnName, $alreadyDescribedProperties)) {
-                continue;
-            }
-            $props = [
-                'property' => $columnName,
-            ];
-
-            // if ('response' === $type && $columnName === 'domain_uuid') {
-            //     d($modelClassName, $columnName, $limitFields, $includeColumns);
-            // }
-
-            if ($limitFields && !in_array($columnName, $includeColumns)) {
-                switch ($type) {
-                    case 'request':
-                        $props['readOnly'] = true;
-                        break;
-
-                    case 'response':
-                        continue 2;
-                        break;
-                }
-            }
-
-            // if ('response' === $type && $columnName === 'domain_uuid') {
-            //     d($columnName);
-            // }
-
-            $fieldType = $this->mapType($column->getType()->getName());
-            $props = array_merge($props, $fieldType);
-
-
-            $properties = new Property($props);
-            $propertiesBag[] = $properties;
-            $alreadyDescribedProperties[] = $columnName;
-
-            // if ($model->is_nullable($columnName)) {
-            //     $annotation->_context->nested->required = $annotation->_context->nested->required === UNDEFINED ? [] : $annotation->_context->nested->required;
-            //     $annotation->_context->nested->required[] = $columnName;
-            // }
-        }
     }
 
     /**
@@ -255,23 +121,10 @@ class SchemaQueryParameter
         return Arr::get($mapping, $dbType, ['type' => $dbType]);
     }
 
-    /**
-     * Find schema for the given ref.
-     */
-    protected function schemaForRef(array $schemas, string $ref)
-    {
-        foreach ($schemas as $schema) {
-            if (Components::SCHEMA_REF . $schema->schema === $ref) {
-                return $schema;
-            }
-        }
-
-        return null;
-    }
-
     protected function getModelFromSchema(Schema $schema)
     {
         $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
+        // d($modelClassName);
 
         if (!is_subclass_of($modelClassName, Model::class)) {
             return null;

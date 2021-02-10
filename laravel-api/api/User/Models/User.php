@@ -5,17 +5,19 @@ namespace Api\User\Models;
 use Api\Status\Models\Status;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
-use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
-use Infrastructure\Traits\FusionPBXTableModel;
-// use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
+use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Traits\FusionPBXTableModel;
 use Illuminate\Auth\Passwords\CanResetPassword;
-// ~ use LaravelCustomRelation\HasCustomRelations;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
@@ -23,10 +25,10 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @OA\Schema()
  */
 class User extends Model implements
-    MustVerifyEmailContract
-    , AuthenticatableContract
-    , AuthorizableContract
-    , CanResetPasswordContract
+    MustVerifyEmailContract,
+    AuthenticatableContract,
+    AuthorizableContract,
+    CanResetPasswordContract
 {
     use HasApiTokens, Notifiable, FusionPBXTableModel;
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
@@ -61,7 +63,7 @@ class User extends Model implements
         // 'user_status',
     ];
 
-    public function groups()
+    public function groups(): BelongsToMany
     {
         return $this->belongsToMany(
             Group::class,
@@ -71,12 +73,12 @@ class User extends Model implements
         );
     }
 
-    public function status()
+    public function status(): HasOne
     {
         return $this->hasOne(Status::class, 'user_uuid', 'user_uuid');
     }
 
-    public function domain()
+    public function domain(): HasOne
     {
         return $this->hasOne(Domain::class, 'domain_uuid', 'domain_uuid');
     }
@@ -86,7 +88,7 @@ class User extends Model implements
      *
      * @return Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function permissions()
+    public function permissions(): HasManyThrough
     {
         // Do not delete the comments below
 
@@ -147,32 +149,36 @@ class User extends Model implements
 
     public function getDomainAdmins()
     {
-      // ~ $admins = User::where([
+        // ~ $admins = User::where([
         $admins = User::where([
-                  'domain_uuid' => $this->domain_uuid,
-                  'user_enabled' => 'true'
-                //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
-                ])
-                // ->where('user_enabled', '!=', 'true')
-                ->whereHas('permissions', function($query) {
+            'domain_uuid' => $this->domain_uuid,
+            'user_enabled' => 'true'
+            //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
+        ])
+            // ->where('user_enabled', '!=', 'true')
+            ->whereHas('permissions', function ($query) {
 
-                  $query->whereIn('permission_name', ['user_add', 'user_edit']);
-                })->with(['emails']);
+                $query->whereIn('permission_name', ['user_add', 'user_edit']);
+            })->with(['emails']);
 
         return $admins;
     }
 
-    public function emails()
+    public function emails(): HasMany
     {
         return $this->hasMany(Contact_email::class, 'contact_uuid', 'contact_uuid');
     }
 
-    public function pushtokens()
+    public function pushtokens(): HasMany
     {
         return $this->hasMany(Pushtoken::class, 'user_uuid', 'user_uuid');
     }
 
-    public function extensions()
+    /**
+     * TODO check why we have BelongsToMany here, maybe we need hasMany?
+     * @return BelongsToMany
+     */
+    public function extensions(): BelongsToMany
     {
         return $this->belongsToMany(Extension::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
     }
@@ -190,19 +196,16 @@ class User extends Model implements
 
     public function findForPassport(array $data)
     {
-      $user = $this->where($data)->first();
-      return $user;
+        $user = $this->where($data)->first();
+        return $user;
     }
 
     public function validateForPassportPasswordGrant($password)
     {
-      if (md5($this->salt.$password) == $this->password)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+        if (md5($this->salt . $password) == $this->password) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

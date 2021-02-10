@@ -30,40 +30,8 @@ class DomainController extends Controller
     }
 
     /**
-     * @OA\Schema(
-     *  schema="DomainCreateSchema",
-        allOf={
-            @OA\Schema(ref="#/components/schemas/Domain"),
-            @OA\Schema(
-                @OA\Property(
-                    property="settings",
-                    type="array",
-                    @OA\Items(
-                        allOf={
-                            @OA\Schema(ref="#/components/schemas/Domain_setting"),
-                        }
-                    ),
-                ),
-            ),
-            @OA\Schema(
-                @OA\Property(
-                    property="users",
-                    type="array",
-                    @OA\Items(
-                        allOf={
-                            @OA\Schema(@OA\Property( property="is_admin", type="boolean", default="false", description="At least one user must be an admin when creating a new domain" )),
-                            @OA\Schema(ref="#/components/schemas/UserCreateSchema"),
-                        }
-                    ),
-                ),
-            ),
-        },
-     * )
-     */
-
-    /**
     @OA\Post(
-        tags={"Domain", "User"},
+        tags={"Domain"},
         path="/domain/signup",
         summary="Create a domain",
         description="`TODO Finish description`
@@ -159,4 +127,68 @@ So to override a setting (e.g. set another UI language), your domain setting obj
 
         return $this->response($this->teamService->create($data), 201);
     }
+
+    /**
+    @OA\Put(
+        tags={"Domain"},
+        path="/domain/{id}",
+        summary="Update a domain `TODO Implement`",
+        description="Depending on permissions will allow or not updating certain values",
+        @OA\Parameter(ref="#/components/parameters/domain_uuid"),
+        @OA\RequestBody(
+            description="Domain information",
+            required=true,
+            @OA\JsonContent(
+                allOf={
+                    @OA\Schema(ref="#/components/schemas/DomainSchema"),
+                },
+                examples={
+                    "Domain all fields": {},
+                    "Create domain basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="Domain created response",
+            @OA\JsonContent(
+                allOf={
+                    @OA\Schema(ref="#/components/schemas/Domain"),
+                },
+            ),
+        ),
+        @OA\Response(
+            response=400,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(
+                example={
+                    "messages": {
+                        "Missing admin user",
+                        "No password for email",
+                    },
+                },
+            ),
+        ),
+    )
+     */
+
+    /**
+    @OA\Delete(
+        tags={"Domain"},
+        path="/domain/{id}",
+        summary="Delete a domain `TODO descendant delete with users, extensions etc` ",
+        description="Not implemented yet",
+        @OA\Parameter(ref="#/components/parameters/domain_uuid"),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
+
 }

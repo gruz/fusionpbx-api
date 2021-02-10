@@ -39,7 +39,7 @@ class ExtensionController extends Controller
 
     /**
     @OA\Post(
-        tags={"Extension", "User"},
+        tags={"Extension"},
         path="/extension",
         summary="Extension create",
         description="Creates an extension and attaches it to a user (optionally)",

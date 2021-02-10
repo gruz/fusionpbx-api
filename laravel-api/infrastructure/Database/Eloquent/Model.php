@@ -3,11 +3,12 @@
 namespace Infrastructure\Database\Eloquent;
 
 use Doctrine\DBAL\Exception;
-use Illuminate\Database\Eloquent\Model as BaseModel;
-use Illuminate\Support\Facades\DB;
 use Doctrine\DBAL\Schema\Index;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Infrastructure\Traits\RelationshipsTrait;
+use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 abstract class Model extends BaseModel
 {
