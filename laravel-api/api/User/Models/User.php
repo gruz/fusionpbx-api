@@ -40,10 +40,10 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        'domain_uuid',
+        // 'domain_uuid',
         'username',
         'password',
-        'contact_uuid',
+        // 'contact_uuid',
         'user_enabled',
         'add_user',
         'add_date',

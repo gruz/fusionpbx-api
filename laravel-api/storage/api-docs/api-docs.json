@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-91-g24bc9a6"
+        "version": "0.0.8-92-g17fbf3f"
     },
     "paths": {
         "/domain/signup": {
@@ -306,6 +306,106 @@
                         "description": "`TODO Stub` Could not ..."
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition` ",
+                "description": "Not implemented yet",
+                "operationId": "Api\\User\\Controllers\\UserController::delete",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/user_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Gets currently logged in user info",
+                "operationId": "Api\\User\\Controllers\\UserController::getMe",
+                "parameters": [
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/user_includes"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Creates a user inside a domain",
+                "operationId": "Api\\User\\Controllers\\UserController::create",
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
             }
         },
         "/user/activate/{hash}": {
@@ -326,29 +426,6 @@
                             "format": "uuid",
                             "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "`TODO Stub` Success ..."
-                    },
-                    "400": {
-                        "description": "`TODO Stub` Could not ..."
-                    }
-                }
-            }
-        },
-        "/User/{user_uuid}": {
-            "delete": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition` ",
-                "description": "Not implemented yet",
-                "operationId": "Api\\User\\Controllers\\UserController::delete",
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/user_uuid"
                     }
                 ],
                 "responses": {
@@ -950,7 +1027,8 @@
                     },
                     "domain_uuid": {
                         "type": "string",
-                        "format": "uuid"
+                        "format": "uuid",
+                        "readOnly": true
                     },
                     "username": {
                         "type": "string"
@@ -964,7 +1042,8 @@
                     },
                     "contact_uuid": {
                         "type": "string",
-                        "format": "uuid"
+                        "format": "uuid",
+                        "readOnly": true
                     },
                     "user_status": {
                         "type": "string",
@@ -984,8 +1063,10 @@
                         "type": "string"
                     },
                     "email_verified_at": {
-                        "type": "datetime",
-                        "readOnly": true
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2021-02-10 02:37:23"
                     }
                 }
             },

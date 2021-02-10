@@ -116,6 +116,11 @@ class SchemaQueryParameter
                 'type' => 'string',
                 'format' => 'uuid',
             ],
+            'datetime' =>  [
+                'type' => 'string',
+                'format' => 'date-time',
+                'example' => \Carbon\Carbon::now()->format('Y-m-d h:i:s'),
+            ],
         ];
 
         return Arr::get($mapping, $dbType, ['type' => $dbType]);

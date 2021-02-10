@@ -92,6 +92,26 @@ class UserController extends Controller
         return $this->response($parsedData);
     }
 
+    /**
+    @OA\Get(
+        tags={"User"},
+        summary="Gets currently logged in user info",
+        path="/user",
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(ref="#/components/schemas/user_includes")
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function getMe()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -103,6 +123,37 @@ class UserController extends Controller
     }
 
 
+    /**
+    @OA\Post(
+        tags={"User"},
+        summary="Creates a user inside a domain",
+        path="/user",
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                examples={
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(ref="#/components/schemas/User"),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function create(CreateUserRequest $request)
     {
         $data = $request->get('user', []);
@@ -147,7 +198,7 @@ class UserController extends Controller
     /**
     @OA\Delete(
         tags={"User"},
-        path="/User/{user_uuid}",
+        path="/user/{user_uuid}",
         summary="Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition` ",
         description="Not implemented yet",
         @OA\Parameter(ref="#/components/parameters/user_uuid"),
