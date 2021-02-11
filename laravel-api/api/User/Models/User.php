@@ -174,10 +174,6 @@ class User extends Model implements
         return $this->hasMany(Pushtoken::class, 'user_uuid', 'user_uuid');
     }
 
-    /**
-     * TODO check why we have BelongsToMany here, maybe we need hasMany?
-     * @return BelongsToMany
-     */
     public function extensions(): BelongsToMany
     {
         return $this->belongsToMany(Extension::class, 'v_extension_users', 'user_uuid', 'extension_uuid');

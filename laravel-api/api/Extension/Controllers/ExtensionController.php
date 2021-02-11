@@ -17,6 +17,33 @@ class ExtensionController extends Controller
         $this->extensionService = $extensionService;
     }
 
+    /**
+    @OA\Get(
+        tags={"Extension"},
+        path="/extensions",
+        summary="Get all extensions in domain",
+        description="`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(
+                type="array",
+                @OA\Items(type="string",
+                    enum = { "users" },
+                )
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(type="array",
+                @OA\Items(ref="#/components/schemas/ExtensionWithRelatedUsersSchema"),
+            ),
+        ),
+    )
+     */
     public function getAll()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -27,6 +54,32 @@ class ExtensionController extends Controller
         return $this->response($parsedData);
     }
 
+    /**
+    @OA\Get(
+        tags={"Extension"},
+        summary="Get extension by ID",
+        path="/user/{extension_uuid}",
+        @OA\Parameter(ref="#/components/parameters/extension_uuid"),
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(
+                type="array",
+                @OA\Items(type="string",
+                    enum = { "users" },
+                )
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub`",
+            @OA\JsonContent(ref="#/components/schemas/ExtensionWithRelatedUsersSchema"),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function getById(string $extensionId)
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -46,7 +99,25 @@ class ExtensionController extends Controller
         @OA\RequestBody(
             required=true,
             @OA\JsonContent(
-                ref="#/components/schemas/Extension",
+                allOf={
+                    @OA\Schema(ref="#/components/schemas/Extension"),
+                    @OA\Schema(@OA\Property(
+                        property="users",
+                        type="array",
+                        @OA\Items(
+                            allOf={
+                                @OA\Schema(
+                                    @OA\Property(
+                                        property="user_uuid",
+                                        type="string",
+                                        format="uuid",
+                                        description="User id's to attach extension to. If not passed, then extension is attached to the current user",
+                                    )
+                                ),
+                            }
+                        ),
+                    )),
+                },
                 examples={
                     "Create an exnetsion": {},
                     "Create an exnetsion basic example": {

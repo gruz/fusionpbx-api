@@ -38,7 +38,7 @@ class ExtensionRepository extends Repository
 
         try {
             if (count($removeUsers) > 0) {
-                $query = $this->database->table($extension->extension_users()->getTable());
+                $query = $this->database->table($extension->users()->getTable());
                 $query
                     ->where('extension_uuid', $extension->extension_uuid)
                     ->where('domain_uuid', $extension->domain_uuid)
@@ -47,7 +47,7 @@ class ExtensionRepository extends Repository
             }
 
             if (count($addUsers) > 0) {
-                $query = $this->database->table($extension->extension_users()->getTable());
+                $query = $this->database->table($extension->users()->getTable());
                 $query
                     ->insert(array_map(function ($userId) use ($extension) {
                         return [

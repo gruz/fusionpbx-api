@@ -161,7 +161,36 @@ class UserController extends Controller
         return $this->response($this->userService->create($data), 201);
     }
 
-    public function update($hash, Request $request)
+
+    /**
+    @OA\Put(
+        tags={"User"},
+        summary="Update oneself or another user if having enoght permissions",
+        path="/user/{user_uuid}",
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                examples={
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
+    public function update($userId, Request $request)
     {
         $data = $request->get('user', []);
 

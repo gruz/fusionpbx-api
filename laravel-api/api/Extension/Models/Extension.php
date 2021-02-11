@@ -7,6 +7,7 @@ use Api\User\Models\User;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @OA\Schema()
@@ -114,14 +115,8 @@ use Infrastructure\Traits\FusionPBXTableModel;
         // ~ 'user_context',
     ];
 
-    public function users()
-    {
-        return $this->extension_users();
-    }
-
-    public function extension_users()
+    public function users() : BelongsToMany
     {
         return $this->belongsToMany(User::class, 'v_extension_users', 'extension_uuid', 'user_uuid');
     }
-
 }
