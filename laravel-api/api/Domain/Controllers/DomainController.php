@@ -7,11 +7,6 @@ use Api\User\Services\TeamService;
 use Api\User\Services\UserService;
 use Infrastructure\Http\Controller;
 use Api\Domain\Requests\DomainSignupRequest;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use InvalidArgumentException;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Api\User\Exceptions\WrongSignupDataException;
-use Exception;
 
 /**
  * @OA\Schema()
