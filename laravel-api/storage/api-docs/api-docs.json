@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-92-g17fbf3f"
+        "version": "0.0.8-93-ga9598ed"
     },
     "paths": {
         "/domain/signup": {
@@ -173,6 +173,92 @@
                 }
             }
         },
+        "/extensions": {
+            "get": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Get all extensions in domain",
+                "description": "`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::getAll",
+                "parameters": [
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "users"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ExtensionWithRelatedUsersSchema"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{extension_uuid}": {
+            "get": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Get extension by ID",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::getById",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    },
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "users"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExtensionWithRelatedUsersSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
         "/extension": {
             "post": {
                 "tags": [
@@ -186,7 +272,33 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Extension"
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Extension"
+                                    },
+                                    {
+                                        "properties": {
+                                            "users": {
+                                                "type": "array",
+                                                "items": {
+                                                    "allOf": [
+                                                        {
+                                                            "properties": {
+                                                                "user_uuid": {
+                                                                    "description": "User id's to attach extension to. If not passed, then extension is attached to the current user",
+                                                                    "type": "string",
+                                                                    "format": "uuid"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
                             },
                             "examples": {
                                 "Create an exnetsion": [],
@@ -298,6 +410,48 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update oneself or another user if having enoght permissions",
+                "operationId": "Api\\User\\Controllers\\UserController::update",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/user_uuid"
+                    }
+                ],
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "`TODO Stub` Success ..."
@@ -528,7 +682,7 @@
                                             "type": "string"
                                         },
                                         "version": {
-                                            "description": "Fit tag version",
+                                            "description": "Git tag version",
                                             "type": "string"
                                         }
                                     },
@@ -745,6 +899,44 @@
                     }
                 },
                 "type": "object"
+            },
+            "ExtensionCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    }
+                ]
+            },
+            "ExtensionWithRelatedUsersSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
             },
             "Extension": {
                 "properties": {
@@ -1066,7 +1258,7 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true,
-                        "example": "2021-02-10 02:37:23"
+                        "example": "2021-02-11 03:16:50"
                     }
                 }
             },
@@ -1282,6 +1474,17 @@
                 "name": "domain_uuid",
                 "in": "path",
                 "description": "Domain UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            },
+            "extension_uuid": {
+                "name": "extension_uuid",
+                "in": "path",
+                "description": "Extension UUID",
                 "required": true,
                 "schema": {
                     "type": "string",
