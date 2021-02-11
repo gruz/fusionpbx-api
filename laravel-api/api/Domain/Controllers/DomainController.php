@@ -30,27 +30,27 @@ class DomainController extends Controller
     }
 
     /**
+     * Create a domain
+     *
+     *`TODO Finish description`
+     * # Domain Settings and User Settings
+     *
+     * When creating a domain you must provide at least one
+     *
+     * You can pass here domain and user settings overriding default ones setup for FPBX.
+     *
+     * See [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see
+     * available settings
+     * and [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)
+     * to understand how override works.
+     *
+     * So to override a setting (e.g. set another UI language), your domain setting object should look like:
+     * ```json
+     * {}
+     * ```
     @OA\Post(
         tags={"Domain"},
         path="/domain/signup",
-        summary="Create a domain",
-        description="`TODO Finish description`
-# Domain Settings and User Settings
-
-When creating a domain you must provide at least one
-
-You can pass here domain and user settings overriding default ones setup for FPBX.
-
-See [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see
-available settings
-and [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)
-to understand how override works.
-
-So to override a setting (e.g. set another UI language), your domain setting object should look like:
-```json
-{}
-```
-        ",
         @OA\RequestBody(
             description="Domain information",
             required=true,
@@ -104,19 +104,6 @@ So to override a setting (e.g. set another UI language), your domain setting obj
         ),
     )
      */
-
-    /**
-     * Domain signup
-     *
-     * @param DomainSignupRequest $request
-     * @return Optimus\Bruno\Illuminate\Http\JsonResponse
-     *
-     * @throws BadRequestException
-     * @throws InvalidArgumentException
-     * @throws BindingResolutionException
-     * @throws WrongSignupDataException
-     * @throws Exception
-     */
     public function signup(DomainSignupRequest $request)
     {
         $data = $request->get('team', []);
@@ -129,11 +116,13 @@ So to override a setting (e.g. set another UI language), your domain setting obj
     }
 
     /**
+     * Update a domain `TODO Implement`
+     *
+     * Depending on permissions will allow or not updating certain values
+     *
     @OA\Put(
         tags={"Domain"},
-        path="/domain/{id}",
-        summary="Update a domain `TODO Implement`",
-        description="Depending on permissions will allow or not updating certain values",
+        path="/domain/{domain_uuid}",
         @OA\Parameter(ref="#/components/parameters/domain_uuid"),
         @OA\RequestBody(
             description="Domain information",
@@ -180,15 +169,16 @@ So to override a setting (e.g. set another UI language), your domain setting obj
      */
 
     /**
+     * Delete a domain `TODO descendant delete with users, extensions etc`
+     *
+     * Not implemented yet
+     *
     @OA\Delete(
         tags={"Domain"},
-        path="/domain/{id}",
-        summary="Delete a domain `TODO descendant delete with users, extensions etc` ",
-        description="Not implemented yet",
+        path="/domain/{domian_uuid}",
         @OA\Parameter(ref="#/components/parameters/domain_uuid"),
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
     */
-
 }

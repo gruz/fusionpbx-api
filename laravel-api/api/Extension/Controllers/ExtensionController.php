@@ -2,12 +2,14 @@
 
 namespace Api\Extension\Controllers;
 
-use Illuminate\Http\Request;
 use Infrastructure\Http\Controller;
 use Api\Extension\Requests\CreateExtensionRequest;
 use Api\Extension\Requests\UpdateExtensionRequest;
 use Api\Extension\Services\ExtensionService;
 
+/**
+ * @OA\Schema()
+ */
 class ExtensionController extends Controller
 {
     private $extensionService;
@@ -18,11 +20,14 @@ class ExtensionController extends Controller
     }
 
     /**
+     * Get all extensions in domain
+     *
+     * `TODO`, describe in docs and return only some fields available for other users,
+     * add parameters in query to select contact info, extension
+     *
     @OA\Get(
         tags={"Extension"},
         path="/extensions",
-        summary="Get all extensions in domain",
-        description="`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
         @OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
@@ -55,9 +60,10 @@ class ExtensionController extends Controller
     }
 
     /**
+     * Get extension by ID
+     *
     @OA\Get(
         tags={"Extension"},
-        summary="Get extension by ID",
         path="/user/{extension_uuid}",
         @OA\Parameter(ref="#/components/parameters/extension_uuid"),
         @OA\Parameter(
@@ -91,11 +97,13 @@ class ExtensionController extends Controller
     }
 
     /**
+     * Extension create
+     *
+     * Creates an extension and attaches it to a user (optionally)
+     *
     @OA\Post(
         tags={"Extension"},
         path="/extension",
-        summary="Extension create",
-        description="Creates an extension and attaches it to a user (optionally)",
         @OA\RequestBody(
             required=true,
             @OA\JsonContent(
@@ -157,6 +165,38 @@ class ExtensionController extends Controller
         return $this->response($this->extensionService->create($data), 201);
     }
 
+    /**
+     * Updates an extension
+     *
+    @OA\Put(
+        tags={"Extension"},
+        path="/extension/{extension_uuid}",
+        @OA\Parameter(ref="#/components/parameters/extension_uuid"),
+        @OA\RequestBody(
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/ExtensionCreateSchema",
+                examples={
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Success ...",
+            @OA\JsonContent(ref="#/components/schemas/Extension"),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function update($extensionId, UpdateExtensionRequest $request)
     {
         $data = $request->get('extension', []);
@@ -168,6 +208,27 @@ class ExtensionController extends Controller
         return $return;
     }
 
+    /**
+     * Delets an extension
+     *
+    @OA\Delete(
+        tags={"Extension"},
+        path="/extension/{extension_uuid}",
+        @OA\Parameter(ref="#/components/parameters/extension_uuid"),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Success ...",
+            @OA\JsonContent(
+                example={
+                    "messages": {
+                        "`TODO` Describe response",
+                    },
+                },
+            ),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function delete($extensionId)
     {
         return $this->response($this->extensionService->delete($extensionId));

@@ -13,6 +13,7 @@ use OpenApi\Annotations\MediaType;
 use OpenApi\Annotations\Operation;
 use OpenApi\Annotations\Parameter;
 use OpenApi\Annotations\Components;
+use OpenApi\Processors\OperationId;
 use OpenApi\Annotations\JsonContent;
 use OpenApi\Annotations\RequestBody;
 use Infrastructure\Database\Eloquent\Model;
@@ -39,6 +40,8 @@ class SchemaQueryParameter
                 $this->buildSchemaFromModel($schema);
             }
         }
+
+        $this->makeOperationIdRedocCompatible($analysis);
     }
 
     protected function buildSchemaFromModel(Schema $schema)
@@ -142,4 +145,29 @@ class SchemaQueryParameter
 
         return $model;
     }
+
+    private function makeOperationIdRedocCompatible(Analysis $analysis) {
+        $allOperations = $analysis->getAnnotationsOfType(Operation::class);
+
+        foreach ($allOperations as $operation) {
+            if ($operation->operationId !== UNDEFINED) {
+                continue;
+            }
+            $context = $operation->_context;
+            if ($context && $context->method) {
+                $source = $context->class ?? $context->interface ?? $context->trait;
+                if ($source) {
+                    if ($context->namespace) {
+                        $operation->operationId = $context->namespace.'\\'.$source.'::'.$context->method;
+                        $operation->operationId = str_replace('\\', '_', $operation->operationId);
+                    } else {
+                        $operation->operationId = $source.'::'.$context->method;
+                    }
+                } else {
+                    $operation->operationId = $context->method;
+                }
+            }
+       }
+    }
+
 }

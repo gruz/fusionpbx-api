@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-93-ga9598ed"
+        "version": "0.0.8-95-g0d2bcb6"
     },
     "paths": {
         "/domain/signup": {
@@ -14,7 +14,8 @@
                     "Domain"
                 ],
                 "summary": "Create a domain",
-                "description": "`TODO Finish description`\n# Domain Settings and User Settings\n\nWhen creating a domain you must provide at least one\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```\n        ",
+                "description": "`TODO Finish description`\n# Domain Settings and User Settings\n\nWhen creating a domain you must provide at least one\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```",
+                "operationId": "Api_Domain_Controllers_DomainController::signup",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
@@ -83,7 +84,7 @@
                 }
             }
         },
-        "/domain/{id}": {
+        "/domain/{domain_uuid}": {
             "put": {
                 "tags": [
                     "Domain"
@@ -151,12 +152,14 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/domain/{domian_uuid}": {
             "delete": {
                 "tags": [
                     "Domain"
                 ],
-                "summary": "Delete a domain `TODO descendant delete with users, extensions etc` ",
+                "summary": "Delete a domain `TODO descendant delete with users, extensions etc`",
                 "description": "Not implemented yet",
                 "parameters": [
                     {
@@ -179,8 +182,8 @@
                     "Extension"
                 ],
                 "summary": "Get all extensions in domain",
-                "description": "`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
-                "operationId": "Api\\Extension\\Controllers\\ExtensionController::getAll",
+                "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
+                "operationId": "Api_Extension_Controllers_ExtensionController::getAll",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -221,7 +224,7 @@
                     "Extension"
                 ],
                 "summary": "Get extension by ID",
-                "operationId": "Api\\Extension\\Controllers\\ExtensionController::getById",
+                "operationId": "Api_Extension_Controllers_ExtensionController::getById",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -266,7 +269,7 @@
                 ],
                 "summary": "Extension create",
                 "description": "Creates an extension and attaches it to a user (optionally)",
-                "operationId": "Api\\Extension\\Controllers\\ExtensionController::create",
+                "operationId": "Api_Extension_Controllers_ExtensionController::create",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -279,6 +282,7 @@
                                     {
                                         "properties": {
                                             "users": {
+                                                "description": "Extension create\n\nCreates an extension and attaches it to a user (optionally)",
                                                 "type": "array",
                                                 "items": {
                                                     "allOf": [
@@ -342,14 +346,94 @@
                 }
             }
         },
+        "/extension/{extension_uuid}": {
+            "put": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Updates an extension",
+                "operationId": "Api_Extension_Controllers_ExtensionController::update",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExtensionCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ...",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Extension"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Delets an extension",
+                "operationId": "Api_Extension_Controllers_ExtensionController::delete",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ...",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "`TODO` Describe response"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Get user list in domain",
-                "description": "`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
-                "operationId": "Api\\User\\Controllers\\UserController::getAll",
+                "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
+                "operationId": "Api_User_Controllers_UserController::getAll",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -395,7 +479,7 @@
                     "User"
                 ],
                 "summary": "Get user info by ID",
-                "operationId": "Api\\User\\Controllers\\UserController::getById",
+                "operationId": "Api_User_Controllers_UserController::getById",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/user_uuid"
@@ -424,7 +508,7 @@
                     "User"
                 ],
                 "summary": "Update oneself or another user if having enoght permissions",
-                "operationId": "Api\\User\\Controllers\\UserController::update",
+                "operationId": "Api_User_Controllers_UserController::update",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/user_uuid"
@@ -465,9 +549,9 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition` ",
+                "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition`",
                 "description": "Not implemented yet",
-                "operationId": "Api\\User\\Controllers\\UserController::delete",
+                "operationId": "Api_User_Controllers_UserController::delete",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/user_uuid"
@@ -489,7 +573,7 @@
                     "User"
                 ],
                 "summary": "Gets currently logged in user info",
-                "operationId": "Api\\User\\Controllers\\UserController::getMe",
+                "operationId": "Api_User_Controllers_UserController::getMe",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -522,7 +606,7 @@
                     "User"
                 ],
                 "summary": "Creates a user inside a domain",
-                "operationId": "Api\\User\\Controllers\\UserController::create",
+                "operationId": "Api_User_Controllers_UserController::create",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -568,7 +652,7 @@
                     "User"
                 ],
                 "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
-                "operationId": "Api\\User\\Controllers\\UserController::activate",
+                "operationId": "Api_User_Controllers_UserController::activate",
                 "parameters": [
                     {
                         "name": "hash",
@@ -599,6 +683,7 @@
                 ],
                 "summary": "User signup",
                 "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
+                "operationId": "Api_User_Controllers_UserController::signup",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -669,7 +754,7 @@
                     "Default"
                 ],
                 "description": "Get application name and version",
-                "operationId": "Infrastructure\\Api\\Controllers\\DefaultApiController::index",
+                "operationId": "Infrastructure_Api_Controllers_DefaultApiController::index",
                 "responses": {
                     "200": {
                         "description": "Application name and version",
@@ -900,6 +985,7 @@
                 },
                 "type": "object"
             },
+            "ExtensionController": {},
             "ExtensionCreateSchema": {
                 "allOf": [
                     {
@@ -1141,6 +1227,7 @@
                     }
                 }
             },
+            "UserController": {},
             "Contact": {
                 "properties": {
                     "contact_uuid": {
@@ -1258,7 +1345,7 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true,
-                        "example": "2021-02-11 03:16:50"
+                        "example": "2021-02-11 02:53:19"
                     }
                 }
             },

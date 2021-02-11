@@ -10,6 +10,9 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Services\UserService;
 use Api\User\Services\TeamService;
 
+/**
+ * @OA\Schema()
+ */
 class UserController extends Controller
 {
     /**
@@ -29,11 +32,14 @@ class UserController extends Controller
     }
 
     /**
+     * Get user list in domain
+     *
+     * `TODO`, describe in docs and return only some fields available for other users,
+     * add parameters in query to select contact info, extension
+     *
     @OA\Get(
         tags={"User"},
         path="/users",
-        summary="Get user list in domain",
-        description="`TODO, describe in docs and return only some fields available for other users, add parameters in query to select contact info, extension`",
         @OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
@@ -54,7 +60,7 @@ class UserController extends Controller
             ),
         ),
     )
-     */
+    */
     public function getAll()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -66,9 +72,10 @@ class UserController extends Controller
     }
 
     /**
+     * Get user info by ID
+     *
     @OA\Get(
         tags={"User"},
-        summary="Get user info by ID",
         path="/user/{user_uuid}",
         @OA\Parameter(ref="#/components/parameters/user_uuid"),
         @OA\Parameter(
@@ -93,9 +100,10 @@ class UserController extends Controller
     }
 
     /**
+     * Gets currently logged in user info
+     *
     @OA\Get(
         tags={"User"},
-        summary="Gets currently logged in user info",
         path="/user",
         @OA\Parameter(
             description="Relations to be attached",
@@ -124,9 +132,10 @@ class UserController extends Controller
 
 
     /**
+     * Creates a user inside a domain
+     *
     @OA\Post(
         tags={"User"},
-        summary="Creates a user inside a domain",
         path="/user",
         @OA\RequestBody(
             description="User information",
@@ -163,9 +172,10 @@ class UserController extends Controller
 
 
     /**
+     * Update oneself or another user if having enoght permissions
+     *
     @OA\Put(
         tags={"User"},
-        summary="Update oneself or another user if having enoght permissions",
         path="/user/{user_uuid}",
         @OA\Parameter(ref="#/components/parameters/user_uuid"),
         @OA\RequestBody(
@@ -198,10 +208,11 @@ class UserController extends Controller
     }
 
     /**
+     * Activate user by email link. In cases it's and admin user, activate domain as well
+     *
     @OA\Get(
         tags={"User"},
         path="/user/activate/{hash}",
-        summary="Activate user by email link. In cases it's and admin user, activate domain as well",
         @OA\Parameter(
             name="hash",
             in="path",
@@ -225,11 +236,13 @@ class UserController extends Controller
     }
 
     /**
+     * Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition`
+     *
+     * Not implemented yet
+     *
     @OA\Delete(
         tags={"User"},
         path="/user/{user_uuid}",
-        summary="Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition` ",
-        description="Not implemented yet",
         @OA\Parameter(ref="#/components/parameters/user_uuid"),
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
@@ -269,11 +282,17 @@ class UserController extends Controller
     // ~ }
 
     /**
+     *
+     * User signup
+     *
+     * Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.
+     *
+     * @param SignupRequest $request
+     * @return void
+     *
     @OA\Post(
         tags={"User"},
         path="/user/signup",
-        summary="User signup",
-        description="Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
         @OA\RequestBody(
             description="User information",
             required=true,
@@ -324,13 +343,6 @@ class UserController extends Controller
             ),
         ),
     )
-     */
-
-    /**
-     * User signup
-     *
-     * @param SignupRequest $request
-     * @return void
      */
     public function signup(SignupRequest $request)
     {

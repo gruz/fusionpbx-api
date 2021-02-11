@@ -119,7 +119,6 @@ class ExtensionService
          * @var \Api\Extension\Models\Extension
          */
         $extension = $this->getRequestedExtension($extensionId);
-        $user = $this->auth->user();
 
         $this->database->beginTransaction();
 
