@@ -169,15 +169,39 @@ class UserController extends Controller
     }
 
     /**
-     * User reset password 
+     * User get reset password action
+     * 
+     * @param UserResetPasswordRequest $request
+     * @return void
+     */
+    public function resetPassword(Request $request) 
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required',
+        ]);
+
+        return view('user.password.reset-password', [
+            'token' => $request->get('token'),
+            'email' => $request->get('email')
+        ]);
+    }
+
+    /**
+     * User reset password after form submission
      *
      * @param UserResetPasswordRequest $request
      * @return void
      */
-    public function resetPassword(UserResetPasswordRequest $request) 
+    public function updatePassword(UserResetPasswordRequest $request) 
     {
+        $request->validate([
+            // 'email' => 'required|email',
+            // 'token' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
         $email = $request->get('user_email');   
-
         return $this->response($this->passwordService->resetPassword($email));
     }
+    
 }

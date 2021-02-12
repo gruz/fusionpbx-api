@@ -40,7 +40,9 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        'domain_uuid', 'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
+        'domain_uuid', 'username', 'password', 'salt',
+        'contact_uuid', 'user_enabled', 'add_user', 'add_date',
+        'user_email'
     ];
 
     /**
@@ -49,11 +51,55 @@ class User extends Model implements
      * @var array
      */
     protected $hidden = [
-        'password', 'salt',
+        'password', 'salt', 'email',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
-        'user_status',
+        'user_status', 
     ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'email'
+    ];
+
+    /**
+     * _fuda_: 
+     *      Gets user email. Needs to be appended 
+     *      cause fusionpbx has named user email attribute as "user_email"
+     *      what is not obviouse for reset password broker which expects email property
+     *      to reset the password.
+     *
+     * @return string User email address
+     */
+    public function getEmailAttribute()
+    {
+        return $this->attributes['user_email'];
+    }
+
+    /**
+     * _fuda_: 
+     *      Sets user email address. 
+     *      See public function getEmailAttribute() to get why.
+     */
+    public function setEmailAttribute($email)
+    {
+        $this->attributes['user_email'] = $email;
+    }
+
+    // /**
+    //  * _fuda_: 
+    //  *      Sets user email address for fusionpbx 
+    //  *      and appended email attribute for password reset. 
+    //  */
+    // public function setUserEmailAttribute($email) 
+    // {
+    //     $this->attributes['user_email'] = $email;
+    //     $this->setEmailAttribute($email);
+    // }
 
     public function groups()
     {
@@ -200,36 +246,26 @@ class User extends Model implements
       }
     }
 
-    /**
-     * Method to return the email for password reset
-     *     
-     * @return string Returns the User Email Address
-     */
-    public function getEmailForPasswordReset() {
-
-        $email = $this->getAttribute('user_email');
-        if (!$email) {
-            // 1 Throught Contacts 
-            $email = $this->emails()
-            ->get()
-            ->first()
-            ->toArray()['email_address'];
-
-            // 2 Throught model property
-            // $email = $this->user_email; 
-        }
-        
-        return $email;
-    }
-    
     // /**
-    //  * Send the password reset notification.
-    //  *
-    //  * @param  string  $token
-    //  * @return void
+    //  * Method to return the email for password reset
+    //  *     
+    //  * @return string Returns the User Email Address
     //  */
-    // public function sendPasswordResetNotification($token)
-    // {
-    //     $this->notify(new ResetPasswordNotification($token));
+    // public function getEmailForPasswordReset() {
+
+    //     $email = $this->getAttribute('user_email');
+    //     if (!$email) {
+    //         // 1 Throught Contacts 
+    //         $email = $this->emails()
+    //                       ->get()
+    //                       ->first()
+    //                       ->toArray()['email_address'];
+
+    //         // 2 Throught model property
+    //         // $email = $this->user_email; 
+    //     }
+        
+    //     return $email;
     // }
+    
 }

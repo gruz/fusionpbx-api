@@ -18,6 +18,8 @@ class Kernel extends HttpKernel
         \Infrastructure\Http\Middleware\EncryptCookies::class,
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
     ];
 
     /**
@@ -29,6 +31,9 @@ class Kernel extends HttpKernel
         // 'api' => [
         //     \Infrastructure\Http\Middleware\EncryptCookies::class,
         // ]
+        'web' => [
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        ],
     ];
 
     /**

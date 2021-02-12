@@ -9,10 +9,8 @@ use Api\User\Events\UserWasUpdated;
 use Api\User\Events\GroupWasCreated;
 use Api\User\Events\GroupWasDeleted;
 use Api\User\Events\GroupWasUpdated;
-use Api\User\Events\ResetPasswordLinkWasRequested;
 
 use Api\User\Listeners\UserWasCreatedListener;
-use Api\User\Listeners\ResetPasswordLinkWasRequestedListener;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -38,9 +36,5 @@ class UserServiceProvider extends ServiceProvider
         UserWasUpdated::class => [
             // listeners for when a user is updated
         ],
-        ResetPasswordLinkWasRequested::class => [
-            // listeners for when a password reset link was requested
-            ResetPasswordLinkWasRequestedListener::class
-        ]
     ];
 }

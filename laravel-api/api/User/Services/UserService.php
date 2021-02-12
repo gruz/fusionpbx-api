@@ -183,6 +183,7 @@ class UserService
             $contact_email->makeHidden(['domain_uuid', 'contact_uuid']);
 
             // Finally create the user and hide an unneded field in the output
+            $data['user_email'] = $data['email'];
             $user = $this->userRepository->create($data);
 
             $user->makeHidden(['domain_uuid', 'contact_uuid']);
