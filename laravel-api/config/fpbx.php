@@ -13,17 +13,28 @@ return [
     'table' => [
         // Example
         // 'v_domain_settings' => [
-        //     'add_fillable' => [
+        //     'mergeFillable' => [
         //         'app_uuid',
         //     ],
-        //     'remove_fillable' => [
+        //     ' mergeGuarded' => [
         //         'domain_setting_category',
         //     ],
         // ]
         // 'v_domains' => [
-        //     'add_fillable' => [
+        //     'mergeGuarded' => [
         //         'domain_enabled'
         //     ]
+        // ],
+        // 'v_users' => [
+        //     'mergeGuarded' => [
+        //         'add_user'
+        //     ],
+        //     'makeHidden' => [
+        //         'add_user'
+        //     ],
+        //     'makeVisible' => [
+        //         'salt'
+        //     ],
         // ]
     ]
 

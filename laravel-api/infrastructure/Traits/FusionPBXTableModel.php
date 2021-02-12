@@ -40,12 +40,32 @@ trait FusionPBXTableModel
         $this->incrementing = false;
         $this->timestamps = false;
 
+        /**
+         * Override model defaults by config file
+         */
+        $keys = [
+            'makeFillable',
+            'mergeGuarded',
+            'makeVisible',
+            'makeHidden',
+        ];
 
-        $add_fillable = config('fpbx.table.' . $this->table . '.add_fillable', []);
-        $this->fillable = array_merge($this->fillable, $add_fillable);
+        foreach ($keys as $key) {
+            $fields = config('fpbx.table.' . $this->table . '.' . $key , []);
 
-        $remove_fillable = config('fpbx.table.' . $this->table . '.remove_fillable', []);
-        $this->fillable = array_diff($this->fillable, $remove_fillable);
+            if (!empty($fields)) {
+                switch ($key) {
+                    case 'mergeGuarded':
+                        $fillable = array_diff($this->getFillable(), $fields);
+                        $this->fillable($fillable);
+                        break;
+                    default:
+                        break;
+                }
+
+                $this->$key($fields);
+            }
+        }
 
         /**
          * The "type" of the primary key ID.

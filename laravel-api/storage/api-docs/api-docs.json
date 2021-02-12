@@ -5,123 +5,296 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-85-gdbc3fc2"
+        "version": "0.0.8-101-g068168a"
     },
     "paths": {
         "/domain/signup": {
             "post": {
                 "tags": [
-                    "Domain",
-                    "User"
+                    "Domain"
                 ],
                 "summary": "Create a domain",
-                "description": "Creates a domain. Depending on the configuration the domain `domain_name` can be a subdomain of the main domain or an independent domain",
+                "description": "# General notes\n\nWhen creating a domain you must provide at least one admin user (`is_admin` option in `users->user` object ).\n\nAll admins will be emailed to confirm domain creation.\n\n# Domain settings\n\nYou can override default domain settings\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings)\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nCheck examples as well.",
+                "operationId": "Api_Domain_Controllers_DomainController::signup",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "properties": {
-                                    "domain_parent_uuid": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                    },
-                                    "domain_name": {
-                                        "type": "string"
-                                    },
-                                    "domain_description": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_category": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_subcategory": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_name": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_value": {
-                                        "type": "string"
-                                    },
-                                    "domain_setting_order": {
-                                        "type": "number"
-                                    },
-                                    "domain_setting_enabled": {
-                                        "type": "boolean"
-                                    },
-                                    "domain_setting_description": {
-                                        "type": "string"
-                                    }
-                                },
                                 "allOf": [
                                     {
-                                        "$ref": "#/components/schemas/Domain"
-                                    },
+                                        "$ref": "#/components/schemas/DomainCreateSchema"
+                                    }
+                                ]
+                            },
+                            "examples": {
+                                "Create domain all fields": [],
+                                "Create domain basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domain created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/DomainCreateSchema"
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "Create domain basic example1": {
+                                        "summary": "Create domain with language settings",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "登录失败",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/domain/{domain_uuid}": {
+            "put": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Update a domain `TODO Implement`",
+                "description": "Depending on permissions will allow or not updating certain values",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/domain_uuid"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Domain information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
                                     {
-                                        "$ref": "#/components/schemas/Domain_setting"
+                                        "$ref": "#/components/schemas/DomainSchema"
+                                    }
+                                ]
+                            },
+                            "examples": {
+                                "Domain all fields": [],
+                                "Create domain basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domain created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Domain"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/domain/{domian_uuid}": {
+            "delete": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Delete a domain `TODO descendant delete with users, extensions etc`",
+                "description": "Not implemented yet",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/domain_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/extensions": {
+            "get": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Get all extensions in domain",
+                "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
+                "operationId": "Api_Extension_Controllers_ExtensionController::getAll",
+                "parameters": [
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "users"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ExtensionWithRelatedUsersSchema"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{extension_uuid}": {
+            "get": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Get extension by ID",
+                "operationId": "Api_Extension_Controllers_ExtensionController::getById",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    },
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "users"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExtensionWithRelatedUsersSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/extension": {
+            "post": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Extension create",
+                "description": "Creates an extension and attaches it to a user (optionally)",
+                "operationId": "Api_Extension_Controllers_ExtensionController::create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Extension"
                                     },
                                     {
                                         "properties": {
                                             "users": {
+                                                "description": "Extension create\n\nCreates an extension and attaches it to a user (optionally)",
                                                 "type": "array",
                                                 "items": {
-                                                    "properties": {
-                                                        "domain_uuid": {
-                                                            "type": "string",
-                                                            "format": "uuid"
-                                                        },
-                                                        "username": {
-                                                            "type": "string"
-                                                        },
-                                                        "password": {
-                                                            "type": "string"
-                                                        },
-                                                        "salt": {
-                                                            "type": "string"
-                                                        },
-                                                        "contact_uuid": {
-                                                            "type": "string",
-                                                            "format": "uuid"
-                                                        },
-                                                        "user_enabled": {
-                                                            "type": "string"
-                                                        },
-                                                        "add_user": {
-                                                            "type": "string"
-                                                        },
-                                                        "add_date": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_category": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_subcategory": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_name": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_value": {
-                                                            "type": "string"
-                                                        },
-                                                        "user_setting_order": {
-                                                            "type": "number"
-                                                        },
-                                                        "user_setting_enabled": {
-                                                            "type": "boolean"
-                                                        },
-                                                        "user_setting_description": {
-                                                            "type": "string"
-                                                        }
-                                                    },
                                                     "allOf": [
                                                         {
-                                                            "$ref": "#/components/schemas/User"
-                                                        },
-                                                        {
-                                                            "$ref": "#/components/schemas/User_setting"
+                                                            "properties": {
+                                                                "user_uuid": {
+                                                                    "description": "User id's to attach extension to. If not passed, then extension is attached to the current user",
+                                                                    "type": "string",
+                                                                    "format": "uuid"
+                                                                }
+                                                            },
+                                                            "type": "object"
                                                         }
                                                     ]
                                                 }
@@ -130,25 +303,443 @@
                                         "type": "object"
                                     }
                                 ]
+                            },
+                            "examples": {
+                                "Create an exnetsion": [],
+                                "Create an exnetsion basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Get application name and version",
+                        "description": "Extension created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Extension"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/extension/{extension_uuid}": {
+            "put": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Updates an extension",
+                "operationId": "Api_Extension_Controllers_ExtensionController::update",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExtensionCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ...",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Extension"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Delets an extension",
+                "operationId": "Api_Extension_Controllers_ExtensionController::delete",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ...",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "`TODO` Describe response"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user list in domain",
+                "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
+                "operationId": "Api_User_Controllers_UserController::getAll",
+                "parameters": [
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "groups",
+                                    "status",
+                                    "domain",
+                                    "permissions",
+                                    "emails",
+                                    "extensions"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user_uuid}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user info by ID",
+                "operationId": "Api_User_Controllers_UserController::getById",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/user_uuid"
+                    },
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/user_includes"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update oneself or another user if having enoght permissions",
+                "operationId": "Api_User_Controllers_UserController::update",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/user_uuid"
+                    }
+                ],
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition`",
+                "description": "Not implemented yet",
+                "operationId": "Api_User_Controllers_UserController::delete",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/user_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Gets currently logged in user info",
+                "operationId": "Api_User_Controllers_UserController::getMe",
+                "parameters": [
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/user_includes"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Creates a user inside a domain",
+                "operationId": "Api_User_Controllers_UserController::create",
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/user/activate/{hash}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
+                "operationId": "Api_User_Controllers_UserController::activate",
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "User activation link",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/user/signup": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User signup",
+                "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
+                "operationId": "Api_User_Controllers_UserController::signup",
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateSchema"
+                            },
+                            "examples": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domain created response",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "properties": {
-                                                "iidd": {
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/DomainCreateSchema"
                                         }
+                                    ]
+                                },
+                                "examples": {
+                                    "Create domain basic example1": {
+                                        "summary": "Create domain with language settings",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "登录失败",
+                                            "data": null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
                                     ]
                                 }
                             }
@@ -163,7 +754,7 @@
                     "Default"
                 ],
                 "description": "Get application name and version",
-                "operationId": "Infrastructure\\Api\\Controllers\\DefaultApiController::index",
+                "operationId": "Infrastructure_Api_Controllers_DefaultApiController::index",
                 "responses": {
                     "200": {
                         "description": "Application name and version",
@@ -176,7 +767,7 @@
                                             "type": "string"
                                         },
                                         "version": {
-                                            "description": "Fit tag version",
+                                            "description": "Git tag version",
                                             "type": "string"
                                         }
                                     },
@@ -202,6 +793,71 @@
     },
     "components": {
         "schemas": {
+            "DomainController": {},
+            "DomainSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Domain"
+                    },
+                    {
+                        "properties": {
+                            "settings": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Domain_setting"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "DomainCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "is_subdomain": {
+                                "description": "Determines is the current domain should be a top level domain or a subdomain of the mothership domain",
+                                "type": "boolean",
+                                "default": "false"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DomainSchema"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "is_admin": {
+                                                    "description": "At least one user must be an admin when creating a new domain",
+                                                    "type": "boolean",
+                                                    "default": "false"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/UserCreateSchema"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
             "Domain": {
                 "properties": {
                     "domain_name": {
@@ -216,15 +872,724 @@
                     },
                     "domain_parent_uuid": {
                         "description": "Parent domain id",
-                        "example": "54cdc4b0-3b0d-11e7-888f-c38f274a1cd2",
                         "nullable": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_enabled": {
+                        "type": "boolean",
+                        "readOnly": true
                     }
                 },
                 "type": "object"
             },
-            "Domain_setting": {},
-            "User": {},
-            "User_setting": {}
+            "Domain_setting": {
+                "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n\n ```\nSELECT x.* FROM public.v_default_settings x\n    WHERE default_setting_category in ('domain' , 'email')\n    ORDER BY default_setting_category\n```",
+                "properties": {
+                    "domain_setting_category": {
+                        "description": "Domain settings category",
+                        "type": "string",
+                        "enum": [
+                            "domain",
+                            "email"
+                        ],
+                        "example": "domain"
+                    },
+                    "domain_setting_subcategory": {
+                        "description": "Domain settings sub category",
+                        "type": "string",
+                        "oneOf": [
+                            {
+                                "enum": [
+                                    "dial_string",
+                                    "template",
+                                    "menu",
+                                    "language",
+                                    "time_zone",
+                                    "cidr",
+                                    "country",
+                                    "bridge",
+                                    "time_format",
+                                    "paging"
+                                ],
+                                "example": "language"
+                            },
+                            {
+                                "enum": [
+                                    "smtp_auth",
+                                    "method",
+                                    "smtp_port",
+                                    "smtp_from",
+                                    "smtp_from_name",
+                                    "smtp_hostname",
+                                    "smtp_host",
+                                    "smtp_username",
+                                    "smtp_password",
+                                    "smtp_secure",
+                                    "smtp_validate_certificate"
+                                ],
+                                "example": "smtp_from_name"
+                            }
+                        ]
+                    },
+                    "domain_setting_name": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "enum": [
+                            "text",
+                            "name",
+                            "uuid",
+                            "code",
+                            "name",
+                            "array",
+                            "code",
+                            "text",
+                            "text",
+                            "numeric"
+                        ],
+                        "example": "code"
+                    },
+                    "domain_setting_value": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "example": "uk-ua"
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_setting_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "app_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_setting_order": {
+                        "type": "number"
+                    },
+                    "domain_setting_enabled": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "domain_setting_description": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ExtensionController": {},
+            "ExtensionCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    }
+                ]
+            },
+            "ExtensionWithRelatedUsersSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "Extension": {
+                "properties": {
+                    "extension_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "extension": {
+                        "type": "string"
+                    },
+                    "number_alias": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "accountcode": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_name": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_number": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_name": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_number": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_name": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_number": {
+                        "type": "string"
+                    },
+                    "directory_first_name": {
+                        "type": "string"
+                    },
+                    "directory_last_name": {
+                        "type": "string"
+                    },
+                    "directory_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "directory_exten_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "limit_max": {
+                        "type": "string",
+                        "default": 5
+                    },
+                    "limit_destination": {
+                        "type": "string",
+                        "default": "error/user_busy"
+                    },
+                    "missed_call_app": {
+                        "type": "string"
+                    },
+                    "missed_call_data": {
+                        "type": "string"
+                    },
+                    "user_context": {
+                        "type": "string"
+                    },
+                    "toll_allow": {
+                        "type": "string"
+                    },
+                    "call_timeout": {
+                        "type": "number",
+                        "default": 30
+                    },
+                    "call_group": {
+                        "type": "string"
+                    },
+                    "call_screen_enabled": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "user_record": {
+                        "type": "string"
+                    },
+                    "hold_music": {
+                        "type": "string",
+                        "default": "local_stream://default"
+                    },
+                    "auth_acl": {
+                        "type": "string"
+                    },
+                    "cidr": {
+                        "type": "string"
+                    },
+                    "sip_force_contact": {
+                        "type": "string"
+                    },
+                    "nibble_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_force_expires": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "mwi_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_bypass_media": {
+                        "type": "string"
+                    },
+                    "unique_id": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "dial_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_user": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_domain": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "do_not_disturb": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "follow_me_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "forward_caller_id_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "follow_me_enabled": {
+                        "type": "string"
+                    },
+                    "follow_me_destinations": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "absolute_codec_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "force_ping": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserController": {},
+            "Contact": {
+                "properties": {
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "contact_parent_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "contact_type": {
+                        "type": "string"
+                    },
+                    "contact_organization": {
+                        "type": "string"
+                    },
+                    "contact_name_prefix": {
+                        "type": "string"
+                    },
+                    "contact_name_given": {
+                        "type": "string"
+                    },
+                    "contact_name_middle": {
+                        "type": "string"
+                    },
+                    "contact_name_family": {
+                        "type": "string"
+                    },
+                    "contact_name_suffix": {
+                        "type": "string"
+                    },
+                    "contact_nickname": {
+                        "type": "string"
+                    },
+                    "contact_title": {
+                        "type": "string"
+                    },
+                    "contact_role": {
+                        "type": "string"
+                    },
+                    "contact_category": {
+                        "type": "string"
+                    },
+                    "contact_url": {
+                        "type": "string"
+                    },
+                    "contact_time_zone": {
+                        "type": "string"
+                    },
+                    "contact_note": {
+                        "type": "string"
+                    },
+                    "last_mod_date": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "last_mod_user": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "User": {
+                "properties": {
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "user_email": {
+                        "type": "string"
+                    },
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_status": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "api_key": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "user_enabled": {
+                        "type": "string"
+                    },
+                    "add_user": {
+                        "type": "string"
+                    },
+                    "add_date": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2021-02-12 09:50:46"
+                    }
+                }
+            },
+            "User_setting": {
+                "properties": {
+                    "user_setting_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_setting_category": {
+                        "type": "string"
+                    },
+                    "user_setting_subcategory": {
+                        "type": "string"
+                    },
+                    "user_setting_name": {
+                        "type": "string"
+                    },
+                    "user_setting_value": {
+                        "type": "string"
+                    },
+                    "user_setting_order": {
+                        "type": "number"
+                    },
+                    "user_setting_enabled": {
+                        "type": "boolean"
+                    },
+                    "user_setting_description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "user_includes": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "groups",
+                        "status",
+                        "domain",
+                        "permissions",
+                        "emails",
+                        "extensions"
+                    ]
+                }
+            },
+            "UserCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                    }
+                ]
+            },
+            "UserWithRelatedItemsSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    {
+                        "properties": {
+                            "contacts": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "extensions": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Extension"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Voicemail"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "Voicemail": {
+                "properties": {
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_id": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_password": {
+                        "type": "string"
+                    },
+                    "greeting_id": {
+                        "type": "number"
+                    },
+                    "voicemail_alternate_greet_id": {
+                        "type": "number"
+                    },
+                    "voicemail_mail_to": {
+                        "type": "string"
+                    },
+                    "voicemail_sms_to": {
+                        "type": "string"
+                    },
+                    "voicemail_transcription_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_attach_file": {
+                        "type": "string"
+                    },
+                    "voicemail_file": {
+                        "type": "string"
+                    },
+                    "voicemail_local_after_email": {
+                        "type": "string"
+                    },
+                    "voicemail_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_description": {
+                        "type": "string"
+                    },
+                    "voicemail_name_base64": {
+                        "type": "string"
+                    },
+                    "voicemail_tutorial": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Voicemail_option": {
+                "properties": {
+                    "voicemail_option_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_option_digits": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_action": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_param": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_order": {
+                        "type": "number",
+                        "readOnly": true
+                    },
+                    "voicemail_option_description": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "domain_uuid": {
+                "name": "domain_uuid",
+                "in": "path",
+                "description": "Domain UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            },
+            "extension_uuid": {
+                "name": "extension_uuid",
+                "in": "path",
+                "description": "Extension UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            },
+            "user_uuid": {
+                "name": "user_uuid",
+                "in": "path",
+                "description": "User UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            }
         },
         "securitySchemes": {
             "api_key": {

@@ -3,11 +3,12 @@
 namespace Infrastructure\Database\Eloquent;
 
 use Doctrine\DBAL\Exception;
-use Illuminate\Database\Eloquent\Model as BaseModel;
-use Illuminate\Support\Facades\DB;
 use Doctrine\DBAL\Schema\Index;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Infrastructure\Traits\RelationshipsTrait;
+use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 abstract class Model extends BaseModel
 {
@@ -138,11 +139,30 @@ abstract class Model extends BaseModel
     }
 
     /**
-     * Get fillable model properties
+     * Checks if filed is visible
      */
-    public function getFillable()
+    public function isVisible($field)
     {
-        return $this->fillable;
+        $visible = $this->getVisible();
+        $hidden = $this->getHidden();
+
+        if (empty($visible) && empty($hidden)) {
+            return true;
+        }
+
+        if (in_array($field, $hidden)) {
+            return false;
+        }
+
+        if (in_array($field, $visible)) {
+            return true;
+        }
+
+        if (empty($visible)) {
+            return true;
+        }
+
+        return false;;
     }
 
     // public function is_nullable(string $field_name)

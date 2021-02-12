@@ -13,6 +13,9 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
 
+/**
+ * @OA\Schema()
+ */
 class UserController extends Controller
 {
     /**
@@ -39,6 +42,36 @@ class UserController extends Controller
         $this->passwordService = $passwordService;
     }
 
+    /**
+     * Get user list in domain
+     *
+     * `TODO`, describe in docs and return only some fields available for other users,
+     * add parameters in query to select contact info, extension
+     *
+    @OA\Get(
+        tags={"User"},
+        path="/users",
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(
+                type="array",
+                @OA\Items(type="string",
+                    enum = { "groups", "status", "domain", "permissions", "emails","extensions", },
+                )
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(type="array",
+                @OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+            ),
+        ),
+    )
+    */
     public function getAll()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -49,6 +82,24 @@ class UserController extends Controller
         return $this->response($parsedData);
     }
 
+    /**
+     * Get user info by ID
+     *
+    @OA\Get(
+        tags={"User"},
+        path="/user/{user_uuid}",
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(ref="#/components/schemas/user_includes")
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function getById(string $userId)
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -59,6 +110,27 @@ class UserController extends Controller
         return $this->response($parsedData);
     }
 
+    /**
+     * Gets currently logged in user info
+     *
+    @OA\Get(
+        tags={"User"},
+        path="/user",
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(ref="#/components/schemas/user_includes")
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function getMe()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -70,6 +142,38 @@ class UserController extends Controller
     }
 
 
+    /**
+     * Creates a user inside a domain
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user",
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                examples={
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(ref="#/components/schemas/User"),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function create(CreateUserRequest $request)
     {
         $data = $request->get('user', []);
@@ -77,20 +181,84 @@ class UserController extends Controller
         return $this->response($this->userService->create($data), 201);
     }
 
-    public function update($hash, Request $request)
+
+    /**
+     * Update oneself or another user if having enoght permissions
+     *
+    @OA\Put(
+        tags={"User"},
+        path="/user/{user_uuid}",
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                examples={
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
+    public function update($userId, Request $request)
     {
         $data = $request->get('user', []);
 
         return $this->response($this->userService->update($userId, $data));
     }
 
+    /**
+     * Activate user by email link. In cases it's and admin user, activate domain as well
+     *
+    @OA\Get(
+        tags={"User"},
+        path="/user/activate/{hash}",
+        @OA\Parameter(
+            name="hash",
+            in="path",
+            description="User activation link",
+            required=true,
+            @OA\Schema(
+                type="string",
+                format="uuid",
+                example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
+            )
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function activate(string $hash)
     {
         $response = $this->response($this->userService->activate($hash));
-        // dd($response);
+
         return $response;
     }
 
+    /**
+     * Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition`
+     *
+     * Not implemented yet
+     *
+    @OA\Delete(
+        tags={"User"},
+        path="/user/{user_uuid}",
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
     public function delete($userId)
     {
         return $this->response($this->userService->delete($userId));
@@ -125,10 +293,67 @@ class UserController extends Controller
     // ~ }
 
     /**
+     *
      * User signup
+     *
+     * Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.
      *
      * @param SignupRequest $request
      * @return void
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user/signup",
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                examples={
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="Domain created response",
+            @OA\JsonContent(
+                allOf={
+                    @OA\Schema(ref="#/components/schemas/DomainCreateSchema"),
+                },
+                examples={
+                    "Create domain basic example1": {
+                        "summary": "Create domain with language settings",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=400,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(
+                example={
+                    "messages": {
+                        "Missing admin user",
+                        "No password for email",
+                    },
+                },
+            ),
+        ),
+    )
      */
     public function signup(SignupRequest $request)
     {

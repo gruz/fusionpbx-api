@@ -200,6 +200,7 @@ return [
         Api\User\UserServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,
         Infrastructure\Providers\HelperServiceProvider::class,
+        Infrastructure\Providers\SwaggerConstantsDefinerServiceProvider::class,
         Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
     ],
 

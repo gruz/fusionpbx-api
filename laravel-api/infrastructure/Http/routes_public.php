@@ -52,3 +52,7 @@ $router->group(['middleware' => ['web']], function ($router) {
    //    ->name('password.email');
        
 });
+
+$router->get('/api/redoc', function(){
+    return view('documenation.index');
+});

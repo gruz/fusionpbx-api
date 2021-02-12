@@ -58,7 +58,7 @@ class DefaultApiController extends BaseController
      *           mediaType="application/json",
      *           @OA\Schema(
      *               @OA\Property(property="title", type="string", description="APP_NAME variable"),
-     *               @OA\Property(property="version", type="string", description="Fit tag version")
+     *               @OA\Property(property="version", type="string", description="Git tag version")
      *           ),
      *           @OA\Examples(example="Asdsads", summary="App info", value={"title": "FusionPBX API", "version" : "0.0.8-62-g192d97b"}),
      *      )

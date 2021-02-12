@@ -8,10 +8,12 @@ use const OpenApi\UNDEFINED;
 use OpenApi\Annotations\Items;
 use OpenApi\Annotations\Schema;
 use OpenApi\Annotations\Property;
+use OpenApi\Annotations\Response;
 use OpenApi\Annotations\MediaType;
 use OpenApi\Annotations\Operation;
 use OpenApi\Annotations\Parameter;
 use OpenApi\Annotations\Components;
+use OpenApi\Processors\OperationId;
 use OpenApi\Annotations\JsonContent;
 use OpenApi\Annotations\RequestBody;
 use Infrastructure\Database\Eloquent\Model;
@@ -24,8 +26,7 @@ use OpenApi\Annotations\AbstractAnnotation;
  */
 class SchemaQueryParameter
 {
-    const X_QUERY_AGS_REF = 'query-args-$ref';
-    const MODEL_INPUT_FIELDS = 'model-input-fields';
+    const MODEL_ADD_INCLUDES = 'model-add-includes';
 
     public function __invoke(Analysis $analysis)
     {
@@ -34,116 +35,65 @@ class SchemaQueryParameter
          */
         $schemas = $analysis->getAnnotationsOfType(Schema::class, true);
 
-        /**
-         * @var RequestBody[]
-         */
-        $requests = $analysis->getAnnotationsOfType(RequestBody::class);
-        foreach ($requests as $request) {
-            $annotations = $request->_context->nested->_context->annotations;
-            foreach ($annotations as $annotation) {
-                if (
-                    $annotation instanceof Schema &&
-                    $annotation->ref !== UNDEFINED
-                ) {
-                    if ($schema = $this->schemaForRef($schemas, $annotation->ref)) {
-                        $this->expandModelSchema($annotation, $schema);
-                    }
-                }
+        foreach ($schemas as $schema) {
+            if ($schema->schema !== UNDEFINED) {
+                $this->buildSchemaFromModel($schema);
             }
         }
+
+        $this->makeOperationIdRedocCompatible($analysis);
     }
 
-    /**
-     * Expand the given operation by injecting parameters for all properties of the given schema.
-     */
-    protected function expandModelSchema(Schema $annotation, Schema $schema, $input = true)
+    protected function buildSchemaFromModel(Schema $schema)
     {
-        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
+        $model = $this->getModelFromSchema($schema);
 
-        /**
-         * @var Model
-         */
-        $model = new $modelClassName;
         if (!$model instanceof Model) {
             return;
         }
 
-        $columns = $model->getTableColumnsInfo();
+        $columns = $model->getTableColumnsInfo(true);
+        $defaults = $model->getAttributes();
 
-        $fillable = $model->getFillable();
-
-        $propertiesBag = &$annotation->_context->nested->properties;
-
+        $propertiesBag = &$schema->properties;
         $propertiesBag = $propertiesBag === UNDEFINED ? [] : $propertiesBag;
-        // $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
+
+        $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
 
         foreach ($columns as $columnName => $column) {
+            if (in_array($columnName, $alreadyDescribedProperties)) {
+                continue;
+            }
+
+            if (!$model->isFillable($columnName) && !$model->isVisible($columnName)) {
+                continue;
+            }
+
             $props = [
                 'property' => $columnName,
             ];
 
-            $type = $this->mapType($column->getType()->getName());
-            $props = array_merge($props, $type);
-
-            if (!in_array($columnName, $fillable)) {
+            if ($model->isFillable($columnName) && !$model->isVisible($columnName)) {
+                $props['writeOnly'] = true;
+            } elseif (!$model->isFillable($columnName) && $model->isVisible($columnName)) {
                 $props['readOnly'] = true;
             }
 
+            if (array_key_exists($columnName, $defaults)) {
+                $props['default'] = $defaults[$columnName];
+            }
+
+            $fieldType = $this->mapType($column->getType()->getName());
+            $props = array_merge($props, $fieldType);
+
             $properties = new Property($props);
             $propertiesBag[] = $properties;
+            $alreadyDescribedProperties[] = $columnName;
 
             // if ($model->is_nullable($columnName)) {
             //     $annotation->_context->nested->required = $annotation->_context->nested->required === UNDEFINED ? [] : $annotation->_context->nested->required;
             //     $annotation->_context->nested->required[] = $columnName;
             // }
-        }
-    }
-
-    /**
-     * Expand the given operation by injecting parameters for all properties of the given schema.
-     */
-    protected function expand(AbstractAnnotation $operation, Schema $schema)
-    {
-        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
-
-        /**
-         * @var Model
-         */
-        $model = new $modelClassName;
-
-        if (!$model instanceof Model) {
-            return;
-        }
-
-        $columns = $model->getTableColumnsInfo();
-
-        $fillable = $model->getFillable();
-
-        foreach ($columns as $colmunName => $columnData) {
-            if (!in_array($colmunName, $fillable)) {
-                unset($columns[$colmunName]);
-            }
-        }
-
-        // d($schema->schema, $columns);
-
-        // d($operation);
-
-        $operation->properties = $operation->properties === UNDEFINED ? [] : $operation->properties;
-
-        foreach ($columns as $columnName => $column) {
-            $type = $this->mapType($column->getType()->getName());
-            $properties = new Property([
-                'property' => $columnName,
-                // 'in' => 'query',
-                // 'required' => false,
-                'type' => $type,
-                'schema' => [
-                    'type' => 'integer',
-                    'format' => 'int64',
-                ]
-            ]);
-            $operation->properties[] = $properties;
         }
     }
 
@@ -169,22 +119,55 @@ class SchemaQueryParameter
                 'type' => 'string',
                 'format' => 'uuid',
             ],
+            'datetime' =>  [
+                'type' => 'string',
+                'format' => 'date-time',
+                'example' => \Carbon\Carbon::now()->format('Y-m-d h:i:s'),
+            ],
         ];
 
-        return Arr::get($mapping, $dbType, [ 'type' => $dbType ] );
+        return Arr::get($mapping, $dbType, ['type' => $dbType]);
     }
 
-    /**
-     * Find schema for the given ref.
-     */
-    protected function schemaForRef(array $schemas, string $ref)
+    protected function getModelFromSchema(Schema $schema)
     {
-        foreach ($schemas as $schema) {
-            if (Components::SCHEMA_REF . $schema->schema === $ref) {
-                return $schema;
-            }
+        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
+        // d($modelClassName);
+
+        if (!is_subclass_of($modelClassName, Model::class)) {
+            return null;
         }
 
-        return null;
+        /**
+         * @var Model
+         */
+        $model = new $modelClassName;
+
+        return $model;
     }
+
+    private function makeOperationIdRedocCompatible(Analysis $analysis) {
+        $allOperations = $analysis->getAnnotationsOfType(Operation::class);
+
+        foreach ($allOperations as $operation) {
+            if ($operation->operationId !== UNDEFINED) {
+                continue;
+            }
+            $context = $operation->_context;
+            if ($context && $context->method) {
+                $source = $context->class ?? $context->interface ?? $context->trait;
+                if ($source) {
+                    if ($context->namespace) {
+                        $operation->operationId = $context->namespace.'\\'.$source.'::'.$context->method;
+                        $operation->operationId = str_replace('\\', '_', $operation->operationId);
+                    } else {
+                        $operation->operationId = $source.'::'.$context->method;
+                    }
+                } else {
+                    $operation->operationId = $context->method;
+                }
+            }
+       }
+    }
+
 }

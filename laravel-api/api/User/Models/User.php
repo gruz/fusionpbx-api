@@ -7,28 +7,30 @@ use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
 use Api\Domain\Models\Domain;
 use Doctrine\DBAL\Driver\IBMDB2\Result;
-use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
-use Infrastructure\Traits\FusionPBXTableModel;
-// use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
+use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Traits\FusionPBXTableModel;
 use Illuminate\Auth\Passwords\CanResetPassword;
-// ~ use LaravelCustomRelation\HasCustomRelations;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 /**
  * @OA\Schema()
  */
-class User extends Model implements 
-    MustVerifyEmailContract
-    , AuthenticatableContract
-    , AuthorizableContract
-    , CanResetPasswordContract
+class User extends Model implements
+    MustVerifyEmailContract,
+    AuthenticatableContract,
+    AuthorizableContract,
+    CanResetPasswordContract
 {
     use HasApiTokens, Notifiable, FusionPBXTableModel;
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
@@ -40,9 +42,14 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        'domain_uuid', 'username', 'password', 'salt',
-        'contact_uuid', 'user_enabled', 'add_user', 'add_date',
-        'user_email'
+        // 'domain_uuid',
+        'username',
+        'password',
+        // 'contact_uuid',
+        'user_enabled',
+        'add_user',
+        'add_date',
+        'user_email',
     ];
 
     /**
@@ -51,10 +58,12 @@ class User extends Model implements
      * @var array
      */
     protected $hidden = [
-        'password', 'salt', 'email',
+        'password',
+        'salt',
+        'email',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
-        'user_status', 
+        // 'user_status', 
     ];
 
     /**
@@ -111,12 +120,12 @@ class User extends Model implements
         );
     }
 
-    public function status()
+    public function status(): HasOne
     {
         return $this->hasOne(Status::class, 'user_uuid', 'user_uuid');
     }
 
-    public function domain()
+    public function domain(): HasOne
     {
         return $this->hasOne(Domain::class, 'domain_uuid', 'domain_uuid');
     }
@@ -126,7 +135,7 @@ class User extends Model implements
      *
      * @return Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function permissions()
+    public function permissions(): HasManyThrough
     {
         // Do not delete the comments below
 
@@ -187,32 +196,32 @@ class User extends Model implements
 
     public function getDomainAdmins()
     {
-      // ~ $admins = User::where([
+        // ~ $admins = User::where([
         $admins = User::where([
-                  'domain_uuid' => $this->domain_uuid,
-                  'user_enabled' => 'true'
-                //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
-                ])
-                // ->where('user_enabled', '!=', 'true')
-                ->whereHas('permissions', function($query) {
+            'domain_uuid' => $this->domain_uuid,
+            'user_enabled' => 'true'
+            //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
+        ])
+            // ->where('user_enabled', '!=', 'true')
+            ->whereHas('permissions', function ($query) {
 
-                  $query->whereIn('permission_name', ['user_add', 'user_edit']);
-                })->with(['emails']);
+                $query->whereIn('permission_name', ['user_add', 'user_edit']);
+            })->with(['emails']);
 
         return $admins;
     }
 
-    public function emails()
+    public function emails(): HasMany
     {
         return $this->hasMany(Contact_email::class, 'contact_uuid', 'contact_uuid');
     }
 
-    public function pushtokens()
+    public function pushtokens(): HasMany
     {
         return $this->hasMany(Pushtoken::class, 'user_uuid', 'user_uuid');
     }
 
-    public function extensions()
+    public function extensions(): BelongsToMany
     {
         return $this->belongsToMany(Extension::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
     }
@@ -230,20 +239,17 @@ class User extends Model implements
 
     public function findForPassport(array $data)
     {
-      $user = $this->where($data)->first();
-      return $user;
+        $user = $this->where($data)->first();
+        return $user;
     }
 
     public function validateForPassportPasswordGrant($password)
     {
-      if (md5($this->salt.$password) == $this->password)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+        if (md5($this->salt . $password) == $this->password) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // /**

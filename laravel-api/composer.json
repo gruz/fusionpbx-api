@@ -23,7 +23,11 @@
         "phpunit/phpunit": "^9.5",
         "barryvdh/laravel-ide-helper": "^2.9",
         "barryvdh/laravel-debugbar": "^3.5",
-        "kint-php/kint": "^3.3"
+        "kint-php/kint": "^3.3",
+        "nunomaduro/collision": "^5.3",
+        "filp/whoops": "^2.9",
+        "beyondcode/laravel-dump-server": "^1.7",
+        "mockery/mockery": "^1.4"
     },
     "autoload": {
         "psr-4": {

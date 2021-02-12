@@ -1,6 +1,8 @@
 <?php
 
-$router->get('/', [\Infrastructure\Api\Controllers\DefaultApiController::class, 'index']);
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', [\Infrastructure\Api\Controllers\DefaultApiController::class, 'index']);
 
 // ~ Route::post(['middleware' => 'auth:api'], function() {
     // ~ Route::resource('users', 'User\UserController');
