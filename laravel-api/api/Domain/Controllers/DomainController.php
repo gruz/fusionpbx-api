@@ -27,22 +27,22 @@ class DomainController extends Controller
     /**
      * Create a domain
      *
-     *`TODO Finish description`
-     * # Domain Settings and User Settings
+     * # General notes
      *
-     * When creating a domain you must provide at least one
+     * When creating a domain you must provide at least one admin user (`is_admin` option in `users->user` object ).
      *
-     * You can pass here domain and user settings overriding default ones setup for FPBX.
+     * All admins will be emailed to confirm domain creation.
      *
-     * See [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see
-     * available settings
+     * # Domain settings
+     *
+     * You can override default domain settings
+     *
+     * See [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings)
      * and [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)
      * to understand how override works.
      *
-     * So to override a setting (e.g. set another UI language), your domain setting object should look like:
-     * ```json
-     * {}
-     * ```
+     * Check examples as well.
+     *
     @OA\Post(
         tags={"Domain"},
         path="/domain/signup",
