@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Api\User\Testing\Unit;
 
 use Infrastructure\Testing\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,7 +43,7 @@ class ExampleTest extends TestCase
                 'title' => 'FusionPBX API',
             ]);
 
-        // $this->assertTrue($response['title']);
+        $this->assertTrue($response['title']);
 
         // $response
         //     ->assertStatus(201)

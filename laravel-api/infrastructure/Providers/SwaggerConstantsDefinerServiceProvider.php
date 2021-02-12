@@ -19,13 +19,15 @@ class SwaggerConstantsDefinerServiceProvider extends ServiceProvider
         $this->registerConstantsForSwaggerProcessor();
     }
 
-    private function registerConstantsForSwaggerProcessor() {
+    private function registerConstantsForSwaggerProcessor()
+    {
         static $isSecondRun = false;
 
         if ($isSecondRun) {
             return;
         }
         $isSecondRun = true;
+
         if (config('app.debug')) {
             $data = \Api\Settings\Models\Default_setting::get();
         } else {
@@ -53,7 +55,7 @@ class SwaggerConstantsDefinerServiceProvider extends ServiceProvider
         foreach ($categories as $settingCategory => $settings) {
             $settings = $settings->toArray();
 
-            define('FPBX_DEFAULT_SETTINGS_' . $settingCategory, array_column($settings, 'default_setting_subcategory') );
+            define('FPBX_DEFAULT_SETTINGS_' . $settingCategory, array_column($settings, 'default_setting_subcategory'));
             define('FPBX_DEFAULT_SETTINGS_' . $settingCategory . '_FIELD_TYPES', array_column($settings, 'default_setting_name'));
         }
     }
