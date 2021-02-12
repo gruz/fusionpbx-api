@@ -16,6 +16,16 @@ class SwaggerConstantsDefinerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->registerConstantsForSwaggerProcessor();
+    }
+
+    private function registerConstantsForSwaggerProcessor() {
+        static $isSecondRun = false;
+
+        if ($isSecondRun) {
+            return;
+        }
+        $isSecondRun = true;
         if (config('app.debug')) {
             $data = \Api\Settings\Models\Default_setting::get();
         } else {
