@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-96-g77d8141"
+        "version": "0.0.8-97-gc66298a"
     },
     "paths": {
         "/domain/signup": {
@@ -14,7 +14,7 @@
                     "Domain"
                 ],
                 "summary": "Create a domain",
-                "description": "`TODO Finish description`\n# Domain Settings and User Settings\n\nWhen creating a domain you must provide at least one\n\nYou can pass here domain and user settings overriding default ones setup for FPBX.\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings) to see\navailable settings\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nSo to override a setting (e.g. set another UI language), your domain setting object should look like:\n```json\n{}\n```",
+                "description": "# General notes\n\nWhen creating a domain you must provide at least one admin user (`is_admin` option in `users->user` object ).\n\nAll admins will be emailed to confirm domain creation.\n\n# Domain settings\n\nYou can override default domain settings\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings)\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nCheck examples as well.",
                 "operationId": "Api_Domain_Controllers_DomainController::signup",
                 "requestBody": {
                     "description": "Domain information",
@@ -1345,7 +1345,7 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true,
-                        "example": "2021-02-11 02:54:08"
+                        "example": "2021-02-12 06:47:12"
                     }
                 }
             },

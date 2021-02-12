@@ -7,3 +7,4 @@ Homestead.json
 .DS_Store
 /storage/*.key
 /resources/certs/*
+.phpunit.result.cache
