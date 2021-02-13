@@ -4,6 +4,7 @@ namespace Api\User\Models;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
+use Api\Domain\Models\Domain;
 
 class Contact_email extends Model
 {

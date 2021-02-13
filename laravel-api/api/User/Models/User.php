@@ -42,14 +42,16 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        // 'domain_uuid',
+        'domain_uuid',
         'username',
         'password',
-        // 'contact_uuid',
+        'contact_uuid',
         'user_enabled',
         'add_user',
         'add_date',
         'user_email',
+        'salt',
+        'user_status'
     ];
 
     /**
@@ -63,7 +65,7 @@ class User extends Model implements
         'email',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
-        // 'user_status', 
+        'user_status', 
     ];
 
     /**
@@ -196,17 +198,17 @@ class User extends Model implements
 
     public function getDomainAdmins()
     {
-        // ~ $admins = User::where([
+      // ~ $admins = User::where([
         $admins = User::where([
-            'domain_uuid' => $this->domain_uuid,
-            'user_enabled' => 'true'
-            //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
-        ])
-            // ->where('user_enabled', '!=', 'true')
-            ->whereHas('permissions', function ($query) {
+                  'domain_uuid' => $this->domain_uuid,
+                  'user_enabled' => 'true'
+                //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
+                ])
+                // ->where('user_enabled', '!=', 'true')
+                ->whereHas('permissions', function ($query) {
 
-                $query->whereIn('permission_name', ['user_add', 'user_edit']);
-            })->with(['emails']);
+                  $query->whereIn('permission_name', ['user_add', 'user_edit']);
+                })->with(['emails']);
 
         return $admins;
     }
