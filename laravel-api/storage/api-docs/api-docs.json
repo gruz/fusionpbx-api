@@ -5,9 +5,51 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-101-g068168a"
+        "version": "0.0.8-111-g49455e3"
     },
     "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "Default"
+                ],
+                "description": "Get application name and version",
+                "operationId": "Infrastructure\\Api\\Controllers\\DefaultApiController::index",
+                "responses": {
+                    "200": {
+                        "description": "Application name and version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "title": {
+                                            "description": "APP_NAME variable",
+                                            "type": "string"
+                                        },
+                                        "version": {
+                                            "description": "Git tag version",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "examples": [
+                                    {
+                                        "example": "Asdsads",
+                                        "summary": "App info",
+                                        "value": {
+                                            "title": "FusionPBX API",
+                                            "version": "0.0.8-62-g192d97b"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
         "/domain/signup": {
             "post": {
                 "tags": [
@@ -15,7 +57,7 @@
                 ],
                 "summary": "Create a domain",
                 "description": "# General notes\n\nWhen creating a domain you must provide at least one admin user (`is_admin` option in `users->user` object ).\n\nAll admins will be emailed to confirm domain creation.\n\n# Domain settings\n\nYou can override default domain settings\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings)\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nCheck examples as well.",
-                "operationId": "Api_Domain_Controllers_DomainController::signup",
+                "operationId": "Api\\Domain\\Controllers\\DomainController::signup",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
@@ -183,7 +225,7 @@
                 ],
                 "summary": "Get all extensions in domain",
                 "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
-                "operationId": "Api_Extension_Controllers_ExtensionController::getAll",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::getAll",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -224,7 +266,7 @@
                     "Extension"
                 ],
                 "summary": "Get extension by ID",
-                "operationId": "Api_Extension_Controllers_ExtensionController::getById",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::getById",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -269,7 +311,7 @@
                 ],
                 "summary": "Extension create",
                 "description": "Creates an extension and attaches it to a user (optionally)",
-                "operationId": "Api_Extension_Controllers_ExtensionController::create",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::create",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -352,7 +394,7 @@
                     "Extension"
                 ],
                 "summary": "Updates an extension",
-                "operationId": "Api_Extension_Controllers_ExtensionController::update",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::update",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -400,7 +442,7 @@
                     "Extension"
                 ],
                 "summary": "Delets an extension",
-                "operationId": "Api_Extension_Controllers_ExtensionController::delete",
+                "operationId": "Api\\Extension\\Controllers\\ExtensionController::delete",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -433,7 +475,7 @@
                 ],
                 "summary": "Get user list in domain",
                 "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
-                "operationId": "Api_User_Controllers_UserController::getAll",
+                "operationId": "Api\\User\\Controllers\\UserController::getAll",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -479,7 +521,7 @@
                     "User"
                 ],
                 "summary": "Get user info by ID",
-                "operationId": "Api_User_Controllers_UserController::getById",
+                "operationId": "Api\\User\\Controllers\\UserController::getById",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/user_uuid"
@@ -508,7 +550,7 @@
                     "User"
                 ],
                 "summary": "Update oneself or another user if having enoght permissions",
-                "operationId": "Api_User_Controllers_UserController::update",
+                "operationId": "Api\\User\\Controllers\\UserController::update",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/user_uuid"
@@ -551,7 +593,7 @@
                 ],
                 "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition`",
                 "description": "Not implemented yet",
-                "operationId": "Api_User_Controllers_UserController::delete",
+                "operationId": "Api\\User\\Controllers\\UserController::delete",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/user_uuid"
@@ -573,7 +615,7 @@
                     "User"
                 ],
                 "summary": "Gets currently logged in user info",
-                "operationId": "Api_User_Controllers_UserController::getMe",
+                "operationId": "Api\\User\\Controllers\\UserController::getMe",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -606,7 +648,7 @@
                     "User"
                 ],
                 "summary": "Creates a user inside a domain",
-                "operationId": "Api_User_Controllers_UserController::create",
+                "operationId": "Api\\User\\Controllers\\UserController::create",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -652,7 +694,7 @@
                     "User"
                 ],
                 "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
-                "operationId": "Api_User_Controllers_UserController::activate",
+                "operationId": "Api\\User\\Controllers\\UserController::activate",
                 "parameters": [
                     {
                         "name": "hash",
@@ -683,7 +725,7 @@
                 ],
                 "summary": "User signup",
                 "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
-                "operationId": "Api_User_Controllers_UserController::signup",
+                "operationId": "Api\\User\\Controllers\\UserController::signup",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -748,46 +790,150 @@
                 }
             }
         },
-        "/": {
-            "get": {
+        "/forgot-password": {
+            "post": {
                 "tags": [
-                    "Default"
+                    "User"
                 ],
-                "description": "Get application name and version",
-                "operationId": "Infrastructure_Api_Controllers_DefaultApiController::index",
-                "responses": {
-                    "200": {
-                        "description": "Application name and version",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "title": {
-                                            "description": "APP_NAME variable",
-                                            "type": "string"
-                                        },
-                                        "version": {
-                                            "description": "Git tag version",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                },
-                                "examples": [
-                                    {
-                                        "example": "Asdsads",
-                                        "summary": "App info",
-                                        "value": {
-                                            "title": "FusionPBX API",
-                                            "version": "0.0.8-62-g192d97b"
-                                        }
+                "summary": "User forgot password",
+                "operationId": "Api\\User\\Controllers\\UserController::forgotPassword",
+                "requestBody": {
+                    "description": "User information to reset his password",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserForgotPasswordSchema"
+                            },
+                            "examples": {
+                                "Request email with link basic example": {
+                                    "summary": "Request email with link basic example",
+                                    "value": {
+                                        "user_email": "your_user@email.com",
+                                        "domain_name": "jimmie.biz"
                                     }
-                                ]
+                                }
                             }
                         }
                     }
                 },
-                "security": []
+                "responses": {
+                    "200": {
+                        "description": "Password resent link response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserCreateSchema"
+                                },
+                                "examples": {
+                                    "Password resent link basic example1": {
+                                        "username": "user_Destany.Windler",
+                                        "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error - empty email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "description": "User forgot password",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "description": "User forgot password",
+                                                        "type": "string",
+                                                        "example": "422"
+                                                    },
+                                                    "code": {
+                                                        "description": "User forgot password",
+                                                        "type": "number",
+                                                        "example": 0
+                                                    },
+                                                    "title": {
+                                                        "description": "User forgot password",
+                                                        "type": "string",
+                                                        "example": "Validation error"
+                                                    },
+                                                    "detail": {
+                                                        "description": "User forgot password",
+                                                        "type": "string",
+                                                        "example": "The user email is required."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "example": [
+                                                {
+                                                    "status": "422",
+                                                    "code": 0,
+                                                    "title": "Validation error",
+                                                    "detail": "The user email is required."
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/update-password": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User reset password after form submission",
+                "operationId": "Api\\User\\Controllers\\UserController::updatePassword",
+                "requestBody": {
+                    "description": "Update user new password request",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdatePasswordSchema"
+                            },
+                            "examples": {
+                                "Set new user password basic example": {
+                                    "summary": "Set new user password basic example",
+                                    "value": {
+                                        "token": "0e07a67a80460d08b72fa6e88703586668455d70afef08e51ef8ce3bdf9fe8a8",
+                                        "password": "my_secure_password",
+                                        "password_confirmation": "my_secure_password",
+                                        "user_email": "your_user@email.com"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update user password response",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "success": "User password has been successfully set"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error - ..."
+                    },
+                    "400": {
+                        "description": "Could not ..."
+                    }
+                }
             }
         }
     },
@@ -873,15 +1019,6 @@
                     "domain_parent_uuid": {
                         "description": "Parent domain id",
                         "nullable": true
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
                     }
                 },
                 "type": "object"
@@ -912,8 +1049,8 @@
                                     "cidr",
                                     "country",
                                     "bridge",
-                                    "time_format",
-                                    "paging"
+                                    "paging",
+                                    "time_format"
                                 ],
                                 "example": "language"
                             },
@@ -947,8 +1084,8 @@
                             "array",
                             "code",
                             "text",
-                            "text",
-                            "numeric"
+                            "numeric",
+                            "text"
                         ],
                         "example": "code"
                     },
@@ -956,31 +1093,6 @@
                         "description": "Setting field type",
                         "type": "string",
                         "example": "uk-ua"
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_setting_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "app_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_setting_order": {
-                        "type": "number"
-                    },
-                    "domain_setting_enabled": {
-                        "type": "boolean",
-                        "default": true
-                    },
-                    "domain_setting_description": {
-                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1024,371 +1136,11 @@
                     }
                 ]
             },
-            "Extension": {
-                "properties": {
-                    "extension_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "extension": {
-                        "type": "string"
-                    },
-                    "number_alias": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "type": "string",
-                        "writeOnly": true
-                    },
-                    "accountcode": {
-                        "type": "string"
-                    },
-                    "effective_caller_id_name": {
-                        "type": "string"
-                    },
-                    "effective_caller_id_number": {
-                        "type": "string"
-                    },
-                    "outbound_caller_id_name": {
-                        "type": "string"
-                    },
-                    "outbound_caller_id_number": {
-                        "type": "string"
-                    },
-                    "emergency_caller_id_name": {
-                        "type": "string"
-                    },
-                    "emergency_caller_id_number": {
-                        "type": "string"
-                    },
-                    "directory_first_name": {
-                        "type": "string"
-                    },
-                    "directory_last_name": {
-                        "type": "string"
-                    },
-                    "directory_visible": {
-                        "type": "string",
-                        "default": "true"
-                    },
-                    "directory_exten_visible": {
-                        "type": "string",
-                        "default": "true"
-                    },
-                    "limit_max": {
-                        "type": "string",
-                        "default": 5
-                    },
-                    "limit_destination": {
-                        "type": "string",
-                        "default": "error/user_busy"
-                    },
-                    "missed_call_app": {
-                        "type": "string"
-                    },
-                    "missed_call_data": {
-                        "type": "string"
-                    },
-                    "user_context": {
-                        "type": "string"
-                    },
-                    "toll_allow": {
-                        "type": "string"
-                    },
-                    "call_timeout": {
-                        "type": "number",
-                        "default": 30
-                    },
-                    "call_group": {
-                        "type": "string"
-                    },
-                    "call_screen_enabled": {
-                        "type": "string",
-                        "default": "false"
-                    },
-                    "user_record": {
-                        "type": "string"
-                    },
-                    "hold_music": {
-                        "type": "string",
-                        "default": "local_stream://default"
-                    },
-                    "auth_acl": {
-                        "type": "string"
-                    },
-                    "cidr": {
-                        "type": "string"
-                    },
-                    "sip_force_contact": {
-                        "type": "string"
-                    },
-                    "nibble_account": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "sip_force_expires": {
-                        "type": "number",
-                        "default": null
-                    },
-                    "mwi_account": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "sip_bypass_media": {
-                        "type": "string"
-                    },
-                    "unique_id": {
-                        "type": "number",
-                        "default": null
-                    },
-                    "dial_string": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "dial_user": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "dial_domain": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "do_not_disturb": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_all_destination": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_all_enabled": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_busy_destination": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_busy_enabled": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_no_answer_destination": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_no_answer_enabled": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_user_not_registered_destination": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "forward_user_not_registered_enabled": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "follow_me_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "default": null
-                    },
-                    "forward_caller_id_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "default": null
-                    },
-                    "follow_me_enabled": {
-                        "type": "string"
-                    },
-                    "follow_me_destinations": {
-                        "type": "string"
-                    },
-                    "enabled": {
-                        "type": "string",
-                        "default": "true"
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "absolute_codec_string": {
-                        "type": "string",
-                        "default": null
-                    },
-                    "force_ping": {
-                        "type": "string"
-                    }
-                }
-            },
+            "Extension": {},
             "UserController": {},
-            "Contact": {
-                "properties": {
-                    "contact_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "contact_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "contact_type": {
-                        "type": "string"
-                    },
-                    "contact_organization": {
-                        "type": "string"
-                    },
-                    "contact_name_prefix": {
-                        "type": "string"
-                    },
-                    "contact_name_given": {
-                        "type": "string"
-                    },
-                    "contact_name_middle": {
-                        "type": "string"
-                    },
-                    "contact_name_family": {
-                        "type": "string"
-                    },
-                    "contact_name_suffix": {
-                        "type": "string"
-                    },
-                    "contact_nickname": {
-                        "type": "string"
-                    },
-                    "contact_title": {
-                        "type": "string"
-                    },
-                    "contact_role": {
-                        "type": "string"
-                    },
-                    "contact_category": {
-                        "type": "string"
-                    },
-                    "contact_url": {
-                        "type": "string"
-                    },
-                    "contact_time_zone": {
-                        "type": "string"
-                    },
-                    "contact_note": {
-                        "type": "string"
-                    },
-                    "last_mod_date": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "last_mod_user": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                }
-            },
-            "User": {
-                "properties": {
-                    "user_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "type": "string",
-                        "writeOnly": true
-                    },
-                    "user_email": {
-                        "type": "string"
-                    },
-                    "contact_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "user_status": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "api_key": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "user_enabled": {
-                        "type": "string"
-                    },
-                    "add_user": {
-                        "type": "string"
-                    },
-                    "add_date": {
-                        "type": "string"
-                    },
-                    "email_verified_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true,
-                        "example": "2021-02-12 09:50:46"
-                    }
-                }
-            },
-            "User_setting": {
-                "properties": {
-                    "user_setting_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "user_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "user_setting_category": {
-                        "type": "string"
-                    },
-                    "user_setting_subcategory": {
-                        "type": "string"
-                    },
-                    "user_setting_name": {
-                        "type": "string"
-                    },
-                    "user_setting_value": {
-                        "type": "string"
-                    },
-                    "user_setting_order": {
-                        "type": "number"
-                    },
-                    "user_setting_enabled": {
-                        "type": "boolean"
-                    },
-                    "user_setting_description": {
-                        "type": "string"
-                    }
-                }
-            },
+            "Contact": {},
+            "User": {},
+            "User_setting": {},
             "user_includes": {
                 "type": "array",
                 "items": {
@@ -1459,102 +1211,70 @@
                     }
                 ]
             },
-            "Voicemail": {
-                "properties": {
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
+            "UserUpdatePasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "token": {
+                                "description": "Unique token to enable user to reset password",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
                     },
-                    "voicemail_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
+                    {
+                        "properties": {
+                            "password": {
+                                "description": "New user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
                     },
-                    "voicemail_id": {
-                        "type": "string",
-                        "readOnly": true
+                    {
+                        "properties": {
+                            "password_confiramtion": {
+                                "description": "Confirmation of new user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
                     },
-                    "voicemail_password": {
-                        "type": "string"
-                    },
-                    "greeting_id": {
-                        "type": "number"
-                    },
-                    "voicemail_alternate_greet_id": {
-                        "type": "number"
-                    },
-                    "voicemail_mail_to": {
-                        "type": "string"
-                    },
-                    "voicemail_sms_to": {
-                        "type": "string"
-                    },
-                    "voicemail_transcription_enabled": {
-                        "type": "string"
-                    },
-                    "voicemail_attach_file": {
-                        "type": "string"
-                    },
-                    "voicemail_file": {
-                        "type": "string"
-                    },
-                    "voicemail_local_after_email": {
-                        "type": "string"
-                    },
-                    "voicemail_enabled": {
-                        "type": "string"
-                    },
-                    "voicemail_description": {
-                        "type": "string"
-                    },
-                    "voicemail_name_base64": {
-                        "type": "string"
-                    },
-                    "voicemail_tutorial": {
-                        "type": "string"
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
                     }
-                }
+                ]
             },
-            "Voicemail_option": {
-                "properties": {
-                    "voicemail_option_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
+            "UserForgotPasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
                     },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "voicemail_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "voicemail_option_digits": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "voicemail_option_action": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "voicemail_option_param": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "voicemail_option_order": {
-                        "type": "number",
-                        "readOnly": true
-                    },
-                    "voicemail_option_description": {
-                        "type": "string",
-                        "readOnly": true
+                    {
+                        "properties": {
+                            "domain_name": {
+                                "description": "Name of a domain to which user belongs",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
                     }
-                }
-            }
+                ]
+            },
+            "Voicemail": {},
+            "Voicemail_option": {}
         },
         "parameters": {
             "domain_uuid": {
