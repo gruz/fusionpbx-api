@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Infrastructure\Http\ApiRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Api\User\Exceptions\WrongSignupDataException;
+use Infrastructure\Rules\Hostname;
 
 class DomainSignupRequest extends ApiRequest
 {
@@ -18,6 +19,25 @@ class DomainSignupRequest extends ApiRequest
 
     public function rules()
     {
+        $is_subdomain = $this->request->get('is_subdomain');
+
+        $rules = [
+            'domain_name' => 'required',
+        ];
+
+        if (!$is_subdomain) {
+            $rules = [
+                'domain_name' => [
+                    'required',
+                    new Hostname(),
+                ],
+                'domain_namea' => [
+                    'required'
+                ],
+            ];
+        }
+
+        return $rules;
         $model = new Domain();
 
         $rules1 = $this->buildDefaultRules($model);

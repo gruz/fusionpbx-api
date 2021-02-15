@@ -27,7 +27,8 @@
         "nunomaduro/collision": "^5.3",
         "filp/whoops": "^2.9",
         "beyondcode/laravel-dump-server": "^1.7",
-        "mockery/mockery": "^1.4"
+        "mockery/mockery": "^1.4",
+        "fakerphp/faker": "^1.13"
     },
     "autoload": {
         "psr-4": {

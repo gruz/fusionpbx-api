@@ -11,6 +11,9 @@ use Illuminate\Console\Scheduling\Schedule;
 use Infrastructure\Console\Commands\SendPush;
 use Illuminate\Console\Application as Artisan;
 use Infrastructure\Console\Commands\MakeException;
+use Infrastructure\Console\Commands\BackUpDatabase;
+use Infrastructure\Console\Commands\RestoreDatabase;
+use Infrastructure\Console\Commands\MakeTestDatabase;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -24,6 +27,9 @@ class Kernel extends ConsoleKernel
         AddUserCommand::class,
         MakeException::class,
         SendPush::class,
+        BackUpDatabase::class,
+        RestoreDatabase::class,
+        MakeTestDatabase::class,
     ];
 
     /**
