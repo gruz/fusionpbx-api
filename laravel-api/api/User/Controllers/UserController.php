@@ -12,6 +12,7 @@ use Api\User\Requests\CreateUserRequest;
 use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
+use Api\User\Requests\UserUpdatePasswordRequest;
 
 /**
  * @OA\Schema()
@@ -472,13 +473,8 @@ class UserController extends Controller
      * @param UserResetPasswordRequest $request
      * @return void
      */
-    public function resetPassword(Request $request) 
+    public function resetPassword(UserResetPasswordRequest $request) 
     {
-        $request->validate([
-            'email' => 'required|email',
-            'token' => 'required',
-        ]);
-
         return view('user.password.reset-password', [
             'token' => $request->get('token'),
             'email' => $request->get('email')
@@ -536,14 +532,10 @@ class UserController extends Controller
         ),
     )
      */
-    public function updatePassword(UserResetPasswordRequest $request) 
+    public function updatePassword(UserUpdatePasswordRequest $request) 
     {
-        $request->validate([
-            // 'email' => 'required|email',
-            // 'token' => 'required',
-            'password' => 'required|min:8|confirmed',
-        ]);
         $email = $request->get('user_email');   
+
         return $this->response($this->passwordService->resetPassword($email));
     }
     

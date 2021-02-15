@@ -4,7 +4,7 @@ namespace Api\User\Requests;
 
 use Infrastructure\Http\ApiRequest;
 
-class UserForgotPasswordRequest extends ApiRequest
+class UserUpdatePasswordRequest extends ApiRequest
 {
     public function authorize()
     {
@@ -14,8 +14,9 @@ class UserForgotPasswordRequest extends ApiRequest
     public function rules()
     {
         return [
-            'domain_name'    => 'required',
-            'user_email' => 'required|email'
+            'user_email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:8|confirmed',
         ];
     }
    
