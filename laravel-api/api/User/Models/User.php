@@ -36,19 +36,19 @@ class User extends Model implements
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
     // ~ use HasCustomRelations;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'username',
-        'password',
-        'user_enabled',
-        'add_user',
-        'add_date',
-        'user_email',
-    ];
+    // /**
+    //  * The attributes that are mass assignable.
+    //  *
+    //  * @var array
+    //  */
+    // protected $fillable = [
+    //     'username',
+    //     'password',
+    //     'user_enabled',
+    //     'add_user',
+    //     'add_date',
+    //     'user_email',
+    // ];
 
     /**
      * The attributes that should be hidden for arrays.

@@ -65,8 +65,13 @@ class UserPasswordService
         Password::reset(
             $userCredentials,
             function ($user, $password) {
+
                 $data['salt'] = Uuid::generate();
                 $data['password'] = md5($data['salt'] . $password);
+
+                $user->password = $data['password'];
+                $user->salt = $data['salt'];
+                
                 $user->fill($data);
                 $user->save();
                 $user->setRememberToken(Str::random(60));
