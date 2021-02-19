@@ -42,16 +42,12 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
-        'domain_uuid',
         'username',
         'password',
-        'contact_uuid',
         'user_enabled',
         'add_user',
         'add_date',
         'user_email',
-        'salt',
-        'user_status'
     ];
 
     /**
@@ -66,6 +62,19 @@ class User extends Model implements
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
         'user_status', 
+    ];
+
+    /**
+     * The attributes that should not be assinable.
+     * Only explicit assigns in repository.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'domain_uuid',
+        'contact_uuid',
+        'salt',
+        'user_status',
     ];
 
     /**

@@ -12,20 +12,21 @@ class Contact extends Model
 {
     use Notifiable, FusionPBXTableModel;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'domain_uuid', 'contact_type', 'contact_nickname'
-    ];
+    // /**
+    //  * The attributes that are mass assignable.
+    //  *
+    //  * @var array
+    //  */
+    // protected $fillable = [
+    //     'domain_uuid', 'contact_type', 'contact_nickname'
+    // ];
+
     protected $guarded = [
-        // 'contact_uuid',
-        // 'domain_uuid',
+        'contact_uuid',
+        'domain_uuid',
         'contact_parent_uuid',
         'last_mod_date',
-        'last_mod_user',
+        'last_mod_user', // Contains username
     ];
 
     /**

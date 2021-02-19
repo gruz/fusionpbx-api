@@ -17,20 +17,26 @@ class ContactRepository extends Repository
         $model = $this->getModel();
 
         // ~ $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-
+        $model->domain_uuid = $data['domain_uuid'];
+        // $model->contact_parent_uuid = '';
+        
         $model->fill($data);
         $model->save();
 
         return $model;
     }
 
-    public function update(User $user, array $data)
+    public function update(Contact $contact, array $data)
     {
-        $user->fill($data);
+        $contact->fill($data);
+        
+        $contact->last_mod_date = date('now');
+        $contact->last_mod_user = $data['username']; // Current user that does update
+        // $contact->contact_parent_uuid = '';
 
-        $user->save();
+        $contact->save();
 
-        return $user;
+        return $contact;
     }
 
     public function setGroups(User $user, array $addGroups, array $removeGroups = [])

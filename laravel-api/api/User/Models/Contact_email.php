@@ -16,7 +16,11 @@ class Contact_email extends Model
      * @var array
      */
     protected $fillable = [
-        'domain_uuid', 'contact_uuid', 'email_primary', 'email_address', 'email_description'
+        // 'domain_uuid',
+        // 'contact_uuid',
+        'email_primary',
+        'email_address',
+        'email_description'
     ];
 
     /**
@@ -28,6 +32,14 @@ class Contact_email extends Model
         //'domain_uuid', 'contact_uuid',
     ];
 
+    /**
+     * 
+     */
+    protected $guarded = [
+        'domain_uuid',
+        'contact_uuid',
+    ];
+    
     public function domain()
     {
         return $this->belongsTo(Domain::class, 'v_domains', 'domain_uuid', 'domain_uuid');

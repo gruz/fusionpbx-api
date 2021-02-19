@@ -122,7 +122,7 @@ class UserService
     public function create($data)
     {
         $this->database->beginTransaction();
-
+        $domain = null;
         try {
             // If it's a team registration, we just create the first user in the domain.
             if ($data['isTeam']) {
@@ -185,7 +185,7 @@ class UserService
             // Finally create the user and hide an unneded field in the output
             $data['user_email'] = $data['email'];
             $user = $this->userRepository->create($data);
-
+            
             $user->makeHidden(['domain_uuid', 'contact_uuid']);
 
             // Get group name
@@ -198,6 +198,13 @@ class UserService
             // Set relations to later output it
             $contact->setRelation('contact_email', $contact_email);
             $user->setRelation('contact', $contact);
+
+            if (is_null($domain)) {
+                $domain = $this->domainRepository
+                               ->getWhere('domain_uuid', $data['domain_uuid'])
+                               ->first();
+            }
+            $user->setRelation('domain', $domain);
 
             // Create an extension
             $extension_number = $this->extensionRepository->getWhere('domain_uuid', $data['domain_uuid'])->max('extension');

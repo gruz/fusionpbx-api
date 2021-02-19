@@ -45,8 +45,16 @@ class UserRepository extends Repository
 
         // ~ 'domain_uuid',  'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
 
-        $user->fill($data);
 
+        $user->domain_uuid = $data['domain_uuid'];
+        $user->contact_uuid = $data['contact_uuid'];
+        $user->salt = $data['salt'];
+
+        if (!empty($data['user_status']) && !is_null($data['user_status'])) {
+            $user->user_status = $data['user_status'];
+        }
+
+        $user->fill($data);
         $user->save();
 
         return $user;
