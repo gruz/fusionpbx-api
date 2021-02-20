@@ -60,7 +60,7 @@ class RestoreDatabase extends Command
 
         if (!Storage::exists($path)) {
             logger()->error('restore exception', ['File not found . ', Storage::path($path)]);
-            $this->error('File not found '. Storage::path($path));
+            $this->error('File not found ' . Storage::path($path));
             return;
         }
 
@@ -74,7 +74,7 @@ class RestoreDatabase extends Command
                 \DB::statement('DROP SCHEMA public CASCADE');
                 \DB::statement('CREATE SCHEMA public');
             }
-    
+
             $cmd = sprintf(
                 'psql -U %s -h %s %s < %s',
                 config('database.connections.pgsql.username'),
@@ -83,7 +83,7 @@ class RestoreDatabase extends Command
                 Storage::path($path)
             );
 
-            $env = [ 'PGPASSWORD' => config('database.connections.pgsql.password')];
+            $env = ['PGPASSWORD' => config('database.connections.pgsql.password')];
 
 
             $this->process = Process::fromShellCommandline($cmd, null, $env);

@@ -1,7 +1,8 @@
 <?php
+
 namespace Api\User;
 
-    /**
+/**
     @OA\Parameter(
         name="user_uuid",
         in="path",
@@ -52,4 +53,4 @@ namespace Api\User;
         ),
     }),
 
-    */
+ */

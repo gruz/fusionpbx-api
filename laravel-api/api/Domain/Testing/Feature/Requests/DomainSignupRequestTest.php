@@ -34,10 +34,11 @@ class DomainSignupRequestTest extends TestCase
         $faker = Factory::create(Factory::DEFAULT_LOCALE);
 
         return [
-            'domain' => [
+            'request_should_fail_when_no_title_is_provided' => [
                 'passed' => true,
                 'data' => [
-                    'domain_name' => 'aaacom',
+                    'domain_name' => 'aaa.com',
+                    'domain_namea' => 'a',
                 ]
             ],
         ];
@@ -78,29 +79,14 @@ class DomainSignupRequestTest extends TestCase
      */
     public function validation_results_as_expected($shouldPass, $mockedRequestData)
     {
-        // try {
-            //code...
-            $this->assertEquals(
-                $shouldPass,
-                $this->validate($mockedRequestData)
-            );
-        // } catch (\Throwable $th) {
-        //     $errors = $this->validator->errors();
-        //     dd($errors);
-        //     echo '------------' . $th->getMessage();
-        //     // throw $th;
-        // }
+        $this->assertEquals(
+            $shouldPass,
+            $this->validate($mockedRequestData)
+        );
     }
 
     protected function validate($mockedRequestData)
     {
-        DB::select("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity 
-        WHERE pg_stat_activity.datname = 'originaldb' AND pid <> pg_backend_pid();");
-        DB::select("CREATE DATABASE fusionpbx_test WITH TEMPLATE fusionpbx;");
-        // DB::transaction(function () {
-            
-        // });
-
         try {
             $validator = $this->validator->make($mockedRequestData, $this->rules);
             if ($result = $validator->validate()) {
@@ -115,7 +101,7 @@ class DomainSignupRequestTest extends TestCase
                 // dd($key, $messages);
                 foreach ($messages as $message) {
                     // $this->assertEquals(false, true, $key . ' : ' . $message);
-                    fwrite(STDOUT, PHP_EOL . $key . ' : ' . $message . PHP_EOL);
+                    $this->writeLn($message, $key);
                 }
             }
 
@@ -128,5 +114,9 @@ class DomainSignupRequestTest extends TestCase
         return $this->validator
             ->make($mockedRequestData, $this->rules)
             ->passes();
+    }
+
+    private function writeLn($message, $key = '') {
+        fwrite(STDOUT, PHP_EOL . " \033[41m >> \033[1m" . $key . " \033[0m" . ' : ' . "\033[1m" . $message . "\033[0m" . PHP_EOL);
     }
 }

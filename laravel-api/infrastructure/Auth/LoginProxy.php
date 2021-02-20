@@ -28,11 +28,10 @@ class LoginProxy
     private $domainRepository;
 
     public function __construct(
-      Application $app,
-      UserRepository $userRepository,
-      DomainRepository $domainRepository
-    )
-    {
+        Application $app,
+        UserRepository $userRepository,
+        DomainRepository $domainRepository
+    ) {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
 
@@ -53,18 +52,16 @@ class LoginProxy
     {
         $domain = $this->domainRepository->getWhere('domain_name', $domain_name)->first();
 
-        if (empty($domain))
-        {
-          throw new InvalidCredentialsException(__('Wrong domain name or domain doesn\'t exists'));
+        if (empty($domain)) {
+            throw new InvalidCredentialsException(__('Wrong domain name or domain doesn\'t exists'));
         }
 
         $user = $this->userRepository->getWhereArray(['username' => $username, 'domain_uuid' => $domain->domain_uuid])->first();
 
         if (!is_null($user)) {
 
-            if ($user->user_enabled != 'true')
-            {
-              throw new UserDisabledException();
+            if ($user->user_enabled != 'true') {
+                throw new UserDisabledException();
             }
 
             return $this->proxy('password', [
@@ -101,19 +98,16 @@ class LoginProxy
     {
         $ret = [];
 
-        if (isset($data['user_uuid']))
-        {
-          $ret['user_uuid'] = $data['user_uuid'];
+        if (isset($data['user_uuid'])) {
+            $ret['user_uuid'] = $data['user_uuid'];
         }
 
-        if (isset($data['username']))
-        {
-          $ret['username'] = $data['username']['username'];
+        if (isset($data['username'])) {
+            $ret['username'] = $data['username']['username'];
         }
 
-        if (isset($data['domain_uuid']))
-        {
-          $ret['domain_uuid'] = $data['domain_uuid'];
+        if (isset($data['domain_uuid'])) {
+            $ret['domain_uuid'] = $data['domain_uuid'];
         }
 
         $data = array_merge($data, [

@@ -16,10 +16,9 @@ class UserRepository extends Repository
     public function create(array $data)
     {
         $user = $this->getModel();
-        if (empty($data['add_user']))
-        {
-          // TODO get real main user here
-          $data['add_user'] = 'admin';
+        if (empty($data['add_user'])) {
+            // TODO get real main user here
+            $data['add_user'] = 'admin';
         }
 
         // TODO. In FusionPBX it uses some format like Y-m-d H:i:s.uZ but directly in Postgre now() function.
@@ -38,7 +37,7 @@ class UserRepository extends Repository
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
 
         // ~ FusionPBX approach
-        $data['password'] = md5($data['salt'].$data['password']);
+        $data['password'] = md5($data['salt'] . $data['password']);
 
         // ~ TODO Improve logic here, remove hardcoded
         // ~ $data['user_enabled'] = 'true';
@@ -66,7 +65,7 @@ class UserRepository extends Repository
         $this->database->beginTransaction();
 
         try {
-          // TODO Check if Remove here works.
+            // TODO Check if Remove here works.
             if (count($removeGroups) > 0) {
                 $query = $this->database->table($user->groups()->getTable());
                 $query
