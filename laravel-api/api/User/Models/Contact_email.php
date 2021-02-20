@@ -10,18 +10,18 @@ class Contact_email extends Model
 {
     use Notifiable, FusionPBXTableModel;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
+    // /**
+    //  * The attributes that are mass assignable.
+    //  *
+    //  * @var array
+    //  */
+    // protected $fillable = [
         // 'domain_uuid',
         // 'contact_uuid',
-        'email_primary',
-        'email_address',
-        'email_description'
-    ];
+        // 'email_primary',
+        // 'email_address',
+        // 'email_description'
+    // ];
 
     /**
      * The attributes that should be hidden for arrays.
