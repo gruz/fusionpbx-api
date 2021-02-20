@@ -17,7 +17,8 @@
         "webpatser/laravel-uuid": "^4.0",
         "gruz/laravel-ratchet": "^8.0",
         "darkaonline/l5-swagger": "dev-master",
-        "doctrine/annotations": "^1.11"
+        "doctrine/annotations": "^1.11",
+        "laravel/tinker": "^2.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
