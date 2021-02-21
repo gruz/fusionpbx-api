@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-108-g6859d90"
+        "version": "0.0.8-109-g137ac5c"
     },
     "paths": {
         "/domain/signup": {
@@ -1328,24 +1328,23 @@
                         "type": "string",
                         "readOnly": true
                     },
-                    "api_key": {
+                    "user_enabled": {
                         "type": "string",
                         "readOnly": true
                     },
-                    "user_enabled": {
-                        "type": "string"
-                    },
                     "add_user": {
-                        "type": "string"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "add_date": {
-                        "type": "string"
+                        "type": "string",
+                        "readOnly": true
                     },
                     "email_verified_at": {
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true,
-                        "example": "2021-02-20 10:07:31"
+                        "example": "2021-02-21 03:37:37"
                     }
                 }
             },

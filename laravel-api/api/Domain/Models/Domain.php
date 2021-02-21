@@ -1,16 +1,19 @@
 <?php
 namespace Api\Domain\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use domain_settings;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @OA\Schema()
  */
 class Domain extends Model
 {
+    use HasFactory;
     use Notifiable, FusionPBXTableModel;
 
     /**
@@ -83,5 +86,10 @@ class Domain extends Model
     public function isAgent()
     {
         return $this->groups();
+    }
+
+    public function domain_settings() {
+        return $this->hasMany(Domain_setting::class,'domain_uuid');
+        // return $this->hasMany(Domain_setting::class,'domain_uuid' ,'domain_uuid');
     }
 }

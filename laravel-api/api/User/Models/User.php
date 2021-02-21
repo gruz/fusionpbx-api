@@ -20,6 +20,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @OA\Schema()
@@ -32,6 +33,7 @@ class User extends Model implements
 {
     use HasApiTokens, Notifiable, FusionPBXTableModel;
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
+    use HasFactory;
     // ~ use HasCustomRelations;
 
     /**
@@ -44,9 +46,9 @@ class User extends Model implements
         'username',
         'password',
         // 'contact_uuid',
-        'user_enabled',
-        'add_user',
-        'add_date',
+        // 'user_enabled',
+        // 'add_user',
+        // 'add_date',
         'user_email',
     ];
 
@@ -58,6 +60,7 @@ class User extends Model implements
     protected $hidden = [
         'password',
         'salt',
+        'api_key',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
         // 'user_status',

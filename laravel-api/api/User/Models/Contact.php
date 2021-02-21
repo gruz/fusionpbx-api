@@ -1,6 +1,7 @@
 <?php
 namespace Api\User\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
@@ -10,6 +11,7 @@ use Infrastructure\Traits\FusionPBXTableModel;
  */
 class Contact extends Model
 {
+    use HasFactory;
     use Notifiable, FusionPBXTableModel;
 
     /**

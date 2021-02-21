@@ -3,7 +3,7 @@
 namespace Api\Extension\Models;
 
 use Api\User\Models\User;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
  class Extension extends Model
 {
+    use HasFactory;
     use Notifiable, FusionPBXTableModel;
 
     protected $attributes = [
@@ -50,6 +51,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
     protected $guarded = [
         'extension_uuid',
         'domain_uuid',
+
+        'number_alias',
     ];
 
     // protected $fillable = [
@@ -113,6 +116,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
     protected $hidden = [
         'password',
         // ~ 'user_context',
+        'number_alias',
     ];
 
     public function users() : BelongsToMany

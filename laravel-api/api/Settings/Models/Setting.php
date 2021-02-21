@@ -2,12 +2,14 @@
 
 namespace Api\Settings\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
 
 class Setting extends Model
 {
+    use HasFactory;
     use Notifiable, FusionPBXTableModel;
 
     protected $fillable = [
