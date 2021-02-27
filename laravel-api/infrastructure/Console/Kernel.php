@@ -14,6 +14,7 @@ use Infrastructure\Console\Commands\MakeException;
 use Infrastructure\Console\Commands\BackUpDatabase;
 use Infrastructure\Console\Commands\RestoreDatabase;
 use Infrastructure\Console\Commands\MakeTestDatabase;
+use Infrastructure\SwaggerProcessors\LoadConstantsHelper;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -51,6 +52,11 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
+        new LoadConstantsHelper('/' . config('l5-swagger.defaults.routes.docs') . '/' . config('l5-swagger.documentations.default.paths.docs_json'));
+        $this->load(__DIR__.'/Commands');
+
+        require base_path('infrastructure/Console/routes.php');
+
         $config = config('optimus.components');
 
         foreach ($config['namespaces'] as $namespace => $path) {
@@ -59,7 +65,7 @@ class Kernel extends ConsoleKernel
             $paths = [];
 
             foreach ($subDirectories as $componentRoot) {
-                $component = substr($componentRoot, strrpos($componentRoot, DIRECTORY_SEPARATOR) + 1);
+                // $component = substr($componentRoot, strrpos($componentRoot, DIRECTORY_SEPARATOR) + 1);
 
                 $commandDirectory = sprintf('%s%sConsole', $componentRoot, DIRECTORY_SEPARATOR);
 

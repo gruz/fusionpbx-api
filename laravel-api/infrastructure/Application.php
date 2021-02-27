@@ -11,7 +11,7 @@ class Application extends \Illuminate\Foundation\Application
      */
     public function path($path = '')
     {
-        $this->useAppPath($this->basePath.DIRECTORY_SEPARATOR.'infrastructure');
+        $this->useAppPath($this->basePath . DIRECTORY_SEPARATOR . 'infrastructure');
         return parent::path($path);
     }
 }

@@ -12,7 +12,7 @@
 */
 
 $app = new \Infrastructure\Application(
-    realpath(__DIR__.'/../')
+    $_ENV['APP_BASE_PATH'] ?? realpath(__DIR__.'/../')
 );
 
 /*

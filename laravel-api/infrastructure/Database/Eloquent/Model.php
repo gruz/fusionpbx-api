@@ -75,7 +75,7 @@ abstract class Model extends BaseModel
             return $columns_info;
         };
 
-        if (config('app.debug')) {
+        if (config('fpbx.debug.swaggerProcessor')) {
             $data = $getData();
         } else {
             $data = Cache::remember(

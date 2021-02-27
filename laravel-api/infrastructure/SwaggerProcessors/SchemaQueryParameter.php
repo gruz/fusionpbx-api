@@ -16,6 +16,7 @@ use OpenApi\Annotations\Components;
 use OpenApi\Processors\OperationId;
 use OpenApi\Annotations\JsonContent;
 use OpenApi\Annotations\RequestBody;
+use Illuminate\Support\Facades\Storage;
 use Infrastructure\Database\Eloquent\Model;
 use OpenApi\Annotations\AbstractAnnotation;
 
@@ -30,6 +31,8 @@ class SchemaQueryParameter
 
     public function __invoke(Analysis $analysis)
     {
+        $this->registerRoutes($analysis);
+
         /**
          * @var Schema[]
          */
@@ -131,7 +134,7 @@ class SchemaQueryParameter
 
     protected function getModelFromSchema(Schema $schema)
     {
-        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
+        $modelClassName = $this->getClassName($schema);
         // d($modelClassName);
 
         if (!is_subclass_of($modelClassName, Model::class)) {
@@ -146,7 +149,8 @@ class SchemaQueryParameter
         return $model;
     }
 
-    private function makeOperationIdRedocCompatible(Analysis $analysis) {
+    private function makeOperationIdRedocCompatible(Analysis $analysis)
+    {
         $allOperations = $analysis->getAnnotationsOfType(Operation::class);
 
         foreach ($allOperations as $operation) {
@@ -158,15 +162,72 @@ class SchemaQueryParameter
                 $source = $context->class ?? $context->interface ?? $context->trait;
                 if ($source) {
                     if ($context->namespace) {
-                        $operation->operationId = $context->namespace.'\\'.$source.'::'.$context->method;
+                        $operation->operationId = $context->namespace . '\\' . $source . '::' . $context->method;
                         $operation->operationId = str_replace('\\', '_', $operation->operationId);
                     } else {
-                        $operation->operationId = $source.'::'.$context->method;
+                        $operation->operationId = $source . '::' . $context->method;
                     }
                 } else {
                     $operation->operationId = $context->method;
                 }
             }
-       }
+        }
+    }
+
+    private function registerRoutes(Analysis $analysis)
+    {
+        // dd($analysis, $analysis->openapi->paths);
+        $routes = [];
+        $paths = $analysis->openapi->paths;
+        // // d($paths[0], $paths[0]->_context->__get('parent')->method);
+        // d();
+        // dd('a');
+        $availableMethods = [
+            'get',
+            'put',
+            'post',
+            'delete',
+            'options',
+            'head',
+            'patch',
+        ];
+        foreach ($paths as $path) {
+            foreach ($availableMethods as $method) {
+                if ($path->$method !== UNDEFINED) {
+                    $action = $path->_context->__get('method');
+                    if (empty($action)) {
+
+                        $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
+                        // $path->description = 'NOT IMPLEMENTED YET';
+                        continue;
+                    }
+                    $controller = $this->getClassName($path);
+
+                    $auth = false;
+                    if ($path->$method->security !== UNDEFINED) {
+                        foreach ($path->$method->security as $security) {
+                            if (array_key_exists('bearer_auth', $security)) {
+                                $auth = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    $routes[$path->path] = [
+                        'auth' => $auth,
+                        'method' => $method,
+                        'controller' => $controller,
+                        'action' => $action,
+                    ];
+                }
+            }
+        }
+
+        Storage::disk('local')->put('swagger/routes.json', json_encode($routes, JSON_PRETTY_PRINT));
+        // dd($routes);
+    }
+
+    private function getClassName(AbstractAnnotation $annotation) {
+        return $annotation->_context->__get('namespace') . '\\' . $annotation->_context->class;
     }
 }

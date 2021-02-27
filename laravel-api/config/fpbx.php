@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'debug' => [
+        'swaggerProcessor' => false,
+    ],
     'default' => [
         'contact_type' => 'customer',
     ],

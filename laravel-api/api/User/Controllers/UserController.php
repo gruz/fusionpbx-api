@@ -59,6 +59,7 @@ class UserController extends Controller
                 @OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
             ),
         ),
+        security={{"bearer_auth": {}}}
     )
     */
     public function getAll()
