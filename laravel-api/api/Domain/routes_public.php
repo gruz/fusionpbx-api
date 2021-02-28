@@ -1,6 +1,6 @@
 <?php
 
-// use Api\Domain\Controllers\DomainController;
+use Api\Domain\Controllers\DomainController;
 
 // Route::post('/domain/signup', [DomainController::class, 'signup']);
 

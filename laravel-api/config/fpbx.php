@@ -5,7 +5,13 @@ return [
         'swaggerProcessor' => false,
     ],
     'default' => [
-        'contact_type' => 'customer',
+        'contact' => [
+            'contact_type' => 'customer',
+        ],
+        'domain' => [
+            'mothership_domain' => env('MOTHERSHIP_DOMAIN', 'localhost'),
+            'new_is_subdomain' => env('NEW_IS_SUBDOMAIN', false),
+        ]
     ],
     'domain' => [
         'enabled' => env('FPBX_DOMAIN_ENABLED', true),

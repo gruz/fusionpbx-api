@@ -16,6 +16,18 @@ class FrontController extends BaseController
 {
     public function test(Request $request)
     {
+        if (!config('app.debug')) {
+            return;
+        }
+
+        $this->testRequestFactoryService = app(\Infrastructure\Services\TestRequestFactoryService::class);
+        $data = $this->testRequestFactoryService->makeDomainRequest([
+            'adminIsPresent' => false,
+        ]);
+        // \Illuminate\Support\Arr::set($data, 'users.0.user_email', 'a@a.com');
+        // \Illuminate\Support\Arr::set($data, 'users.1.user_email', 'a@a.com');
+
+        dd($data);
         $settings = Setting::factory(2)->make()->toArray();
 
         $is_admin = new Sequence(
@@ -56,9 +68,7 @@ class FrontController extends BaseController
         ]);
         // $model = Setting::factory()->make();
         dd($model->toArray());
-        if (!config('app.debug')) {
-            return;
-        }
+
 
         \DB::enableQueryLog(); // Enable query log
         $items = \Api\Extension\Models\Extension::with('extension_users.permissions')

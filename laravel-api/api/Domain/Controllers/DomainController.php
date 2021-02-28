@@ -2,6 +2,7 @@
 
 namespace Api\Domain\Controllers;
 
+use Illuminate\Support\Arr;
 use OpenApi\Annotations as OA;
 use Api\User\Services\TeamService;
 use Api\User\Services\UserService;
@@ -67,7 +68,7 @@ class DomainController extends Controller
             ),
         ),
         @OA\Response(
-            response=200,
+            response=201,
             description="Domain created response",
             @OA\JsonContent(
                 allOf={
@@ -101,12 +102,11 @@ class DomainController extends Controller
      */
     public function signup(DomainSignupRequest $request)
     {
-        $data = $request->get('team', []);
+        $data = $request->all();
 
-        $data['isTeam'] = true;
-        $data['user_enabled'] = 'true';
-        $data['group_name'] = env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME');
+        // $data['group_name'] = env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME');
 
+        return $this->response([], 201);
         return $this->response($this->teamService->create($data), 201);
     }
 
@@ -161,7 +161,7 @@ class DomainController extends Controller
             ),
         ),
     )
-     */
+    */
 
     /**
      * Delete a domain `TODO descendant delete with users, extensions etc`

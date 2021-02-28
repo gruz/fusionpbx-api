@@ -38,7 +38,7 @@ class ContactFactory extends Factory
         ];
         // d($contactTypes[array_rand($contactTypes)]);
         $contactType = Arr::random($contactTypes);
-        $contactType = Arr::random([ $contactType, config('fpbx.default.contact_type')]);
+        $contactType = Arr::random([ $contactType, config('fpbx.default.contact.contact_type')]);
 
         $return = [
             "contact_type" => $contactType,

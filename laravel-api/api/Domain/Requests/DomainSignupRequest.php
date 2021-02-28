@@ -3,12 +3,13 @@
 namespace Api\Domain\Requests;
 
 use Api\User\Models\User;
-use Api\Domain\Models\Domain;
 use Illuminate\Support\Arr;
+use Api\Domain\Models\Domain;
+use Infrastructure\Rules\Hostname;
 use Infrastructure\Http\ApiRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Api\User\Exceptions\WrongSignupDataException;
-use Infrastructure\Rules\Hostname;
+use Infrastructure\Rules\ArrayAtLeastOneAccepted;
 
 class DomainSignupRequest extends ApiRequest
 {
@@ -21,55 +22,28 @@ class DomainSignupRequest extends ApiRequest
     {
         $is_subdomain = $this->request->get('is_subdomain');
 
+        \Illuminate\Support\Facades\Validator::extend('check_array', function ($attribute, $value, $parameters, $validator) {
+            return count(array_filter($value, function($var) use ($parameters) { return ( $var && $var >= $parameters[0]); }));
+        });
+
         $rules = [
-            'domain_name' => 'required',
+            'domain_name' => [ 
+                'required', 
+                'unique:Api\\Domain\\Models\\Domain,domain_name'
+            ],
+            'users' => 'required',
+            'users.*.username' => 'required|distinct',
+            'users.*.user_email' => 'required|distinct:ignore_case|email',
+            'users.*.password' => 'required|min:6|max:25',
+            // 'users.*.is_admin' => 'present|required|min:6|max:25',
+            'users' => new ArrayAtLeastOneAccepted('is_admin'),
         ];
 
         if (!$is_subdomain) {
-            $rules = [
-                'domain_name' => [
-                    'required',
-                    new Hostname(),
-                ],
-                'domain_namea' => [
-                    'required'
-                ],
-            ];
+            $rules['domain_name'][] = new Hostname();
         }
 
         return $rules;
-        $model = new Domain();
-
-        $rules1 = $this->buildDefaultRules($model);
-        $model = new User();
-        $rules2 = $this->buildDefaultRules($model);
-
-        if (empty(request('team')) && empty(request('user'))) {
-            return [
-                'team|user' => 'array|required',
-            ];
-        }
-
-        return [
-            // ~ 'team' => 'array|required',
-            'team.email' => 'required_with:team|email',
-            'team.domain_name' => 'required_with:team|string',
-            'team.password' => 'required_with:team|string|min:8',
-            'team.username' => 'required_with:team',
-
-            'user.email' => 'required_with:user|email',
-            'user.domain_name' => 'required_with:user|string',
-            'user.password' => 'required_with:user|string|min:8',
-            'user.username' => 'required_with:user',
-        ];
-    }
-
-    public function attributes()
-    {
-        return [
-            'team|user' => __('team or user data'),
-            'team.email' => 'team admin\'s email'
-        ];
     }
 
     /**
@@ -111,5 +85,26 @@ class DomainSignupRequest extends ApiRequest
     protected function failedValidation(Validator $validator)
     {
         throw new WrongSignupDataException($validator->errors()->toJson());
+    }
+
+    public function all($keys = null)
+    {
+        $data = parent::all($keys);
+
+        $is_subdomain = Arr::get($data, 'is_subdomain', config('fpbx.default.domain.new_is_subdomain'));
+
+        if ($is_subdomain) {
+            $data['domain_name'] = $data['domain_name'] . '.' . config('fpbx.default.domain.mothership_domain');
+        }
+
+        if (!config('fpbx.domain.enabled')) {
+            $data['domain_enabled'] = false;
+        } else {
+            $data['domain_enabled'] = Arr::get($data, 'domain_enabled', config('fpbx.domain.enabled'));
+        }
+
+        $data['domain_description'] =  Arr::get($data, 'domain_description', config('fpbx.domain.description') );
+
+        return $data;
     }
 }

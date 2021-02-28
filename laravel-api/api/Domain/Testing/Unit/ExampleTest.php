@@ -3,7 +3,9 @@
 namespace Api\Domain\Testing\Unit;
 
 use Infrastructure\Testing\TestCase;
+use Api\Domain\Requests\DomainSignupRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Infrastructure\Services\TestRequestFactoryService;
 
 class ExampleTest extends TestCase
 {

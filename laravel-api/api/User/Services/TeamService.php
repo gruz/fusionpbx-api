@@ -94,25 +94,25 @@ class TeamService
         $this->database->beginTransaction();
 
         try {
-            if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
-            {
-              throw new DomainExistsException();
-            }
+            // if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
+            // {
+            //   throw new DomainExistsException();
+            // }
 
             $users = collect(Arr::get($data, 'users'));
 
-            if ($users->empty()) {
-                throw new DomainCreationNoUsersException();
-            }
+            // if ($users->empty()) {
+            //     throw new DomainCreationNoUsersException();
+            // }
 
-            $adminUserPresent = $users->where('is_admin')->count();
+            // $adminUserPresent = $users->where('is_admin')->count();
 
-            if (!$adminUserPresent) {
-                throw new DomainCreationNoAdminUserException();
-            }
+            // if (!$adminUserPresent) {
+            //     throw new DomainCreationNoAdminUserException();
+            // }
 
-            $data['domain_enabled'] =  config('fpbx.domain.enabled');
-            $data['domain_description'] =  config('fpbx.domain.description');
+            // $data['domain_enabled'] =  config('fpbx.domain.enabled');
+
 
             $domain = $this->domainService->create($data);
 

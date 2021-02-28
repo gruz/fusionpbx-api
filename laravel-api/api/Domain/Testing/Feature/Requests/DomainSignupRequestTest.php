@@ -3,21 +3,16 @@
 namespace Api\Domain\Testing\Feature\Requests;
 
 use Faker\Factory;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Validator;
 use Infrastructure\Testing\TestCase;
 use Api\Domain\Requests\DomainSignupRequest;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Symfony\Component\Console\Output\TrimmedBufferOutput;
+use Infrastructure\Testing\TestRequestTrait;
+use Infrastructure\Services\TestRequestFactoryService;
 
 class DomainSignupRequestTest extends TestCase
 {
-
-    /** @var DomainSignupRequest */
-    private $rules;
-
-    /** @var Validator */
-    private $validator;
+    use TestRequestTrait;
 
     public function setUp(): void
     {
@@ -30,93 +25,125 @@ class DomainSignupRequestTest extends TestCase
 
     public function validationProvider()
     {
+        // $this->withoutExceptionHandling();
         /* WithFaker trait doesn't work in the dataProvider */
         $faker = Factory::create(Factory::DEFAULT_LOCALE);
 
-        return [
-            'request_should_fail_when_no_title_is_provided' => [
+        $this->createApplication();
+        /**
+         * @var TestRequestFactoryService
+         */
+        $testRequestFactoryService = app(TestRequestFactoryService::class);
+        $data = $testRequestFactoryService->makeDomainRequest();
+
+        $return = [
+            'fail_when_domain_exists' => [
+                'passed' => false,
+                'data' => array_merge($data, ['domain_name' => '192.168.0.160']),
+            ],
+            'pass_when_domain_not_exists' => [
                 'passed' => true,
-                'data' => [
-                    'domain_name' => 'aaa.com',
-                    'domain_namea' => 'a',
-                ]
+                'data' => $data
+            ],
+            'fail_if_not_a_valid_domain' => [
+                'passed' => false,
+                'data' => array_merge($data, ['domain_name' => $faker->sentence]),
+            ],
+            'fail_if_nousers' => [
+                'passed' => false,
+                'data' => array_merge($data, ['users' => []]),
             ],
         ];
-        [
-            'request_should_fail_when_no_title_is_provided' => [
-                'passed' => false,
-                'data' => [
-                    'price' => $faker->numberBetween(1, 50)
-                ]
-            ],
-            'request_should_fail_when_no_price_is_provided' => [
-                'passed' => false,
-                'data' => [
-                    'title' => $faker->word()
-                ]
-            ],
-            'request_should_fail_when_title_has_more_than_50_characters' => [
-                'passed' => false,
-                'data' => [
-                    'title' => $faker->paragraph()
-                ]
-            ],
-            'request_should_pass_when_data_is_provided' => [
-                'passed' => true,
-                'data' => [
-                    'title' => $faker->word(),
-                    'price' => $faker->numberBetween(1, 50)
-                ]
-            ]
+
+        $dataModified = $data;
+        Arr::set($dataModified, 'users.0.user_email', 'a@a.com');
+        Arr::set($dataModified, 'users.1.user_email', 'a@a.com');
+        $return['fail_if_same_mails'] = [
+            'passed' => false,
+            'data' => $dataModified,
         ];
+
+        $dataModified = $data;
+        Arr::forget($dataModified, 'users.0.user_email');
+        Arr::set($dataModified, 'users.1.user_email', '');
+        $return['fail_no_user_email'] = [
+            'passed' => false,
+            'data' => $dataModified,
+        ];
+
+        $data = $testRequestFactoryService->makeDomainRequest([
+            'adminIsPresent' => false,
+        ]);
+
+        $return['fail_if_no_admin_among_user'] = [
+            'passed' => false,
+            'data' => $data,
+        ];
+
+        return $return;
     }
 
-    /**
-     * @test
-     * @dataProvider validationProvider
-     * @param bool $shouldPass
-     * @param array $mockedRequestData
-     */
-    public function validation_results_as_expected($shouldPass, $mockedRequestData)
-    {
-        $this->assertEquals(
-            $shouldPass,
-            $this->validate($mockedRequestData)
-        );
+    public function testRequestDomainNameIsTransformedIntoSubdomain() {
+
+        $this->withoutExceptionHandling();
+        /**
+         * @var TestRequestFactoryService
+         */
+        $testRequestFactoryService = app(TestRequestFactoryService::class);
+
+        $data = $testRequestFactoryService->makeDomainRequest();
+
+        $data['domain_name'] = 'site.com';
+        config(['fpbx.default.domain.mothership_domain' => 'default.com']);
+
+        $data['is_subdomain'] = false;
+        $request = new DomainSignupRequest($data);
+        $this->assertEquals('site.com', $request->all()['domain_name']);
+
+        $data['is_subdomain'] = true;
+        $request = new DomainSignupRequest($data);
+        $this->assertEquals('site.com.default.com', $request->all()['domain_name']);
+
+        unset($data['is_subdomain']);
+
+        config(['fpbx.default.domain.new_is_subdomain' => false]);
+        $request = new DomainSignupRequest($data);
+        $this->assertEquals('site.com', $request->all()['domain_name']);
+
+        config(['fpbx.default.domain.new_is_subdomain' => true]);
+        $this->assertEquals('site.com.default.com', $request->all()['domain_name']);
     }
 
-    protected function validate($mockedRequestData)
-    {
-        try {
-            $validator = $this->validator->make($mockedRequestData, $this->rules);
-            if ($result = $validator->validate()) {
-                return true;
-            }
+    public function testDomainIsEnabledOrDisabledDependingOnRequestAndConfig() {
 
-            //code...
-        } catch (\Throwable $th) {
-            $errors = $validator->errors();
-            foreach ($errors->getMessages() as $key => $messages) {
-                // echo $messages;
-                // dd($key, $messages);
-                foreach ($messages as $message) {
-                    // $this->assertEquals(false, true, $key . ' : ' . $message);
-                    $this->writeLn($message, $key);
-                }
-            }
+        $this->withoutExceptionHandling();
+        /**
+         * @var TestRequestFactoryService
+         */
+        $testRequestFactoryService = app(TestRequestFactoryService::class);
+
+        $data = $testRequestFactoryService->makeDomainRequest();
+
+        config(['fpbx.domain.enabled' => true]);
+
+        $data['domain_enabled'] = true;
+        $request = new DomainSignupRequest($data);
+        $this->assertEquals(true, $request->all()['domain_enabled']);
+
+        $data['domain_enabled'] = false;
+        $request = new DomainSignupRequest($data);
+        $this->assertEquals(false, $request->all()['domain_enabled']);
 
 
-            // dd($errors->all());
-            return false;
-        }
-        // dd($errors->all());
-        exit;
-        return $this->validator
-            ->make($mockedRequestData, $this->rules)
-            ->passes();
+        config(['fpbx.domain.enabled' => false]);
+
+        $data['domain_enabled'] = true;
+        $request = new DomainSignupRequest($data);
+        $this->assertEquals(false, $request->all()['domain_enabled']);
+
+        $data['domain_enabled'] = false;
+        $request = new DomainSignupRequest($data);
+        $this->assertEquals(false, $request->all()['domain_enabled']);
     }
 
-    private function writeLn($message, $key = '') {
-        fwrite(STDOUT, PHP_EOL . " \033[41m >> \033[1m" . $key . " \033[0m" . ' : ' . "\033[1m" . $message . "\033[0m" . PHP_EOL);
-    }
 }

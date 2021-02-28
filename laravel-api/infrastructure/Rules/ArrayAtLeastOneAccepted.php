@@ -2,18 +2,22 @@
 
 namespace Infrastructure\Rules;
 
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Rule;
 
-class Hostname implements Rule
+class ArrayAtLeastOneAccepted implements Rule
 {
+    private $field;
+
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($field)
     {
         //
+        $this->field = $field;
     }
 
     /**
@@ -25,11 +29,15 @@ class Hostname implements Rule
      */
     public function passes($attribute, $value)
     {
-        if (filter_var($value, FILTER_VALIDATE_IP)) {
-            return true;
+        // d($attribute, $value);
+        foreach ($value as $arrayElement) {
+            $result = Arr::get($arrayElement, $this->field, false);
+            if ($result) {
+                return true;
+            }
         }
 
-        return preg_match("/^(?!\-)(?:[a-zA-Z\d\-]{0,62}[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/", $value);
+        return false;
     }
 
     /**
@@ -39,6 +47,6 @@ class Hostname implements Rule
      */
     public function message()
     {
-        return 'Should be a valid hostname.';
+        return 'At least one `' . $this->field . '` to be true is needed';
     }
 }
