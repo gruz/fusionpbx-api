@@ -53,4 +53,40 @@ namespace Api\User;
         ),
     }),
 
- */
+    @OA\Schema(schema="UserUpdatePasswordSchema", allOf={
+        @OA\Schema(@OA\Property(
+            property="token",
+            type="string",
+            description="Unique token to enable user to reset password" 
+        )),
+        @OA\Schema(@OA\Property(
+            property="password",
+            type="string",
+            description="New user password to set" 
+        )),
+        @OA\Schema(@OA\Property(
+            property="password_confiramtion",
+            type="string",
+            description="Confirmation of new user password to set" 
+        )),
+        @OA\Schema(@OA\Property(
+            property="user_email",
+            type="string",
+            description="User email" 
+        )),
+    }),
+
+    @OA\Schema(schema="UserForgotPasswordSchema", allOf={
+        @OA\Schema(@OA\Property(
+            property="user_email",
+            type="string",
+            description="User email" 
+        )),
+        @OA\Schema(@OA\Property(
+            property="domain_name",
+            type="string",
+            description="Name of a domain to which user belongs" 
+        )),
+    }),
+
+    */

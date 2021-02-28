@@ -17,6 +17,9 @@ class Contact_emailRepository extends Repository
         $model = $this->getModel();
 
         // ~ $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+        
+        $model->domain_uuid = $data['domain_uuid'];
+        $model->contact_uuid = $data['contact_uuid'];
 
         $model->fill($data);
         $model->save();

@@ -17,6 +17,8 @@ class ExtensionRepository extends Repository
     {
         $extension = $this->getModel();
 
+        $extension->domain_uuid = $data['domain_uuid'];
+
         $extension->fill($data);
         $extension->save();
 

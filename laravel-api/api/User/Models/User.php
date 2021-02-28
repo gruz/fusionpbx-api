@@ -5,6 +5,8 @@ namespace Api\User\Models;
 use Api\Status\Models\Status;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
+use Api\Domain\Models\Domain;
+use Doctrine\DBAL\Driver\IBMDB2\Result;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
@@ -36,21 +38,19 @@ class User extends Model implements
     use HasFactory;
     // ~ use HasCustomRelations;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        // 'domain_uuid',
-        'username',
-        'password',
-        // 'contact_uuid',
-        // 'user_enabled',
-        // 'add_user',
-        // 'add_date',
-        'user_email',
-    ];
+    // /**
+    //  * The attributes that are mass assignable.
+    //  *
+    //  * @var array
+    //  */
+    // protected $fillable = [
+    //     'username',
+    //     'password',
+    //     'user_enabled',
+    //     'add_user',
+    //     'add_date',
+    //     'user_email',
+    // ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -59,14 +59,80 @@ class User extends Model implements
      */
     protected $hidden = [
         'password',
+        // 'contact_uuid',
+        // 'user_enabled',
+        // 'add_user',
+        // 'add_date',
+        'user_email',
+        'salt',
+        'email',
+        // We here hide native user_status field, as we use another more wide table for user status
+        // and not sure how the field is intended to be used in the native FusionPBX
+        'user_status', 
+    ];
+
+    /**
+     * The attributes that should not be assinable.
+     * Only explicit assigns in repository.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        'domain_uuid',
+        'contact_uuid',
         'salt',
         'api_key',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
         // 'user_status',
+        'user_status',
     ];
 
-    public function groups(): BelongsToMany
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'email'
+    ];
+
+    /**
+     * _fuda_: 
+     *      Gets user email. Needs to be appended 
+     *      cause fusionpbx has named user email attribute as "user_email"
+     *      what is not obviouse for reset password broker which expects email property
+     *      to reset the password.
+     *
+     * @return string User email address
+     */
+    public function getEmailAttribute()
+    {
+        return $this->attributes['user_email'];
+    }
+
+    /**
+     * _fuda_: 
+     *      Sets user email address. 
+     *      See public function getEmailAttribute() to get why.
+     */
+    public function setEmailAttribute($email)
+    {
+        $this->attributes['user_email'] = $email;
+    }
+
+    // /**
+    //  * _fuda_: 
+    //  *      Sets user email address for fusionpbx 
+    //  *      and appended email attribute for password reset. 
+    //  */
+    // public function setUserEmailAttribute($email) 
+    // {
+    //     $this->attributes['user_email'] = $email;
+    //     $this->setEmailAttribute($email);
+    // }
+
+    public function groups()
     {
         return $this->belongsToMany(
             Group::class,
@@ -152,17 +218,17 @@ class User extends Model implements
 
     public function getDomainAdmins()
     {
-        // ~ $admins = User::where([
+      // ~ $admins = User::where([
         $admins = User::where([
-            'domain_uuid' => $this->domain_uuid,
-            'user_enabled' => 'true'
-            //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
-        ])
-            // ->where('user_enabled', '!=', 'true')
-            ->whereHas('permissions', function ($query) {
+                  'domain_uuid' => $this->domain_uuid,
+                  'user_enabled' => 'true'
+                //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
+                ])
+                // ->where('user_enabled', '!=', 'true')
+                ->whereHas('permissions', function ($query) {
 
-                $query->whereIn('permission_name', ['user_add', 'user_edit']);
-            })->with(['emails']);
+                  $query->whereIn('permission_name', ['user_add', 'user_edit']);
+                })->with(['emails']);
 
         return $admins;
     }
@@ -207,4 +273,27 @@ class User extends Model implements
             return false;
         }
     }
+
+    // /**
+    //  * Method to return the email for password reset
+    //  *     
+    //  * @return string Returns the User Email Address
+    //  */
+    // public function getEmailForPasswordReset() {
+
+    //     $email = $this->getAttribute('user_email');
+    //     if (!$email) {
+    //         // 1 Throught Contacts 
+    //         $email = $this->emails()
+    //                       ->get()
+    //                       ->first()
+    //                       ->toArray()['email_address'];
+
+    //         // 2 Throught model property
+    //         // $email = $this->user_email; 
+    //     }
+        
+    //     return $email;
+    // }
+    
 }

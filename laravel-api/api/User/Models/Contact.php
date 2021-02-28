@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
-
+use Api\User\Models\Contact_email as ContactEmail;
 /**
  * @OA\Schema()
  */
@@ -20,14 +20,15 @@ class Contact extends Model
      * @var array
      */
     // protected $fillable = [
-        // 'domain_uuid', 'contact_type', 'contact_nickname'
+    //     'domain_uuid', 'contact_type', 'contact_nickname'
     // ];
+
     protected $guarded = [
         'contact_uuid',
         'domain_uuid',
         'contact_parent_uuid',
         'last_mod_date',
-        'last_mod_user',
+        'last_mod_user', // Contains username
     ];
 
     /**

@@ -36,4 +36,5 @@ class LoginController extends Controller
 
         return $this->response(null, 204);
     }
+    
 }

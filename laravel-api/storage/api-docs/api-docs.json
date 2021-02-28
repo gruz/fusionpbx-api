@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-112-g4c0448d"
+        "version": "0.0.8-113-gcbee14f"
     },
     "paths": {
         "/domain/signup": {
@@ -43,7 +43,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Domain created response",
                         "content": {
                             "application/json": {
@@ -753,6 +753,152 @@
                 }
             }
         },
+        "/forgot-password": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User forgot password",
+                "operationId": "Api_User_Controllers_UserController::forgotPassword",
+                "requestBody": {
+                    "description": "User information to reset his password",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserForgotPasswordSchema"
+                            },
+                            "examples": {
+                                "Request email with link basic example": {
+                                    "summary": "Request email with link basic example",
+                                    "value": {
+                                        "user_email": "your_user@email.com",
+                                        "domain_name": "jimmie.biz"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password resent link response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserCreateSchema"
+                                },
+                                "examples": {
+                                    "Password resent link basic example1": {
+                                        "username": "user_Destany.Windler",
+                                        "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error - empty email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "description": "User forgot password",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "description": "User forgot password",
+                                                        "type": "string",
+                                                        "example": "422"
+                                                    },
+                                                    "code": {
+                                                        "description": "User forgot password",
+                                                        "type": "number",
+                                                        "example": 0
+                                                    },
+                                                    "title": {
+                                                        "description": "User forgot password",
+                                                        "type": "string",
+                                                        "example": "Validation error"
+                                                    },
+                                                    "detail": {
+                                                        "description": "User forgot password",
+                                                        "type": "string",
+                                                        "example": "The user email is required."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "example": [
+                                                {
+                                                    "status": "422",
+                                                    "code": 0,
+                                                    "title": "Validation error",
+                                                    "detail": "The user email is required."
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/update-password": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User reset password after form submission",
+                "operationId": "Api_User_Controllers_UserController::updatePassword",
+                "requestBody": {
+                    "description": "Update user new password request",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdatePasswordSchema"
+                            },
+                            "examples": {
+                                "Set new user password basic example": {
+                                    "summary": "Set new user password basic example",
+                                    "value": {
+                                        "token": "0e07a67a80460d08b72fa6e88703586668455d70afef08e51ef8ce3bdf9fe8a8",
+                                        "password": "my_secure_password",
+                                        "password_confirmation": "my_secure_password",
+                                        "user_email": "your_user@email.com"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update user password response",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "success": "User password has been successfully set"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error - ..."
+                    },
+                    "400": {
+                        "description": "Could not ..."
+                    }
+                }
+            }
+        },
         "/": {
             "get": {
                 "tags": [
@@ -1195,6 +1341,68 @@
                                         }
                                     ]
                                 }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserUpdatePasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "token": {
+                                "description": "Unique token to enable user to reset password",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "password": {
+                                "description": "New user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "password_confiramtion": {
+                                "description": "Confirmation of new user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserForgotPasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "domain_name": {
+                                "description": "Name of a domain to which user belongs",
+                                "type": "string"
                             }
                         },
                         "type": "object"

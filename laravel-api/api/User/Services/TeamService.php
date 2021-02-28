@@ -177,6 +177,10 @@ class TeamService
             $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
 
             $user = $this->userService->create($data);
+            
+
+            // fuda :
+            //      Maybe set relation ? (User->Domain)
 
             // ~ $data = array_merge($data, $user);
             /*

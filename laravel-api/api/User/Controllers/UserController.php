@@ -3,12 +3,16 @@
 namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
-use Infrastructure\Http\Controller;
-use Api\User\Requests\CreateUserRequest;
-use Api\User\Requests\SignupRequest;
-use Api\User\Requests\UserGroupsRequest;
 use Api\User\Services\UserService;
 use Api\User\Services\TeamService;
+use Infrastructure\Http\Controller;
+use Api\User\Requests\SignupRequest;
+use Api\User\Services\UserPasswordService;
+use Api\User\Requests\CreateUserRequest;
+use Api\User\Requests\UserGroupsRequest;
+use Api\User\Requests\UserResetPasswordRequest;
+use Api\User\Requests\UserForgotPasswordRequest;
+use Api\User\Requests\UserUpdatePasswordRequest;
 
 /**
  * @OA\Schema()
@@ -25,10 +29,18 @@ class UserController extends Controller
      */
     private $teamService;
 
-    public function __construct(UserService $userService, TeamService $teamService)
+    /**
+    * @var UserPasswordService
+    */
+    private $passwordService;
+
+    public function __construct(UserService $userService,
+                                TeamService $teamService,
+                                UserPasswordService $passwordService)
     {
         $this->userService = $userService;
         $this->teamService = $teamService;
+        $this->passwordService = $passwordService;
     }
 
     /**
@@ -368,4 +380,164 @@ class UserController extends Controller
 
         return $this->response($this->teamService->createDeperacted($data), 201);
     }
+
+    /**
+     * User forgot password 
+     *
+     * @param UserForgotPasswordRequest $request
+     * @return void
+     * 
+    @OA\Post(
+        tags={"User"},
+        path="/forgot-password",
+        @OA\RequestBody(
+            description="User information to reset his password",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserForgotPasswordSchema",
+                examples={
+                    "Request email with link basic example": {
+                        "summary": "Request email with link basic example",
+                        "value": {
+                            "user_email":"your_user@email.com",
+                            "domain_name":"jimmie.biz"
+                        }
+                    },
+                }
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="Password resent link response",
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                examples={
+                    "Password resent link basic example1": {
+                        "username": "user_Destany.Windler",
+                        "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=422,
+            description="Validation error - empty email",
+            @OA\JsonContent(
+                type="object",
+                @OA\Property(
+                    property="errors",
+                    type="array",
+                    example={{
+                        "status": "422",
+                        "code": 0,
+                        "title": "Validation error",
+                        "detail": "The user email is required."
+                    }},
+                    @OA\Items(
+                        @OA\Property(
+                          property="status",
+                          type="string",
+                          example="422"
+                       ),
+                       @OA\Property(
+                          property="code",
+                          type="number",
+                          example=0
+                       ),
+                       @OA\Property(
+                          property="title",
+                          type="string",
+                          example="Validation error"
+                       ),
+                       @OA\Property(
+                          property="detail",
+                          type="string",
+                          example="The user email is required."
+                       ),
+                    ),
+                )
+            ),
+        ),
+    )
+     */
+    public function forgotPassword(UserForgotPasswordRequest $request) 
+    {
+        $email = $request->get('user_email');   
+        $domain_name = $request->get('domain_name');
+
+        return $this->response($this->passwordService->generateResetToken($email, $domain_name));
+    }
+
+    /**
+     * User get reset password action
+     * 
+     * @param UserResetPasswordRequest $request
+     * @return void
+     */
+    public function resetPassword(UserResetPasswordRequest $request) 
+    {
+        return view('user.password.reset-password', [
+            'token' => $request->get('token'),
+            'email' => $request->get('email')
+        ]);
+    }
+
+    /**
+     * User reset password after form submission
+     *
+     * @param UserResetPasswordRequest $request
+     * @return void
+     * 
+     @OA\Post(
+        tags={"User"},
+        path="/update-password",
+        @OA\RequestBody(
+            description="Update user new password request",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserUpdatePasswordSchema",
+                examples={
+                    "Set new user password basic example": {
+                        "summary": "Set new user password basic example",
+                        "value": {
+                            "token":"0e07a67a80460d08b72fa6e88703586668455d70afef08e51ef8ce3bdf9fe8a8",
+                            "password":"my_secure_password",
+                            "password_confirmation":"my_secure_password",
+                            "user_email":"your_user@email.com"
+                        }
+                    },
+                }
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="Update user password response",
+            @OA\JsonContent(
+                @OA\Schema(@OA\Property(
+                    property="success",
+                    type="string",
+                    description="Update user password response" 
+                )),
+                example={
+                    "success": "User password has been successfully set",
+                }
+            ),
+        ),
+        @OA\Response(
+            response=422,
+            description="Validation error - ...",
+        ),
+        @OA\Response(
+            response=400,
+            description="Could not ...",
+        ),
+    )
+     */
+    public function updatePassword(UserUpdatePasswordRequest $request) 
+    {
+        $email = $request->get('user_email');   
+
+        return $this->response($this->passwordService->resetPassword($email));
+    }
+    
 }

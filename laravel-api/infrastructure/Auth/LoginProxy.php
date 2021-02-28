@@ -6,8 +6,14 @@ use Illuminate\Foundation\Application;
 use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
 use Api\Domain\Repositories\DomainRepository;
-
 use Api\User\Exceptions\UserDisabledException;
+use Illuminate\Events\Dispatcher;
+use Infrastructure\Events\ResetPasswordLinkWasRequested;
+use Webpatser\Uuid\Uuid;
+
+
+
+use Exception;
 
 class LoginProxy
 {
@@ -27,13 +33,18 @@ class LoginProxy
 
     private $domainRepository;
 
+    private $dispatcher;
+
     public function __construct(
-        Application $app,
-        UserRepository $userRepository,
-        DomainRepository $domainRepository
-    ) {
+      Application $app,
+      UserRepository $userRepository,
+      DomainRepository $domainRepository,
+      Dispatcher $dispatcher
+    )
+    {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
+        $this->dispatcher = $dispatcher;
 
         $this->apiConsumer = $app->make('apiconsumer');
         $this->auth = $app->make('auth');
@@ -162,4 +173,5 @@ class LoginProxy
 
         $this->cookie->queue($this->cookie->forget(self::REFRESH_TOKEN));
     }
+
 }
