@@ -1,2 +1,3 @@
 docker/laravel-docker/db_data
 .idea/
+.vscode/settings.json
