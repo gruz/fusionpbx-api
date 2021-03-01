@@ -1,0 +1,1 @@
+<h1>{{ __('Password has been successfully reset') }}</h1>

@@ -61,7 +61,8 @@ class User extends Model implements
         'email',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
-        'user_status', 
+        'user_status',  // user_status can be ["Available", "Available (On Demand)",
+                        // "On Break", "Do Not Disturb", "Logged Out"] - user can edit it
     ];
 
     /**
@@ -284,5 +285,12 @@ class User extends Model implements
         
     //     return $email;
     // }
-    
+
+    /**
+     * Method to get user domain name to which he relates.
+     */
+    public function getDomainNameForPasswordReset()
+    {
+         return $this->domain()->first()->getAttribute('domain_name');
+    }
 }

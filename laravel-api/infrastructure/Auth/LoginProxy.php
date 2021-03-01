@@ -33,18 +33,15 @@ class LoginProxy
 
     private $domainRepository;
 
-    private $dispatcher;
 
     public function __construct(
       Application $app,
       UserRepository $userRepository,
-      DomainRepository $domainRepository,
-      Dispatcher $dispatcher
+      DomainRepository $domainRepository
     )
     {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
-        $this->dispatcher = $dispatcher;
 
         $this->apiConsumer = $app->make('apiconsumer');
         $this->auth = $app->make('auth');

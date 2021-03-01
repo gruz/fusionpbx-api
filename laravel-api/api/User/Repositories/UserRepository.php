@@ -32,13 +32,15 @@ class UserRepository extends Repository
         // ~ In FusionPBX the function is defined in fusionpbx/resources/functions.php
         // ~ $salt = uuid();
         // We will use a webpatser/laravel-uuid
-        $data['salt'] = Uuid::generate();
+        $passwordData = \encrypt_password_with_salt($data['password']);
+        // $data['salt'] = Uuid::generate();
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
 
         // ~ FusionPBX approach
-        $data['password'] = md5($data['salt'].$data['password']);
+        // $data['password'] = md5($data['salt'].$data['password']);
+        $data['password'] = $passwordData['password'];
 
         // ~ TODO Improve logic here, remove hardcoded
         // ~ $data['user_enabled'] = 'true';
@@ -48,7 +50,7 @@ class UserRepository extends Repository
 
         $user->domain_uuid = $data['domain_uuid'];
         $user->contact_uuid = $data['contact_uuid'];
-        $user->salt = $data['salt'];
+        $user->salt = $passwordData['salt'];
 
         if (!empty($data['user_status']) && !is_null($data['user_status'])) {
             $user->user_status = $data['user_status'];

@@ -13,6 +13,7 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
 use Api\User\Requests\UserUpdatePasswordRequest;
+use Illuminate\Support\Facades\Password;
 
 /**
  * @OA\Schema()
@@ -461,10 +462,9 @@ class UserController extends Controller
      */
     public function forgotPassword(UserForgotPasswordRequest $request) 
     {
-        $email = $request->get('user_email');   
-        $domain_name = $request->get('domain_name');
+        $data = $request->only('user_email', 'domain_name');
 
-        return $this->response($this->passwordService->generateResetToken($email, $domain_name));
+        return $this->response($this->passwordService->generateResetToken($data));
     }
 
     /**
@@ -477,14 +477,15 @@ class UserController extends Controller
     {
         return view('user.password.reset-password', [
             'token' => $request->get('token'),
-            'email' => $request->get('email')
+            'email' => $request->get('email'),
+            'domain_name' => $request->get('domain_name')
         ]);
     }
 
     /**
      * User reset password after form submission
      *
-     * @param UserResetPasswordRequest $request
+     * @param UserUpdatePasswordRequest $request
      * @return void
      * 
      @OA\Post(
@@ -534,9 +535,16 @@ class UserController extends Controller
      */
     public function updatePassword(UserUpdatePasswordRequest $request) 
     {
-        $email = $request->get('user_email');   
+        $data = $request->only(
+            'user_email','password', 'password_confirmation', 'token', 'domain_name'
+        );  
 
-        return $this->response($this->passwordService->resetPassword($email));
+        $status = $this->passwordService->resetPassword($data);
+
+        if ($status === null)
+            return back()->withErrors(['password' => __('Invalid data')]);
+
+        return view('user.password.reset-success');
     }
     
 }

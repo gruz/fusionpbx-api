@@ -110,6 +110,18 @@ class UserService
         // ~ return $user;
     }
 
+
+    public function getByAttributes(array $attributes)
+    {
+        $data = null;
+
+        if (!empty($attributes) && !is_null($attributes)) {
+            $data = $this->userRepository->getWhereArray($attributes)->first();
+        } 
+
+        return $data;
+    }
+
     /**
      * Creates a user
      *
