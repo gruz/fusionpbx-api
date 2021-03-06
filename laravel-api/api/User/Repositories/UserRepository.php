@@ -32,8 +32,8 @@ class UserRepository extends Repository
         // ~ In FusionPBX the function is defined in fusionpbx/resources/functions.php
         // ~ $salt = uuid();
         // We will use a webpatser/laravel-uuid
-        $passwordData = \encrypt_password_with_salt($data['password']);
         // $data['salt'] = Uuid::generate();
+        $passwordData = \encrypt_password_with_salt($data['password']);
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);

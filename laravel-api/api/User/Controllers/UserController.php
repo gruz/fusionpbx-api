@@ -13,7 +13,6 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
 use Api\User\Requests\UserUpdatePasswordRequest;
-use Illuminate\Support\Facades\Password;
 
 /**
  * @OA\Schema()

@@ -6,9 +6,9 @@ use Str;
 use InvalidArgumentException;
 use Api\User\Repositories\DatabaseTokenRepository;
 use Api\User\Password\PasswordBroker as PasswordBroker;
-use Illuminate\Contracts\Auth\PasswordBrokerFactory as FactoryContract;
+use Illuminate\Auth\Passwords\PasswordBrokerManager as OriginalPasswordBrokerManager;
 
-class PasswordBrokerManager extends \Illuminate\Auth\Passwords\PasswordBrokerManager implements FactoryContract
+class PasswordBrokerManager extends OriginalPasswordBrokerManager
 {
     protected function resolve($name)
     {

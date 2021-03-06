@@ -36,7 +36,10 @@
             "Api\\": "api/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "api/User/Helpers/user_helpers.php"
+        ]
     },
     "scripts": {
         "post-root-package-install": [
