@@ -37,15 +37,8 @@ $app->singleton(
 );
 
 $app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class, 
-    function ($app) {
-        $passwordWebRoutes = ['password.update', 'password.reset'];
-        if(in_array(Route::currentRouteName(), $passwordWebRoutes)) {
-            return new Infrastructure\Exceptions\Handler($app);
-        }
-
-        return new Infrastructure\Exceptions\ApiHandler($app);
-    }
+    Illuminate\Contracts\Debug\ExceptionHandler::class,
+    Infrastructure\Exceptions\Handler::class 
 );
 // $app->register(\Illuminate\Mail\MailServiceProvider::class);
 
