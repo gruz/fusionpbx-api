@@ -6,7 +6,6 @@ use Faker\Factory;
 use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Infrastructure\Testing\TestCase;
-use Api\Domain\Requests\DomainSignupRequest;
 use Infrastructure\Testing\TestRequestTrait;
 use Infrastructure\Services\TestRequestFactoryService;
 
