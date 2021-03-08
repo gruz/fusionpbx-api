@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Domain\Testing\Request;
+namespace Api\Domain\Testing\Requests;
 
 use Faker\Factory;
 use Api\User\Models\User;
@@ -85,68 +85,4 @@ class DomainSignupRequestTest extends TestCase
 
         return $return;
     }
-
-    public function testRequestDomainNameIsTransformedIntoSubdomain() {
-
-        $this->withoutExceptionHandling();
-        /**
-         * @var TestRequestFactoryService
-         */
-        $testRequestFactoryService = app(TestRequestFactoryService::class);
-
-        $data = $testRequestFactoryService->makeDomainRequest();
-
-        $data['domain_name'] = 'site.com';
-        config(['fpbx.default.domain.mothership_domain' => 'default.com']);
-
-        $data['is_subdomain'] = false;
-        $request = new DomainSignupRequest($data);
-        $this->assertEquals('site.com', $request->all()['domain_name']);
-
-        $data['is_subdomain'] = true;
-        $request = new DomainSignupRequest($data);
-        $this->assertEquals('site.com.default.com', $request->all()['domain_name']);
-
-        unset($data['is_subdomain']);
-
-        config(['fpbx.default.domain.new_is_subdomain' => false]);
-        $request = new DomainSignupRequest($data);
-        $this->assertEquals('site.com', $request->all()['domain_name']);
-
-        config(['fpbx.default.domain.new_is_subdomain' => true]);
-        $this->assertEquals('site.com.default.com', $request->all()['domain_name']);
-    }
-
-    public function testDomainIsEnabledOrDisabledDependingOnRequestAndConfig() {
-
-        $this->withoutExceptionHandling();
-        /**
-         * @var TestRequestFactoryService
-         */
-        $testRequestFactoryService = app(TestRequestFactoryService::class);
-
-        $data = $testRequestFactoryService->makeDomainRequest();
-
-        config(['fpbx.domain.enabled' => true]);
-
-        $data['domain_enabled'] = true;
-        $request = new DomainSignupRequest($data);
-        $this->assertEquals(true, $request->all()['domain_enabled']);
-
-        $data['domain_enabled'] = false;
-        $request = new DomainSignupRequest($data);
-        $this->assertEquals(false, $request->all()['domain_enabled']);
-
-
-        config(['fpbx.domain.enabled' => false]);
-
-        $data['domain_enabled'] = true;
-        $request = new DomainSignupRequest($data);
-        $this->assertEquals(false, $request->all()['domain_enabled']);
-
-        $data['domain_enabled'] = false;
-        $request = new DomainSignupRequest($data);
-        $this->assertEquals(false, $request->all()['domain_enabled']);
-    }
-
 }

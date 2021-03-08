@@ -2,13 +2,17 @@
 
 namespace Infrastructure\Http\Controllers;
 
+
 use Api\User\Models\User;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Api\User\Models\Contact;
 use Illuminate\Http\Request;
 use Api\Domain\Models\Domain;
 use Api\Settings\Models\Setting;
 use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
+use config;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -20,7 +24,44 @@ class FrontController extends BaseController
             return;
         }
 
+        dd(Domain::first()->getAttribute('domain_name'));
+
+        $model = new \Api\PostponedAction\Models\PostponedAction;
+        $model->hash = Str::uuid();
+        $model->request = $request->toArray();
+        $model->save();
+
+        // $model->setAttribute('request->dddd', 'aaaa');
+-
+        // $field = $model->request;
+        // $field['aaa'] = 'bbb';
+        // $model->request = $field;
+dd($model->request);
+
+        $model->save();
+
+        // $model2 = \Api\PostponedAction\Models\PostponedAction::where('request->domain_name', 'aaa.com')->firstOrFail();
+        dd($model);
+
+        $expireDate = $model->created_at->add();
+
         $this->testRequestFactoryService = app(\Infrastructure\Services\TestRequestFactoryService::class);
+
+        $data = $this->testRequestFactoryService->makeDomainRequest();
+
+        $userData = Arr::get($data, 'users.0');
+        /**
+         * @var User
+         */
+        $user = new User;
+
+        // $user->username = 'aaa';
+        // $user->save();
+        $user->create($userData);
+
+        dd($user, $user->getFillable(), $user->getGuarded());
+
+        return;
         $data = $this->testRequestFactoryService->makeDomainRequest([
             'adminIsPresent' => false,
         ]);

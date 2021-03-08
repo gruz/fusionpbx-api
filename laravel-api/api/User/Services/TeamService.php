@@ -89,30 +89,37 @@ class TeamService
         return $user;
     }
 
+    public function prepareData(array $data)
+    {
+        $is_subdomain = Arr::get($data, 'is_subdomain', config('fpbx.default.domain.new_is_subdomain'));
+
+        if ($is_subdomain) {
+            $data['domain_name'] = $data['domain_name'] . '.' . config('fpbx.default.domain.mothership_domain');
+        }
+
+        if (!config('fpbx.domain.enabled')) {
+            $data['domain_enabled'] = false;
+        } else {
+            $data['domain_enabled'] = Arr::get($data, 'domain_enabled', config('fpbx.domain.enabled'));
+        }
+
+        $data['domain_description'] =  Arr::get($data, 'domain_description', config('fpbx.domain.description'));
+
+        return $data;
+    }
+
     public function create($data)
     {
+        $data = $this->prepareData($data);
+
         $this->database->beginTransaction();
 
         try {
-            // if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
-            // {
-            //   throw new DomainExistsException();
-            // }
+            if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0) {
+                throw new DomainExistsException();
+            }
 
             $users = collect(Arr::get($data, 'users'));
-
-            // if ($users->empty()) {
-            //     throw new DomainCreationNoUsersException();
-            // }
-
-            // $adminUserPresent = $users->where('is_admin')->count();
-
-            // if (!$adminUserPresent) {
-            //     throw new DomainCreationNoAdminUserException();
-            // }
-
-            // $data['domain_enabled'] =  config('fpbx.domain.enabled');
-
 
             $domain = $this->domainService->create($data);
 
@@ -124,7 +131,7 @@ class TeamService
 
             foreach ($users as $userData) {
                 $user = $this->userService->create($userData);
-                $isAdmin = Arr::get($userData,'is_admin', false);
+                $isAdmin = Arr::get($userData, 'is_admin', false);
                 if ($isAdmin) {
                     $domain->setRelation('admin_user', $user);
                 }
@@ -135,10 +142,10 @@ class TeamService
                 ];
             }
 
-            $domain->message = __('messages.team created',
+            $domain->message = __(
+                'messages.team created',
                 $userDataForResponse
             );
-
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -162,13 +169,12 @@ class TeamService
         $this->database->beginTransaction();
 
         try {
-            if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0)
-            {
-              throw new DomainExistsException();
+            if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0) {
+                throw new DomainExistsException();
             }
 
             $data['domain_enabled'] =  'true';
-            $data['domain_description'] =  'Created via api at ' . date( 'Y-m-d H:i:s', time() );
+            $data['domain_description'] =  'Created via api at ' . date('Y-m-d H:i:s', time());
 
             $domain = $this->domainService->create($data);
 
@@ -177,7 +183,7 @@ class TeamService
             $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
 
             $user = $this->userService->create($data);
-            
+
 
             // fuda :
             //      Maybe set relation ? (User->Domain)
@@ -224,7 +230,7 @@ class TeamService
                 'username' => $data['username'],
                 'domain_name' => $data['domain_name'],
                 'password' => $data['password']
-              ]);
+            ]);
 
             // This event to be created if really needed. E.g. to notify superadmins about the fact
             // ~ $this->dispatcher->dispatch(new TeamWasCreated($domain));
@@ -257,8 +263,8 @@ class TeamService
      */
     protected function runFusionPBX_upgrade_domains($domain)
     {
-      // Some code for reference below. Don't use it as is forced to use native FusionPBX code
-      /* Create domain folder for recordings (see fusionpbx/app/recordings/app_defaults.php 28)
+        // Some code for reference below. Don't use it as is forced to use native FusionPBX code
+        /* Create domain folder for recordings (see fusionpbx/app/recordings/app_defaults.php 28)
        * The code from FusionPBX looks like below. So let's rewrite it
        *
         //if the recordings directory doesn't exist then create it
@@ -278,13 +284,13 @@ class TeamService
       *
       */
 
-      $current_path = getcwd();
-      chdir(config('app.fpath_full'));
-      exec('php ./core/upgrade/upgrade_domains.php', $result);
-      chdir($current_path);
-      return;
+        $current_path = getcwd();
+        chdir(config('app.fpath_full'));
+        exec('php ./core/upgrade/upgrade_domains.php', $result);
+        chdir($current_path);
+        return;
 
-      /*
+        /*
       $output_format = 'text';
       if (!defined('PROJECT_PATH'))
       {
@@ -306,7 +312,6 @@ class TeamService
       //clear the domains session array to update it
       unset($_SESSION);
       */
-
     }
 
     public function update($userId, array $data)

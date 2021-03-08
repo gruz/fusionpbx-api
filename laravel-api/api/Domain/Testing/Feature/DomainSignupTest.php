@@ -2,8 +2,19 @@
 
 namespace Api\Domain\Testing\Feature;
 
+use stdClass;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Api\Domain\Models\Domain;
+use Illuminate\Support\Facades\Mail;
 use Infrastructure\Testing\TestCase;
+use Illuminate\Notifications\Notifiable;
 use Api\Domain\Requests\DomainSignupRequest;
+use Illuminate\Support\Facades\Notification;
+use Api\PostponedAction\Models\PostponedAction;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Notifications\Messages\MailMessage;
+use Api\Domain\Notifications\DomainSignupNotification;
 use Infrastructure\Services\TestRequestFactoryService;
 
 class DomainSignupTest extends TestCase
@@ -13,19 +24,31 @@ class DomainSignupTest extends TestCase
      */
     private $testRequestFactoryService;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
 
         parent::setUp();
 
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
     }
 
-    public function test_Adding_new_subDomain() {}
-    public function test_Adding_new_domain_passes_with_one_admin_user_passes()
+    private function simulateSignup()
     {
-        $this->withoutExceptionHandling();
-        // $this->expectException(\Exception::class);
+        PostponedAction::query()->truncate();
+        Notification::fake();
+
         $data = $this->testRequestFactoryService->makeDomainRequest();
+        $response = $this->json('post', route('fpbx.post.domain.signup'), $data);
+
+        return [$data,  $response];
+    }
+
+    public function test_Adding_new_domain_passes_with_admin_users_passes()
+    {
+        // $this->withoutExceptionHandling();
+        // $this->expectException(\Exception::class);
+        list($request, $response) = $this->simulateSignup();
+
         // \Illuminate\Support\Arr::set($data, 'users.0.user_email', 'a@a.com');
         // \Illuminate\Support\Arr::set($data, 'users.1.user_email', 'a@a.com');
         // \Illuminate\Support\Arr::set($data, 'users.0.is_admin', false);
@@ -33,16 +56,100 @@ class DomainSignupTest extends TestCase
         // \Illuminate\Support\Arr::set($data, 'users.2.is_admin', false);
 
         // $data['domain_name'] = '192.168.0.160';
-        $domain['domain_name'] = $data['domain_name'];
 
-        $response = $this->json('post', '/domain/signup', $data);
-        \Illuminate\Support\Facades\Storage::put('request.json', json_encode($data, JSON_PRETTY_PRINT));
 
-        $response->dump();
+        // Don't delete, for getting JSON requests as example
+        // \Illuminate\Support\Facades\Storage::put('request.json', json_encode($data, JSON_PRETTY_PRINT));
+
+        $this->assertDatabaseHas('postponed_actions', ['request->domain_name' => $request['domain_name']]);
+
+        $users = [];
+        foreach (Arr::get($request, 'users') as $user) {
+            $recepient = new stdClass;
+
+            if (Arr::get($user, 'is_admin', false)) {
+                $recepient->name = Arr::get($user, 'username');
+                $recepient->email = Arr::get($user, 'user_email');
+                $users[] = $recepient;
+            }
+        }
+
+        // Assert a notification was sent to the given users...
+        Notification::assertSentTo(
+            new AnonymousNotifiable,
+            DomainSignupNotification::class,
+            function (DomainSignupNotification $notification, array $channels, AnonymousNotifiable $notifiable) use ($users) {
+                $url = route('fpbx.get.domain.activate', ['hash' => PostponedAction::first()->hash]);
+                $mail = $notification->toMail($users[0]);
+                $this->assertEquals($mail->actionUrl, $url);
+                // We cannot use === as here comparison doesn't work https://stackoverflow.com/a/66511294/518704
+                return $notifiable->routes['mail'] == $users;
+            }
+        );
+
+        // $response->dump();
         // dd($response);
         $response->assertStatus(201);
+    }
 
-        $this->assertDatabaseHas('v_domains', $domain);
+    public function test_EmailLinkVerificationFailed()
+    {
+        // $this->withoutExceptionHandling();
+        // list($request, $response) = $this->simulateSignup();
+        $this->simulateSignup();
+
+        $model = PostponedAction::first();
+        $domain_name = $model->getAttribute('request->domain_name');
+
+        // Bad hash in link
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]) . 'aa');
+        $response->assertStatus(422);
+        $response->assertJsonPath('errors.0.title', __('Validation error'));
+        $response->assertJsonPath('errors.0.detail', __('validation.uuid'));
+
+        // Not hash exists in the table
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => Str::uuid()]));
+        $response->assertStatus(422);
+        $response->assertJsonPath('errors.0.title', __('Validation error'));
+        $response->assertJsonPath('errors.0.detail', __('validation.exists', ['attribute' => 'hash']));
+
+        // Trying to add already existing domain
+        $model->setAttribute('request->domain_name', Domain::first()->getAttribute('domain_name'));
+        $model->save();
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]));
+        $response->assertStatus(422);
+        $response->assertJsonPath('errors.0.title', __('Validation error'));
+        $response->assertJsonPath('errors.0.detail', __('Domain already exists'));
+
+        // Check link is expired
+
+        // Restore domain from request
+        $model->setAttribute('request->domain_name', $domain_name);
+
+        // Simulate outdated link
+        $model->created_at = $model->created_at->sub('1 year');
+        $model->save();
+
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]));
+        $response->assertStatus(422);
+        $response->assertJsonPath('errors.0.title', __('Validation error'));
+        $response->assertJsonPath('errors.0.detail', __('Domain activation link expired'));
+    }
+
+    public function test_Adding_new_subDomain()
+    {
+    }
+
+    public function testVisitMailLinkHashExpired()
+    {
+    }
+    public function testVisitMailLinkHashNotExists()
+    {
+    }
+    public function testSignupProcessedViaHashLink()
+    {
+
+        // test hash is deleted
     }
 
     public function test_Adding_new_domain_passes_with_several_admin_users_passes()
@@ -94,5 +201,4 @@ class DomainSignupTest extends TestCase
     public function duplicated_username_fails()
     {
     }
-
 }
