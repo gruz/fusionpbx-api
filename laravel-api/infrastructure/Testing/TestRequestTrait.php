@@ -11,6 +11,21 @@ trait TestRequestTrait
 
     private $showDebugOutput = false;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->validator = app()->get('validator');
+
+        // $className = trim(get_class($this), 'Test');
+        $className = substr(get_class($this), 0, -4);
+        $className = explode('\\',$className);
+        $className = array_diff($className, ['Testing']);
+        $className = implode('\\', $className);
+
+        $this->rules = (new $className())->rules();
+    }
+
     /**
      * @test
      * @dataProvider validationProvider

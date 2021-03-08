@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-113-gcbee14f"
+        "version": "0.0.8-135-g6e312d5"
     },
     "paths": {
         "/domain/signup": {
@@ -43,7 +43,7 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Domain created response",
                         "content": {
                             "application/json": {
@@ -80,6 +80,65 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/domain/activate/{hash}": {
+            "get": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
+                "description": "Whom to send activation link is determined by configuration [`TODO` Implement this logic ]: \nMain domain admin user\nA email determined by laravel configuration\nThe users mentioned as admin users when creating domain signup (passed with the signup request)\nAll FPBX users which have permission to create domain\nAll above\n\nDepending on configuration,",
+                "operationId": "Api_Domain_Controllers_DomainController::activate",
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/domain/resend/{hash}": {
+            "get": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Resend domain signup verification link",
+                "operationId": "Api_Domain_Controllers_DomainController::resend",
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
                     }
                 }
             }

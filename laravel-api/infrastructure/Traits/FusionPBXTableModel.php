@@ -17,8 +17,6 @@ trait FusionPBXTableModel
 
     public function __construct(array $attributes = [])
     {
-        parent::__construct($attributes);
-
         if (isset(self::$staticAppends)) {
             $this->appends = self::$staticAppends;
         }
@@ -73,6 +71,8 @@ trait FusionPBXTableModel
          * @var string
          */
         $this->keyType = 'uuid';
+
+        parent::__construct($attributes);
     }
 
     public function __destruct()

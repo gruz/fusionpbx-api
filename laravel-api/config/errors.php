@@ -135,4 +135,8 @@ return [
         'message' => 'Wrong status data', 
         'code' => '1031', 
     ],
+    \Infrastructure\Exceptions\ActivationHashExpired::class => [
+        'message' => 'Activation link expired',
+        'code' => '1032'
+    ]
 ];

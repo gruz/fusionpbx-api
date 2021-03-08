@@ -1,10 +1,10 @@
 <?php
 
-namespace Api\Domain\Testing\Feature\Requests;
+namespace Api\Domain\Testing\Request;
 
 use Faker\Factory;
+use Api\User\Models\User;
 use Illuminate\Support\Arr;
-use Illuminate\Validation\Validator;
 use Infrastructure\Testing\TestCase;
 use Api\Domain\Requests\DomainSignupRequest;
 use Infrastructure\Testing\TestRequestTrait;
@@ -13,15 +13,6 @@ use Infrastructure\Services\TestRequestFactoryService;
 class DomainSignupRequestTest extends TestCase
 {
     use TestRequestTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->validator = app()->get('validator');
-
-        $this->rules = (new DomainSignupRequest())->rules();
-    }
 
     public function validationProvider()
     {
@@ -71,14 +62,26 @@ class DomainSignupRequestTest extends TestCase
             'data' => $dataModified,
         ];
 
-        $data = $testRequestFactoryService->makeDomainRequest([
+        $dataModified = $testRequestFactoryService->makeDomainRequest([
             'adminIsPresent' => false,
         ]);
 
         $return['fail_if_no_admin_among_user'] = [
             'passed' => false,
+            'data' => $dataModified,
+        ];
+
+
+        $userData = Arr::get($data, 'users.0');
+        $userData['username'] = 'aaaa';
+        $userData['user_email'] = 'aaaa';
+        $user = User::create($userData);
+
+        $return['fail_if_user_exists'] = [
+            'passed' => true,
             'data' => $data,
         ];
+        // $user->delete();
 
         return $return;
     }

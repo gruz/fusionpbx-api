@@ -185,7 +185,7 @@ return [
          */
 
         Laravel\Passport\PassportServiceProvider::class,
-        \Infrastructure\Providers\EventServiceProvider::class,
+        Infrastructure\Providers\EventServiceProvider::class,
         // Optimus\Api\System\TranslationServiceProvider::class,
         Optimus\Api\System\ViewServiceProvider::class,
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
@@ -198,6 +198,7 @@ return [
         Infrastructure\Http\RouteServiceProvider::class,
         Api\User\TeamServiceProvider::class,
         Api\User\UserServiceProvider::class,
+        Api\PostponedAction\PostponedActionServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,
         Infrastructure\Providers\HelperServiceProvider::class,
         Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,

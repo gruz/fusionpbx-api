@@ -6,7 +6,6 @@ use Api\Status\Models\Status;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
 use Api\Domain\Models\Domain;
-use Doctrine\DBAL\Driver\IBMDB2\Result;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;

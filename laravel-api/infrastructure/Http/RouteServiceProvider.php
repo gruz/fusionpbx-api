@@ -58,9 +58,8 @@ class RouteServiceProvider extends ServiceProvider
         $swaggerRoutes = json_decode($swaggerRoutes);
 
         foreach ($swaggerRoutes as $path => $route) {
-            if ($this->checkRouteIsRegistered($path, $route->method)) { 
-                // d($path, $route->method);
-                continue; 
+            if ($this->checkRouteIsRegistered($path, $route->method)) {
+                continue;
             }
 
             $name = 'fpbx.' . $route->method . str_replace('/', '.', $path);
@@ -76,10 +75,12 @@ class RouteServiceProvider extends ServiceProvider
                 $middlewares = ['api'];
             }
             Route::middleware($middlewares)
-            ->namespace($this->namespace)
-            ->{$route->method}($path, [$route->controller, $route->action])
-            ->name($name);
+                ->namespace($this->namespace)
+                ->{$route->method}($path, [
+                        'uses' => $route->controller . '@' . $route->action,
+                        'as' => $name
+                    ])
+                ;
         }
-
     }
 }

@@ -11,6 +11,7 @@ return [
         'domain' => [
             'mothership_domain' => env('MOTHERSHIP_DOMAIN', 'localhost'),
             'new_is_subdomain' => env('NEW_IS_SUBDOMAIN', false),
+            'activation_expire' => '1 day',
         ]
     ],
     'domain' => [
