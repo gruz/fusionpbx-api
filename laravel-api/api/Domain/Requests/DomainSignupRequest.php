@@ -2,14 +2,8 @@
 
 namespace Api\Domain\Requests;
 
-use Api\User\Models\User;
-use Illuminate\Support\Arr;
-use Api\Domain\Models\Domain;
 use Infrastructure\Rules\Hostname;
 use Infrastructure\Http\ApiRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Api\User\Exceptions\WrongSignupDataException;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Infrastructure\Rules\ArrayAtLeastOneAccepted;
 
 class DomainSignupRequest extends ApiRequest
