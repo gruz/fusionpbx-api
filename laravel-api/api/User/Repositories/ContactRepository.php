@@ -7,11 +7,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class ContactRepository extends Repository
 {
-    public function getModel()
-    {
-        return new Contact();
-    }
-
     public function create(array $data)
     {
         $model = $this->getModel();
@@ -19,7 +14,7 @@ class ContactRepository extends Repository
         // ~ $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         $model->domain_uuid = $data['domain_uuid'];
         // $model->contact_parent_uuid = '';
-        
+
         $model->fill($data);
         $model->save();
 
@@ -29,7 +24,7 @@ class ContactRepository extends Repository
     public function update(Contact $contact, array $data)
     {
         $contact->fill($data);
-        
+
         $contact->last_mod_date = date('now');
         $contact->last_mod_user = $data['username']; // Current user that does update
         // $contact->contact_parent_uuid = '';

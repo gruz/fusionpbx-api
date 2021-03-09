@@ -2,10 +2,11 @@
 
 namespace Api\User\Models;
 
+use Api\User\Models\Contact;
+use Api\Domain\Models\Domain;
 use Api\Status\Models\Status;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
-use Api\Domain\Models\Domain;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
@@ -15,13 +16,13 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @OA\Schema()
@@ -245,6 +246,11 @@ class User extends Model implements
     public function extensions(): BelongsToMany
     {
         return $this->belongsToMany(Extension::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
+    }
+
+    public function contacts(): BelongsToMany
+    {
+        return $this->belongsToMany(Contact::class, Contact_user::class, 'user_uuid', 'contact_uuid')->withPivot('contact_user_uuid');
     }
 
     /**

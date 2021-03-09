@@ -3,17 +3,14 @@
 namespace Api\Domain\Testing\Feature;
 
 use stdClass;
+use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Api\Domain\Models\Domain;
-use Illuminate\Support\Facades\Mail;
 use Infrastructure\Testing\TestCase;
-use Illuminate\Notifications\Notifiable;
-use Api\Domain\Requests\DomainSignupRequest;
 use Illuminate\Support\Facades\Notification;
 use Api\PostponedAction\Models\PostponedAction;
 use Illuminate\Notifications\AnonymousNotifiable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Api\Domain\Notifications\DomainSignupNotification;
 use Infrastructure\Services\TestRequestFactoryService;
 
@@ -43,7 +40,7 @@ class DomainSignupTest extends TestCase
         return [$data,  $response];
     }
 
-    public function test_Adding_new_domain_passes_with_admin_users_passes()
+    public function test_Signup()
     {
         // $this->withoutExceptionHandling();
         // $this->expectException(\Exception::class);
@@ -136,20 +133,59 @@ class DomainSignupTest extends TestCase
         $response->assertJsonPath('errors.0.detail', __('Domain activation link expired'));
     }
 
-    public function test_Adding_new_subDomain()
+    public function test_DomainActivate()
     {
-    }
+        $this->simulateSignup();
 
-    public function testVisitMailLinkHashExpired()
-    {
-    }
-    public function testVisitMailLinkHashNotExists()
-    {
-    }
-    public function testSignupProcessedViaHashLink()
-    {
+        $model = PostponedAction::first();
+        $domain_name = $model->getAttribute('request->domain_name');
 
-        // test hash is deleted
+        $data = collect($model->request);
+        $requestUsers = collect($data->get('users'));
+
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]));
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas(Domain::class, ['domain_name' => $domain_name]);
+
+        $domain = Domain::where('domain_uuid', $domain_name)->first();
+        $user = User::where(['domain_name' => $domain->domain_uuid]);
+
+        $this->assertEquals($requestUsers->count(), $user->count());
+
+        $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';
+        $this->assertDirectoryExists($dialplan_dest_folder);
+
+
+
+
+        $domain = User::where('domain_uuid', $domain->domain_uuid);
+        $this->assertDatabaseHas(User::class, ['domain_name' => $domain_name]);
+
+
+        $users = [];
+        foreach (Arr::get($request, 'users') as $user) {
+            $recepient = new stdClass;
+
+            if (Arr::get($user, 'is_admin', false)) {
+                $recepient->name = Arr::get($user, 'username');
+                $recepient->email = Arr::get($user, 'user_email');
+                $users[] = $recepient;
+            }
+        }
+
+        // Assert a notification was sent to the given users...
+        Notification::assertSentTo(
+            new AnonymousNotifiable,
+            DomainSignupNotification::class,
+            function (DomainSignupNotification $notification, array $channels, AnonymousNotifiable $notifiable) use ($users) {
+                $url = route('fpbx.get.domain.activate', ['hash' => PostponedAction::first()->hash]);
+                $mail = $notification->toMail($users[0]);
+                $this->assertEquals($mail->actionUrl, $url);
+                // We cannot use === as here comparison doesn't work https://stackoverflow.com/a/66511294/518704
+                return $notifiable->routes['mail'] == $users;
+            }
+        );
     }
 
     public function test_Adding_new_domain_passes_with_several_admin_users_passes()

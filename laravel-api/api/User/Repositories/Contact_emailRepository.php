@@ -7,11 +7,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class Contact_emailRepository extends Repository
 {
-    public function getModel()
-    {
-        return new Contact_email();
-    }
-
     public function create(array $data)
     {
         $model = $this->getModel();

@@ -8,11 +8,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class ExtensionRepository extends Repository
 {
-    public function getModel()
-    {
-        return new Extension();
-    }
-
     public function create(array $data)
     {
         $extension = $this->getModel();

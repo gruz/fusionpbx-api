@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Database\Eloquent;
 
+use Infrastructure\Database\Eloquent\Model;
 use Optimus\Genie\Repository as BaseRepository;
 
 abstract class Repository extends BaseRepository
@@ -42,6 +43,25 @@ abstract class Repository extends BaseRepository
         $model->fill($data);
 
         $model->save();
+
+        return $model;
+    }
+
+    /**
+     * @return Model
+     */
+    protected function getModel()
+    {
+        $className = substr(get_class($this), 0, -1 * strlen('Repository'));
+        $className = explode('\\', $className);
+        $className = array_diff($className, ['Repositories']);
+        $modelName = array_pop($className);
+        $className[] = 'Models';
+        $className[] = $modelName;
+
+        $className = implode('\\', $className);
+
+        $model =  new $className();
 
         return $model;
     }

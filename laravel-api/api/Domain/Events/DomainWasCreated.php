@@ -16,5 +16,4 @@ class DomainWasCreated extends Event
       $this->object = $object;
       $this->clearCacheUri = $clearCacheUri;
     }
-
 }

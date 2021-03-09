@@ -8,11 +8,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class GroupRepository extends Repository
 {
-    public function getModel()
-    {
-        return new Group();
-    }
-
     public function create(array $data)
     {
         $group = $this->getModel();

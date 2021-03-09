@@ -7,11 +7,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class SettingRepository extends Repository
 {
-    public function getModel()
-    {
-        return new Setting();
-    }
-
     public function create(array $data)
     {
         $setting = $this->getModel();

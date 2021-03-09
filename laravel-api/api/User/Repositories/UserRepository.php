@@ -8,11 +8,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class UserRepository extends Repository
 {
-    public function getModel()
-    {
-        return new User();
-    }
-
     public function create(array $data)
     {
         $user = $this->getModel();

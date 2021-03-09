@@ -7,11 +7,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class Extension_userRepository extends Repository
 {
-    public function getModel()
-    {
-        return new Extension_user();
-    }
-
     public function create(array $data)
     {
         $extension = $this->getModel();

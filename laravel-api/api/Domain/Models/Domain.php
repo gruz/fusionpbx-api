@@ -1,7 +1,8 @@
 <?php
+
 namespace Api\Domain\Models;
 
-use domain_settings;
+use Api\User\Models\User;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
 use Infrastructure\Traits\FusionPBXTableModel;
@@ -88,8 +89,14 @@ class Domain extends Model
         return $this->groups();
     }
 
-    public function domain_settings() {
-        return $this->hasMany(Domain_setting::class,'domain_uuid');
+    public function domain_settings()
+    {
+        return $this->hasMany(Domain_setting::class, 'domain_uuid');
         // return $this->hasMany(Domain_setting::class,'domain_uuid' ,'domain_uuid');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'domain_uuid', 'domain_uuid');
     }
 }
