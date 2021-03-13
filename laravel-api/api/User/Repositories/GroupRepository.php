@@ -8,25 +8,6 @@ use Infrastructure\Database\Eloquent\Repository;
 
 class GroupRepository extends Repository
 {
-    public function create(array $data)
-    {
-        $group = $this->getModel();
-
-        $group->fill($data);
-        $group->save();
-
-        return $group;
-    }
-
-    public function update(Group $group, array $data)
-    {
-        $group->fill($data);
-
-        $group->save();
-
-        return $group;
-    }
-
     public function filterIsAgent(Builder $query, $method, $clauseOperator, $value, $in)
     {
         // check if value is true

@@ -4,91 +4,62 @@ namespace Api\User\Services;
 
 use Exception;
 use Illuminate\Support\Arr;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Events\Dispatcher;
 use Api\User\Services\UserService;
+use Api\User\Events\TeamWasCreated;
 use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;
 use Api\Domain\Services\DomainService;
 use Api\Domain\Events\DomainWasCreated;
-use Illuminate\Database\DatabaseManager;
-use Api\User\Repositories\UserRepository;
-use Api\User\Repositories\GroupRepository;
 use Api\User\Repositories\ContactRepository;
+use Api\Voicemail\Services\VoicemailService;
 use Illuminate\Database\Eloquent\Collection;
 use Api\Domain\Repositories\DomainRepository;
+use Api\Domain\Services\DomainSettingService;
 use Api\User\Exceptions\InvalidGroupException;
-use Api\User\Exceptions\UserNotFoundException;
 use Api\Domain\Exceptions\DomainExistsException;
+use Api\User\Repositories\ContactUserRepository;
 use Api\Dialplan\Repositories\DialplanRepository;
-use Api\User\Repositories\Contact_emailRepository;
-use Api\Domain\Exceptions\DomainCreationNoUsersException;
-use Api\Domain\Exceptions\DomainCreationNoAdminUserException;
+use Api\Extension\Repositories\ExtensionRepository;
+use Infrastructure\Database\Eloquent\AbstractService;
+use Api\Extension\Repositories\ExtensionUserRepository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
-class TeamService
+class TeamService extends AbstractService
 {
-    private $auth;
-
-    private $database;
-
-    private $dispatcher;
-
-    private $groupRepository;
-
-    protected $userRepository;
-
-    /**
-     * @var DomainService
-     */
     private $domainService;
 
-    private $domainRepository;
-
-    /**
-     * @var DialplanRepository
-     */
     private $dialplanRepository;
+
+    private $domainSettingService;
 
     private $userService;
 
+    private $voicemailService;
+
     public function __construct(
-        AuthManager $auth,
-        DatabaseManager $database,
-        Dispatcher $dispatcher,
-        GroupRepository $groupRepository,
-        UserRepository $userRepository,
-        DomainService $domainService,
-        DomainRepository $domainRepository,
-        ContactRepository $contactRepository,
-        Contact_emailRepository $contact_emailRepository,
+        DomainService $domainSevice,
         DialplanRepository $dialplanRepository,
-        UserService $userService
+        DomainSettingService $domainSettingService,
+        UserService $userService,
+        VoicemailService $voicemailService
     ) {
-        $this->auth = $auth;
-        $this->database = $database;
-        $this->dispatcher = $dispatcher;
-        $this->groupRepository = $groupRepository;
-        $this->userRepository = $userRepository;
-        $this->domainService = $domainService;
-        $this->domainRepository = $domainRepository;
-        $this->contactRepository = $contactRepository;
-        $this->contact_emailRepository = $contact_emailRepository;
+        $this->domainService = $domainSevice;
         $this->dialplanRepository = $dialplanRepository;
+        parent::__construct();
+        $this->domainSettingService = $domainSettingService;
         $this->userService = $userService;
+        $this->voicemailService = $voicemailService;
     }
 
-    public function getAll($options = [])
-    {
-        return $this->userRepository->get($options);
-    }
-
-    public function getById($userId, array $options = [])
-    {
-        $user = $this->getRequestedUser($userId);
-
-        return $user;
-    }
-
+    /**
+     * Updates data posted by a user with system defaults
+     *
+     * The method is public for testing purposes
+     *
+     * @param array $data
+     * @return array
+     * @throws BindingResolutionException
+     */
     public function prepareData(array $data)
     {
         $is_subdomain = Arr::get($data, 'is_subdomain', config('fpbx.default.domain.new_is_subdomain'));
@@ -108,6 +79,15 @@ class TeamService
         return $data;
     }
 
+    private function injectData($data, $inject)
+    {
+        foreach ($data as $key => $value) {
+            $data[$key] = array_merge($value, $inject);
+        }
+
+        return $data;
+    }
+
     public function create($data)
     {
         $data = $this->prepareData($data);
@@ -115,36 +95,88 @@ class TeamService
         $this->database->beginTransaction();
 
         try {
-            if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0) {
+            /**
+             * @var DomainRepository
+             */
+            $domainRepository = $this->domainService->getRepository();
+            if ($domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0) {
                 throw new DomainExistsException();
             }
 
-            $users = collect(Arr::get($data, 'users'));
+            $this->dialplanRepository->createDefaultDialplanRules();
+            $domainModel = $this->domainService->create($data);
 
-            $domain = $this->domainService->create($data);
+            $settingsData = Arr::get($data, 'settings', []);
+            $settingsData = $this->injectData($settingsData, ['domain_uuid' => $domainModel->domain_uuid]);
+            $this->domainSettingService->createMany($settingsData);
 
-            $this->dialplanRepository->createDefaultDialplanRules($data);
+            $usersData = Arr::get($data, 'users', []);
+            $usersData = $this->injectData($usersData, ['domain_uuid' => $domainModel->domain_uuid]);
+            $usersModel = $this->userService->createMany($usersData);
 
-            $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
+            foreach ($usersModel as $k => $userModel) {
+                $contactsData = Arr::get($data, 'users.' . $k . '.contacts', []);
+                $extensionData = Arr::get($data, 'users.' . $k . '.extensions', []);
+                // $contactsModel = $this->contactService->createMany($contactsData, [
+                //     'domain_uuid' => $domainModel->domain_uuid,
+                //     'user_uuid' => $userModel->user_uuid,
+                // ]);
 
-            $userDataForResponse = [];
+                // $this->injectCommonData
 
-            foreach ($users as $userData) {
-                $user = $this->userService->create($userData);
-                $isAdmin = Arr::get($userData, 'is_admin', false);
-                if ($isAdmin) {
-                    $domain->setRelation('admin_user', $user);
+                // foreach ($relatedData as $key => $data) {
+                //     $relatedData[$key] = array_merge($data, $injectFields);
+                // }
+
+                $this->userService->createAttachedMany($userModel, ContactRepository::class, $contactsData, ContactUserRepository::class);
+                $this->userService->createAttachedMany($userModel, ExtensionRepository::class, $extensionData, ExtensionUserRepository::class);
+
+                $voicemailData = Arr::get($data, 'users.' . $k . '.extension', []);
+                foreach ($voicemailData as $key => $value) {
+                    $voicemailData[$key]['domain_uuid'] = $domainModel->domain_uuid;
                 }
-                $userDataForResponse[] = [
-                    'domain_name' => $data['domain_name'],
-                    'username' => $userData['username'],
-                    'password' => $userData['password']
-                ];
+                $this->voicemailService->createMany($voicemailData);
+                // $this->userRepository->attachModel($userModel, $contactsModel);
+
+                // $contact_usersData = [];
+                // foreach ($contactsModel as $v => $contactModel) {
+                //     $contact_usersData[] = [
+                //         // 'contact_user_uuid' => Str::uuid(),
+                //         'domain_uuid' => $domainModel->domain_uuid,
+                //         'user_uuid' => $userModel->user_uuid,
+                //         'contact_uuid' => $contactModel->contact_uuid,
+                //     ];
+                // }
+
+                // $extensionsData = Arr::get($data, 'users.' . $k . 'extensions', []);
+                // $contacts = $this->extensionService->createMany($extensionsData, [
+                //     'domain_uuid' => $domainModel->domain_uuid,
+                //     'user_uuid' => $userModel->user_uuid,
+                // ]);
             }
 
-            $domain->message = __(
+            // $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
+
+            // $userDataForResponse = [];
+
+            // $users = collect(Arr::get($data, 'users'));
+            // foreach ($users as $userData) {
+            //     $user = $this->userService->create($userData, $data['domain_uuid']);
+            //     $isAdmin = Arr::get($userData, 'is_admin', false);
+            //     if ($isAdmin) {
+            //         $domain->setRelation('admin_user', $user);
+            //     }
+            //     $userDataForResponse[] = [
+            //         'domain_name' => $data['domain_name'],
+            //         'username' => $userData['username'],
+            //         'password' => $userData['password']
+            //     ];
+            // }
+
+            $domainModel->message = __(
                 'messages.team created',
-                $userDataForResponse
+                // $userDataForResponse
+                []
             );
         } catch (Exception $e) {
             $this->database->rollBack();
@@ -154,11 +186,10 @@ class TeamService
 
         $this->database->commit();
 
-        $this->dispatcher->dispatch(new DomainWasCreated($domain, true));
+        $this->dispatcher->dispatch(new TeamWasCreated($domainModel, $usersModel));
+        // $this->dispatcher->dispatch(new DomainWasCreated($domain, true));
 
-        // $this->runFusionPBX_upgrade_domains($domain);
-
-        return $domain;
+        return $domainModel;
     }
 
     /**
@@ -272,7 +303,7 @@ class TeamService
           if (!is_readable($_SESSION['switch']['recordings']['dir']."/".$domain_name)) { event_socket_mkdir($_SESSION['switch']['recordings']['dir']."/".$domain_name,02770,true); }
         }
 
-      $settings = new Default_setting;
+      $settings = new DefaultSetting;
       $dir = $settings->where([
         'default_setting_category' => 'switch',
         'default_setting_subcategory' => 'recordings',
@@ -423,16 +454,5 @@ class TeamService
         }
 
         return $groups;
-    }
-
-    private function getRequestedUser($userId, array $options = [])
-    {
-        $user = $this->userRepository->getById($userId, $options);
-
-        if (is_null($user)) {
-            throw new UserNotFoundException();
-        }
-
-        return $user;
     }
 }

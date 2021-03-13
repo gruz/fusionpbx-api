@@ -6,7 +6,6 @@ use Api\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  class Extension extends Model
 {
     use HasFactory;
-    use Notifiable, FusionPBXTableModel;
+    use Notifiable;
 
     protected $attributes = [
       'directory_visible' => 'true',

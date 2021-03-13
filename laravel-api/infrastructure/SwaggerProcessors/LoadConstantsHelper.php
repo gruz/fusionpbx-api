@@ -4,16 +4,17 @@ namespace Infrastructure\SwaggerProcessors;
 
 use Illuminate\Support\Facades\Cache;
 
-class LoadConstantsHelper {
+class LoadConstantsHelper
+{
 
-    public function __construct($path = null) {
+    public function __construct($path = null)
+    {
         $pathInfos[] = '/' . config('l5-swagger.defaults.routes.docs') . '/' . config('l5-swagger.documentations.default.paths.docs_json');
         $pathInfos[] = '/' . config('l5-swagger.defaults.routes.docs') . '/' . config('l5-swagger.documentations.default.paths.docs_yaml');
 
         if (in_array($path, $pathInfos)) {
             $this->registerConstantsForSwaggerProcessor();
         }
-
     }
 
     private function registerConstantsForSwaggerProcessor()
@@ -25,7 +26,9 @@ class LoadConstantsHelper {
         }
         $isSecondRun = true;
 
-        $getData = function() { return \Api\Settings\Models\Default_setting::get(); };
+        $getData = function () {
+            return \Api\Settings\Models\DefaultSetting::get();
+        };
 
         if (config('fpbx.debug.swaggerProcessor')) {
             $data = $getData();
@@ -58,5 +61,4 @@ class LoadConstantsHelper {
             define('FPBX_DEFAULT_SETTINGS_' . $settingCategory . '_FIELD_TYPES', array_column($settings, 'default_setting_name'));
         }
     }
-
 }

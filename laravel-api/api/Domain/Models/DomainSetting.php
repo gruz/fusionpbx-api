@@ -3,7 +3,6 @@
 namespace Api\Domain\Models;
 
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
 
 /**
  * @OA\Schema(
@@ -16,10 +15,8 @@ SELECT x.* FROM public.v_default_settings x
 ```"
  * )
  */
-class Domain_setting extends Model
+class DomainSetting extends Model
 {
-    use FusionPBXTableModel;
-
     protected $attributes = [
         'domain_setting_category' => 'domain',
         'domain_setting_enabled' => true,

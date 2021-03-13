@@ -6,12 +6,89 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Index;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use Infrastructure\Traits\RelationshipsTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Str;
+use Infrastructure\Traits\Uuids;
 
 abstract class Model extends BaseModel
 {
+    use Uuids;
+
+    public static $staticAppends;
+    public static $staticHidden;
+    public static $staticMakeVisible;
+    public static $staticVisible;
+
+    public function __construct(array $attributes = [])
+    {
+        if (isset(self::$staticAppends)) {
+            $this->appends = self::$staticAppends;
+        }
+        if (isset(self::$staticHidden)) {
+            $this->hidden = self::$staticHidden;
+        }
+        if (isset(self::$staticMakeVisible)) {
+            $this->makeVisible(self::$staticMakeVisible);
+        }
+        if (isset(self::$staticVisible)) {
+            $this->visible = self::$staticVisible;
+        }
+
+        $className = get_class($this);
+        $className = explode('\\', $className);
+        $modelName = end($className);
+        $stem = Str::snake($modelName);
+        $this->table = 'v_' . $stem . 's';
+        $this->primaryKey = $stem . '_uuid';
+        $this->incrementing = false;
+        $this->timestamps = false;
+
+        /**
+         * Override model defaults by config file
+         */
+        $keys = [
+            'makeFillable',
+            'mergeGuarded',
+            'makeVisible',
+            'makeHidden',
+        ];
+
+        foreach ($keys as $key) {
+            $fields = config('fpbx.table.' . $this->table . '.' . $key , []);
+
+            if (!empty($fields)) {
+                switch ($key) {
+                    case 'mergeGuarded':
+                        $fillable = array_diff($this->getFillable(), $fields);
+                        $this->fillable($fillable);
+                        break;
+                    default:
+                        break;
+                }
+
+                $this->$key($fields);
+            }
+        }
+
+        /**
+         * The "type" of the primary key ID.
+         *
+         * @var string
+         */
+        $this->keyType = 'uuid';
+
+        parent::__construct($attributes);
+    }
+
+    public function __destruct()
+    {
+        self::$staticAppends = null;
+        self::$staticHidden = null;
+        self::$staticVisible = null;
+        self::$staticMakeVisible = null;
+    }
+
     // protected static $_columns_info = NULL;
     // protected static $_nullable_fields = NULL;
 

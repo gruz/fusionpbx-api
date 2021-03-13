@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Repositories;
 
-use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Str;
 use Api\Extension\Models\Extension;
 use Infrastructure\Database\Eloquent\Repository;
 
@@ -15,15 +15,6 @@ class ExtensionRepository extends Repository
         $extension->domain_uuid = $data['domain_uuid'];
 
         $extension->fill($data);
-        $extension->save();
-
-        return $extension;
-    }
-
-    public function update(Extension $extension, array $data)
-    {
-        $extension->fill($data);
-
         $extension->save();
 
         return $extension;
@@ -48,7 +39,7 @@ class ExtensionRepository extends Repository
                 $query
                     ->insert(array_map(function ($userId) use ($extension) {
                         return [
-                            'extension_user_uuid' => Uuid::generate(),
+                            'extension_user_uuid' => Str::uuid(),
                             'domain_uuid' => $extension->domain_uuid,
                             'extension_uuid' => $extension->extension_uuid,
                             'user_uuid' => $userId
@@ -63,5 +54,4 @@ class ExtensionRepository extends Repository
 
         $this->database->commit();
     }
-
 }

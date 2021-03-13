@@ -14,7 +14,6 @@
         "optimus/genie": "^3.3",
         "optimus/api-consumer": "^0.4.0",
         "optimus/architect": "^2.0",
-        "webpatser/laravel-uuid": "^4.0",
         "gruz/laravel-ratchet": "^8.0",
         "darkaonline/l5-swagger": "dev-master",
         "doctrine/annotations": "^1.11",

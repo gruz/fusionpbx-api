@@ -25,7 +25,7 @@ namespace Api\Domain;
                     type="array",
                     @OA\Items(
                         allOf={
-                            @OA\Schema(ref="#/components/schemas/Domain_setting"),
+                            @OA\Schema(ref="#/components/schemas/DomainSetting"),
                         }
                     ),
                 ),

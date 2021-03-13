@@ -2,15 +2,14 @@
 
 namespace Api\User\Repositories;
 
-use Webpatser\Uuid\Uuid;
 use Api\User\Models\User;
+use Illuminate\Support\Str;
 use Infrastructure\Database\Eloquent\Repository;
 
 class UserRepository extends Repository
 {
     public function create(array $data)
     {
-        $user = $this->getModel();
         if (empty($data['add_user'])) {
             // TODO get real main user here
             $data['add_user'] = 'admin';
@@ -26,7 +25,7 @@ class UserRepository extends Repository
         // ~ In FusionPBX the function is defined in fusionpbx/resources/functions.php
         // ~ $salt = uuid();
         // We will use a webpatser/laravel-uuid
-        $data['salt'] = Uuid::generate();
+        $data['salt'] = Str::uuid();
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -40,27 +39,19 @@ class UserRepository extends Repository
         // ~ 'domain_uuid',  'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
 
 
-        $user->domain_uuid = $data['domain_uuid'];
-        $user->contact_uuid = $data['contact_uuid'];
-        $user->salt = $data['salt'];
+        // $user->domain_uuid = $data['domain_uuid'];
+        // $user->contact_uuid = $data['contact_uuid'];
+        // $user->salt = $data['salt'];
 
-        if (!empty($data['user_status']) && !is_null($data['user_status'])) {
-            $user->user_status = $data['user_status'];
-        }
+        // if (!empty($data['user_status']) && !is_null($data['user_status'])) {
+        //     $user->user_status = $data['user_status'];
+        // }
 
-        $user->fill($data);
-        $user->save();
+        // $user->fill($data);
+        // $user->save();
 
-        return $user;
-    }
-
-    public function update(User $user, array $data)
-    {
-        $user->fill($data);
-
-        $user->save();
-
-        return $user;
+        $model = parent::create($data);
+        return $model;
     }
 
     public function setGroups(User $user, array $addGroups, array $removeGroups = [])
@@ -83,7 +74,7 @@ class UserRepository extends Repository
                 $query
                     ->insert(array_map(function ($groupName, $groupId) use ($user) {
                         return [
-                            'user_group_uuid' => Uuid::generate(),
+                            'user_group_uuid' => Str::uuid(),
                             'domain_uuid' => $user->domain_uuid,
                             'group_uuid' => $groupId,
                             'group_name' => $groupName,

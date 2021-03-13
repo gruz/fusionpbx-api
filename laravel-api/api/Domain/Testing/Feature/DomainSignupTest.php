@@ -42,6 +42,8 @@ class DomainSignupTest extends TestCase
 
     public function test_Signup()
     {
+        // Перевірити що хеш-записи видаляються після створення домена
+
         // $this->withoutExceptionHandling();
         // $this->expectException(\Exception::class);
         list($request, $response) = $this->simulateSignup();

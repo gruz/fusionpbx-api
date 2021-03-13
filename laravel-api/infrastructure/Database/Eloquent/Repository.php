@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Database\Eloquent;
 
+use Illuminate\Support\Str;
 use Infrastructure\Database\Eloquent\Model;
 use Optimus\Genie\Repository as BaseRepository;
 
@@ -36,10 +37,48 @@ abstract class Repository extends BaseRepository
         return $this;
     }
 
+    public function createMany(array $data)
+    {
+        $model = $this->getModel();
+
+        $primaryKey = $model->getKeyName();
+
+        foreach ($data as $key => $value) {
+            foreach ($value as $k => $v) {
+                if (!$model->isFillable($k)) {
+                    unset($data[$key][$k]);
+                    continue;
+                }
+            }
+            if (!array_key_exists($primaryKey, $value)) {
+                $data[$key][$primaryKey] = Str::uuid();
+            }
+        }
+
+        $models = [];
+
+        foreach ($data as $key => $row) {
+            $model->create($row);
+            $models[] = $model;
+        }
+        // $model->insert($data);
+
+        return $models;
+    }
+
     public function create(array $data)
     {
         $model = $this->getModel();
 
+        $model->fill($data);
+
+        $model->save();
+
+        return $model;
+    }
+
+    public function update(Model $model, array $data)
+    {
         $model->fill($data);
 
         $model->save();
@@ -64,5 +103,40 @@ abstract class Repository extends BaseRepository
         $model =  new $className();
 
         return $model;
+    }
+
+    public function createAttachedMany(Model $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName)
+    {
+        /**
+         * @var Repository
+         */
+        $childRepository = app($childRepositoryClassName);
+
+        /**
+         * @var Repository
+         */
+        $pivotRepository = app($pivotRepositoryClassName);
+
+        $pivotModel = $pivotRepository->getModel();
+
+        $modelsRelated = $childRepository->createMany($childData);
+
+        $pivotArr = [
+            'domain_uuid' => $parentModel->domain_uuid,
+            $parentModel->getKeyName() => $parentModel->getKey(),
+        ];
+
+        $pivotData = [];
+        foreach ($modelsRelated as $v => $modelRelated) {
+            $pivotData[] = array_merge(
+                $pivotArr,
+                [
+                    $pivotModel->getKeyName() => Str::uuid(),
+                    $modelRelated->getKeyName() => $modelRelated->getKey(),
+                ]
+            );
+        }
+
+        $pivotRepository->createMany($pivotData);
     }
 }

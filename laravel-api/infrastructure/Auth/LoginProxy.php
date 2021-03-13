@@ -8,12 +8,6 @@ use Api\User\Repositories\UserRepository;
 use Api\Domain\Repositories\DomainRepository;
 use Api\User\Exceptions\UserDisabledException;
 use Illuminate\Events\Dispatcher;
-use Infrastructure\Events\ResetPasswordLinkWasRequested;
-use Webpatser\Uuid\Uuid;
-
-
-
-use Exception;
 
 class LoginProxy
 {

@@ -3,44 +3,29 @@
 namespace Api\User\Services;
 
 use Exception;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Database\DatabaseManager;
-use Illuminate\Events\Dispatcher;
-
+use Illuminate\Support\Arr;
 use Api\Extension\Models\Extension;
-use Api\Extension\Services\ExtensionService;
-
-use Api\Domain\Exceptions\DomainNotFoundException;
-use Api\User\Exceptions\UserExistsException;
-use Api\User\Exceptions\EmailExistsException;
-use Api\User\Exceptions\ActivationHashNotFoundException;
-use Api\User\Exceptions\ActivationHashWrongException;
-
-
 use Api\User\Events\UserWasCreated;
 use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;
-
-use Api\User\Repositories\GroupRepository;
-use Api\User\Repositories\UserRepository;
-use Api\Domain\Repositories\DomainRepository;
-use Api\User\Repositories\ContactRepository;
-use Api\User\Repositories\Contact_emailRepository;
-use Api\Extension\Repositories\ExtensionRepository;
-
-use Infrastructure\Traits\OneToManyRelationCRUD;
-
 use Illuminate\Support\Facades\Auth;
+use Api\User\Repositories\UserRepository;
+use Api\User\Repositories\GroupRepository;
+use Api\Extension\Services\ExtensionService;
+use Api\User\Exceptions\UserExistsException;
+use Api\User\Repositories\ContactRepository;
+use Api\Domain\Repositories\DomainRepository;
+use Infrastructure\Traits\OneToManyRelationCRUD;
+use Api\Domain\Exceptions\DomainNotFoundException;
+use Api\User\Repositories\ContactEmailRepository;
+use Api\Extension\Repositories\ExtensionRepository;
+use Api\User\Exceptions\ActivationHashWrongException;
+use Api\User\Exceptions\ActivationHashNotFoundException;
+use Infrastructure\Database\Eloquent\AbstractService;
 
-class UserService
+class UserService extends AbstractService
 {
     use OneToManyRelationCRUD;
-
-    private $auth;
-
-    private $database;
-
-    private $dispatcher;
 
     private $groupRepository;
 
@@ -49,7 +34,7 @@ class UserService
     private $contactRepository;
 
     /**
-     * @var Contact_emailRepository
+     * @var ContactEmailRepository
      */
     private $contact_emailRepository;
 
@@ -62,20 +47,14 @@ class UserService
     private $scope;
 
     public function __construct(
-        AuthManager $auth,
-        DatabaseManager $database,
-        Dispatcher $dispatcher,
         GroupRepository $groupRepository,
         UserRepository $userRepository,
         ContactRepository $contactRepository,
-        Contact_emailRepository $contact_emailRepository,
+        ContactEmailRepository $contact_emailRepository,
         ExtensionRepository $extensionRepository,
         DomainRepository $domainRepository,
         ExtensionService $extensionService
     ) {
-        $this->auth = $auth;
-        $this->database = $database;
-        $this->dispatcher = $dispatcher;
         $this->groupRepository = $groupRepository;
         $this->userRepository = $userRepository;
         $this->contactRepository = $contactRepository;
@@ -84,7 +63,7 @@ class UserService
         $this->domainRepository = $domainRepository;
         $this->extensionService = $extensionService;
 
-        $this->setScope();
+        parent::__construct();
     }
 
     public function getMe($options = [])
@@ -100,70 +79,57 @@ class UserService
         return $this->userRepository->getWhereArray(['domain_uuid' => Auth::user()->domain_uuid, 'user_enabled' => 'true']);
     }
 
-    public function getById($userId, array $options = [])
-    {
-        $data = $this->userRepository->getWhere('user_uuid', $userId)->first();
-        return $data;
-
-        // ~ $user = $this->getRequestedUser($userId, $options);
-
-        // ~ return $user;
-    }
-
     /**
      * Creates a user
      *
      * Creates a user including all tied tables
      *
-     * @param   array  $data     Data to create a user
+     * @param   array   $data            Data to create a user
+     * @param   string  $domain_uuid     Domain id where to create user in
      *
      * @return   type  Description
      */
-    public function create($data)
+    public function createTODEL(array $data, string $domain_uuid)
     {
         $this->database->beginTransaction();
         $domain = null;
         try {
-            // If it's a team registration, we just create the first user in the domain.
-            if ($data['isTeam']) {
+            // Check if domain exists
+            $domain = $this->domainRepository->getWhere('domain_name', $data['domain_name']);
+
+            // We cannot create a user if there is not such a domain
+            if ($domain->count() < 1) {
+                throw new DomainNotFoundException();
             }
-            // Otherwise we check if the username of email exists in the domain
-            else {
-                // Check if domain exists
-                $domain = $this->domainRepository->getWhere('domain_name', $data['domain_name']);
 
-                // We cannot create a user if there is not such a domain
-                if ($domain->count() < 1) {
-                    throw new DomainNotFoundException();
-                }
+            $domain = $domain->first();
 
-                $domain = $domain->first();
+            $users = Arr::get($data, 'users');
+            dd($users);
 
-                // Get user by domain and username - create only if there is no a user with such a name
-                $user = $this->userRepository->getWhereArray([
-                    'domain_uuid' => $domain['domain_uuid'],
-                    'username' => $data['username'],
-                ]);
+            // Get user by domain and username - create only if there is no a user with such a name
+            $user = $this->userRepository->getWhereArray([
+                'domain_uuid' => $domain['domain_uuid'],
+                'username' => $data['username'],
+            ]);
 
-                if ($user->count() > 0) {
-                    throw new UserExistsException();
-                }
-
-                // Check for the email in the current domain
-                $contact_email = $this->contact_emailRepository->getWhereArray([
-                    'domain_uuid' => $domain['domain_uuid'],
-                    'email_address' => $data['email'],
-                ]);
-
-                if ($contact_email->count() > 0) {
-                    throw new EmailExistsException();
-                }
-
-                $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
+            if ($user->count() > 0) {
+                throw new UserExistsException();
             }
+
+            // // Check for the email in the current domain
+            // $contact_email = $this->contact_emailRepository->getWhereArray([
+            //     'domain_uuid' => $domain['domain_uuid'],
+            //     'email_address' => $data['email'],
+            // ]);
+
+            // if ($contact_email->count() > 0) {
+            //     throw new EmailExistsException();
+            // }
+
+            $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
 
             // Create a contact
-            $data['contact_type'] = 'user';
             $data['contact_nickname'] = $data['email'];
 
             $contact = $this->contactRepository->create($data);
@@ -185,7 +151,7 @@ class UserService
             // Finally create the user and hide an unneded field in the output
             $data['user_email'] = $data['email'];
             $user = $this->userRepository->create($data);
-            
+
             $user->makeHidden(['domain_uuid', 'contact_uuid']);
 
             // Get group name
@@ -201,8 +167,8 @@ class UserService
 
             if (is_null($domain)) {
                 $domain = $this->domainRepository
-                               ->getWhere('domain_uuid', $data['domain_uuid'])
-                               ->first();
+                    ->getWhere('domain_uuid', $data['domain_uuid'])
+                    ->first();
             }
             $user->setRelation('domain', $domain);
 

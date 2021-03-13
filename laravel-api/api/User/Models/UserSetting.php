@@ -3,14 +3,12 @@
 namespace Api\User\Models;
 
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
 
 /**
  * @OA\Schema()
  */
-class User_setting extends Model
+class UserSetting extends Model
 {
-    use FusionPBXTableModel;
 
     public $fillable = [
         // 'user_setting_uuid',

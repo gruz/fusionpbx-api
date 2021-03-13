@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-140-gad58fe4"
+        "version": "0.0.8-141-g8b10e53"
     },
     "paths": {
         "/domain/signup": {
@@ -1016,7 +1016,7 @@
                                 "items": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/Domain_setting"
+                                            "$ref": "#/components/schemas/DomainSetting"
                                         }
                                     ]
                                 }
@@ -1096,7 +1096,7 @@
                 },
                 "type": "object"
             },
-            "Domain_setting": {
+            "DomainSetting": {
                 "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n\n ```\nSELECT x.* FROM public.v_default_settings x\n    WHERE default_setting_category in ('domain' , 'email')\n    ORDER BY default_setting_category\n```",
                 "properties": {
                     "domain_setting_category": {
@@ -1262,8 +1262,7 @@
                 "properties": {
                     "domain_uuid": {
                         "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
+                        "format": "uuid"
                     },
                     "domain_parent_uuid": {
                         "type": "string",
@@ -1310,7 +1309,7 @@
                     }
                 }
             },
-            "User_setting": {
+            "UserSetting": {
                 "properties": {
                     "domain_uuid": {
                         "type": "string",
@@ -1494,7 +1493,7 @@
                     }
                 }
             },
-            "Voicemail_option": {
+            "VoicemailOption": {
                 "properties": {
                     "domain_uuid": {
                         "type": "string",

@@ -1,15 +1,15 @@
 <?php
+
 namespace Api\User\Models;
 
 use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
 
-class Contact_user extends Model
+class ContactUser extends Model
 {
-    use Notifiable, FusionPBXTableModel;
+    use Notifiable;
 
     public $guarded = [];
 

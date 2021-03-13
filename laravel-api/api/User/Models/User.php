@@ -5,13 +5,14 @@ namespace Api\User\Models;
 use Api\User\Models\Contact;
 use Api\Domain\Models\Domain;
 use Api\Status\Models\Status;
+use Api\User\Models\ContactUser;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
+use Api\User\Models\GroupPermission;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,7 +34,7 @@ class User extends Model implements
     AuthorizableContract,
     CanResetPasswordContract
 {
-    use HasApiTokens, Notifiable, FusionPBXTableModel;
+    use HasApiTokens, Notifiable;
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
     use HasFactory;
     // ~ use HasCustomRelations;
@@ -68,7 +69,7 @@ class User extends Model implements
         'email',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
-        'user_status', 
+        'user_status',
     ];
 
     /**
@@ -163,7 +164,7 @@ class User extends Model implements
 
         // This code works as expected only because of an override Group_user->getKeyName method.
         // Otherwise Laravel builds a wrong query
-        return $this->hasManyThrough(Group_permission::class, User_group::class, 'user_uuid', 'group_name', 'user_uuid');
+        return $this->hasManyThrough(GroupPermission::class, UserGroup::class, 'user_uuid', 'group_name', 'user_uuid');
 
         // Other Gruz tries
 
@@ -198,7 +199,7 @@ class User extends Model implements
          *
          * But the code didn't work, as returned null when trying to use ->with(['permissions'])
         return $this->custom(
-            Group_permission::class,
+            GroupPermission::class,
 
             // add constraints
             function ($relation) {
@@ -218,24 +219,24 @@ class User extends Model implements
 
     public function getDomainAdmins()
     {
-      // ~ $admins = User::where([
+        // ~ $admins = User::where([
         $admins = User::where([
-                  'domain_uuid' => $this->domain_uuid,
-                  'user_enabled' => 'true'
-                //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
-                ])
-                // ->where('user_enabled', '!=', 'true')
-                ->whereHas('permissions', function ($query) {
+            'domain_uuid' => $this->domain_uuid,
+            'user_enabled' => 'true'
+            //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
+        ])
+            // ->where('user_enabled', '!=', 'true')
+            ->whereHas('permissions', function ($query) {
 
-                  $query->whereIn('permission_name', ['user_add', 'user_edit']);
-                })->with(['emails']);
+                $query->whereIn('permission_name', ['user_add', 'user_edit']);
+            })->with(['emails']);
 
         return $admins;
     }
 
     public function emails(): HasMany
     {
-        return $this->hasMany(Contact_email::class, 'contact_uuid', 'contact_uuid');
+        return $this->hasMany(ContactEmail::class, 'contact_uuid', 'contact_uuid');
     }
 
     public function pushtokens(): HasMany
@@ -250,7 +251,7 @@ class User extends Model implements
 
     public function contacts(): BelongsToMany
     {
-        return $this->belongsToMany(Contact::class, Contact_user::class, 'user_uuid', 'contact_uuid')->withPivot('contact_user_uuid');
+        return $this->belongsToMany(Contact::class, ContactUser::class, 'user_uuid', 'contact_uuid')->withPivot('contact_user_uuid');
     }
 
     /**
@@ -297,8 +298,8 @@ class User extends Model implements
     //         // 2 Throught model property
     //         // $email = $this->user_email; 
     //     }
-        
+
     //     return $email;
     // }
-    
+
 }

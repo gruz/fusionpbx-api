@@ -1,16 +1,18 @@
 <?php
 
-namespace Api\Settings\Models;
+namespace Api\Extension\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
 
-class Default_setting extends Model
+class ExtensionUser extends Model
 {
-    use Notifiable, FusionPBXTableModel;
+    use Notifiable;
 
     protected $fillable = [
+        'domain_uuid',
+        'extension_uuid',
+        'user_uuid',
     ];
 
     /**
@@ -21,5 +23,4 @@ class Default_setting extends Model
     protected $hidden = [
         // ~ 'password',
     ];
-
 }

@@ -3,12 +3,9 @@
 namespace Api\User\Models;
 
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
 
-class User_group extends Model
+class UserGroup extends Model
 {
-    use FusionPBXTableModel;
-
     /**
      * Get the primary key for the model.
      *
