@@ -23,13 +23,21 @@ class FrontController extends BaseController
         if (!config('app.debug')) {
             return;
         }
-
-        dd(Domain::first()->getAttribute('domain_name'));
-
+        \DB::enableQueryLog();
         $model = new \Api\PostponedAction\Models\PostponedAction;
-        $model->hash = Str::uuid();
-        $model->request = $request->toArray();
-        $model->save();
+        // $model = $model->first();
+        // $model = $model->where('request->users', '@>', 'alyson.dietrich@howe.com')
+        $model = $model->whereJsonContains('request->users', [
+            [ "user_email" => "alyson.dietrich@howe.com" ]
+        ])
+        ->first();
+
+        dd(optional($model)->toArray(), \DB::getQueryLog());
+
+
+        // $model->hash = Str::uuid();
+        // $model->request = $request->toArray();
+        // $model->save();
 
         // $model->setAttribute('request->dddd', 'aaaa');
 -
@@ -86,10 +94,10 @@ dd($model->request);
                 ];})
                 ->state(function (array $attributes) {
                     $extensions = [];
-                    for ($i=0; $i < rand(1,4); $i++) { 
+                    for ($i=0; $i < rand(1,4); $i++) {
                         $extension = Extension::factory(1)->make()->first()->toArray();
                         $voicemail = Voicemail::factory(1)->make()->first()->toArray();
-    
+
                         $extensions[] = array_merge(
                             $extension,
                             $voicemail

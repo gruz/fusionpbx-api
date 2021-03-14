@@ -12,34 +12,9 @@ use Illuminate\Support\Facades\Notification;
 use Api\PostponedAction\Models\PostponedAction;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Api\Domain\Notifications\DomainSignupNotification;
-use Infrastructure\Services\TestRequestFactoryService;
 
 class DomainSignupTest extends TestCase
 {
-    /**
-     * @var TestRequestFactoryService
-     */
-    private $testRequestFactoryService;
-
-    public function setUp(): void
-    {
-
-        parent::setUp();
-
-        $this->testRequestFactoryService = app(TestRequestFactoryService::class);
-    }
-
-    private function simulateSignup()
-    {
-        PostponedAction::query()->truncate();
-        Notification::fake();
-
-        $data = $this->testRequestFactoryService->makeDomainRequest();
-        $response = $this->json('post', route('fpbx.post.domain.signup'), $data);
-
-        return [$data,  $response];
-    }
-
     public function test_Signup()
     {
         // Перевірити що хеш-записи видаляються після створення домена

@@ -2,9 +2,9 @@
 
 namespace Api\Domain\Requests;
 
-use Infrastructure\Rules\Hostname;
 use Infrastructure\Http\ApiRequest;
-use Infrastructure\Rules\ArrayAtLeastOneAccepted;
+use Infrastructure\Rules\HostnameRule;
+use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
 
 class DomainSignupRequest extends ApiRequest
 {
@@ -24,11 +24,11 @@ class DomainSignupRequest extends ApiRequest
             'users.*.username' => 'required|distinct',
             'users.*.user_email' => 'required|distinct:ignore_case|email',
             'users.*.password' => 'required|min:6|max:25',
-            'users' => new ArrayAtLeastOneAccepted('is_admin'),
+            'users' => new ArrayAtLeastOneAcceptedRule('is_admin'),
         ];
 
         if (!$this->request->get('is_subdomain')) {
-            $rules['domain_name'][] = new Hostname();
+            $rules['domain_name'][] = new HostnameRule();
         }
 
         return $rules;

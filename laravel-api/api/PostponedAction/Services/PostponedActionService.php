@@ -6,7 +6,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Api\User\Services\TeamService;
 use Api\PostponedAction\Models\PostponedAction;
-use Infrastructure\Exceptions\ActivationHashExpired;
 use Api\PostponedAction\Events\PostponedActionWasCreated;
 
 /**
@@ -43,13 +42,6 @@ class PostponedActionService
     public function executeByHash($hash)
     {
         $model = PostponedAction::where('hash', $hash)->first();
-
-        $expireDate = $model->created_at->add(config('fpbx.default.domain.activation_expire'));
-        $now = \Carbon\Carbon::now();
-
-        if ($now > $expireDate) {
-            throw new ActivationHashExpired(__('Domain activation link expired'));
-        }
 
         $data = $model->request;
 

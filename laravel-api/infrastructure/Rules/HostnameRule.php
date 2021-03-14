@@ -4,7 +4,7 @@ namespace Infrastructure\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class Hostname implements Rule
+class HostnameRule implements Rule
 {
     /**
      * Create a new rule instance.

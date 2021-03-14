@@ -46,7 +46,6 @@ class DomainSignupNotification extends Notification implements ShouldQueue
             ? $notifiable->routeNotificationFor('mail')
             : $notifiable->email;
 
-        // $notifiable->mail
         $url = route('fpbx.get.domain.activate', [
             'hash' => $this->model->hash,
             'email' => $address,

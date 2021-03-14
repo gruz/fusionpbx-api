@@ -9,12 +9,12 @@ class TeamServiceTest extends TestCase
     /**
      * @var TeamService
      */
-    private $teamService;
+    public $teamService;
 
     /**
      * @var TestRequestFactoryService
      */
-    private $testRequestFactoryService;
+    public $testRequestFactoryService;
 
     protected function setUp(): void
     {

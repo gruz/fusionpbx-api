@@ -5,7 +5,7 @@ namespace Infrastructure\Rules;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Rule;
 
-class ArrayAtLeastOneAccepted implements Rule
+class ArrayAtLeastOneAcceptedRule implements Rule
 {
     private $field;
 
