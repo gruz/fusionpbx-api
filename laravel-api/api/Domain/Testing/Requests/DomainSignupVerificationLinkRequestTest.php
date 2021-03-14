@@ -2,8 +2,6 @@
 
 namespace Api\Domain\Testing\Requests;
 
-use Faker\Factory;
-use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Infrastructure\Testing\TestCase;
@@ -38,19 +36,19 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
         $return = [
             'no_hash_fails' => [
                 'passed' => false,
-                'data' => ['email' => $address ],
+                'data' => ['email' => $address],
             ],
             'no_email_fails' => [
                 'passed' => false,
-                'data' => ['hash' => $hash ],
+                'data' => ['hash' => $hash],
             ],
             'bad_hash_not_uuid_fails' => [
                 'passed' => false,
-                'data' => ['hash' => '1' ],
+                'data' => ['hash' => '1'],
             ],
             'bad_hash_not_found_fails' => [
                 'passed' => false,
-                'data' => ['hash' => Str::uuid() ],
+                'data' => ['hash' => Str::uuid()],
             ],
             'expired_link_fails' => [
                 'passed' => false,
