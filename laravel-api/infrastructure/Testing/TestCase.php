@@ -25,18 +25,21 @@ abstract class TestCase extends BaseTestCase
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
     }
 
-    protected function simulateSignup()
+    protected function simulateSignup($force = false)
     {
         Notification::fake();
-        $model = PostponedAction::first();
 
-        $response = null;
-        if (!empty($model)) {
-            $response = unserialize(Cache::store('file')->get($model->hash));
-        }
+        if (!$force) {
+            $model = PostponedAction::first();
 
-        if (!empty($response)) {
-            return [ $model->request, $response ];
+            $response = null;
+            if (!empty($model)) {
+                $response = unserialize(Cache::store('file')->get($model->hash));
+            }
+
+            if (!empty($response)) {
+                return [ $model->request, $response ];
+            }
         }
 
         PostponedAction::query()->truncate();

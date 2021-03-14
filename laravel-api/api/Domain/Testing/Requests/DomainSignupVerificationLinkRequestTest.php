@@ -61,7 +61,7 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
                     'email' => $address,
                 ],
             ],
-            'ok' => [
+            'pass' => [
                 'passed' => true,
                 'data' => [
                     'hash' => $model->hash,

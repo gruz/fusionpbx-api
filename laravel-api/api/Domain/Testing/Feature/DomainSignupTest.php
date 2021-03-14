@@ -17,13 +17,11 @@ class DomainSignupTest extends TestCase
 {
     public function test_Signup()
     {
-        $this->simulateSignup();
-
         // Перевірити що хеш-записи видаляються після створення домена
 
         // $this->withoutExceptionHandling();
         // $this->expectException(\Exception::class);
-        list($request, $response) = $this->simulateSignup();
+        list($request, $response) = $this->simulateSignup(true);
 
         // \Illuminate\Support\Arr::set($data, 'users.0.user_email', 'a@a.com');
         // \Illuminate\Support\Arr::set($data, 'users.1.user_email', 'a@a.com');
@@ -35,32 +33,42 @@ class DomainSignupTest extends TestCase
 
         $this->assertDatabaseHas('postponed_actions', ['request->domain_name' => $request['domain_name']]);
 
-        $users = [];
-        foreach (Arr::get($request, 'users') as $user) {
-            $recepient = new stdClass;
 
-            if (Arr::get($user, 'is_admin', false)) {
-                $recepient->name = Arr::get($user, 'username');
-                $recepient->email = Arr::get($user, 'user_email');
-                $users[] = $recepient;
-            }
-        }
+        $users = collect(Arr::get($request, 'users'))->where('is_admin', true)->pluck('user_email')->toArray();
 
         // Assert a notification was sent to the given users...
         Notification::assertSentTo(
             new AnonymousNotifiable,
             DomainSignupNotification::class,
-            function (DomainSignupNotification $notification, array $channels, AnonymousNotifiable $notifiable) use ($users) {
-                $url = route('fpbx.get.domain.activate', ['hash' => PostponedAction::first()->hash]);
-                $mail = $notification->toMail($users[0]);
+            function (DomainSignupNotification $notification, array $channels, AnonymousNotifiable $notifiable) use (&$users) {
+                if (!in_array($notifiable->routes['mail'], $users)) {
+                    d('bad');
+                    return false;
+                }
+
+                $email = $notifiable->routes['mail'];
+
+                $url = route('fpbx.get.domain.activate', [
+                    'hash' => PostponedAction::first()->hash,
+                    'email' => $email,
+                ]);
+                $recepient = new stdClass;
+                $recepient->email = $email;
+                $mail = $notification->toMail($recepient);
                 $this->assertEquals($mail->actionUrl, $url);
+                // d($notifiable->routes['mail'], $email, $notifiable->routes['mail'] == $email);
                 // We cannot use === as here comparison doesn't work https://stackoverflow.com/a/66511294/518704
-                return $notifiable->routes['mail'] == $users;
+
+                if (($key = array_search($email, $users)) !== false) {
+                    unset($users[$key]);
+                }
+
+                return true;
             }
         );
 
-        // $response->dump();
-        // dd($response);
+        $this->assertEmpty($users, 'Not all users notified :' . print_r($users, true) );
+
         $response->assertStatus(201);
     }
 
