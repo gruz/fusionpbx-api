@@ -2,7 +2,6 @@
 
 namespace Infrastructure\Rules;
 
-use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Rule;
 
 class DomainSignupHashHasEmailExistsRule implements Rule
@@ -33,7 +32,6 @@ class DomainSignupHashHasEmailExistsRule implements Rule
 
         if (app()->runningUnitTests()) {
             $hash = $GLOBALS['test_signup_hash'];
-            // d($hash, $value);
         }
 
         $model = new \Api\PostponedAction\Models\PostponedAction;

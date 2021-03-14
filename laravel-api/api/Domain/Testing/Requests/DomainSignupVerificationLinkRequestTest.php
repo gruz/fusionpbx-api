@@ -17,7 +17,6 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
     public function validationProvider()
     {
         $this->app = $this->createApplication();
-        $this->testRequestFactoryService = app(TestRequestFactoryService::class);
 
         list($request, $response) = $this->simulateSignup();
         $model = PostponedAction::first();
