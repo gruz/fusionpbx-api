@@ -4,9 +4,9 @@ namespace Api\User\Repositories;
 
 use Api\User\Models\Group;
 use Illuminate\Database\Query\Builder;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class GroupRepository extends Repository
+class GroupRepository extends AbstractRepository
 {
     public function filterIsAgent(Builder $query, $method, $clauseOperator, $value, $in)
     {

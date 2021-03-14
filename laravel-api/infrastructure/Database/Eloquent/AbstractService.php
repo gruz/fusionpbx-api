@@ -7,7 +7,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
 use Api\User\Exceptions\UserNotFoundException;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
 abstract class AbstractService
 {

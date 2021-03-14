@@ -7,9 +7,9 @@ use Illuminate\Support\Str;
 use Api\User\Models\Contact;
 use Api\Domain\Models\Domain;
 use Api\User\Models\ContactUser;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class DomainRepository extends Repository
+class DomainRepository extends AbstractRepository
 {
     private $userRepository;
 

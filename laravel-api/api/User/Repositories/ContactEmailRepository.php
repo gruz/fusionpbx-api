@@ -2,9 +2,9 @@
 
 namespace Api\User\Repositories;
 
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class ContactEmailRepository extends Repository
+class ContactEmailRepository extends AbstractRepository
 {
     public function create(array $data)
     {

@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Infrastructure\Database\Eloquent\Model;
 use Optimus\Genie\Repository as BaseRepository;
 
-abstract class Repository extends BaseRepository
+abstract class AbstractRepository extends BaseRepository
 {
     /**
      * Sets $this->database variable to DB::getFacadeRoot()

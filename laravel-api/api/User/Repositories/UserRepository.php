@@ -4,9 +4,9 @@ namespace Api\User\Repositories;
 
 use Api\User\Models\User;
 use Illuminate\Support\Str;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class UserRepository extends Repository
+class UserRepository extends AbstractRepository
 {
     public function create(array $data)
     {

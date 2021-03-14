@@ -4,9 +4,9 @@ namespace Api\User\Repositories;
 
 use Api\User\Models\Contact;
 use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class ContactRepository extends Repository
+class ContactRepository extends AbstractRepository
 {
     public function create(array $data)
     {

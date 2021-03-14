@@ -2,8 +2,8 @@
 
 namespace Api\User\Repositories;
 
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class ContactUserRepository extends Repository
+class ContactUserRepository extends AbstractRepository
 {
 }

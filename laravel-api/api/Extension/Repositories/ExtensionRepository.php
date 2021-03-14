@@ -4,9 +4,9 @@ namespace Api\Extension\Repositories;
 
 use Illuminate\Support\Str;
 use Api\Extension\Models\Extension;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class ExtensionRepository extends Repository
+class ExtensionRepository extends AbstractRepository
 {
     public function create(array $data)
     {

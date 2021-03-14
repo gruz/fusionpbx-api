@@ -187,7 +187,6 @@ class TeamService extends AbstractService
         $this->database->commit();
 
         $this->dispatcher->dispatch(new TeamWasCreated($domainModel, $usersModel));
-        // $this->dispatcher->dispatch(new DomainWasCreated($domain, true));
 
         return $domainModel;
     }

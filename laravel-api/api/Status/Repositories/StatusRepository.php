@@ -3,10 +3,10 @@
 namespace Api\Status\Repositories;
 
 use Api\Status\Models\Status;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 use Illuminate\Database\Eloquent\Collection;
 
-class StatusRepository extends Repository
+class StatusRepository extends AbstractRepository
 {
     public function update(Status $model, array $data)
     {

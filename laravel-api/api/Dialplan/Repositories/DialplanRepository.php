@@ -3,9 +3,9 @@
 namespace Api\Dialplan\Repositories;
 
 use Api\Dialplan\Exceptions\CouldNotInjectDialplanException;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class DialplanRepository extends Repository
+class DialplanRepository extends AbstractRepository
 {
     /**
      * Load custom dialplan
