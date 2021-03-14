@@ -34,6 +34,10 @@ trait TestRequestTrait
      */
     public function validation_results_as_expected($shouldPass, $mockedRequestData)
     {
+        if ($mockedRequestData instanceof \Closure) {
+            $mockedRequestData = $mockedRequestData();
+        }
+
         $message = null;
         list($result, $message) = $this->validate($mockedRequestData);
         $this->assertEquals($shouldPass, $result, $message);

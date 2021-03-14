@@ -21,7 +21,7 @@ class DomainSignupTest extends TestCase
 
         // $this->withoutExceptionHandling();
         // $this->expectException(\Exception::class);
-        list($request, $response) = $this->simulateSignup(true);
+        list($request, $response) = $this->simulateSignup();
 
         // \Illuminate\Support\Arr::set($data, 'users.0.user_email', 'a@a.com');
         // \Illuminate\Support\Arr::set($data, 'users.1.user_email', 'a@a.com');

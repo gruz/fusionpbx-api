@@ -25,29 +25,15 @@ abstract class TestCase extends BaseTestCase
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
     }
 
-    protected function simulateSignup($force = false)
+    protected function simulateSignup()
     {
         Notification::fake();
 
-        if (!$force) {
-            $model = PostponedAction::first();
-
-            $response = null;
-            if (!empty($model)) {
-                $response = unserialize(Cache::store('file')->get($model->hash));
-            }
-
-            if (!empty($response)) {
-                return [ $model->request, $response ];
-            }
-        }
-
         PostponedAction::query()->truncate();
-        $request = $this->testRequestFactoryService->makeDomainRequest();
+        $testRequestFactoryService = app(TestRequestFactoryService::class);
+        $request = $testRequestFactoryService->makeDomainRequest();
         $response = $this->json('post', route('fpbx.post.domain.signup'), $request);
 
-        $model = PostponedAction::first();
-        Cache::store('file')->set($model->hash, serialize($response));
         $data = [$request, $response];
 
         return $data;

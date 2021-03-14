@@ -19,18 +19,13 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
         $this->app = $this->createApplication();
 
         list($request, $response) = $this->simulateSignup();
+
         $model = PostponedAction::first();
 
-        if (PostponedAction::count() >= 2) {
-            $second = PostponedAction::skip(1)->first();
-            $second->created_at = Carbon::now()->subCentury();
-            $second->save();
-        } else {
-            $second = $model->replicate();
-            $second->hash = Str::uuid();
-            $second->created_at = Carbon::now()->subCentury();
-            $second->save();
-        }
+        $second = $model->replicate();
+        $second->hash = Str::uuid();
+        $second->created_at = Carbon::now()->subCentury();
+        $second->save();
 
         $hash = $model->hash;
         $emails = Arr::get($request, 'users');
@@ -63,10 +58,17 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
             ],
             'pass' => [
                 'passed' => true,
-                'data' => [
-                    'hash' => $model->hash,
-                    'email' => $address,
-                ],
+                'data' => function() {
+                    $model = PostponedAction::first();
+                    $emails = Arr::get($model->request, 'users');
+                    $emails = collect($emails)->pluck('user_email');
+                    $address = $emails[0];
+
+                    return [
+                        'hash' => $model->hash,
+                        'email' => $address,
+                    ];
+                },
             ],
         ];
 
