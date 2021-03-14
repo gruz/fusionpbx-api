@@ -15,6 +15,7 @@ class DomainSignupRequestTest extends TestCase
 
     public function validationProvider()
     {
+        return [];
         // $this->withoutExceptionHandling();
         /* WithFaker trait doesn't work in the dataProvider */
         $faker = Factory::create(Factory::DEFAULT_LOCALE);

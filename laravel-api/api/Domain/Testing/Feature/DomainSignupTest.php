@@ -17,6 +17,8 @@ class DomainSignupTest extends TestCase
 {
     public function test_Signup()
     {
+        $this->simulateSignup();
+
         // Перевірити що хеш-записи видаляються після створення домена
 
         // $this->withoutExceptionHandling();
@@ -30,10 +32,6 @@ class DomainSignupTest extends TestCase
         // \Illuminate\Support\Arr::set($data, 'users.2.is_admin', false);
 
         // $data['domain_name'] = '192.168.0.160';
-
-
-        // Don't delete, for getting JSON requests as example
-        // \Illuminate\Support\Facades\Storage::put('request.json', json_encode($data, JSON_PRETTY_PRINT));
 
         $this->assertDatabaseHas('postponed_actions', ['request->domain_name' => $request['domain_name']]);
 
@@ -66,7 +64,7 @@ class DomainSignupTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function test_EmailLinkVerificationFailed()
+    public function atest_EmailLinkVerificationFailed()
     {
         // $this->withoutExceptionHandling();
         // list($request, $response) = $this->simulateSignup();
@@ -110,7 +108,7 @@ class DomainSignupTest extends TestCase
         $response->assertJsonPath('errors.0.detail', __('Domain activation link expired'));
     }
 
-    public function test_DomainActivate()
+    public function atest_DomainActivate()
     {
         $this->simulateSignup();
 

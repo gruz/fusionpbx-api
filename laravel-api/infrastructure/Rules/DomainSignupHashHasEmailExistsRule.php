@@ -30,6 +30,12 @@ class DomainSignupHashHasEmailExistsRule implements Rule
     public function passes($attribute, $value)
     {
         $hash = $this->field;
+
+        if (app()->runningUnitTests()) {
+            $hash = $GLOBALS['test_signup_hash'];
+            // d($hash, $value);
+        }
+
         $model = new \Api\PostponedAction\Models\PostponedAction;
 
         $count = $model

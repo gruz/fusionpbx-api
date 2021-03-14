@@ -107,7 +107,7 @@ class DomainController extends Controller
      *
     @OA\Get(
         tags={"Domain"},
-        path="/domain/activate/{hash}",
+        path="/domain/activate/{hash}/{email}",
         @OA\Parameter(
             name="hash",
             in="path",

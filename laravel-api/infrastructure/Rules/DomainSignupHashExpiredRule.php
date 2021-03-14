@@ -16,6 +16,11 @@ class DomainSignupHashExpiredRule implements Rule
      */
     public function passes($attribute, $value)
     {
+        if (app()->runningUnitTests()) {
+            // Ugly way to get data from another rule when testing as request is flushed
+            $GLOBALS['test_signup_hash'] = $value;
+        }
+
         $model = PostponedAction::where('hash', $value)->first();
 
         if (empty($model)) {

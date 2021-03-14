@@ -3,12 +3,12 @@ namespace Api\User\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Api\User\Models\ContactEmail as ContactEmail;
 /**
  * @OA\Schema()
  */
-class Contact extends Model
+class Contact extends AbstractModel
 {
     use HasFactory;
     use Notifiable;

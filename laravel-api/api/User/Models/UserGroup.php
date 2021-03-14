@@ -2,9 +2,9 @@
 
 namespace Api\User\Models;
 
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
-class UserGroup extends Model
+class UserGroup extends AbstractModel
 {
     /**
      * Get the primary key for the model.

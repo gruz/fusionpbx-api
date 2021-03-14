@@ -2,12 +2,12 @@
 
 namespace Api\User\Models;
 
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 /**
  * @OA\Schema()
  */
-class UserSetting extends Model
+class UserSetting extends AbstractModel
 {
 
     public $fillable = [

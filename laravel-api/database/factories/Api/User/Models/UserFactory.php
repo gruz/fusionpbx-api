@@ -27,9 +27,8 @@ class UserFactory extends Factory
             "is_admin" => false,
             "reseller_reference_code" => "IS_TEST_CODE",
             "username" => $email,
-            "password" => $this->faker->password,
-            "password" => $this->faker->password,
             "user_email" => $email,
+            "password" => $this->faker->password,
         ];
 
         return $return;

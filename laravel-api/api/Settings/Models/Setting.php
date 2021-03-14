@@ -4,9 +4,9 @@ namespace Api\Settings\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
-class Setting extends Model
+class Setting extends AbstractModel
 {
     use HasFactory;
     use Notifiable;

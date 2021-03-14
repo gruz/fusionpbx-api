@@ -17,7 +17,7 @@ use OpenApi\Processors\OperationId;
 use OpenApi\Annotations\JsonContent;
 use OpenApi\Annotations\RequestBody;
 use Illuminate\Support\Facades\Storage;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use OpenApi\Annotations\AbstractAnnotation;
 
 /**

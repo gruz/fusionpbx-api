@@ -3,10 +3,10 @@
 namespace Api\User\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Api\Domain\Models\Domain;
 
-class ContactEmail extends Model
+class ContactEmail extends AbstractModel
 {
     use Notifiable;
 

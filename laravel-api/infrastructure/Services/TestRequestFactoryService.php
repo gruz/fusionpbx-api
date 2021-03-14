@@ -22,6 +22,8 @@ class TestRequestFactoryService
 
         if ($data = Cache::store('file')->get($skey)) {
             $data = unserialize($data);
+            // Don't delete, for getting JSON requests as example
+            \Illuminate\Support\Facades\Storage::put('request.json', json_encode($data, JSON_PRETTY_PRINT));
             return $data;
         }
 
@@ -64,6 +66,7 @@ class TestRequestFactoryService
                 ];
             })
             ->make()
+            ->makeVisible('user_email')
             ->makeVisible('password')
             ->toArray();
 
@@ -76,6 +79,8 @@ class TestRequestFactoryService
         $return =  $model->toArray();
 
         Cache::store('file')->set($skey, serialize($return));
+        // Don't delete, for getting JSON requests as example
+        \Illuminate\Support\Facades\Storage::put('request.json', json_encode($return, JSON_PRETTY_PRINT));
 
         return $return;
     }

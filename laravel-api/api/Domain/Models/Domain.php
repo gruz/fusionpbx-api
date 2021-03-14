@@ -4,14 +4,14 @@ namespace Api\Domain\Models;
 
 use Api\User\Models\User;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @OA\Schema()
  */
-class Domain extends Model
+class Domain extends AbstractModel
 {
     use HasFactory;
     use Notifiable;

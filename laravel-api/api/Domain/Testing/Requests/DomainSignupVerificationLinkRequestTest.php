@@ -20,13 +20,18 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
 
         list($request, $response) = $this->simulateSignup();
-
         $model = PostponedAction::first();
 
-        $second = $model->replicate();
-        $second->hash = Str::uuid();
-        $second->created_at = Carbon::now()->subCentury();
-        $second->save();
+        if (PostponedAction::count() >= 2) {
+            $second = PostponedAction::skip(1)->first();
+            $second->created_at = Carbon::now()->subCentury();
+            $second->save();
+        } else {
+            $second = $model->replicate();
+            $second->hash = Str::uuid();
+            $second->created_at = Carbon::now()->subCentury();
+            $second->save();
+        }
 
         $hash = $model->hash;
         $emails = Arr::get($request, 'users');
@@ -65,10 +70,6 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
                 ],
             ],
         ];
-
-        // Ugly way to pass route parameter request while testing
-        // app() here doesn't work as it's recreated in testing flow erasing global data
-        $GLOBALS['test.request.hash'] = $model->hash;
 
         return $return;
     }

@@ -15,11 +15,7 @@ class DomainSignupVerificationLinkRequest extends ApiRequest
 
     public function rules()
     {
-        if (app()->runningUnitTests()) {
-            $hash = $GLOBALS['test.request.hash'];
-        } else {
-            $hash = $this->route('hash');
-        }
+        $hash = $this->route('hash');
 
         $rules = [
             'hash' => [
@@ -27,7 +23,6 @@ class DomainSignupVerificationLinkRequest extends ApiRequest
                 'uuid',
                 'exists:\Api\PostponedAction\Models\PostponedAction',
                 new DomainSignupHashExpiredRule(),
-                // 'exists:postponed_action',
             ],
             'email' => [
                 'required',

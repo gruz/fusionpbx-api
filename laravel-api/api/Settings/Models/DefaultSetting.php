@@ -3,9 +3,9 @@
 namespace Api\Settings\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
-class DefaultSetting extends Model
+class DefaultSetting extends AbstractModel
 {
     use Notifiable;
 

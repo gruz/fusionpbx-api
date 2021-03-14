@@ -2,10 +2,10 @@
 
 namespace Api\Pushtoken\Models;
 
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Infrastructure\Traits\Uuids;
 
-class Pushtoken extends Model
+class Pushtoken extends AbstractModel
 {
     use Uuids;
 

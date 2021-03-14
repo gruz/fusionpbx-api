@@ -206,7 +206,7 @@ abstract class AbstractService
         $this->database->commit();
     }
 
-    public function createAttachedMany(Model $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName)
+    public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName)
     {
         $this->database->beginTransaction();
 

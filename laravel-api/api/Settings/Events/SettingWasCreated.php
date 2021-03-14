@@ -3,13 +3,13 @@
 namespace Api\Settings\Events;
 
 use Infrastructure\Events\Event;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 class SettingWasCreated extends Event
 {
     public $setting;
 
-    public function __construct(Model $setting)
+    public function __construct(AbstractModel $setting)
     {
         $this->setting = $setting;
     }

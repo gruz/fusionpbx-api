@@ -3,9 +3,9 @@
 namespace Api\Extension\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
-class ExtensionUser extends Model
+class ExtensionUser extends AbstractModel
 {
     use Notifiable;
 

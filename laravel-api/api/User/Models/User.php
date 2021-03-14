@@ -12,7 +12,7 @@ use Api\User\Models\GroupPermission;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,7 +28,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 /**
  * @OA\Schema()
  */
-class User extends Model implements
+class User extends AbstractModel implements
     MustVerifyEmailContract,
     AuthenticatableContract,
     AuthorizableContract,

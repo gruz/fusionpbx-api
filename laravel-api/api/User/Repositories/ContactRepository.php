@@ -3,7 +3,7 @@
 namespace Api\User\Repositories;
 
 use Api\User\Models\Contact;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class ContactRepository extends AbstractRepository
@@ -22,7 +22,7 @@ class ContactRepository extends AbstractRepository
         return $model;
     }
 
-    public function update(Model $contact, array $data)
+    public function update(AbstractModel $contact, array $data)
     {
         $contact->fill($data);
 

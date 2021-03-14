@@ -2,13 +2,13 @@
 
 namespace Api\Voicemail\Models;
 
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 
 /**
  * @OA\Schema()
 */
 
-class VoicemailOption extends Model
+class VoicemailOption extends AbstractModel
 {
 }

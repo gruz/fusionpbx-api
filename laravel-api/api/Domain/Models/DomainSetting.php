@@ -2,7 +2,7 @@
 
 namespace Api\Domain\Models;
 
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 /**
  * @OA\Schema(
@@ -15,7 +15,7 @@ SELECT x.* FROM public.v_default_settings x
 ```"
  * )
  */
-class DomainSetting extends Model
+class DomainSetting extends AbstractModel
 {
     protected $attributes = [
         'domain_setting_category' => 'domain',

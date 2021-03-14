@@ -3,7 +3,7 @@
 namespace Infrastructure\Database\Eloquent;
 
 use Illuminate\Support\Str;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Optimus\Genie\Repository as BaseRepository;
 
 abstract class AbstractRepository extends BaseRepository
@@ -77,7 +77,7 @@ abstract class AbstractRepository extends BaseRepository
         return $model;
     }
 
-    public function update(Model $model, array $data)
+    public function update(AbstractModel $model, array $data)
     {
         $model->fill($data);
 
@@ -105,7 +105,7 @@ abstract class AbstractRepository extends BaseRepository
         return $model;
     }
 
-    public function createAttachedMany(Model $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName)
+    public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName)
     {
         /**
          * @var Repository

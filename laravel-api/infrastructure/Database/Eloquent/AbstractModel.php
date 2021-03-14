@@ -11,7 +11,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Str;
 use Infrastructure\Traits\Uuids;
 
-abstract class Model extends BaseModel
+abstract class AbstractModel extends BaseModel
 {
     use Uuids;
 

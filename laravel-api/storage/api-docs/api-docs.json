@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-144-g5d29917"
+        "version": "0.0.8-145-gb6da556"
     },
     "paths": {
         "/domain/signup": {
@@ -84,7 +84,7 @@
                 }
             }
         },
-        "/domain/activate/{hash}": {
+        "/domain/activate/{hash}/{email}": {
             "get": {
                 "tags": [
                     "Domain"
@@ -1083,15 +1083,6 @@
                     "domain_parent_uuid": {
                         "description": "Parent domain id",
                         "nullable": true
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
                     }
                 },
                 "type": "object"
@@ -1166,28 +1157,6 @@
                         "description": "Setting field type",
                         "type": "string",
                         "example": "uk-ua"
-                    },
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_name": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "domain_description": {
-                        "type": "string",
-                        "readOnly": true
                     }
                 },
                 "type": "object"
@@ -1231,110 +1200,11 @@
                     }
                 ]
             },
-            "Extension": {
-                "properties": {
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_name": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "domain_description": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                }
-            },
+            "Extension": {},
             "UserController": {},
-            "Contact": {
-                "properties": {
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "domain_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_name": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "domain_description": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                }
-            },
-            "User": {
-                "properties": {
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_name": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "domain_description": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                }
-            },
-            "UserSetting": {
-                "properties": {
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_name": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "domain_description": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                }
-            },
+            "Contact": {},
+            "User": {},
+            "UserSetting": {},
             "user_includes": {
                 "type": "array",
                 "items": {
@@ -1467,58 +1337,8 @@
                     }
                 ]
             },
-            "Voicemail": {
-                "properties": {
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_name": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "domain_description": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                }
-            },
-            "VoicemailOption": {
-                "properties": {
-                    "domain_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_parent_uuid": {
-                        "type": "string",
-                        "format": "uuid",
-                        "readOnly": true
-                    },
-                    "domain_name": {
-                        "type": "string",
-                        "readOnly": true
-                    },
-                    "domain_enabled": {
-                        "type": "boolean",
-                        "readOnly": true
-                    },
-                    "domain_description": {
-                        "type": "string",
-                        "readOnly": true
-                    }
-                }
-            }
+            "Voicemail": {},
+            "VoicemailOption": {}
         },
         "parameters": {
             "domain_uuid": {

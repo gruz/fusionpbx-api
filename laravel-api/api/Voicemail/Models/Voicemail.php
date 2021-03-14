@@ -2,12 +2,12 @@
 namespace Api\Voicemail\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 /**
  * @OA\Schema()
  */
-class Voicemail extends Model
+class Voicemail extends AbstractModel
 {
     use HasFactory;
 

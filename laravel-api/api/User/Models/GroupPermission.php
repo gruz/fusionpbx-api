@@ -2,8 +2,8 @@
 
 namespace Api\User\Models;
 
-use Infrastructure\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
-class GroupPermission extends Model
+class GroupPermission extends AbstractModel
 {
 }

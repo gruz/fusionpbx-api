@@ -2,10 +2,11 @@
 
 namespace Infrastructure\Testing;
 
-use Api\PostponedAction\Models\PostponedAction;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
+use Api\PostponedAction\Models\PostponedAction;
 use Infrastructure\Services\TestRequestFactoryService;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -26,12 +27,26 @@ abstract class TestCase extends BaseTestCase
 
     protected function simulateSignup()
     {
-        PostponedAction::query()->truncate();
         Notification::fake();
+        $model = PostponedAction::first();
 
-        $data = $this->testRequestFactoryService->makeDomainRequest();
-        $response = $this->json('post', route('fpbx.post.domain.signup'), $data);
+        $response = null;
+        if (!empty($model)) {
+            $response = unserialize(Cache::store('file')->get($model->hash));
+        }
 
-        return [$data,  $response];
+        if (!empty($response)) {
+            return [ $model->request, $response ];
+        }
+
+        PostponedAction::query()->truncate();
+        $request = $this->testRequestFactoryService->makeDomainRequest();
+        $response = $this->json('post', route('fpbx.post.domain.signup'), $request);
+
+        $model = PostponedAction::first();
+        Cache::store('file')->set($model->hash, serialize($response));
+        $data = [$request, $response];
+
+        return $data;
     }
 }
