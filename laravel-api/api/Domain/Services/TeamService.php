@@ -1,11 +1,11 @@
 <?php
 
-namespace Api\User\Services;
+namespace Api\Domain\Services;
 
 use Exception;
 use Illuminate\Support\Arr;
 use Api\User\Services\UserService;
-use Api\User\Events\TeamWasCreated;
+use Api\Domain\Events\TeamWasCreated;
 use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;
 use Api\Domain\Services\DomainService;

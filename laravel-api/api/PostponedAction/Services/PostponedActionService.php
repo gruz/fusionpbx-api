@@ -4,7 +4,7 @@ namespace Api\PostponedAction\Services;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Api\User\Services\TeamService;
+use Api\Domain\Services\TeamService;
 use Api\PostponedAction\Models\PostponedAction;
 use Api\PostponedAction\Events\PostponedActionWasCreated;
 

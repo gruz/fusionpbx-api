@@ -196,7 +196,7 @@ return [
          */
         Infrastructure\Auth\AuthServiceProvider::class,
         Infrastructure\Http\RouteServiceProvider::class,
-        Api\User\TeamServiceProvider::class,
+        Api\Domain\TeamServiceProvider::class,
         Api\User\UserServiceProvider::class,
         Api\PostponedAction\PostponedActionServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,

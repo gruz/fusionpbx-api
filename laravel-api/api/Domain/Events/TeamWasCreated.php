@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\User\Events;
+namespace Api\Domain\Events;
 
 use Infrastructure\Events\Event;
 use Infrastructure\Database\Eloquent\AbstractModel;

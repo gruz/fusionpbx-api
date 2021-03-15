@@ -1,9 +1,10 @@
 <?php
 
-namespace Api\User\Listeners;
+namespace Api\Domain\Listeners;
 
-use Api\User\Mail\UserNew;
-use Api\Domain\Mail\DomainNew;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Notification;
+use Api\Domain\Notifications\DomainSignupNotification;
 
 class TeamWasCreatedListener
 {

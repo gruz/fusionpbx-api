@@ -1,9 +1,9 @@
 <?php
 
-namespace Api\User;
+namespace Api\Domain;
 
-use Api\User\Events\TeamWasCreated;
-use Api\User\Listeners\TeamWasCreatedListener;
+use Api\Domain\Events\TeamWasCreated;
+use Api\Domain\Listeners\TeamWasCreatedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class TeamServiceProvider extends ServiceProvider

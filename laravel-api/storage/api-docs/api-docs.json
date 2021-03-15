@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-150-gc616c21"
+        "version": "0.0.8-151-gd7d56c1"
     },
     "paths": {
         "/domain/signup": {

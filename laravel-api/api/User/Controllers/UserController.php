@@ -4,7 +4,7 @@ namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
 use Api\User\Services\UserService;
-use Api\User\Services\TeamService;
+use Api\Domain\Services\TeamService;
 use Infrastructure\Http\Controller;
 use Api\User\Requests\SignupRequest;
 use Api\User\Services\UserPasswordService;
