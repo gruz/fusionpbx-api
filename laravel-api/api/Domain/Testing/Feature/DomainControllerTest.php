@@ -13,26 +13,15 @@ use Api\PostponedAction\Models\PostponedAction;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Api\Domain\Notifications\DomainSignupNotification;
 
-class DomainSignupTest extends TestCase
+class DomainControllerTest extends TestCase
 {
-    public function test_Signup()
+    public function testSignup_Success()
     {
-        // Перевірити що хеш-записи видаляються після створення домена
-
         // $this->withoutExceptionHandling();
         // $this->expectException(\Exception::class);
         list($request, $response) = $this->simulateSignup();
 
-        // \Illuminate\Support\Arr::set($data, 'users.0.user_email', 'a@a.com');
-        // \Illuminate\Support\Arr::set($data, 'users.1.user_email', 'a@a.com');
-        // \Illuminate\Support\Arr::set($data, 'users.0.is_admin', false);
-        // \Illuminate\Support\Arr::set($data, 'users.1.is_admin', false);
-        // \Illuminate\Support\Arr::set($data, 'users.2.is_admin', false);
-
-        // $data['domain_name'] = '192.168.0.160';
-
         $this->assertDatabaseHas('postponed_actions', ['request->domain_name' => $request['domain_name']]);
-
 
         $users = collect(Arr::get($request, 'users'))->where('is_admin', true)->pluck('user_email')->toArray();
 
@@ -42,7 +31,6 @@ class DomainSignupTest extends TestCase
             DomainSignupNotification::class,
             function (DomainSignupNotification $notification, array $channels, AnonymousNotifiable $notifiable) use (&$users) {
                 if (!in_array($notifiable->routes['mail'], $users)) {
-                    d('bad');
                     return false;
                 }
 
@@ -56,8 +44,6 @@ class DomainSignupTest extends TestCase
                 $recepient->email = $email;
                 $mail = $notification->toMail($recepient);
                 $this->assertEquals($mail->actionUrl, $url);
-                // d($notifiable->routes['mail'], $email, $notifiable->routes['mail'] == $email);
-                // We cannot use === as here comparison doesn't work https://stackoverflow.com/a/66511294/518704
 
                 if (($key = array_search($email, $users)) !== false) {
                     unset($users[$key]);
@@ -67,12 +53,12 @@ class DomainSignupTest extends TestCase
             }
         );
 
-        $this->assertEmpty($users, 'Not all users notified :' . print_r($users, true) );
+        $this->assertEmpty($users, 'Not all users notified :' . print_r($users, true));
 
         $response->assertStatus(201);
     }
 
-    public function atest_EmailLinkVerificationFailed()
+    public function atestActivate_Failed()
     {
         // $this->withoutExceptionHandling();
         // list($request, $response) = $this->simulateSignup();
@@ -116,7 +102,7 @@ class DomainSignupTest extends TestCase
         $response->assertJsonPath('errors.0.detail', __('Domain activation link expired'));
     }
 
-    public function atest_DomainActivate()
+    public function atest_Activate_Success()
     {
         $this->simulateSignup();
 
@@ -175,7 +161,6 @@ class DomainSignupTest extends TestCase
     {
     }
 
-
     public function test_Adding_existsing_domain_fails()
     {
         // $response = $this->get('/');
@@ -206,18 +191,5 @@ class DomainSignupTest extends TestCase
         $response = $this->post('/domain/signup', $data);
 
         $response->assertStatus(400);
-    }
-
-    public function adding_domain_with_missing_admin_user_fails()
-    {
-    }
-    public function adding_domain_with_missing_users_fails()
-    {
-    }
-    public function badPassword_adding_domain_with_missing_users_fails()
-    {
-    }
-    public function duplicated_username_fails()
-    {
     }
 }

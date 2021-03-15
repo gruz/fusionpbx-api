@@ -46,17 +46,13 @@ class DomainSignupRequestTest extends TestCase
             ],
         ];
 
-        $dataModified = $data;
-        Arr::set($dataModified, 'users.0.user_email', 'a@a.com');
-        Arr::set($dataModified, 'users.1.user_email', 'a@a.com');
+        $dataModified = $this->makeDuplicatedUserEmails($data);
         $return['fail_if_same_mails'] = [
             'passed' => false,
             'data' => $dataModified,
         ];
 
-        $dataModified = $data;
-        Arr::forget($dataModified, 'users.0.user_email');
-        Arr::set($dataModified, 'users.1.user_email', '');
+        $dataModified = $this->removeEmails($data);
         $return['fail_no_user_email'] = [
             'passed' => false,
             'data' => $dataModified,
@@ -65,24 +61,35 @@ class DomainSignupRequestTest extends TestCase
         $dataModified = $testRequestFactoryService->makeDomainRequest([
             'adminIsPresent' => false,
         ]);
-
         $return['fail_if_no_admin_among_user'] = [
             'passed' => false,
             'data' => $dataModified,
         ];
 
+        // $userData = Arr::get($data, 'users.0');
+        // $userData['username'] = 'aaaa';
+        // $userData['user_email'] = 'a@a.com';
+        // User::create($userData);
 
-        $userData = Arr::get($data, 'users.0');
-        $userData['username'] = 'aaaa';
-        $userData['user_email'] = 'aaaa';
-        $user = User::create($userData);
-
-        $return['fail_if_user_exists'] = [
-            'passed' => true,
-            'data' => $data,
-        ];
-        // $user->delete();
+        // $return['fail_if_user_exists'] = [
+        //     'passed' => true,
+        //     'data' => $data,
+        // ];
 
         return $return;
+    }
+
+    private function makeDuplicatedUserEmails($data) {
+        Arr::set($data, 'users.0.user_email', 'a@a.com');
+        Arr::set($data, 'users.1.user_email', 'a@a.com');
+
+        return $data;
+    }
+
+    private function removeEmails($data) {
+        Arr::forget($data, 'users.0.user_email');
+        Arr::set($data, 'users.1.user_email', '');
+
+        return $data;
     }
 }
