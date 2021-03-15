@@ -25,13 +25,16 @@ abstract class TestCase extends BaseTestCase
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
     }
 
-    protected function simulateSignup()
+    protected function simulateSignup($noCache = false)
     {
         Notification::fake();
 
         PostponedAction::query()->truncate();
+        /**
+         * @var TestRequestFactoryService
+         */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
-        $request = $testRequestFactoryService->makeDomainRequest();
+        $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $noCache]);
         $response = $this->json('post', route('fpbx.post.domain.signup'), $request);
 
         $data = [$request, $response];

@@ -39,27 +39,12 @@ class PostponedActionService
         return $model;
     }
 
-    public function executeByHash($hash)
+    public function executeByHash($hash, $email)
     {
         $model = PostponedAction::where('hash', $hash)->first();
 
         $data = $model->request;
 
-        return $this->teamService->create($data);
-
-        // return $this->response($this->teamService->createDeperacted($data), 201);
-        // dd($data);
-        // $data = $request->all();
-        // PostponedActionWasCreated::dispatch($request);
-
-
-        // // php artisan make:notification InvoicePaid
-        // Notification::send($users, new InvoicePaid($invoice));
-
-
-        // foreach ($users2Notify as $user) {
-        //     $this->notify($user);
-        // }
-        // return $model;
+        return $this->teamService->create($data, $email);
     }
 }

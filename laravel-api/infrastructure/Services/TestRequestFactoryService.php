@@ -17,10 +17,11 @@ class TestRequestFactoryService
 {
     public function makeDomainRequest($params = [])
     {
+        $noCache = Arr::get($params, 'noCache');
         $skey = 'testing/' . Util::normalizePath(__FUNCTION__ . serialize(func_get_args()));
         // dd($skey);
 
-        if ($data = Cache::store('file')->get($skey)) {
+        if (!$noCache && $data = Cache::store('file')->get($skey)) {
             $data = unserialize($data);
             // Don't delete, for getting JSON requests as example
             \Illuminate\Support\Facades\Storage::put('request.json', json_encode($data, JSON_PRETTY_PRINT));
@@ -78,7 +79,9 @@ class TestRequestFactoryService
 
         $return =  $model->toArray();
 
-        Cache::store('file')->set($skey, serialize($return));
+        if (!$noCache) {
+            Cache::store('file')->set($skey, serialize($return));
+        }
         // Don't delete, for getting JSON requests as example
         \Illuminate\Support\Facades\Storage::put('request.json', json_encode($return, JSON_PRETTY_PRINT));
 

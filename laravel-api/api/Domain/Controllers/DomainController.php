@@ -122,9 +122,9 @@ class DomainController extends Controller
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
     */
-    public function activate($hash, DomainSignupVerificationLinkRequest $request, PostponedActionService $postponedActionService)
+    public function activate($hash, $email, DomainSignupVerificationLinkRequest $request, PostponedActionService $postponedActionService)
     {
-        return $this->response($postponedActionService->executeByHash($hash), 201);
+        return $this->response($postponedActionService->executeByHash($hash, $email), 201);
     }
 
     /**

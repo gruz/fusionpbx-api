@@ -88,7 +88,7 @@ class TeamService extends AbstractService
         return $data;
     }
 
-    public function create($data)
+    public function create($data, $email = null)
     {
         $data = $this->prepareData($data);
 
@@ -186,7 +186,7 @@ class TeamService extends AbstractService
 
         $this->database->commit();
 
-        $this->dispatcher->dispatch(new TeamWasCreated($domainModel, $usersModel));
+        $this->dispatcher->dispatch(new TeamWasCreated($domainModel, $usersModel, $email));
 
         return $domainModel;
     }

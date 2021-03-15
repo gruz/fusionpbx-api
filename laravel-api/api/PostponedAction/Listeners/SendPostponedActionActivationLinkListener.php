@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Notification;
 use Api\Domain\Notifications\DomainSignupNotification;
 
-class SendPostponedActionActivationLink
+class SendPostponedActionActivationLinkListener
 {
     public function handle($event)
     {

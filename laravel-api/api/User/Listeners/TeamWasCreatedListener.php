@@ -9,7 +9,14 @@ class TeamWasCreatedListener
 {
     public function handle($event)
     {
-        dd('NOTIFY USERS');
+        dd($event);
+
+        foreach ($event->users as $user) {
+            $email = Arr::get($user, 'user_email');
+            Notification::route('mail', $email)
+                ->notify(new DomainSignupNotification($event->model));
+        }
+        
         // $admins = $event->user->getDomainAdmins()->get();
 
         // foreach ($admins as $k => $admin) {

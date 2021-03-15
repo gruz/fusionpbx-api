@@ -58,31 +58,32 @@ class DomainControllerTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function atestActivate_Failed()
+    public function testActivate_Failed()
     {
         // $this->withoutExceptionHandling();
         // list($request, $response) = $this->simulateSignup();
         $this->simulateSignup();
 
         $model = PostponedAction::first();
-        $domain_name = $model->getAttribute('request->domain_name');
+        $domain_name = Arr::get($model->request, 'domain_name');
+        $email = Arr::get($model->request, 'users.0.user_email');
 
         // Bad hash in link
-        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]) . 'aa');
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash . 'aa', 'email' => $email]));
         $response->assertStatus(422);
         $response->assertJsonPath('errors.0.title', __('Validation error'));
         $response->assertJsonPath('errors.0.detail', __('validation.uuid'));
 
         // Not hash exists in the table
-        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => Str::uuid()]));
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => Str::uuid(), 'email' => $email]));
         $response->assertStatus(422);
         $response->assertJsonPath('errors.0.title', __('Validation error'));
-        $response->assertJsonPath('errors.0.detail', __('validation.exists', ['attribute' => 'hash']));
+        $response->assertJsonPath('errors.0.detail', __('validation.exists', ['attribute' => 'hash', 'email' => $email]));
 
         // Trying to add already existing domain
         $model->setAttribute('request->domain_name', Domain::first()->getAttribute('domain_name'));
         $model->save();
-        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]));
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash, 'email' => $email]));
         $response->assertStatus(422);
         $response->assertJsonPath('errors.0.title', __('Validation error'));
         $response->assertJsonPath('errors.0.detail', __('Domain already exists'));
@@ -96,36 +97,49 @@ class DomainControllerTest extends TestCase
         $model->created_at = $model->created_at->sub('1 year');
         $model->save();
 
-        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]));
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash, 'email' => $email]));
         $response->assertStatus(422);
         $response->assertJsonPath('errors.0.title', __('Validation error'));
         $response->assertJsonPath('errors.0.detail', __('Domain activation link expired'));
     }
 
-    public function atest_Activate_Success()
+    public function testActivate_Success()
     {
-        $this->simulateSignup();
+        $this->simulateSignup(true);
 
         $model = PostponedAction::first();
-        $domain_name = $model->getAttribute('request->domain_name');
+        $domain_name = Arr::get($model->request, 'domain_name');
+        $email = Arr::get($model->request, 'users.0.user_email');
 
         $data = collect($model->request);
         $requestUsers = collect($data->get('users'));
 
-        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash]));
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash, 'email' => $email ]));
         $response->assertStatus(201);
 
         $this->assertDatabaseHas(Domain::class, ['domain_name' => $domain_name]);
 
-        $domain = Domain::where('domain_uuid', $domain_name)->first();
-        $user = User::where(['domain_name' => $domain->domain_uuid]);
-
-        $this->assertEquals($requestUsers->count(), $user->count());
-
         $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';
         $this->assertDirectoryExists($dialplan_dest_folder);
 
+        // If users created
+        $domain = Domain::where('domain_uuid', $domain_name)->first();
+        $users = User::where(['domain_name' => $domain->domain_uuid]);
+        $this->assertEquals($requestUsers->count(), $users->count());
 
+
+        return;
+
+        // Кому мило пішло 
+            // - головному адміну - інформуванн 
+            // - активатору, 
+            // - про необхідність їх активації в домені
+        // чи домен правильно активовано
+        // чи створились сеттінги
+        // чи створились юзери
+            // чи створились екстеншени
+            // контакти
+            // войсмейл
 
 
         $domain = User::where('domain_uuid', $domain->domain_uuid);

@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Rules;
 
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Validation\Rule;
 use Api\PostponedAction\Models\PostponedAction;
 
@@ -19,6 +20,10 @@ class DomainSignupHashExpiredRule implements Rule
         if (app()->runningUnitTests()) {
             // Ugly way to get data from another rule when testing as request is flushed
             $GLOBALS['test_signup_hash'] = $value;
+        }
+
+        if (!Str::isUuid($value)) {
+            return false;
         }
 
         $model = PostponedAction::where('hash', $value)->first();

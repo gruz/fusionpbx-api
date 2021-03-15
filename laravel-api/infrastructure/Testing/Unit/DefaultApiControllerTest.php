@@ -14,11 +14,11 @@ class DefaultApiControllerTest extends TestCase
     public function testIndex_Success()
     {
         $response = $this->get('/');
-        $response->dumpHeaders();
+        // $response->dumpHeaders();
 
-        $response->dumpSession();
+        // $response->dumpSession();
 
-        $response->dump();
+        // $response->dump();
 
         $response
             ->assertStatus(200)

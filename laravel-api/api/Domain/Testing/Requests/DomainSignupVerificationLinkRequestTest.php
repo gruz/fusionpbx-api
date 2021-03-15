@@ -49,6 +49,13 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
                 'passed' => false,
                 'data' => ['hash' => Str::uuid()],
             ],
+            'not_uuid_hash' => [
+                'passed' => false,
+                'data' => [
+                    'hash' => $second->hash . '111',
+                    'email' => $address,
+                ],
+            ],
             'expired_link_fails' => [
                 'passed' => false,
                 'data' => [

@@ -37,6 +37,7 @@ class DomainSignupVerificationLinkRequest extends ApiRequest
     {
         $data = parent::all($keys);
         $data['hash'] = $this->route('hash');
+        $data['email'] = $this->route('email');
         return $data;
     }
 }
