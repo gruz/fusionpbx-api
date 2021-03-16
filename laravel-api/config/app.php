@@ -198,6 +198,7 @@ return [
         Infrastructure\Http\RouteServiceProvider::class,
         Api\Domain\TeamServiceProvider::class,
         Api\User\UserServiceProvider::class,
+        Api\Domain\DomainServiceProvider::class,
         Api\PostponedAction\PostponedActionServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,
         Infrastructure\Providers\HelperServiceProvider::class,

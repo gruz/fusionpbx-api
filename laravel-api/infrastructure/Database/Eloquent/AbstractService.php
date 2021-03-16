@@ -19,7 +19,7 @@ abstract class AbstractService
     protected $dispatcher;
 
     /**
-     * @var Repository
+     * @var AbstractRepository
      */
     protected $repository;
 

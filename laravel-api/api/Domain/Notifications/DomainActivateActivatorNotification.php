@@ -13,14 +13,20 @@ class DomainActivateActivatorNotification extends Notification implements Should
 
     private $model;
 
+    private $username;
+
+    private $password;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($model)
+    public function __construct($model, $username, $password)
     {
         $this->model = $model;
+        $this->username = $username;
+        $this->password = $password;
     }
 
     /**
@@ -42,20 +48,21 @@ class DomainActivateActivatorNotification extends Notification implements Should
      */
     public function toMail($notifiable)
     {
-        $address = $notifiable instanceof \Illuminate\Notifications\AnonymousNotifiable
-            ? $notifiable->routeNotificationFor('mail')
-            : $notifiable->email;
-
-        $url = route('fpbx.get.domain.activate', [
-            'hash' => $this->model->hash,
-            'email' => $address,
-        ]);
-
         return (new MailMessage)
-            ->greeting(__('Domain signup verification'))
-            ->line(__('To finish your domain **:domain_name** registration process we must verify your email.', ['domain_name' => $this->model->request['domain_name']]))
-            ->action(__('Verify your email'), $url)
-            ->line(__('Thank you for using our service!'))
+            ->subject(__('Your domain has been activated'))
+            ->greeting(__('Your domain has been activated'))
+            ->line(__('Your domain **:domain_name** was activated', [
+                'domain_name' => $this->model->getAttribute('domain_name')
+            ]))
+            ->line(__('Domain UUID is:'))
+            ->line(__('**:domain_uuid**', [
+                'domain_uuid' => $this->model->domain_uuid,
+            ]))
+            ->line(__('Use credentials to login:'))
+            ->line(__('**:username**', [ 'username' => $this->username, ]))
+            ->line(__('**:password**', [ 'password' => $this->password, ]))
+            // ->action(__('Verify your email'), $url)
+            // ->line(__('Thank you for using our service!'))
             ;
     }
 

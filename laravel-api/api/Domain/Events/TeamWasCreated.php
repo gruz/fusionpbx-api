@@ -9,12 +9,12 @@ class TeamWasCreated extends Event
 {
     public $model;
     public $users;
-    public $activatorEmail;
+    public $activatorUserData;
 
-    public function __construct(AbstractModel $model, $users, $activatorEmail)
+    public function __construct(AbstractModel $model, $users, $activatorUserData)
     {
         $this->model = $model;
         $this->users = $users;
-        $this->activatorEmail = $activatorEmail;
+        $this->activatorUserData = $activatorUserData;
     }
 }

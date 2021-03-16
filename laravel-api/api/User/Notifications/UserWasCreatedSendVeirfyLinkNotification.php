@@ -1,28 +1,26 @@
 <?php
 
-namespace Api\Domain\Notifications;
+namespace Api\User\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DomainActivateMainAdminNotification extends Notification implements ShouldQueue
+class UserWasCreatedSendVeirfyLinkNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     private $model;
-    private $activatorEmail;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($model, $activatorEmail)
+    public function __construct($model)
     {
         $this->model = $model;
-        $this->activatorEmail = $activatorEmail;
     }
 
     /**
@@ -44,21 +42,27 @@ class DomainActivateMainAdminNotification extends Notification implements Should
      */
     public function toMail($notifiable)
     {
+        $domain_uuid = $this->model->domain->getAttribute('domain_uuid');
+        $domain_name = $this->model->domain->getAttribute('domain_name');
+        $activationUrl = \Request::root() . '/user/activate/' . $this->model->getAttribute('user_enabled');
+
         return (new MailMessage)
-            ->subject(__('Alert! New domain registered at ' . config('app.name')))
-            ->greeting(__('New domain registered'))
-            ->line(__('New domain **:domain_name** was registered by user **:activator_email**', [
-                'domain_name' => $this->model->getAttribute('domain_name'),
-                'activator_email' => $this->activatorEmail,
+            ->subject(__('Please confirm your email for :app_name | :url',[
+                'app_name' => config('app.name'),
+                'url' => \Request::root(),
+            ] ))
+            ->greeting(__('Your email was registered to :link',[
+                'link' => '['. config('app.name') . '](' . \Request::root() . ')'
+            ]))
+            ->line(__('Your domain **:domain_name**', [
+                'domain_name' => $domain_name
             ]))
             ->line(__('Domain UUID is:'))
             ->line(__('**:domain_uuid**', [
-                'domain_uuid' => $this->model->domain_uuid,
+                'domain_uuid' => $domain_uuid,
             ]))
-            // ->action(__('Verify your email'), $url)
-            ->line(__('You are getting this message because you are :link admin user', [
-                'link' => '['. config('app.name') . '](' . \Request::root() . ')'
-            ] ))
+            ->action('Activate your account', $activationUrl)
+            ->salutation(__('Thank you for using our service!'))
             ;
     }
 

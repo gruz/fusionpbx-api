@@ -26,6 +26,7 @@ class UserRepository extends AbstractRepository
         // ~ $salt = uuid();
         // We will use a webpatser/laravel-uuid
         $data['salt'] = Str::uuid();
+        $data['user_enabled'] = Str::uuid();
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -50,7 +51,19 @@ class UserRepository extends AbstractRepository
         // $user->fill($data);
         // $user->save();
 
-        $model = parent::create($data);
+        $model = $this->getModel();
+
+        $availableColumns = $model->getTableColumnNames(true);
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, $availableColumns)) {
+                $model->$key = $value;
+            }
+        }
+
+        $model->save();
+
+        // $model = parent::create($data);
         return $model;
     }
 

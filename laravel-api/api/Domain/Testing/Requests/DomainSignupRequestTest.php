@@ -5,6 +5,7 @@ namespace Api\Domain\Testing\Requests;
 use Faker\Factory;
 use Api\User\Models\User;
 use Illuminate\Support\Arr;
+use Api\Domain\Models\Domain;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\TestRequestTrait;
 use Infrastructure\Services\TestRequestFactoryService;
@@ -27,10 +28,12 @@ class DomainSignupRequestTest extends TestCase
         $testRequestFactoryService = app(TestRequestFactoryService::class);
         $data = $testRequestFactoryService->makeDomainRequest();
 
+        $systemDomainName = Domain::first()->getAttribute('domain_name');
+
         $return = [
             'fail_when_domain_exists' => [
                 'passed' => false,
-                'data' => array_merge($data, ['domain_name' => '192.168.0.160']),
+                'data' => array_merge($data, ['domain_name' => $systemDomainName]),// TODO get system domain from DB
             ],
             'pass_when_domain_not_exists' => [
                 'passed' => true,

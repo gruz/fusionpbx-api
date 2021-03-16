@@ -74,6 +74,8 @@ abstract class AbstractRepository extends BaseRepository
 
         $model->save();
 
+        $model->refresh();
+
         return $model;
     }
 

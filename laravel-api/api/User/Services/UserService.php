@@ -16,12 +16,12 @@ use Api\User\Exceptions\UserExistsException;
 use Api\User\Repositories\ContactRepository;
 use Api\Domain\Repositories\DomainRepository;
 use Infrastructure\Traits\OneToManyRelationCRUD;
-use Api\Domain\Exceptions\DomainNotFoundException;
 use Api\User\Repositories\ContactEmailRepository;
+use Api\Domain\Exceptions\DomainNotFoundException;
 use Api\Extension\Repositories\ExtensionRepository;
-use Api\User\Exceptions\ActivationHashWrongException;
-use Api\User\Exceptions\ActivationHashNotFoundException;
+use Api\User\Events\UserWasActivated;
 use Infrastructure\Database\Eloquent\AbstractService;
+use Api\User\Exceptions\ActivationHashNotFoundException;
 
 class UserService extends AbstractService
 {
@@ -201,32 +201,32 @@ class UserService extends AbstractService
         return $user;
     }
 
-    public function activate($hash)
+    public function activate($hash, $sendNotification = true)
     {
         // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
         // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
-        if (strlen($hash) != 32) {
-            throw new ActivationHashWrongException();
-        }
 
-        $user = $this->userRepository->getWhere('user_enabled', $hash)->first();
-
-        if (is_null($user)) {
-            throw new ActivationHashNotFoundException();
-        }
-
-        $data = [];
-        $data['user_enabled'] = 'true';
+        // if (!Str::isUuid($hash)) {
+        //     throw new ActivationHashWrongException();
+        // }
 
         $this->database->beginTransaction();
 
         try {
-            $this->userRepository->update($user, $data);
+            $user = $this->userRepository->getWhere('user_enabled', $hash)->first();
 
-            $this->dispatcher->dispatch(new UserWasUpdated($user));
+            if (is_null($user)) {
+                throw new ActivationHashNotFoundException();
+            }
+
+            $user->user_enabled = 'true';
+
+            $user->save();
+
+            $this->dispatcher->dispatch(new UserWasActivated($user, $sendNotification));
+
         } catch (Exception $e) {
             $this->database->rollBack();
-
             throw $e;
         }
 
