@@ -12,7 +12,6 @@ use Api\Domain\Models\Domain;
 use Api\Settings\Models\Setting;
 use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
-use config;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -23,6 +22,14 @@ class FrontController extends BaseController
         if (!config('app.debug')) {
             return;
         }
+
+        $user = \Api\User\Models\User::
+            // where('user_uuid', '<>', '')
+            skip(1)->first();
+        $notification = new \Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification($user);
+        \Illuminate\Support\Facades\Notification::send($user, $notification);
+        return 'Sent';
+
         \DB::enableQueryLog();
         $model = new \Api\PostponedAction\Models\PostponedAction;
         // $model = $model->first();

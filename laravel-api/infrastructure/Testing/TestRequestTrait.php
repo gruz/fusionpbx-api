@@ -2,6 +2,8 @@
 
 namespace Infrastructure\Testing;
 
+use Illuminate\Support\Facades\Artisan;
+
 trait TestRequestTrait
 {
     private $rules;
@@ -24,6 +26,8 @@ trait TestRequestTrait
         $className = implode('\\', $className);
 
         $this->rules = (new $className())->rules();
+
+        Artisan::call('db:maketest');
     }
 
     /**
