@@ -194,6 +194,7 @@ return [
         /*
          * Application Service Providers...
          */
+        Infrastructure\Providers\AppServiceProvider::class,
         Infrastructure\Auth\AuthServiceProvider::class,
         Infrastructure\Http\RouteServiceProvider::class,
         Api\User\TeamServiceProvider::class,

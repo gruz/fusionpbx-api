@@ -20,10 +20,10 @@ class Domain_setting extends Model
 {
     use FusionPBXTableModel;
 
-    protected $attributes = [
-        'domain_setting_category' => 'domain',
-        'domain_setting_enabled' => true,
-    ];
+    // protected $attributes = [
+    //     'domain_setting_category' => 'domain',
+    //     'domain_setting_enabled' => true,
+    // ];
 
     protected $fillable = [
         // 'domain_uuid',
@@ -48,59 +48,59 @@ class Domain_setting extends Model
     //     'domain_setting_description',
     // ];
 
-    /**
-     * Domain settings category
-     *
-     * @var string
-     *
-     * @OA\Property(
-     *      enum={"domain", "email"},
-     *      example="domain"
-     * )
-     */
-    public $domain_setting_category;
+    // /**
+    //  * Domain settings category
+    //  *
+    //  * @var string
+    //  *
+    //  * @OA\Property(
+    //  *      enum={"domain", "email"},
+    //  *      example="domain"
+    //  * )
+    //  */
+    // public $domain_setting_category;
 
-    /**
-     * Domain settings sub category
-     *
-     * @var string
-     *
-     * @OA\Property(
-     *     oneOf={
-     *          @OA\Schema(
-     *               enum=FPBX_DEFAULT_SETTINGS_domain,
-     *               example="language"
-     *          ),
-     *          @OA\Schema(
-     *               enum=FPBX_DEFAULT_SETTINGS_email,
-     *               example="smtp_from_name"
-     *          ),
-     *     }
-     * )
-     */
-    public $domain_setting_subcategory;
+    // /**
+    //  * Domain settings sub category
+    //  *
+    //  * @var string
+    //  *
+    //  * @OA\Property(
+    //  *     oneOf={
+    //  *          @OA\Schema(
+    //  *               enum=FPBX_DEFAULT_SETTINGS_domain,
+    //  *               example="language"
+    //  *          ),
+    //  *          @OA\Schema(
+    //  *               enum=FPBX_DEFAULT_SETTINGS_email,
+    //  *               example="smtp_from_name"
+    //  *          ),
+    //  *     }
+    //  * )
+    //  */
+    // public $domain_setting_subcategory;
 
-    /**
-     * Setting field type
-     *
-     * @var string
-     *
-     * @OA\Property(
-     *     enum=FPBX_DEFAULT_SETTINGS_domain_FIELD_TYPES,
-     *     example="code"
-     * )
-     */
-    public $domain_setting_name;
+    // /**
+    //  * Setting field type
+    //  *
+    //  * @var string
+    //  *
+    //  * @OA\Property(
+    //  *     enum=FPBX_DEFAULT_SETTINGS_domain_FIELD_TYPES,
+    //  *     example="code"
+    //  * )
+    //  */
+    // public $domain_setting_name;
 
-    /**
-     * Setting field type
-     *
-     * @var string
-     *
-     * @OA\Property(
-     *     example="uk-ua"
-     * )
-     */
-    public $domain_setting_value;
+    // /**
+    //  * Setting field type
+    //  *
+    //  * @var string
+    //  *
+    //  * @OA\Property(
+    //  *     example="uk-ua"
+    //  * )
+    //  */
+    // public $domain_setting_value;
 
 }

@@ -38,7 +38,9 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "api/User/Helpers/user_helpers.php"
+            "api/User/Helpers/user_helpers.php",
+            "../fusionpbx/resources/functions.php",
+            "../fusionpbx/resources/classes/message.php"
         ]
     },
     "scripts": {

@@ -113,4 +113,15 @@ class DomainService
 
         return $domain;
     }
+
+    public function getByAttributes(array $attributes)
+    {
+        $data = null;
+
+        if (!empty($attributes) && !is_null($attributes)) {
+            $data = $this->domainRepository->getWhereArray($attributes)->first();
+        } 
+
+        return $data;
+    }
 }
