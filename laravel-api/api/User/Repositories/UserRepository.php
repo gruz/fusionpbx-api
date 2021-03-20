@@ -63,7 +63,6 @@ class UserRepository extends AbstractRepository
 
         $model->save();
 
-        // $model = parent::create($data);
         return $model;
     }
 

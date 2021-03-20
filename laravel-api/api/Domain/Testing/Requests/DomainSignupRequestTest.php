@@ -3,7 +3,6 @@
 namespace Api\Domain\Testing\Requests;
 
 use Faker\Factory;
-use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Api\Domain\Models\Domain;
 use Infrastructure\Testing\TestCase;

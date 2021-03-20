@@ -93,7 +93,7 @@ abstract class AbstractService
         return $this->repository->get($options);
     }
 
-    public function getById($id, array $options = []): Model
+    public function getById($id, array $options = []): \Illuminate\Database\Eloquent\Model
     {
         $collection = $this->repository->getById($id, $options);
         $model = $this->repository->model;

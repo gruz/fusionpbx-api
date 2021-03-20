@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Database\Eloquent;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Infrastructure\Database\Eloquent\AbstractModel;
 use Optimus\Genie\Repository as BaseRepository;
@@ -73,8 +74,6 @@ abstract class AbstractRepository extends BaseRepository
         $model->fill($data);
 
         $model->save();
-
-        $model->refresh();
 
         return $model;
     }
