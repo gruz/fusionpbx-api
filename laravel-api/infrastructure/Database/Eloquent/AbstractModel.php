@@ -122,7 +122,7 @@ abstract class AbstractModel extends BaseModel
             $data = $getData();
         } else {
             $data = Cache::remember(
-                __METHOD__ . serialize(func_get_args()),
+                __METHOD__ . serialize(func_get_args()). $this->getTable(),
                 now()->addDay(),
                 $getData
             );
@@ -156,7 +156,7 @@ abstract class AbstractModel extends BaseModel
             $data = $getData();
         } else {
             $data = Cache::remember(
-                __METHOD__ . serialize(func_get_args()),
+                __METHOD__ . serialize(func_get_args()) . $this->getTable(),
                 now()->addDay(),
                 $getData
             );
@@ -206,7 +206,7 @@ abstract class AbstractModel extends BaseModel
             $data = $getData();
         } else {
             $data = Cache::remember(
-                __METHOD__ . serialize(func_get_args()),
+                __METHOD__ . serialize(func_get_args()) . $this->getTable(),
                 now()->addDay(),
                 $getData
             );

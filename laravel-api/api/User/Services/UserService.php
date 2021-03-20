@@ -74,11 +74,6 @@ class UserService extends AbstractService
         return $this->userRepository->getWhere('user_uuid', Auth::user()->user_uuid)->first();
     }
 
-    public function getAll($options = [])
-    {
-        return $this->userRepository->getWhereArray(['domain_uuid' => Auth::user()->domain_uuid, 'user_enabled' => 'true']);
-    }
-
     /**
      * Creates a user
      *
@@ -238,45 +233,5 @@ class UserService extends AbstractService
         ];
 
         return $response;
-    }
-
-    public function update($userId, array $data)
-    {
-        $user = $this->getRequestedUser($userId);
-
-        $this->database->beginTransaction();
-
-        try {
-            $this->userRepository->update($user, $data);
-
-            $this->dispatcher->dispatch(new UserWasUpdated($user));
-        } catch (Exception $e) {
-            $this->database->rollBack();
-
-            throw $e;
-        }
-
-        $this->database->commit();
-
-        return $user;
-    }
-
-    public function delete($userId)
-    {
-        $user = $this->getRequestedUser($userId);
-
-        $this->database->beginTransaction();
-
-        try {
-            $this->userRepository->delete($userId);
-
-            $this->dispatcher->dispatch(new UserWasDeleted($user));
-        } catch (Exception $e) {
-            $this->database->rollBack();
-
-            throw $e;
-        }
-
-        $this->database->commit();
     }
 }

@@ -113,23 +113,23 @@ abstract class AbstractService
      * @param mixed $data Data to be sent to the event, usually hydrated Model
      * @return void
      */
-    private function dispatchEvent($action, $data)
+    protected function dispatchEvent($action, $data, $options = [])
     {
         $eventClassName = $this->getEventClassName($action);
 
         if (class_exists($eventClassName)) {
-            $this->dispatcher->dispatch(new $eventClassName($data));
+            $this->dispatcher->dispatch(new $eventClassName($data, $options));
         }
     }
 
-    public function create($data)
+    public function create($data, $options = [])
     {
         $this->database->beginTransaction();
 
         try {
-            $model = $this->repository->create($data);
+            $model = $this->repository->create($data, $options);
 
-            $this->dispatchEvent('Created', $model);
+            $this->dispatchEvent('Created', $model, $options);
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -141,7 +141,7 @@ abstract class AbstractService
         return $model;
     }
 
-    public function createMany($data)
+    public function createMany($data, $options = [])
     {
         $this->database->beginTransaction();
 
@@ -149,8 +149,8 @@ abstract class AbstractService
 
         try {
             foreach ($data as $key => $row) {
-                $model = $this->repository->create($row);
-                $this->dispatchEvent('Created', $model);
+                $model = $this->repository->create($row, $options);
+                $this->dispatchEvent('Created', $model, $options);
                 $models[] = $model;
             }
             // $model = $this->repository->createMany($data);
@@ -166,7 +166,7 @@ abstract class AbstractService
         return $models;
     }
 
-    public function update($id, array $data)
+    public function update($id, array $data, $options = [])
     {
         $model = $this->getById($id);
 
@@ -175,7 +175,7 @@ abstract class AbstractService
         try {
             $this->repository->update($model, $data);
 
-            $this->dispatchEvent('Updated', $model);
+            $this->dispatchEvent('Updated', $model, $options);
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -187,7 +187,7 @@ abstract class AbstractService
         return $model;
     }
 
-    public function delete($id)
+    public function delete($id, $options = [])
     {
         $model = $this->getById($id);
 
@@ -196,7 +196,7 @@ abstract class AbstractService
         try {
             $this->repository->delete($model);
 
-            $this->dispatchEvent('Deleted', $model);
+            $this->dispatchEvent('Deleted', $model, $options);
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -206,13 +206,12 @@ abstract class AbstractService
         $this->database->commit();
     }
 
-    public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName)
+    public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName, $options = [])
     {
         $this->database->beginTransaction();
 
         try {
-            $this->repository->createAttachedMany($parentModel, $childRepositoryClassName, $childData, $pivotRepositoryClassName);
-            // $this->dispatchEvent('Deleted', $model);
+            $this->repository->createAttachedMany($parentModel, $childRepositoryClassName, $childData, $pivotRepositoryClassName, $options);
         } catch (Exception $e) {
             $this->database->rollBack();
 

@@ -2,10 +2,11 @@
 
 namespace Infrastructure\Database\Eloquent;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use Illuminate\Database\Eloquent\Model;
 use Optimus\Genie\Repository as BaseRepository;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 abstract class AbstractRepository extends BaseRepository
 {
@@ -38,20 +39,25 @@ abstract class AbstractRepository extends BaseRepository
         return $this;
     }
 
-    public function createMany(array $data)
+    public function createMany(array $data, $options = [])
     {
         $model = $this->getModel();
 
         $primaryKey = $model->getKeyName();
 
-        foreach ($data as $key => $value) {
-            foreach ($value as $k => $v) {
+        $forceFields = Arr::get($options, 'forceFillable', []);
+
+        foreach ($data as $key => $row) {
+            foreach ($row as $k => $v) {
+                if (in_array($k, $forceFields)) {
+                    continue;
+                }
                 if (!$model->isFillable($k)) {
                     unset($data[$key][$k]);
                     continue;
                 }
             }
-            if (!array_key_exists($primaryKey, $value)) {
+            if (!array_key_exists($primaryKey, $row)) {
                 $data[$key][$primaryKey] = Str::uuid();
             }
         }
@@ -59,7 +65,13 @@ abstract class AbstractRepository extends BaseRepository
         $models = [];
 
         foreach ($data as $key => $row) {
-            $model->create($row);
+            $model = $model->newInstance();
+
+            foreach ($row as $key => $value) {
+                $model->$key = $value;
+            }
+            $model->save();
+            // $model->create($row, $options);
             $models[] = $model;
         }
         // $model->insert($data);
@@ -67,11 +79,19 @@ abstract class AbstractRepository extends BaseRepository
         return $models;
     }
 
-    public function create(array $data)
+    public function create(array $data, $options = [])
     {
         $model = $this->getModel();
 
         $model->fill($data);
+
+        $forceFields = Arr::get($options, 'forceFillable', []);
+
+        foreach ($forceFields as $fieldName) {
+            if (array_key_exists($fieldName, $data)) {
+                $model->$fieldName = $data[$fieldName];
+            }
+        }
 
         $model->save();
 
@@ -106,21 +126,21 @@ abstract class AbstractRepository extends BaseRepository
         return $model;
     }
 
-    public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName)
+    public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName, $options = [])
     {
         /**
-         * @var Repository
+         * @var AbstractRepository
          */
         $childRepository = app($childRepositoryClassName);
 
         /**
-         * @var Repository
+         * @var AbstractRepository
          */
         $pivotRepository = app($pivotRepositoryClassName);
 
         $pivotModel = $pivotRepository->getModel();
 
-        $modelsRelated = $childRepository->createMany($childData);
+        $modelsRelated = $childRepository->createMany($childData, $options);
 
         $pivotArr = [
             'domain_uuid' => $parentModel->domain_uuid,
@@ -138,6 +158,6 @@ abstract class AbstractRepository extends BaseRepository
             );
         }
 
-        $pivotRepository->createMany($pivotData);
+        $pivotRepository->createMany($pivotData, $options);
     }
 }

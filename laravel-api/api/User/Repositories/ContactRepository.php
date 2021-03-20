@@ -8,20 +8,6 @@ use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class ContactRepository extends AbstractRepository
 {
-    public function create(array $data)
-    {
-        $model = $this->getModel();
-
-        // ~ $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-        $model->domain_uuid = $data['domain_uuid'];
-        // $model->contact_parent_uuid = '';
-
-        $model->fill($data);
-        $model->save();
-
-        return $model;
-    }
-
     public function update(AbstractModel $contact, array $data)
     {
         $contact->fill($data);

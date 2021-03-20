@@ -104,32 +104,51 @@ class TeamService extends AbstractService
             }
 
             $this->dialplanRepository->createDefaultDialplanRules();
-            $domainModel = $this->domainService->create($data);
+            $domainModel = $this->domainService->create($data, ['forceFillable' => ['domain_enabled']]);
 
             $settingsData = Arr::get($data, 'settings', []);
             $settingsData = $this->injectData($settingsData, ['domain_uuid' => $domainModel->domain_uuid]);
-            $this->domainSettingService->createMany($settingsData);
+            $this->domainSettingService->createMany($settingsData, ['forceFillable' => ['domain_uuid']]);
 
             $usersData = Arr::get($data, 'users', []);
             $usersData = $this->injectData($usersData, ['domain_uuid' => $domainModel->domain_uuid]);
-            $usersModel = $this->userService->createMany($usersData);
+            $usersModel = $this->userService->createMany($usersData, ['excludeNotification' => [$activatorEmail]]);
 
             foreach ($usersModel as $k => $userModel) {
                 $contactsData = Arr::get($data, 'users.' . $k . '.contacts', []);
+                $contactsData = $this->injectData($contactsData, ['domain_uuid' => $domainModel->domain_uuid]);
                 $extensionData = Arr::get($data, 'users.' . $k . '.extensions', []);
+                $extensionData = $this->injectData($extensionData, ['domain_uuid' => $domainModel->domain_uuid]);
 
-                $this->userService->createAttachedMany($userModel, ContactRepository::class, $contactsData, ContactUserRepository::class);
-                $this->userService->createAttachedMany($userModel, ExtensionRepository::class, $extensionData, ExtensionUserRepository::class);
+                $this->userService->createAttachedMany(
+                    $userModel,
+                    ContactRepository::class,
+                    $contactsData,
+                    ContactUserRepository::class,
+                    ['forceFillable' => ['domain_uuid', 'contact_uuid']]
+                );
+                $this->userService->createAttachedMany(
+                    $userModel,
+                    ExtensionRepository::class,
+                    $extensionData,
+                    ExtensionUserRepository::class,
+                    ['forceFillable' => ['domain_uuid']]
+                );
 
                 if ($activatorEmail === $userModel->getAttribute('user_email')) {
                     $this->userService->activate($userModel->getAttribute('user_enabled'), false);
                 }
 
-                $voicemailData = Arr::get($data, 'users.' . $k . '.extension', []);
+                // $voicemailData = Arr::get($data, 'users.' . $k . '.extensions', []);
+                // foreach ($voicemailData as $key => $value) {
+                //     $voicemailData[$key]['domain_uuid'] = $domainModel->domain_uuid;
+                // }
+                // $voicemailData = $this->injectData($voicemailData, ['domain_uuid' => $domainModel->domain_uuid]);
+                $voicemailData = $extensionData;
                 foreach ($voicemailData as $key => $value) {
-                    $voicemailData[$key]['domain_uuid'] = $domainModel->domain_uuid;
+                    $voicemailData[$key]['voicemail_id'] = $voicemailData[$key]['extension'];
                 }
-                $this->voicemailService->createMany($voicemailData);
+                $this->voicemailService->createMany($voicemailData, ['forceFillable' => ['domain_uuid', 'voicemail_id']]);
             }
 
             $activatorUserData = collect($usersData)->where('user_email', $activatorEmail)->first();
@@ -141,7 +160,7 @@ class TeamService extends AbstractService
             ]);
 
             $this->dispatcher->dispatch(new TeamWasCreated($domainModel, $usersModel, $activatorUserData));
-dd('done');
+            // dd('done');
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -307,7 +326,7 @@ dd('done');
       */
     }
 
-    public function update($userId, array $data)
+    public function update($userId, array $data, $options = [])
     {
         $user = $this->getRequestedUser($userId);
 
@@ -328,7 +347,7 @@ dd('done');
         return $user;
     }
 
-    public function delete($userId)
+    public function delete($userId, $options = [])
     {
         $user = $this->getRequestedUser($userId);
 

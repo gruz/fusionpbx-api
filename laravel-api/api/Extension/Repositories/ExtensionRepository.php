@@ -8,18 +8,6 @@ use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class ExtensionRepository extends AbstractRepository
 {
-    public function create(array $data)
-    {
-        $extension = $this->getModel();
-
-        $extension->domain_uuid = $data['domain_uuid'];
-
-        $extension->fill($data);
-        $extension->save();
-
-        return $extension;
-    }
-
     public function setUsers(Extension $extension, array $addUsers, array $removeUsers = [])
     {
         $this->database->beginTransaction();

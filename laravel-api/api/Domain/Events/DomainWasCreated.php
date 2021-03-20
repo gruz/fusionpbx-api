@@ -9,11 +9,11 @@ class DomainWasCreated extends Event
 {
     public $object;
 
-    public $clearCacheUri;
+    public $options;
 
-    public function __construct(Domain $object, $clearCacheUri = null)
+    public function __construct(Domain $object, $options = null)
     {
       $this->object = $object;
-      $this->clearCacheUri = $clearCacheUri;
+      $this->options = $options;
     }
 }

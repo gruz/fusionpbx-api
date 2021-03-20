@@ -2,7 +2,6 @@
 
 namespace Infrastructure\Testing;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use Api\PostponedAction\Models\PostponedAction;
 use Infrastructure\Services\TestRequestFactoryService;
@@ -27,9 +26,10 @@ abstract class TestCase extends BaseTestCase
 
     protected function simulateSignup($noCache = false)
     {
+        // \Illuminate\Support\Facades\Artisan::call('db:maketest');
+        PostponedAction::query()->truncate();
         Notification::fake();
 
-        PostponedAction::query()->truncate();
         /**
          * @var TestRequestFactoryService
          */

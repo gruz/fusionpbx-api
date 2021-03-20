@@ -8,7 +8,7 @@ use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class UserRepository extends AbstractRepository
 {
-    public function create(array $data)
+    public function create(array $data, $options =[ ])
     {
         if (empty($data['add_user'])) {
             // TODO get real main user here

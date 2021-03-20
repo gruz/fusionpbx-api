@@ -6,7 +6,7 @@ use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class ContactEmailRepository extends AbstractRepository
 {
-    public function create(array $data)
+    public function create(array $data, $options = [])
     {
         $model = $this->getModel();
 

@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Listeners;
 
+use Illuminate\Support\Arr;
 use Infrastructure\Services\FreeSwicthSocketService as FSSocketService;
 
 class ClearFusionPBXCache
@@ -10,9 +11,10 @@ class ClearFusionPBXCache
     {
       $socket = new FSSocketService;
 
-      if (!empty($event->clearCacheUri))
+      $clearCacheOptions = Arr::get($event->options, 'clearCacheUri');
+      if (!empty($clearCacheOptions))
       {
-        $socket->clearCache($event->clearCacheUri);
+        $socket->clearCache($clearCacheOptions);
       }
 
       $socket->reloadXML();

@@ -9,6 +9,7 @@
     - [Update mail settings](#update-mail-settings)
   - [Docker setup (please help)](#docker-setup-please-help)
   - [Documenation](#documenation)
+  - [Testing](#testing)
 
 
 # Fusionpbx API
@@ -112,3 +113,19 @@ Requirements I see:
 ## Documenation
 
 Check this repository wiki
+
+## Testing
+
+To run tests from VirtualBox with xdebug enable login into it and run a laravel test shortcut which uses host IP to call back
+
+```
+cd /var/www/fusionpbx-api/laravel-api
+bin/test
+```
+
+Or a certain class
+```
+cd /var/www/fusionpbx-api/laravel-api
+bin/test --filter TestClassName
+```
+

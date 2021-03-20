@@ -18,14 +18,25 @@ class TeamWasCreatedListener
         Notification::route('mail', $mainAdminEmail)
             ->notify(new DomainActivateMainAdminNotification($event->model, $event->activatorUserData['user_email']));
 
-        Notification::route('mail', $event->activatorUserData['user_email'])
-            ->notify(new DomainActivateActivatorNotification(
-                $event->model,
-                $event->activatorUserData['username'],
-                $event->activatorUserData['password']
-            ));
+        $adminUser = User::where([
+            ['domain_uuid', $event->activatorUserData['domain_uuid']],
+            ['user_email', $event->activatorUserData['user_email']],
+        ])->first();
 
-            // dd($event->model->users);
+        $notification = new DomainActivateActivatorNotification(
+            $event->model,
+            $event->activatorUserData['username'],
+            $event->activatorUserData['password']
+        );
+        Notification::send($adminUser, $notification);
+        // Notification::route('mail', $event->activatorUserData['user_email'])
+        //     ->notify(new DomainActivateActivatorNotification(
+        //         $event->model,
+        //         $event->activatorUserData['username'],
+        //         $event->activatorUserData['password']
+        //     ));
+
+        //     // dd($event->model->users);
 
 
         // Notification::route('mail', $mainAdminEmail)
