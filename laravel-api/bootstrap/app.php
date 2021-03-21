@@ -12,7 +12,7 @@
 */
 
 $app = new \Infrastructure\Application(
-    realpath(__DIR__.'/../')
+    $_ENV['APP_BASE_PATH'] ?? realpath(__DIR__.'/../')
 );
 
 /*
@@ -38,7 +38,7 @@ $app->singleton(
 
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    Infrastructure\Exceptions\Handler::class 
+    Infrastructure\Exceptions\Handler::class
 );
 // $app->register(\Illuminate\Mail\MailServiceProvider::class);
 

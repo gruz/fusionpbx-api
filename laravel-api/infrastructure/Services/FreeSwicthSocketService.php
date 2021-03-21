@@ -149,7 +149,7 @@ class FreeSwicthSocketService
 
         /* Maybe we don't need to load all these variable to var
       //get the default settings
-      $settings = new Default_setting;
+      $settings = new DefaultSetting;
       $result = $settings->orderBy('default_setting_order', 'asc')->get()->toArray();
 
       //unset all settings

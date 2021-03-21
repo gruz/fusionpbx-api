@@ -3,33 +3,15 @@
 namespace Api\User\Repositories;
 
 use Api\User\Models\Contact;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractModel;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class ContactRepository extends Repository
+class ContactRepository extends AbstractRepository
 {
-    public function getModel()
-    {
-        return new Contact();
-    }
-
-    public function create(array $data)
-    {
-        $model = $this->getModel();
-
-        // ~ $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-        $model->domain_uuid = $data['domain_uuid'];
-        // $model->contact_parent_uuid = '';
-        
-        $model->fill($data);
-        $model->save();
-
-        return $model;
-    }
-
-    public function update(Contact $contact, array $data)
+    public function update(AbstractModel $contact, array $data)
     {
         $contact->fill($data);
-        
+
         $contact->last_mod_date = date('now');
         $contact->last_mod_user = $data['username']; // Current user that does update
         // $contact->contact_parent_uuid = '';

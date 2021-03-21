@@ -55,7 +55,7 @@ return [
         'message' => 'Email already exists', 
         'code' => '1011', 
     ],
-    'Api\Extension\Exceptions\InvalidExtension_userException' => [
+    \Api\Extension\Exceptions\InvalidExtensionUserException::class => [
         'message' => 'The extension with ID :extension_userId is not an extension', 
         'code' => '1012', 
     ],

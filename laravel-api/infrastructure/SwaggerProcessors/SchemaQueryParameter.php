@@ -16,7 +16,8 @@ use OpenApi\Annotations\Components;
 use OpenApi\Processors\OperationId;
 use OpenApi\Annotations\JsonContent;
 use OpenApi\Annotations\RequestBody;
-use Infrastructure\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use OpenApi\Annotations\AbstractAnnotation;
 
 /**
@@ -30,7 +31,8 @@ class SchemaQueryParameter
 
     public function __invoke(Analysis $analysis)
     {
-        $this->registerConstantsForSwaggerProcessor();
+        $this->registerRoutes($analysis);
+
         /**
          * @var Schema[]
          */
@@ -49,7 +51,8 @@ class SchemaQueryParameter
     {
         $model = $this->getModelFromSchema($schema);
 
-        if (!$model instanceof Model) {
+        if (!$model instanceof AbstractModel) {
+            // d($schema->schema,$model);
             return;
         }
 
@@ -132,22 +135,23 @@ class SchemaQueryParameter
 
     protected function getModelFromSchema(Schema $schema)
     {
-        $modelClassName = $schema->_context->__get('namespace') . '\\' . $schema->_context->class;
+        $modelClassName = $this->getClassName($schema);
         // d($modelClassName);
 
-        if (!is_subclass_of($modelClassName, Model::class)) {
+        if (!is_subclass_of($modelClassName, AbstractModel::class)) {
             return null;
         }
 
         /**
-         * @var Model
+         * @var AbstractModel
          */
         $model = new $modelClassName;
 
         return $model;
     }
 
-    private function makeOperationIdRedocCompatible(Analysis $analysis) {
+    private function makeOperationIdRedocCompatible(Analysis $analysis)
+    {
         $allOperations = $analysis->getAnnotationsOfType(Operation::class);
 
         foreach ($allOperations as $operation) {
@@ -159,58 +163,72 @@ class SchemaQueryParameter
                 $source = $context->class ?? $context->interface ?? $context->trait;
                 if ($source) {
                     if ($context->namespace) {
-                        $operation->operationId = $context->namespace.'\\'.$source.'::'.$context->method;
+                        $operation->operationId = $context->namespace . '\\' . $source . '::' . $context->method;
                         $operation->operationId = str_replace('\\', '_', $operation->operationId);
                     } else {
-                        $operation->operationId = $source.'::'.$context->method;
+                        $operation->operationId = $source . '::' . $context->method;
                     }
                 } else {
                     $operation->operationId = $context->method;
                 }
             }
-       }
+        }
     }
 
-    private function registerConstantsForSwaggerProcessor()
+    private function registerRoutes(Analysis $analysis)
     {
-        static $isSecondRun = false;
+        // dd($analysis, $analysis->openapi->paths);
+        $routes = [];
+        $paths = $analysis->openapi->paths;
+        // // d($paths[0], $paths[0]->_context->__get('parent')->method);
+        // d();
+        // dd('a');
+        $availableMethods = [
+            'get',
+            'put',
+            'post',
+            'delete',
+            'options',
+            'head',
+            'patch',
+        ];
+        foreach ($paths as $path) {
+            foreach ($availableMethods as $method) {
+                if ($path->$method !== UNDEFINED) {
+                    $action = $path->_context->__get('method');
+                    if (empty($action)) {
 
-        if ($isSecondRun) {
-            return;
+                        $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
+                        // $path->description = 'NOT IMPLEMENTED YET';
+                        continue;
+                    }
+                    $controller = $this->getClassName($path);
+
+                    $auth = false;
+                    if ($path->$method->security !== UNDEFINED) {
+                        foreach ($path->$method->security as $security) {
+                            if (array_key_exists('bearer_auth', $security)) {
+                                $auth = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    $routes[$path->path] = [
+                        'auth' => $auth,
+                        'method' => $method,
+                        'controller' => $controller,
+                        'action' => $action,
+                    ];
+                }
+            }
         }
-        $isSecondRun = true;
 
-        if (config('app.debug')) {
-            $data = \Api\Settings\Models\Default_setting::get();
-        } else {
-            $data = Cache::remember(
-                __METHOD__ . serialize(func_get_args()),
-                now()->addDay(),
-                \Api\Settings\Models\Default_setting::get()
-            );
-        }
-
-        $categories = $data->groupBy('default_setting_category');
-
-        // foreach ($categories as $key => $category) {
-        //     $categories[$key] = $category->pluck('default_setting_subcategory')->toArray();
-        // }
-
-        // define('FPBX_DEFAULT_SETTINGS_X_CATEGORIES', $categories);
-
-        // define('FPBX_DEFAULT_SETTINGS_CATEGORY', array_keys($data->groupBy('default_setting_category')->toArray()) );
-        // define('FPBX_DEFAULT_SETTINGS_SUBCATEGORY', array_keys($data->groupBy('default_setting_subcategory')->toArray()));
-        // define('FPBX_DEFAULT_SETTINGS_TYPE', array_keys($data->groupBy('default_setting_name')->toArray()));
-
-        // dd(FPBX_DEFAULT_SETTINGS_CATEGORY, FPBX_DEFAULT_SETTINGS_SUBCATEGORY, FPBX_DEFAULT_SETTINGS_TYPE);
-
-        foreach ($categories as $settingCategory => $settings) {
-            $settings = $settings->toArray();
-
-            define('FPBX_DEFAULT_SETTINGS_' . $settingCategory, array_column($settings, 'default_setting_subcategory'));
-            define('FPBX_DEFAULT_SETTINGS_' . $settingCategory . '_FIELD_TYPES', array_column($settings, 'default_setting_name'));
-        }
+        Storage::disk('local')->put('swagger/routes.json', json_encode($routes, JSON_PRETTY_PRINT));
+        // dd($routes);
     }
 
-
+    private function getClassName(AbstractAnnotation $annotation) {
+        return $annotation->_context->__get('namespace') . '\\' . $annotation->_context->class;
+    }
 }

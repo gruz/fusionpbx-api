@@ -110,4 +110,6 @@ return [
 
     'attributes' => [],
 
+    'uuid' => 'Should be a valid UUID',
+
 ];

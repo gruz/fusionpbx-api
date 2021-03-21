@@ -2,16 +2,8 @@
 
 namespace Api\Domain\Repositories;
 
-use Api\Domain\Models\Domain_setting;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class DomainSettingRepository extends Repository
+class DomainSettingRepository extends AbstractRepository
 {
-    public function getModel()
-    {
-        return new Domain_setting();
-    }
-
-    
-
 }

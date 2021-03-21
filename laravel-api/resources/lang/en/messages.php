@@ -15,5 +15,4 @@ return [
 
     'welcome'             => 'Welcome, :name.',
     'team created'             => 'Team created. Login using username <b>:username</b>, domain name <b>:domain_name</b> and password <b>:password</b>',
-
 ];

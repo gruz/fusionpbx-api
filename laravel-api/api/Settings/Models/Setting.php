@@ -2,13 +2,14 @@
 
 namespace Api\Settings\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
-class Setting extends Model
+class Setting extends AbstractModel
 {
-    use Notifiable, FusionPBXTableModel;
+    use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
         'numbering_plan',

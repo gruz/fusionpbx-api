@@ -2,24 +2,18 @@
 
 namespace Api\User\Repositories;
 
-use Webpatser\Uuid\Uuid;
 use Api\User\Models\User;
-use Infrastructure\Database\Eloquent\Repository;
+use Illuminate\Support\Str;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class UserRepository extends Repository
+class UserRepository extends AbstractRepository
 {
-    public function getModel()
+    public function create(array $data, $options =[ ])
     {
-        return new User();
-    }
-
-    public function create(array $data)
-    {
-        $user = $this->getModel();
-        if (empty($data['add_user']))
-        {
-          // TODO get real main user here
-          $data['add_user'] = 'admin';
+        // $user = $this->getModel();
+        if (empty($data['add_user'])) {
+            // TODO get real main user here
+            $data['add_user'] = 'admin';
         }
 
         // TODO. In FusionPBX it uses some format like Y-m-d H:i:s.uZ but directly in Postgre now() function.
@@ -32,15 +26,17 @@ class UserRepository extends Repository
         // ~ In FusionPBX the function is defined in fusionpbx/resources/functions.php
         // ~ $salt = uuid();
         // We will use a webpatser/laravel-uuid
-        // $data['salt'] = Uuid::generate();
-        $passwordData = \encrypt_password_with_salt($data['password']);
+        // $data['salt'] = Str::uuid();
+        $data['user_enabled'] = Str::uuid();
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
 
         // ~ FusionPBX approach
-        // $data['password'] = md5($data['salt'].$data['password']);
+        // $data['password'] = md5($data['salt'] . $data['password']);
+        $passwordData = \encrypt_password_with_salt($data['password']);
         $data['password'] = $passwordData['password'];
+        $data['salt'] = $passwordData['salt'];
 
         // ~ TODO Improve logic here, remove hardcoded
         // ~ $data['user_enabled'] = 'true';
@@ -48,27 +44,29 @@ class UserRepository extends Repository
         // ~ 'domain_uuid',  'username', 'password', 'salt', 'contact_uuid', 'user_enabled', 'add_user', 'add_date',
 
 
-        $user->domain_uuid = $data['domain_uuid'];
-        $user->contact_uuid = $data['contact_uuid'];
-        $user->salt = $passwordData['salt'];
+        // $user->domain_uuid = $data['domain_uuid'];
+        // $user->contact_uuid = $data['contact_uuid'];
 
-        if (!empty($data['user_status']) && !is_null($data['user_status'])) {
-            $user->user_status = $data['user_status'];
+        // if (!empty($data['user_status']) && !is_null($data['user_status'])) {
+        //     $user->user_status = $data['user_status'];
+        // }
+
+        // $user->fill($data);
+        // $user->save();
+
+        $model = $this->getModel();
+
+        $availableColumns = $model->getTableColumnNames(true);
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, $availableColumns)) {
+                $model->$key = $value;
+            }
         }
 
-        $user->fill($data);
-        $user->save();
+        $model->save();
 
-        return $user;
-    }
-
-    public function update(User $user, array $data)
-    {
-        $user->fill($data);
-
-        $user->save();
-
-        return $user;
+        return $model;
     }
 
     public function setGroups(User $user, array $addGroups, array $removeGroups = [])
@@ -76,7 +74,7 @@ class UserRepository extends Repository
         $this->database->beginTransaction();
 
         try {
-          // TODO Check if Remove here works.
+            // TODO Check if Remove here works.
             if (count($removeGroups) > 0) {
                 $query = $this->database->table($user->groups()->getTable());
                 $query
@@ -91,7 +89,7 @@ class UserRepository extends Repository
                 $query
                     ->insert(array_map(function ($groupName, $groupId) use ($user) {
                         return [
-                            'user_group_uuid' => Uuid::generate(),
+                            'user_group_uuid' => Str::uuid(),
                             'domain_uuid' => $user->domain_uuid,
                             'group_uuid' => $groupId,
                             'group_name' => $groupName,

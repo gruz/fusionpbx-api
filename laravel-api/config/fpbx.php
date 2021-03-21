@@ -1,9 +1,25 @@
 <?php
 
 return [
-
+    'debug' => [
+        'swaggerProcessor' => false,
+    ],
+    'default' => [
+        'contact' => [
+            'contact_type' => 'customer',
+        ],
+        'domain' => [
+            'mothership_domain' => env('MOTHERSHIP_DOMAIN', 'localhost'),
+            'new_is_subdomain' => env('NEW_IS_SUBDOMAIN', false),
+            'activation_expire' => '1 day',
+        ],
+        'contact' => [
+            // @link https://docs.fusionpbx.com/en/latest/applications/contacts.html?highlight=contact%20type#contacts
+            'group' => env('FPBX_DEFAULT_CONTACT_GROUP','user'), 
+        ],
+    ],
     'domain' => [
-        'enabled' => env('FPBX_DOMAIN_ENABLED', true),
+        'enabled' => env('FPBX_DOMAIN_ENABLED', true), // If domain is enabled by default after activation
         'description' => env('FPBX_DOMAIN_DESCRIPTION', 'Created via api at ' . date( 'Y-m-d H:i:s', time() )),
     ],
 

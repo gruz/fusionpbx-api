@@ -2,9 +2,11 @@
 
 namespace Api\User\Services;
 
+use Illuminate\Foundation\Application;
 use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
 use Api\Domain\Repositories\DomainRepository;
+use Api\User\Repositories\ContactEmailRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
@@ -14,6 +16,8 @@ use Api\Domain\Exceptions\DomainNotFoundException;
 
 class UserPasswordService
 {
+
+    private $request;
 
     private $userRepository;
 
@@ -34,19 +38,19 @@ class UserPasswordService
 
     /**
      * Method to generate token (that is necesary to reset password) and link that
-     * will be sent to user via email to enable him to reset the password. 
+     * will be sent to user via email to enable him to reset the password.
      *
-     * @param $data Contains: 
+     * @param $data Contains:
      *                  User email for which password needs to be reset.
      *                  Domain name to which user belongs.
-     * @return array|mixed 
+     * @return array|mixed
      * @throws InvalidCredentialsException|UserDisabledException
      */
     public function generateResetToken($data)
     {
         $userCredentials = $this->getUserCredentials($data)->toArray();
         $status = Password::sendResetLink($userCredentials);
-        
+
         return [
             'username' => $userCredentials['username'],
             'domain_uuid' => $userCredentials['domain_uuid'],
@@ -57,10 +61,10 @@ class UserPasswordService
      * Method to reset user password based on user credentials.
      *
      * @param $data Data from request
-     * @return array|mixed 
+     * @return array|mixed
      * @throws InvalidCredentialsException|UserDisabledException
      */
-    public function resetPassword($data) 
+    public function resetPassword($data)
     {
         $userCredentials = array_merge($this->getUserCredentials($data)->toArray(), $data);
         $status = Password::reset(
@@ -84,10 +88,10 @@ class UserPasswordService
     /**
      * Method to prepare user credential for password reset
      * If user user_email attribute is not set then we
-     * should get user by domain and contact. 
+     * should get user by domain and contact.
      *
      * @param $data Contains user email and domain name to which user belongs
-     * @return null|\Api\User\Models\User 
+     * @return null|\Api\User\Models\User
      * @throws InvalidCredentialsException|UserDisabledException
      */
     public function getUserCredentials($data)
@@ -100,12 +104,12 @@ class UserPasswordService
         if (is_null($domain)) {
             throw new DomainNotFoundException();
         }
-        
+
         $attributes = [
             'domain_uuid' => $domain->domain_uuid,
             'user_email' => $data['user_email'],
         ];
-        
+
         $user = $this->userService->getByAttributes($attributes);
 
         if (!is_null($user)) {
@@ -122,18 +126,17 @@ class UserPasswordService
 
     /**
      * Method to get user by email (user_email attribute).
-     * 
+     *
      * @param $email User email
      * @return null|\Api\User\Models\User
      */
-    public function getUserByEmail($email) 
+    public function getUserByEmail($email)
     {
         // Search by v_user table in user_email field
         $user = $this->userRepository
-                     ->getWhere('user_email', $email)
-                     ->first();
-        
+            ->getWhere('user_email', $email)
+            ->first();
+
         return $user;
     }
-
 }

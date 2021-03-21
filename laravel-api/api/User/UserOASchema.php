@@ -1,7 +1,8 @@
 <?php
+
 namespace Api\User;
 
-    /**
+/**
     @OA\Parameter(
         name="user_uuid",
         in="path",
@@ -75,7 +76,7 @@ namespace Api\User;
         )),
     }),
 
-@OA\Schema(schema="UserForgotPasswordSchema", allOf={
+    @OA\Schema(schema="UserForgotPasswordSchema", allOf={
         @OA\Schema(@OA\Property(
             property="user_email",
             type="string",

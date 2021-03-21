@@ -2,14 +2,9 @@
 
 namespace Api\Pushtoken\Repositories;
 
-use Api\Pushtoken\Models\Pushtoken;
-use Infrastructure\Database\Eloquent\Repository;
-use Illuminate\Database\Eloquent\Collection;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class PushtokenRepository extends Repository
+
+class PushtokenRepository extends AbstractRepository
 {
-    public function getModel()
-    {
-        return new Pushtoken();
-    }
 }

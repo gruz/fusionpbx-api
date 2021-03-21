@@ -2,18 +2,11 @@
 
 namespace Api\Dialplan\Repositories;
 
-use Api\Dialplan\Models\Dialplan;
 use Api\Dialplan\Exceptions\CouldNotInjectDialplanException;
-use Infrastructure\Database\Eloquent\Repository;
-use Illuminate\Database\Eloquent\Collection;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class DialplanRepository extends Repository
+class DialplanRepository extends AbstractRepository
 {
-    public function getModel()
-    {
-        return new Dialplan();
-    }
-
     /**
      * Load custom dialplan
      *
@@ -29,19 +22,17 @@ class DialplanRepository extends Repository
     {
         $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';
 
-        if (is_dir($dialplan_dest_folder))
-        {
-          return;
+        if (is_dir($dialplan_dest_folder)) {
+            return;
         }
 
         $dialplan_storage = $pemFile = base_path() . '/resources/fusionpbx';
 
-        $cmd ='cp -r ' . $dialplan_storage . ' ' . $dialplan_dest_folder;
+        $cmd = 'cp -r ' . $dialplan_storage . ' ' . $dialplan_dest_folder;
         exec($cmd, $output);
 
-        if (!is_dir($dialplan_dest_folder))
-        {
-          throw new CouldNotInjectDialplanException();
+        if (!is_dir($dialplan_dest_folder)) {
+            throw new CouldNotInjectDialplanException();
         }
     }
 }

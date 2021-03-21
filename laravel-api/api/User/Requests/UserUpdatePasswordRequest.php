@@ -20,20 +20,22 @@ class UserUpdatePasswordRequest extends FormRequest
 
         // if ($this->exists(['domain_name', 'user_email'])) {
         //     $passwords = $this->checkPasswordSettings($this->only('domain_name', 'user_email'));
-            
-            return [
-                'user_email' => 'required|email|exists:password_resets,email',
-                'token' => 'required',
-                // https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#id26
-                // password settings needs to be fetched from fusion pbx and set here
-                'password' => ['required', 'confirmed',
-                                new FusionPBXPasswordRequirements($domainName, $userEmail, $passwordFor)],
-                'domain_name' => 'required|exists:password_resets'
-            ];
+
+        return [
+            'user_email' => 'required|email|exists:password_resets,email',
+            'token' => 'required',
+            // https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#id26
+            // password settings needs to be fetched from fusion pbx and set here
+            'password' => [
+                'required', 'confirmed',
+                new FusionPBXPasswordRequirements($domainName, $userEmail, $passwordFor)
+            ],
+            'domain_name' => 'required|exists:password_resets'
+        ];
         // }
-        
+
         // return $this->failedValidation($this->validator);
-        
+
     }
 
     public function messages()
@@ -43,5 +45,4 @@ class UserUpdatePasswordRequest extends FormRequest
             'user_email.exists' => __('Invalid data'),
         ];
     }
-   
 }

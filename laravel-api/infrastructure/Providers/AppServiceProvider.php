@@ -12,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        error_reporting(E_ALL & ~E_NOTICE);
+        // error_reporting(E_ALL & ~E_NOTICE);
     }
     /**
      * Register any application services.

@@ -1,21 +1,20 @@
 <?php
 namespace Api\Voicemail\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 /**
  * @OA\Schema()
  */
-class Voicemail extends Model
+class Voicemail extends AbstractModel
 {
-    use FusionPBXTableModel;
+    use HasFactory;
 
     protected $guarded = [
         'domain_uuid',
         'voicemail_uuid',
         'voicemail_id',
+        'voicemail_name_base64',
     ];
 }

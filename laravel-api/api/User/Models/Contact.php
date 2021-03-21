@@ -1,22 +1,23 @@
 <?php
 namespace Api\User\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
-use Api\User\Models\Contact_email as ContactEmail;
+use Infrastructure\Database\Eloquent\AbstractModel;
+use Api\User\Models\ContactEmail as ContactEmail;
 /**
  * @OA\Schema()
  */
-class Contact extends Model
+class Contact extends AbstractModel
 {
-    use Notifiable, FusionPBXTableModel;
+    use HasFactory;
+    use Notifiable;
 
-    // /**
-    //  * The attributes that are mass assignable.
-    //  *
-    //  * @var array
-    //  */
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     // protected $fillable = [
     //     'domain_uuid', 'contact_type', 'contact_nickname'
     // ];

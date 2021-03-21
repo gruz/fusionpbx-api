@@ -2,28 +2,17 @@
 
 namespace Api\Domain\Controllers;
 
-use OpenApi\Annotations as OA;
-use Api\User\Services\TeamService;
-use Api\User\Services\UserService;
 use Infrastructure\Http\Controller;
 use Api\Domain\Requests\DomainSignupRequest;
+use Api\PostponedAction\Services\PostponedActionService;
+use Api\Domain\Requests\DomainSignupVerificationLinkRequest;
+use Api\PostponedAction\Requests\PostponedActionExecuteRequest;
 
 /**
  * @OA\Schema()
  */
 class DomainController extends Controller
 {
-    /**
-     * @var TeamService
-     */
-    private $teamService;
-
-    public function __construct(UserService $userService, TeamService $teamService)
-    {
-        $this->userService = $userService;
-        $this->teamService = $teamService;
-    }
-
     /**
      * Create a domain
      *
@@ -99,15 +88,68 @@ class DomainController extends Controller
         ),
     )
      */
-    public function signup(DomainSignupRequest $request)
+    public function signup(DomainSignupRequest $request, PostponedActionService $postponedActionService)
     {
-        $data = $request->get('team', []);
+        return $this->response($postponedActionService->create($request->all()), 201);
+    }
 
-        $data['isTeam'] = true;
-        $data['user_enabled'] = 'true';
-        $data['group_name'] = env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME');
+    /**
+     * Activate user by email link. In cases it's and admin user, activate domain as well
+     *
+     * Whom to send activation link is determined by configuration [`TODO` Implement this logic ]: 
+     * * Main domain admin user
+     * * A email determined by laravel configuration
+     * * The users mentioned as admin users when creating domain signup (passed with the signup request)
+     * * All FPBX users which have permission to create domain
+     * * All above
+     *
+     * Depending on configuration, 
+     *
+    @OA\Get(
+        tags={"Domain"},
+        path="/domain/activate/{hash}/{email}",
+        @OA\Parameter(
+            name="hash",
+            in="path",
+            required=true,
+            @OA\Schema(
+                type="string",
+                format="uuid",
+                example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
+            )
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
+    public function activate($hash, $email, DomainSignupVerificationLinkRequest $request, PostponedActionService $postponedActionService)
+    {
+        return $this->response($postponedActionService->executeByHash($hash, $email), 201);
+    }
 
-        return $this->response($this->teamService->create($data), 201);
+    /**
+     * Resend domain signup verification link
+     *
+    @OA\Get(
+        tags={"Domain"},
+        path="/domain/resend/{hash}",
+        @OA\Parameter(
+            name="hash",
+            in="path",
+            required=true,
+            @OA\Schema(
+                type="string",
+                format="uuid",
+                example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
+            )
+        ),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+    */
+    public function resend($hash, PostponedActionExecuteRequest $request, PostponedActionService $postponedActionService)
+    {
+        return $this->response($postponedActionService->executeByHash($hash), 201);
     }
 
     /**
@@ -161,7 +203,7 @@ class DomainController extends Controller
             ),
         ),
     )
-     */
+    */
 
     /**
      * Delete a domain `TODO descendant delete with users, extensions etc`

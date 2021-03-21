@@ -174,7 +174,7 @@ return [
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
-        // Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
@@ -185,7 +185,7 @@ return [
          */
 
         Laravel\Passport\PassportServiceProvider::class,
-        \Infrastructure\Providers\EventServiceProvider::class,
+        Infrastructure\Providers\EventServiceProvider::class,
         // Optimus\Api\System\TranslationServiceProvider::class,
         Optimus\Api\System\ViewServiceProvider::class,
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
@@ -197,13 +197,15 @@ return [
         Infrastructure\Providers\AppServiceProvider::class,
         Infrastructure\Auth\AuthServiceProvider::class,
         Infrastructure\Http\RouteServiceProvider::class,
-        Api\User\TeamServiceProvider::class,
+        Api\Domain\TeamServiceProvider::class,
         Api\User\UserServiceProvider::class,
+        Api\Domain\DomainServiceProvider::class,
+        Api\PostponedAction\PostponedActionServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,
         Infrastructure\Providers\HelperServiceProvider::class,
         Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
         Api\User\PasswordResetServiceProvider::class,
-        
+
     ],
 
     /*
@@ -240,7 +242,8 @@ return [
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
-        'Notification' => Illuminate\Support\Facades\Notification::class,
+        // 'Notification' => Illuminate\Support\Facades\Notification::class,
+        'Notification' => \Infrastructure\Notification\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
@@ -255,6 +258,5 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Uuid' => Webpatser\Uuid\Uuid::class,
     ],
 ];

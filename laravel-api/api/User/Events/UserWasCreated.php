@@ -9,8 +9,11 @@ class UserWasCreated extends Event
 {
     public $user;
 
-    public function __construct(User $user)
+    public $options;
+
+    public function __construct(User $user, $options = [])
     {
         $this->user = $user;
+        $this->options = $options;
     }
 }

@@ -9,9 +9,9 @@ use Api\User\Events\UserWasUpdated;
 use Api\User\Events\GroupWasCreated;
 use Api\User\Events\GroupWasDeleted;
 use Api\User\Events\GroupWasUpdated;
-
+use Api\User\Events\UserWasActivated;
 use Api\User\Listeners\UserWasCreatedListener;
-
+use Api\User\Listeners\UserWasActivatedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class UserServiceProvider extends ServiceProvider
@@ -35,6 +35,9 @@ class UserServiceProvider extends ServiceProvider
         ],
         UserWasUpdated::class => [
             // listeners for when a user is updated
+        ],
+        UserWasActivated::class => [
+            UserWasActivatedListener::class,
         ],
     ];
 }

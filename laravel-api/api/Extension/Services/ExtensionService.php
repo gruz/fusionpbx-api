@@ -14,7 +14,6 @@ use Api\Extension\Events\ExtensionWasDeleted;
 use Api\Extension\Events\ExtensionWasUpdated;
 use Api\Extension\Repositories\ExtensionRepository;
 use Api\Extension\Exceptions\ExtensionExistsException;
-use Api\Extension\Repositories\Extension_userRepository;
 
 class ExtensionService
 {
@@ -29,7 +28,7 @@ class ExtensionService
     // ~ private $roleRepository;
 
     private $extensionRepository;
-    private $extension_userRepository;
+    // private $extension_userRepository;
 
     private $userRepository;
 
@@ -40,19 +39,14 @@ class ExtensionService
         DatabaseManager $database,
         Dispatcher $dispatcher,
         // ~ GroupRepository $roleRepository,
-        Extension_userRepository $extension_userRepository,
         UserRepository $userRepository,
         ExtensionRepository $extensionRepository
     ) {
         $this->auth = $auth;
         $this->database = $database;
         $this->dispatcher = $dispatcher;
-        // ~ $this->roleRepository = $roleRepository;
         $this->extensionRepository = $extensionRepository;
-        $this->extension_userRepository = $extension_userRepository;
         $this->userRepository = $userRepository;
-
-        $this->setScope();
     }
 
     public function getAll($options = [])

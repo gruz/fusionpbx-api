@@ -23,14 +23,34 @@ $router->group(['middleware' => ['web']], function ($router) {
       $router->get('/reset-password', [
          'uses' => 'UserController@resetPassword',
          'as' => 'password.reset',
+         // 'namespace' => 'Api\User\Controllers'
       ]);
    
       $router->post('/reset-password', [
          'uses' => 'UserController@updatePassword',
          'as' => 'password.update',
+         // 'namespace' => 'Api\User\Controllers'
       ]);
    
+      // $router->post('/forgot-password', [
+      //    'uses' => 'UserController@forgotPassword',
+      //    'as' => 'password.email',
+      //    // 'namespace' => 'Api\User\Controllers'
+      // ]);
    });
+
+   // $router->get('/reset-password',
+   //             [ UserController::class, 'resetPassword']) //   ['as' => 'password.reset']
+   //    ->name('password.reset');
+
+   // $router->post('/reset-password',
+   //             [ UserController::class, 'updatePassword'])  //   ['as' => 'password.update']
+   //    ->name('password.update');
+
+   // $router->post('/forgot-password',
+   //             [ UserController::class, 'forgotPassword']) //   ['as' => 'password.email']
+   //    ->name('password.email');
+       
 });
 
 $router->get('/api/redoc', function(){

@@ -36,10 +36,9 @@ use OpenApi\Annotations as OA;
 
 /**
  * @OA\SecurityScheme(
- *   securityScheme="api_key",
- *   type="apiKey",
- *   in="header",
- *   name="api_key"
+ *     type="http",
+ *     scheme="bearer",
+ *     securityScheme="bearer_auth",
  * )
  */
 

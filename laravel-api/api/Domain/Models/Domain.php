@@ -1,17 +1,20 @@
 <?php
+
 namespace Api\Domain\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Api\User\Models\User;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\Model;
-use Infrastructure\Traits\FusionPBXTableModel;
+use Infrastructure\Database\Eloquent\AbstractModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @OA\Schema()
  */
-class Domain extends Model
+class Domain extends AbstractModel
 {
-    use Notifiable, FusionPBXTableModel;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * Domain name
@@ -83,5 +86,15 @@ class Domain extends Model
     public function isAgent()
     {
         return $this->groups();
+    }
+
+    public function domain_settings()
+    {
+        return $this->hasMany(DomainSetting::class, 'domain_uuid');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'domain_uuid', 'domain_uuid');
     }
 }
