@@ -31,7 +31,7 @@ class DomainSignupRequestTest extends TestCase
 
         $return = [
             'fail_when_domain_exists' => [
-                'passed' => false,
+                'passed' => true,
                 'data' => array_merge($data, ['domain_name' => $systemDomainName]),// TODO get system domain from DB
             ],
             'pass_when_domain_not_exists' => [
