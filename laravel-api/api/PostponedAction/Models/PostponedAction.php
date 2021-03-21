@@ -12,4 +12,9 @@ class PostponedAction extends Model
     protected $casts = [
         'request' => 'json',
     ];
+    
+    public static function last()
+    {
+        return self::latest()->first();
+    }
 }
