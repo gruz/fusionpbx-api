@@ -35,7 +35,7 @@ class DomainControllerTest extends TestCase
         Notification::assertSentTo(
             new AnonymousNotifiable,
             DomainSignupNotification::class,
-            function (DomainSignupNotification $notification, array $channels, AnonymousNotifiable $notifiable) use (&$users) {
+            function (DomainSignupNotification $notification, array $channels, AnonymousNotifiable $notifiable) use (&$users, $request) {
                 if (!in_array($notifiable->routes['mail'], $users)) {
                     return false;
                 }
@@ -43,7 +43,7 @@ class DomainControllerTest extends TestCase
                 $email = $notifiable->routes['mail'];
 
                 $url = route('fpbx.get.domain.activate', [
-                    'hash' => PostponedAction::last()->hash,
+                    'hash' => PostponedAction::where('request->domain_name', $request['domain_name'])->first()->hash,
                     'email' => $email,
                 ]);
                 $recepient = new stdClass;

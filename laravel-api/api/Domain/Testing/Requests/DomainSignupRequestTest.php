@@ -68,16 +68,6 @@ class DomainSignupRequestTest extends TestCase
             'data' => $dataModified,
         ];
 
-        // $userData = Arr::get($data, 'users.0');
-        // $userData['username'] = 'aaaa';
-        // $userData['user_email'] = 'a@a.com';
-        // User::create($userData);
-
-        // $return['fail_if_user_exists'] = [
-        //     'passed' => true,
-        //     'data' => $data,
-        // ];
-
         return $return;
     }
 
