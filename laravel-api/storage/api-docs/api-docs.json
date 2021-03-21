@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-167-g4fbf936"
+        "version": "0.0.8-168-gd2088bc"
     },
     "paths": {
         "/domain/signup": {
@@ -1546,7 +1546,7 @@
                     "email_verified_at": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2021-03-21 12:59:33"
+                        "example": "2021-03-21 04:43:59"
                     }
                 }
             },
