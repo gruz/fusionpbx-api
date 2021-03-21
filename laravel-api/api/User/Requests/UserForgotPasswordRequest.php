@@ -16,9 +16,8 @@ class UserForgotPasswordRequest extends ApiRequest
     public function rules()
     {
         return [
-            'domain_name' => 'required|exists:' . Domain::class . ',domain_name', 
+            'domain_name' => 'required|exists:' . Domain::class . ',domain_name',
             'user_email' => 'required|email|exists:' . User::class . ',user_email'
         ];
     }
-   
 }

@@ -136,7 +136,7 @@ To automatically run tests before pushing use such a hook.
 Create file `.git/hooks/pre-push` with contents
 
 ```
-#!/bin/sh
+#!/bin/bash
 
 branch=`git rev-parse --abbrev-ref HEAD`
 echo "Running tests before pushing ...."

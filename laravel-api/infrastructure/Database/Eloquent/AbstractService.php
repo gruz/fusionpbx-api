@@ -93,18 +93,6 @@ abstract class AbstractService
         return $this->repository->get($options);
     }
 
-
-    public function getByAttributes(array $attributes)
-    {
-        $data = null;
-
-        if (!empty($attributes) && !is_null($attributes)) {
-            $data = $this->repository->getWhereArray($attributes)->first();
-        }
-
-        return $data;
-    }
-
     public function getById($id, array $options = []): \Illuminate\Database\Eloquent\Model
     {
         $collection = $this->repository->getById($id, $options);
@@ -231,5 +219,30 @@ abstract class AbstractService
         }
 
         $this->database->commit();
+    }
+
+    public function getByAttributes(array $attributes)
+    {
+        $data = null;
+
+        if (!empty($attributes) && !is_null($attributes)) {
+            $data = $this->repository->getWhereArray($attributes)->first();
+        }
+
+        return $data;
+    }
+
+    public function getByAttributeValues($attribute, array $values)
+    {
+        $data = null;
+
+        if (
+            !empty($attribute) && !is_null($attribute) &&
+            !empty($values) && !is_null($values) && is_array($values)
+        ) {
+            $data = $this->repository->getWhereIn($attribute, $values)->toArray();
+        }
+
+        return $data;
     }
 }

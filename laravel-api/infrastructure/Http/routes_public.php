@@ -19,7 +19,7 @@ $router->group(['middleware' => ['web']], function ($router) {
     *   https://stackoverflow.com/questions/50054596/defining-custom-namespaces-on-routes-in-laravel-5-6
     */
 
-   $router->namespace('\\Api\\User\\Controllers')->group(function ($router) {
+   $router->namespace('\Api\User\Controllers')->group(function ($router) {
       $router->get('/reset-password', [
          'uses' => 'UserController@resetPassword',
          'as' => 'password.reset',

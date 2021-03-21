@@ -30,14 +30,15 @@ class UserController extends Controller
     private $teamService;
 
     /**
-    * @var UserPasswordService
-    */
+     * @var UserPasswordService
+     */
     private $passwordService;
 
-    public function __construct(UserService $userService,
-                                TeamService $teamService,
-                                UserPasswordService $passwordService)
-    {
+    public function __construct(
+        UserService $userService,
+        TeamService $teamService,
+        UserPasswordService $passwordService
+    ) {
         $this->userService = $userService;
         $this->teamService = $teamService;
         $this->passwordService = $passwordService;
@@ -73,7 +74,7 @@ class UserController extends Controller
         ),
         security={{"bearer_auth": {}}}
     )
-    */
+     */
     public function getAll()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -101,7 +102,7 @@ class UserController extends Controller
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     public function getById(string $userId)
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -132,7 +133,7 @@ class UserController extends Controller
         ),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     public function getMe()
     {
         $resourceOptions = $this->parseResourceOptions();
@@ -175,7 +176,7 @@ class UserController extends Controller
         ),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     public function create(CreateUserRequest $request)
     {
         $data = $request->get('user', []);
@@ -212,7 +213,7 @@ class UserController extends Controller
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     public function update($userId, Request $request)
     {
         $data = $request->get('user', []);
@@ -240,7 +241,7 @@ class UserController extends Controller
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     public function activate(string $hash)
     {
         $response = $this->response($this->userService->activate($hash));
@@ -260,7 +261,7 @@ class UserController extends Controller
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     public function delete($userId)
     {
         return $this->response($this->userService->delete($userId));
@@ -460,7 +461,7 @@ class UserController extends Controller
         ),
     )
      */
-    public function forgotPassword(UserForgotPasswordRequest $request) 
+    public function forgotPassword(UserForgotPasswordRequest $request)
     {
         $data = $request->only('user_email', 'domain_name');
 
@@ -473,7 +474,7 @@ class UserController extends Controller
      * @param UserResetPasswordRequest $request
      * @return void
      */
-    public function resetPassword(UserResetPasswordRequest $request) 
+    public function resetPassword(UserResetPasswordRequest $request)
     {
         return view('user.password.reset-password', [
             'token' => $request->get('token'),
@@ -533,11 +534,15 @@ class UserController extends Controller
         ),
     )
      */
-    public function updatePassword(UserUpdatePasswordRequest $request) 
+    public function updatePassword(UserUpdatePasswordRequest $request)
     {
         $data = $request->only(
-            'user_email','password', 'password_confirmation', 'token', 'domain_name'
-        );  
+            'user_email',
+            'password',
+            'password_confirmation',
+            'token',
+            'domain_name'
+        );
 
         $status = $this->passwordService->resetPassword($data);
 
@@ -546,5 +551,4 @@ class UserController extends Controller
 
         return view('user.password.reset-success');
     }
-    
 }

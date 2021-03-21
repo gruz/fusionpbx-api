@@ -2,16 +2,8 @@
 
 namespace Api\User\Repositories;
 
-use Api\User\Models\User_setting;
-use Infrastructure\Database\Eloquent\Repository;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class UserSettingRepository extends Repository
+class UserSettingRepository extends AbstractRepository
 {
-    public function getModel()
-    {
-        return new User_setting();
-    }
-
-    
-
 }

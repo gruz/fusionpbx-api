@@ -9,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 /**
  * @TODO Probably remove
- * @package Api\User\Mail
  */
 class ResetPasswordLink extends Mailable
 {

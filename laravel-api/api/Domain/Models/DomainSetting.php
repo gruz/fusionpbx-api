@@ -7,7 +7,7 @@ use Infrastructure\Database\Eloquent\AbstractModel;
 /**
  * @OA\Schema(
  * description="Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.
- * 
+ *
  *  ```
  * SELECT x.* FROM public.v_default_settings x
  *     WHERE default_setting_category in ('domain' , 'email')

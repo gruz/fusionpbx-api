@@ -27,4 +27,5 @@ class UserResetPasswordRequest extends FormRequest
             'email.exists' => __('Invalid data'),
         ];
     }
+
 }

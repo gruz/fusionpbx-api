@@ -2,16 +2,9 @@
 
 namespace Api\Settings\Repositories;
 
-use Api\Settings\Models\Default_setting;
-use Infrastructure\Database\Eloquent\Repository;
+use Api\Settings\Models\DefaultSetting;
+use Infrastructure\Database\Eloquent\AbstractRepository;
 
-class DefaultSettingRepository extends Repository
+class DefaultSettingRepository extends AbstractRepository
 {
-    public function getModel()
-    {
-        return new Default_setting();
-    }
-
-    
-
 }

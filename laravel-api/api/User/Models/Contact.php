@@ -24,7 +24,7 @@ class Contact extends AbstractModel
 
     protected $guarded = [
         'contact_uuid',
-        'domain_uuid',
+        // 'domain_uuid',
         'contact_parent_uuid',
         'last_mod_date',
         'last_mod_user', // Contains username
