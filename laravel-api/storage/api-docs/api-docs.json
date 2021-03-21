@@ -5,7 +5,7 @@
         "contact": {
             "email": "vongruz@protonmail.com"
         },
-        "version": "0.0.8-153-ge3a2d6c"
+        "version": "0.0.8-160-g197a713"
     },
     "paths": {
         "/domain/signup": {
@@ -1083,6 +1083,15 @@
                     "domain_parent_uuid": {
                         "description": "Parent domain id",
                         "nullable": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_enabled": {
+                        "type": "boolean",
+                        "readOnly": true
                     }
                 },
                 "type": "object"
@@ -1157,6 +1166,31 @@
                         "description": "Setting field type",
                         "type": "string",
                         "example": "uk-ua"
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_setting_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "app_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_setting_order": {
+                        "type": "number"
+                    },
+                    "domain_setting_enabled": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "domain_setting_description": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1200,11 +1234,362 @@
                     }
                 ]
             },
-            "Extension": {},
+            "Extension": {
+                "properties": {
+                    "extension_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "extension": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "accountcode": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_name": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_number": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_name": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_number": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_name": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_number": {
+                        "type": "string"
+                    },
+                    "directory_first_name": {
+                        "type": "string"
+                    },
+                    "directory_last_name": {
+                        "type": "string"
+                    },
+                    "directory_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "directory_exten_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "limit_max": {
+                        "type": "string",
+                        "default": 5
+                    },
+                    "limit_destination": {
+                        "type": "string",
+                        "default": "error/user_busy"
+                    },
+                    "missed_call_app": {
+                        "type": "string"
+                    },
+                    "missed_call_data": {
+                        "type": "string"
+                    },
+                    "user_context": {
+                        "type": "string"
+                    },
+                    "toll_allow": {
+                        "type": "string"
+                    },
+                    "call_timeout": {
+                        "type": "number",
+                        "default": 30
+                    },
+                    "call_group": {
+                        "type": "string"
+                    },
+                    "call_screen_enabled": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "user_record": {
+                        "type": "string"
+                    },
+                    "hold_music": {
+                        "type": "string",
+                        "default": "local_stream://default"
+                    },
+                    "auth_acl": {
+                        "type": "string"
+                    },
+                    "cidr": {
+                        "type": "string"
+                    },
+                    "sip_force_contact": {
+                        "type": "string"
+                    },
+                    "nibble_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_force_expires": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "mwi_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_bypass_media": {
+                        "type": "string"
+                    },
+                    "unique_id": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "dial_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_user": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_domain": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "do_not_disturb": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "follow_me_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "forward_caller_id_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "follow_me_enabled": {
+                        "type": "string"
+                    },
+                    "follow_me_destinations": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "absolute_codec_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "force_ping": {
+                        "type": "string"
+                    }
+                }
+            },
             "UserController": {},
-            "Contact": {},
-            "User": {},
-            "UserSetting": {},
+            "Contact": {
+                "properties": {
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "contact_parent_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "contact_type": {
+                        "type": "string"
+                    },
+                    "contact_organization": {
+                        "type": "string"
+                    },
+                    "contact_name_prefix": {
+                        "type": "string"
+                    },
+                    "contact_name_given": {
+                        "type": "string"
+                    },
+                    "contact_name_middle": {
+                        "type": "string"
+                    },
+                    "contact_name_family": {
+                        "type": "string"
+                    },
+                    "contact_name_suffix": {
+                        "type": "string"
+                    },
+                    "contact_nickname": {
+                        "type": "string"
+                    },
+                    "contact_title": {
+                        "type": "string"
+                    },
+                    "contact_role": {
+                        "type": "string"
+                    },
+                    "contact_category": {
+                        "type": "string"
+                    },
+                    "contact_url": {
+                        "type": "string"
+                    },
+                    "contact_time_zone": {
+                        "type": "string"
+                    },
+                    "contact_note": {
+                        "type": "string"
+                    },
+                    "last_mod_date": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "last_mod_user": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "User": {
+                "properties": {
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "user_email": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "api_key": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "user_enabled": {
+                        "type": "string"
+                    },
+                    "add_user": {
+                        "type": "string"
+                    },
+                    "add_date": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2021-03-21 06:15:54"
+                    }
+                }
+            },
+            "UserSetting": {
+                "properties": {
+                    "user_setting_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_setting_category": {
+                        "type": "string"
+                    },
+                    "user_setting_subcategory": {
+                        "type": "string"
+                    },
+                    "user_setting_name": {
+                        "type": "string"
+                    },
+                    "user_setting_value": {
+                        "type": "string"
+                    },
+                    "user_setting_order": {
+                        "type": "number"
+                    },
+                    "user_setting_enabled": {
+                        "type": "boolean"
+                    },
+                    "user_setting_description": {
+                        "type": "string"
+                    }
+                }
+            },
             "user_includes": {
                 "type": "array",
                 "items": {
@@ -1337,8 +1722,103 @@
                     }
                 ]
             },
-            "Voicemail": {},
-            "VoicemailOption": {}
+            "Voicemail": {
+                "properties": {
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_id": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_password": {
+                        "type": "string"
+                    },
+                    "greeting_id": {
+                        "type": "number"
+                    },
+                    "voicemail_alternate_greet_id": {
+                        "type": "number"
+                    },
+                    "voicemail_mail_to": {
+                        "type": "string"
+                    },
+                    "voicemail_sms_to": {
+                        "type": "string"
+                    },
+                    "voicemail_transcription_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_attach_file": {
+                        "type": "string"
+                    },
+                    "voicemail_file": {
+                        "type": "string"
+                    },
+                    "voicemail_local_after_email": {
+                        "type": "string"
+                    },
+                    "voicemail_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_description": {
+                        "type": "string"
+                    },
+                    "voicemail_name_base64": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_tutorial": {
+                        "type": "string"
+                    }
+                }
+            },
+            "VoicemailOption": {
+                "properties": {
+                    "voicemail_option_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_option_digits": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_action": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_param": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_order": {
+                        "type": "number",
+                        "readOnly": true
+                    },
+                    "voicemail_option_description": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            }
         },
         "parameters": {
             "domain_uuid": {

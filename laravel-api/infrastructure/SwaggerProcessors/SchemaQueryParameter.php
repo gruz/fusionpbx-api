@@ -51,7 +51,8 @@ class SchemaQueryParameter
     {
         $model = $this->getModelFromSchema($schema);
 
-        if (!$model instanceof Model) {
+        if (!$model instanceof AbstractModel) {
+            // d($schema->schema,$model);
             return;
         }
 
@@ -137,12 +138,12 @@ class SchemaQueryParameter
         $modelClassName = $this->getClassName($schema);
         // d($modelClassName);
 
-        if (!is_subclass_of($modelClassName, Model::class)) {
+        if (!is_subclass_of($modelClassName, AbstractModel::class)) {
             return null;
         }
 
         /**
-         * @var Model
+         * @var AbstractModel
          */
         $model = new $modelClassName;
 
