@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ec8889ffab0a2ad5d7cedb15fe419ed",
+    "content-hash": "bb102510e81c1aa223b7c096a7c46f1a",
     "packages": [
         {
             "name": "brick/math",
@@ -126,16 +126,16 @@
         },
         {
             "name": "darkaonline/l5-swagger",
-            "version": "dev-master",
+            "version": "8.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gruz/L5-Swagger.git",
-                "reference": "5194e3a8a06e5338bc0dc4e0b490336a3888156f"
+                "reference": "3477e7013daf8b6fc142c45fdcb9fe6c74d7398d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gruz/L5-Swagger/zipball/5194e3a8a06e5338bc0dc4e0b490336a3888156f",
-                "reference": "5194e3a8a06e5338bc0dc4e0b490336a3888156f",
+                "url": "https://api.github.com/repos/gruz/L5-Swagger/zipball/3477e7013daf8b6fc142c45fdcb9fe6c74d7398d",
+                "reference": "3477e7013daf8b6fc142c45fdcb9fe6c74d7398d",
                 "shasum": ""
             },
             "require": {
@@ -152,7 +152,6 @@
                 "php-coveralls/php-coveralls": "^2.0",
                 "phpunit/phpunit": "8.*"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -198,7 +197,7 @@
                 "swagger"
             ],
             "support": {
-                "source": "https://github.com/gruz/L5-Swagger/tree/master"
+                "source": "https://github.com/gruz/L5-Swagger/tree/8.0.4"
             },
             "funding": [
                 {
@@ -206,7 +205,7 @@
                     "url": "https://github.com/DarkaOnLine"
                 }
             ],
-            "time": "2021-01-25T18:49:31+00:00"
+            "time": "2020-12-08T13:29:20+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -981,16 +980,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.7.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3"
+                "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/53330f47520498c0ae1f61f7e2c90f55690c06a3",
-                "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/35ea11d335fd638b5882ff1725228b3d35496ab1",
+                "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1",
                 "shasum": ""
             },
             "require": {
@@ -1050,9 +1049,9 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.7.0"
+                "source": "https://github.com/guzzle/psr7/tree/1.8.1"
             },
-            "time": "2020-09-30T07:37:11+00:00"
+            "time": "2021-03-21T16:25:00+00:00"
         },
         {
             "name": "laravel/framework",
@@ -10573,9 +10572,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "darkaonline/l5-swagger": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
