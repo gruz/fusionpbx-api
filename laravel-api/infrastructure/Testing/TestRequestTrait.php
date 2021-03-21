@@ -27,7 +27,6 @@ trait TestRequestTrait
 
         $this->rules = (new $className())->rules();
 
-        Artisan::call('db:maketest');
     }
 
     /**

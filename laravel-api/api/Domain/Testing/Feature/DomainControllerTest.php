@@ -43,7 +43,7 @@ class DomainControllerTest extends TestCase
                 $email = $notifiable->routes['mail'];
 
                 $url = route('fpbx.get.domain.activate', [
-                    'hash' => PostponedAction::first()->hash,
+                    'hash' => PostponedAction::last()->hash,
                     'email' => $email,
                 ]);
                 $recepient = new stdClass;
@@ -70,7 +70,7 @@ class DomainControllerTest extends TestCase
         // list($request, $response) = $this->simulateSignup();
         $this->simulateSignup();
 
-        $model = PostponedAction::first();
+        $model = PostponedAction::last();
         $domain_name = Arr::get($model->request, 'domain_name');
         $email = Arr::get($model->request, 'users.0.user_email');
 
@@ -117,7 +117,7 @@ class DomainControllerTest extends TestCase
                 $this->simulateSignup(true);
 
                 /** @var PostponedAction */
-                $model = PostponedAction::first();
+                $model = PostponedAction::last();
 
                 if ($hasDomainEnabledAttribute) {
                     $model->setAttribute('request->domain_enabled', $domain_enabled_after_activation);
@@ -144,7 +144,7 @@ class DomainControllerTest extends TestCase
     {
         $this->simulateSignup(true);
 
-        $model = PostponedAction::first();
+        $model = PostponedAction::last();
         $domain_name = Arr::get($model->request, 'domain_name');
         $email = Arr::get($model->request, 'users.0.user_email');
 

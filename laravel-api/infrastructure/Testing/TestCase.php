@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Testing;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
 use Api\PostponedAction\Models\PostponedAction;
 use Infrastructure\Services\TestRequestFactoryService;
@@ -18,23 +19,30 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUp(): void
     {
-
         parent::setUp();
 
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
     }
 
-    protected function simulateSignup($noCache = false)
+    protected function refreshDB() {
+        Artisan::call('db:maketest');
+        Artisan::call('migrate:refresh');
+    }
+
+    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false)
     {
-        // \Illuminate\Support\Facades\Artisan::call('db:maketest');
-        PostponedAction::query()->truncate();
+        if ($refreshDB) {
+            $this->refreshDB();
+        }
+
+        // PostponedAction::query()->truncate();
         Notification::fake();
 
         /**
          * @var TestRequestFactoryService
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
-        $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $noCache]);
+        $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $forceNewRequestGeneration]);
         $response = $this->json('post', route('fpbx.post.domain.signup'), $request);
 
         $data = [$request, $response];
