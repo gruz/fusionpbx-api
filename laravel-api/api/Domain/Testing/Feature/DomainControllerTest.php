@@ -290,6 +290,15 @@ class DomainControllerTest extends TestCase
                     $where[$columnName] = $extensionData[$columnName];
                 }
             }
+            switch ($table) {
+                case 'v_voicemails':
+                    # code...
+                    $this->assertNotEmpty($where['voicemail_password']);
+                    break;
+                default:
+                    $this->assertNotEmpty($where['password']);
+                    break;
+            }
             $this->assertDatabaseHas($table, $where);
         }
     }

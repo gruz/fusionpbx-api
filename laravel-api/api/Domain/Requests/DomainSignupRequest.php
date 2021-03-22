@@ -21,9 +21,13 @@ class DomainSignupRequest extends ApiRequest
                 'unique:Api\\Domain\\Models\\Domain,domain_name'
             ],
             'users' => 'required',
+            'is_subdomain' => 'required',
             'users.*.username' => 'required|distinct',
             'users.*.user_email' => 'required|distinct:ignore_case|email',
             'users.*.password' => 'required|min:6|max:25',
+            'users.*.extensions.*.extension' => 'required|distinct|integer|min:1|max:999',
+            'users.*.extensions.*.password' => 'required|min:6|max:25',
+            'users.*.extensions.*.voicemail_password' => 'required|integer',
             'users' => new ArrayAtLeastOneAcceptedRule('is_admin'),
         ];
 

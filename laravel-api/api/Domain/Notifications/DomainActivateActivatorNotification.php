@@ -2,10 +2,11 @@
 
 namespace Api\Domain\Notifications;
 
+use Illuminate\Support\Arr;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 class DomainActivateActivatorNotification extends Notification implements ShouldQueue
 {
@@ -13,20 +14,19 @@ class DomainActivateActivatorNotification extends Notification implements Should
 
     private $model;
 
-    private $username;
+    private $userData;
 
-    private $password;
+
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($model, $username, $password)
+    public function __construct($model, $userData)
     {
         $this->model = $model;
-        $this->username = $username;
-        $this->password = $password;
+        $this->userData = $userData;
     }
 
     /**
@@ -48,7 +48,10 @@ class DomainActivateActivatorNotification extends Notification implements Should
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        /**
+         * @var MailMessage
+         */
+        $mail =  (new MailMessage)
             ->subject(__('Your domain has been activated'))
             ->greeting(__('Your domain has been activated'))
             ->line(__('Your domain **:domain_name** was activated', [
@@ -59,11 +62,23 @@ class DomainActivateActivatorNotification extends Notification implements Should
                 'domain_uuid' => $this->model->domain_uuid,
             ]))
             ->line(__('Use credentials to login:'))
-            ->line(__('**:username**', [ 'username' => $this->username, ]))
-            ->line(__('**:password**', [ 'password' => $this->password, ]))
+            ->line(__('**:username**', [ 'username' => $this->userData['username'], ]))
+            ->line(__('**:password**', [ 'password' => $this->userData['password'], ]))
             // ->action(__('Verify your email'), $url)
             // ->line(__('Thank you for using our service!'))
             ;
+
+        $mail->line(__('## Extensions:'));
+
+        $activatorExtensions = collect(Arr::get($this->userData, 'extensions'))->pluck('password','extension')->toArray();
+        foreach ($activatorExtensions as $extension => $password) {
+            $mail->line(__('- Number: **:username**', [ 'username' => $extension, ]))
+            ->line(__('- Password: **:password**', [ 'password' => $password, ]))
+            ->line('===')
+            ->line('');
+        }
+
+        return $mail;
     }
 
     /**

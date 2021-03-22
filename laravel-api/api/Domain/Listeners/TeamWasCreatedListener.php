@@ -24,8 +24,7 @@ class TeamWasCreatedListener
 
         $notification = new DomainActivateActivatorNotification(
             $event->model,
-            $event->activatorUserData['username'],
-            $event->activatorUserData['password']
+            $event->activatorUserData
         );
         Notification::send($adminUser, $notification);
         // Notification::route('mail', $event->activatorUserData['user_email'])
