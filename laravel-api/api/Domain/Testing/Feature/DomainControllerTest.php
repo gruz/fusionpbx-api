@@ -302,4 +302,7 @@ class DomainControllerTest extends TestCase
             $this->assertDatabaseHas($table, $where);
         }
     }
+
+    public function testNoExtensionsPassedFails() {}
+    public function testSimilarExtensionsForDifferentUsersInDomainFails() {}
 }
