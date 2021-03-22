@@ -15,7 +15,7 @@
         "optimus/api-consumer": "^0.4.0",
         "optimus/architect": "^2.0",
         "gruz/laravel-ratchet": "^8.0",
-        "darkaonline/l5-swagger": "^8.0",
+        "darkaonline/l5-swagger": "dev-master",
         "doctrine/annotations": "^1.12",
         "laravel/tinker": "^2.6"
     },
@@ -27,8 +27,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "../fusionpbx/resources/functions.php",
-            "../fusionpbx/resources/classes/message.php"
+            "fusionpbx/resources/functions.php",
+            "fusionpbx/resources/classes/message.php"
         ]
     },
     "scripts": {

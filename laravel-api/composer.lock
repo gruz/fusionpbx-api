@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb102510e81c1aa223b7c096a7c46f1a",
+    "content-hash": "ac867bdac2942b81e158e94a467762f0",
     "packages": [
         {
             "name": "brick/math",
@@ -126,16 +126,16 @@
         },
         {
             "name": "darkaonline/l5-swagger",
-            "version": "8.0.4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gruz/L5-Swagger.git",
-                "reference": "3477e7013daf8b6fc142c45fdcb9fe6c74d7398d"
+                "reference": "5194e3a8a06e5338bc0dc4e0b490336a3888156f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gruz/L5-Swagger/zipball/3477e7013daf8b6fc142c45fdcb9fe6c74d7398d",
-                "reference": "3477e7013daf8b6fc142c45fdcb9fe6c74d7398d",
+                "url": "https://api.github.com/repos/gruz/L5-Swagger/zipball/5194e3a8a06e5338bc0dc4e0b490336a3888156f",
+                "reference": "5194e3a8a06e5338bc0dc4e0b490336a3888156f",
                 "shasum": ""
             },
             "require": {
@@ -152,6 +152,7 @@
                 "php-coveralls/php-coveralls": "^2.0",
                 "phpunit/phpunit": "8.*"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -197,7 +198,7 @@
                 "swagger"
             ],
             "support": {
-                "source": "https://github.com/gruz/L5-Swagger/tree/8.0.4"
+                "source": "https://github.com/gruz/L5-Swagger/tree/master"
             },
             "funding": [
                 {
@@ -205,7 +206,7 @@
                     "url": "https://github.com/DarkaOnLine"
                 }
             ],
-            "time": "2020-12-08T13:29:20+00:00"
+            "time": "2021-01-25T18:49:31+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -10572,7 +10573,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "darkaonline/l5-swagger": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
