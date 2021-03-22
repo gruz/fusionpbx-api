@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Rules;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Validation\Rule;
 
@@ -32,7 +33,7 @@ class DomainSignupHashHasEmailExistsRule implements Rule
         $hash = $this->field;
 
         if (app()->runningUnitTests()) {
-            $hash = $GLOBALS['test_signup_hash'];
+            $hash = Arr::get($GLOBALS, 'test_signup_hash');
         }
 
         if (!Str::isUuid($hash)) {
