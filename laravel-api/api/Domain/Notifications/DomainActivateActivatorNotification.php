@@ -73,7 +73,7 @@ class DomainActivateActivatorNotification extends Notification implements Should
         $activatorExtensions = collect(Arr::get($this->userData, 'extensions'))->pluck('password','extension')->toArray();
         foreach ($activatorExtensions as $extension => $password) {
             $mail->line(__('- Number: **:username**', [ 'username' => $extension, ]))
-            ->line(__('- Password: **:password**', [ 'password' => $password, ]))
+            ->line(__('- Password: :password', [ 'password' => $password, ]))
             ->line('===')
             ->line('');
         }

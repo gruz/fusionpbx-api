@@ -1,5 +1,4 @@
 <?php
-
 namespace Api\Domain\Testing\Feature;
 
 use stdClass;

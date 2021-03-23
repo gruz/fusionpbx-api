@@ -160,4 +160,20 @@ abstract class AbstractRepository extends BaseRepository
 
         $pivotRepository->createMany($pivotData, $options);
     }
+
+    public function setRelation(AbstractModel $parent, AbstractModel $child, $options = []) {
+        $relationName = explode('v_', $child->getTable(), 2);
+        $relationName = end($relationName);
+
+        $table = $parent->$relationName()->getTable();
+        preg_match('~^v_(.*)s$~', $table, $m);
+        $pivotName = $m[1] . '_uuid';
+
+        $options = array_merge([
+            $pivotName => Str::uuid(),
+            'domain_uuid' => $parent->domain_uuid,
+        ], $options);
+
+        $parent->$relationName()->save($child, $options);
+    }
 }

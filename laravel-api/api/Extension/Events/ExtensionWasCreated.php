@@ -9,11 +9,11 @@ class ExtensionWasCreated extends Event
 {
     public $object;
 
-    public $clearCacheUri;
+    public $options;
 
-    public function __construct(Extension $object, $clearCacheUri = null)
+    public function __construct(Extension $object, $options = null)
     {
       $this->object = $object;
-      $this->clearCacheUri = $clearCacheUri;
+      $this->options = $options;
     }
 }
