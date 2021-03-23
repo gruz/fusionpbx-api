@@ -18,7 +18,7 @@ if (!function_exists('encrypt_password_with_salt')) {
     function encrypt_password_with_salt($password)
     {
         if (!empty($password) && !is_null($password)) {
-            $data['salt'] = \Str::uuid();
+            $data['salt'] = \Str::uuid()->toString();
             $data['password'] = md5($data['salt'] . $password);
 
             return $data;
