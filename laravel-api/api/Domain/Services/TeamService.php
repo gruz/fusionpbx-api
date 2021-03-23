@@ -3,13 +3,16 @@
 namespace Api\Domain\Services;
 
 use Exception;
+use Api\User\Models\Group;
 use Illuminate\Support\Arr;
 use Api\User\Services\UserService;
-use Api\Domain\Events\TeamWasCreated;
 use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;
-use Api\Domain\Services\DomainService;
+use Api\Domain\Events\TeamWasCreated;
 // use Api\Domain\Events\DomainWasCreated;
+use Api\User\Services\ContactService;
+use Api\Domain\Services\DomainService;
+use Api\Extension\Services\ExtensionService;
 use Api\User\Repositories\ContactRepository;
 use Api\Voicemail\Services\VoicemailService;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,7 +44,9 @@ class TeamService extends AbstractService
         DialplanRepository $dialplanRepository,
         DomainSettingService $domainSettingService,
         UserService $userService,
-        VoicemailService $voicemailService
+        VoicemailService $voicemailService,
+        ContactService $contactService,
+        ExtensionService $extensionService
     ) {
         $this->domainService = $domainSevice;
         $this->dialplanRepository = $dialplanRepository;
@@ -49,6 +54,8 @@ class TeamService extends AbstractService
         $this->domainSettingService = $domainSettingService;
         $this->userService = $userService;
         $this->voicemailService = $voicemailService;
+        $this->contactService = $contactService;
+        $this->extensionService = $extensionService;
     }
 
     /**
@@ -117,38 +124,52 @@ class TeamService extends AbstractService
             foreach ($usersModel as $k => $userModel) {
                 $contactsData = Arr::get($data, 'users.' . $k . '.contacts', []);
                 $contactsData = $this->injectData($contactsData, ['domain_uuid' => $domainModel->domain_uuid]);
-                $extensionData = Arr::get($data, 'users.' . $k . '.extensions', []);
-                $extensionData = $this->injectData($extensionData, ['domain_uuid' => $domainModel->domain_uuid]);
+                $extensionsData = Arr::get($data, 'users.' . $k . '.extensions', []);
+                $extensionsData = $this->injectData($extensionsData, ['domain_uuid' => $domainModel->domain_uuid]);
 
-                $this->userService->createAttachedMany(
-                    $userModel,
-                    ContactRepository::class,
-                    $contactsData,
-                    ContactUserRepository::class,
-                    ['forceFillable' => ['domain_uuid', 'contact_uuid']]
-                );
-                $this->userService->createAttachedMany(
-                    $userModel,
-                    ExtensionRepository::class,
-                    $extensionData,
-                    ExtensionUserRepository::class,
-                    ['forceFillable' => ['domain_uuid']]
-                );
-
-                if ($activatorEmail === $userModel->getAttribute('user_email')) {
-                    $this->userService->activate($userModel->getAttribute('user_enabled'), false);
+                foreach ($contactsData as $contactData) {
+                    $relatedModel = $this->contactService->create($contactData, ['forceFillable' => ['domain_uuid']]);
+                    $this->userService->setRelation($userModel, $relatedModel);
                 }
+
+                foreach ($extensionsData as $extensionData) {
+                    $relatedModel = $this->extensionService->create($extensionData, ['forceFillable' => ['domain_uuid']]);
+                    $this->userService->setRelation($userModel, $relatedModel);
+                }
+                
+                $groupName = config('fpbx.default.user.group');
+                $relatedModel = Group::where('group_name', $groupName)->first();
+                $this->userService->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);
+                // $this->userService->createAttachedMany(
+                //     $userModel,
+                //     ContactRepository::class,
+                //     $contactsData,
+                //     ContactUserRepository::class,
+                //     ['forceFillable' => ['domain_uuid', 'contact_uuid']]
+                // );
+                // $this->userService->createAttachedMany(
+                //     $userModel,
+                //     ExtensionRepository::class,
+                //     $extensionsData,
+                //     ExtensionUserRepository::class,
+                //     ['forceFillable' => ['domain_uuid']]
+                // );
+
 
                 // $voicemailData = Arr::get($data, 'users.' . $k . '.extensions', []);
                 // foreach ($voicemailData as $key => $value) {
                 //     $voicemailData[$key]['domain_uuid'] = $domainModel->domain_uuid;
                 // }
                 // $voicemailData = $this->injectData($voicemailData, ['domain_uuid' => $domainModel->domain_uuid]);
-                $voicemailData = $extensionData;
+                $voicemailData = $extensionsData;
                 foreach ($voicemailData as $key => $value) {
                     $voicemailData[$key]['voicemail_id'] = $voicemailData[$key]['extension'];
                 }
                 $this->voicemailService->createMany($voicemailData, ['forceFillable' => ['domain_uuid', 'voicemail_id']]);
+
+                if ($activatorEmail === $userModel->getAttribute('user_email')) {
+                    $this->userService->activate($userModel->getAttribute('user_enabled'), false);
+                }
             }
 
             $activatorUserData = collect($usersData)->where('user_email', $activatorEmail)->first();
@@ -160,7 +181,7 @@ class TeamService extends AbstractService
             ]);
 
             $this->dispatcher->dispatch(new TeamWasCreated($domainModel, $usersModel, $activatorUserData));
-            // dd('done');
+            // dd('done'); 
         } catch (Exception $e) {
             $this->database->rollBack();
 

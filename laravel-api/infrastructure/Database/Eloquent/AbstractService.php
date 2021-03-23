@@ -245,4 +245,8 @@ abstract class AbstractService
 
         return $data;
     }
+
+    public function setRelation(AbstractModel $parent, AbstractModel $child, $options = []) {
+        return $this->repository->setRelation($parent, $child, $options);
+    }
 }

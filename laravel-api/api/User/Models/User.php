@@ -8,6 +8,7 @@ use Api\Status\Models\Status;
 use Api\User\Models\ContactUser;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
+use Api\Extension\Models\ExtensionUser;
 use Api\User\Models\GroupPermission;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
@@ -122,12 +123,7 @@ class User extends AbstractModel implements
 
     public function groups()
     {
-        return $this->belongsToMany(
-            Group::class,
-            'v_user_groups',
-            'user_uuid',
-            'group_uuid'
-        );
+        return $this->belongsToMany(Group::class, UserGroup::class, 'user_uuid', 'group_uuid');
     }
 
     public function status(): HasOne
@@ -233,12 +229,12 @@ class User extends AbstractModel implements
 
     public function extensions(): BelongsToMany
     {
-        return $this->belongsToMany(Extension::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
+        return $this->belongsToMany(Extension::class, ExtensionUser::class, 'user_uuid', 'extension_uuid');
     }
 
     public function contacts(): BelongsToMany
     {
-        return $this->belongsToMany(Contact::class, ContactUser::class, 'user_uuid', 'contact_uuid')->withPivot('contact_user_uuid');
+        return $this->belongsToMany(Contact::class, ContactUser::class, 'user_uuid', 'contact_uuid');
     }
 
     /**
