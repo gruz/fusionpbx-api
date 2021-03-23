@@ -63,7 +63,7 @@ class DomainActivateActivatorNotification extends Notification implements Should
             ]))
             ->line(__('Use credentials to login:'))
             ->line(__('**:username**', [ 'username' => $this->userData['username'], ]))
-            ->line(__('**:password**', [ 'password' => $this->userData['password'], ]))
+            ->line(__(':password', [ 'password' => $this->userData['password'], ]))
             // ->action(__('Verify your email'), $url)
             // ->line(__('Thank you for using our service!'))
             ;
