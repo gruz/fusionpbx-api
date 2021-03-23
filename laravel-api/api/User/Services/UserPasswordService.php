@@ -110,7 +110,7 @@ class UserPasswordService
             'user_email' => $data['user_email'],
         ];
 
-        $user = $this->userService->getByAttributes($attributes);
+        $user = $this->userService->getByAttributes($attributes)->first();
 
         if (!is_null($user)) {
 

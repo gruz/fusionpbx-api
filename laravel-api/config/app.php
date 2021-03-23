@@ -174,7 +174,7 @@ return [
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        // Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
@@ -194,7 +194,6 @@ return [
         /*
          * Application Service Providers...
          */
-        Infrastructure\Providers\AppServiceProvider::class,
         Infrastructure\Auth\AuthServiceProvider::class,
         Infrastructure\Http\RouteServiceProvider::class,
         Api\Domain\TeamServiceProvider::class,
@@ -204,7 +203,7 @@ return [
         Api\Extension\ExtensionServiceProvider::class,
         Infrastructure\Providers\HelperServiceProvider::class,
         Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
-        // Api\User\PasswordResetServiceProvider::class,
+        Api\User\PasswordResetServiceProvider::class,
 
     ],
 

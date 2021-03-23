@@ -226,7 +226,7 @@ abstract class AbstractService
         $data = null;
 
         if (!empty($attributes) && !is_null($attributes)) {
-            $data = $this->repository->getWhereArray($attributes)->first();
+            $data = $this->repository->getWhereArray($attributes);
         }
 
         return $data;

@@ -79,8 +79,8 @@ class FusionPBXPasswordRequirements implements Rule
         $res[$this->passwordFor] = [];
 
         // get domain name and email to get settings data
-        $domain = $this->domainService->getByAttributes(['domain_name' => $this->domainName]);
-        $user = $this->userService->getByAttributes(['user_email' => $this->userEmail]);
+        $domain = $this->domainService->getByAttributes(['domain_name' => $this->domainName])->first();
+        $user = $this->userService->getByAttributes(['user_email' => $this->userEmail])->first();
         if (is_null($domain) || is_null($user)) {
             $this->errorMessage = __("Invalid data");
             return false;
@@ -212,8 +212,10 @@ class FusionPBXPasswordRequirements implements Rule
 
         // Here we use singular helper because in FusionPBX password strength check function
         // values of setting category in singular form but in DB they are in plural form 
+        error_reporting(E_ALL & ~E_NOTICE);
         $result = \check_password_strength($value, $this->messagesText, Str::singular($this->passwordFor));
         $this->errorMessage = $_SESSION['message'] ? $_SESSION['message'] : '';
+        error_reporting(-1);
 
         return $result;
     }
