@@ -237,11 +237,6 @@ class User extends AbstractModel implements
         return $this->belongsToMany(Contact::class, ContactUser::class, 'user_uuid', 'contact_uuid');
     }
 
-    public function contacts(): BelongsToMany
-    {
-        return $this->belongsToMany(Contact::class, ContactUser::class, 'user_uuid', 'contact_uuid')->withPivot('contact_user_uuid');
-    }
-
     /**
      * Special relationship to enable a resource filter
      * 'isAgent' for the user resource.
@@ -289,18 +284,6 @@ class User extends AbstractModel implements
 
     //     return $email;
     // }
-
-    /**
-     * Route notifications for the mail channel.
-     *
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return array|string
-     */
-    public function routeNotificationForMail($notification)
-    {
-        return $this->domain()->first()->getAttribute('domain_name');
-    }
-
 
     /**
      * Route notifications for the mail channel.
