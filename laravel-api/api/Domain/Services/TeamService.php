@@ -126,6 +126,7 @@ class TeamService extends AbstractService
                 $contactsData = $this->injectData($contactsData, ['domain_uuid' => $domainModel->domain_uuid]);
                 $extensionsData = Arr::get($data, 'users.' . $k . '.extensions', []);
                 $extensionsData = $this->injectData($extensionsData, ['domain_uuid' => $domainModel->domain_uuid]);
+                $isAdmin = Arr::get($data, 'users.' . $k . '.is_admin', false);
 
                 foreach ($contactsData as $contactData) {
                     $relatedModel = $this->contactService->create($contactData, ['forceFillable' => ['domain_uuid']]);
@@ -136,8 +137,12 @@ class TeamService extends AbstractService
                     $relatedModel = $this->extensionService->create($extensionData, ['forceFillable' => ['domain_uuid']]);
                     $this->userService->setRelation($userModel, $relatedModel);
                 }
-                
-                $groupName = config('fpbx.default.user.group');
+
+                // $groupName = config('fpbx.default.user.group.public');
+                // needs to be discussed what to do with other groups
+                $groupName = $isAdmin
+                    ? config('fpbx.default.user.group.admin')
+                    : config('fpbx.default.user.group.public');
                 $relatedModel = Group::where('group_name', $groupName)->first();
                 $this->userService->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);
                 // $this->userService->createAttachedMany(

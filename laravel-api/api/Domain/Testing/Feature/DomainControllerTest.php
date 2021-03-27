@@ -15,6 +15,7 @@ use Api\Domain\Notifications\DomainSignupNotification;
 use Api\Domain\Notifications\DomainActivateActivatorNotification;
 use Api\Domain\Notifications\DomainActivateMainAdminNotification;
 use Api\Extension\Models\Extension;
+use Api\User\Models\Group;
 use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 use Api\Voicemail\Models\Voicemail;
 
@@ -29,7 +30,7 @@ class DomainControllerTest extends TestCase
         $this->assertDatabaseHas('postponed_actions', ['request->domain_name' => $request['domain_name']]);
 
         $users = collect(Arr::get($request, 'users'))->where('is_admin', true)->pluck('user_email')->toArray();
-
+        
         // Assert a notification was sent to the given users...
         Notification::assertSentTo(
             new AnonymousNotifiable,
@@ -158,9 +159,11 @@ class DomainControllerTest extends TestCase
         $this->checkDomainCreated($domain, $data);
 
         foreach ($requestUsers as $key => $userData) {
+            $this->checkUserCreated($domain, $userData);
             $this->checkContactsCreated($domain, $userData);
             $this->checkExtensionsCreated($domain, $userData, Extension::class);
             $this->checkExtensionsCreated($domain, $userData, Voicemail::class);
+            $this->checkGroupCreated($domain, $userData);
         }
 
         $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';
@@ -233,6 +236,16 @@ class DomainControllerTest extends TestCase
         $response->assertStatus(400);
     }
 
+    private function checkUserCreated($domain, $userData)
+    {
+        $userWhere = $this->createUserWhereConditions($userData);
+        // dd($userWhere);
+        $this->assertDatabaseHas('v_users', array_merge(
+            ['domain_uuid' => $domain->domain_uuid],
+            $userWhere
+        ));
+    }
+
     private function checkDomainCreated($domain, $data)
     {
         $requestSettings = collect($data->get('settings'));
@@ -300,6 +313,44 @@ class DomainControllerTest extends TestCase
             }
             $this->assertDatabaseHas($table, $where);
         }
+    }
+
+    private function checkGroupCreated($domain, $userData)
+    {
+        $isAdmin = Arr::get($userData, 'is_admin');
+        $userWhere = $this->createUserWhereConditions($userData);
+        $userModel = User::where(array_merge(
+            ['domain_uuid' => $domain->domain_uuid],
+            $userWhere
+        ))->first();
+        $groupName = $isAdmin 
+            ? config('fpbx.default.user.group.admin')
+            : config('fpbx.default.user.group.public');
+
+        $this->assertDatabaseHas('v_groups', [
+            'group_name' => $groupName,
+        ]);
+        $groupModel = Group::where('group_name', $groupName)->first();
+        $this->assertDatabaseHas('v_user_groups', [
+            'domain_uuid' => $domain->domain_uuid,
+            'user_uuid' => $userModel->user_uuid,
+            'group_uuid' => $groupModel->group_uuid,
+            'group_name' => $groupModel->group_name,
+        ]);
+    }
+
+    private function createUserWhereConditions($userData) 
+    {
+        $userModel = new User();
+        $userExceptColumns = array_merge($userModel->getGuarded(),['password', 'user_uuid']);
+        $userTableColumns = Arr::except($userModel->getTableColumnsInfo(true), $userExceptColumns);
+        foreach ($userTableColumns as $columnName => $obj) {
+            if (array_key_exists($columnName, $userData)) {
+                $userWhere[$columnName] = $userData[$columnName];
+            }
+        }
+
+        return $userWhere;
     }
 
     public function testNoExtensionsPassedFails() {}
