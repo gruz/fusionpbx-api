@@ -203,6 +203,8 @@ return [
         Api\Extension\ExtensionServiceProvider::class,
         Infrastructure\Providers\HelperServiceProvider::class,
         Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
+        Api\User\PasswordResetServiceProvider::class,
+
     ],
 
     /*

@@ -8,7 +8,6 @@ use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\TestRequestTrait;
 use Api\PostponedAction\Models\PostponedAction;
 use Carbon\Carbon;
-use Infrastructure\Services\TestRequestFactoryService;
 
 class DomainSignupVerificationLinkRequestTest extends TestCase
 {
@@ -66,8 +65,8 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
             'pass' => [
                 'passed' => true,
                 'data' => function() {
-                    // list($request, $response) = $this->simulateSignup();
-                    $model = PostponedAction::first();
+                    $this->simulateSignup();
+                    $model = PostponedAction::last();
                     $emails = Arr::get($model->request, 'users');
                     $emails = collect($emails)->pluck('user_email');
                     $address = $emails[0];

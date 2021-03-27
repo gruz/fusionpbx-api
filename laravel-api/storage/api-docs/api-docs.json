@@ -1097,76 +1097,8 @@
                 "type": "object"
             },
             "DomainSetting": {
-                "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n\n ```\nSELECT x.* FROM public.v_default_settings x\n    WHERE default_setting_category in ('domain' , 'email')\n    ORDER BY default_setting_category\n```",
+                "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n *\n *  ```\n * SELECT x.* FROM public.v_default_settings x\n *     WHERE default_setting_category in ('domain' , 'email')\n *     ORDER BY default_setting_category\n * ```",
                 "properties": {
-                    "domain_setting_category": {
-                        "description": "Domain settings category",
-                        "type": "string",
-                        "enum": [
-                            "domain",
-                            "email"
-                        ],
-                        "example": "domain"
-                    },
-                    "domain_setting_subcategory": {
-                        "description": "Domain settings sub category",
-                        "type": "string",
-                        "oneOf": [
-                            {
-                                "enum": [
-                                    "dial_string",
-                                    "template",
-                                    "menu",
-                                    "language",
-                                    "time_zone",
-                                    "cidr",
-                                    "country",
-                                    "bridge",
-                                    "time_format",
-                                    "paging"
-                                ],
-                                "example": "language"
-                            },
-                            {
-                                "enum": [
-                                    "smtp_auth",
-                                    "method",
-                                    "smtp_port",
-                                    "smtp_from",
-                                    "smtp_from_name",
-                                    "smtp_hostname",
-                                    "smtp_host",
-                                    "smtp_username",
-                                    "smtp_password",
-                                    "smtp_secure",
-                                    "smtp_validate_certificate"
-                                ],
-                                "example": "smtp_from_name"
-                            }
-                        ]
-                    },
-                    "domain_setting_name": {
-                        "description": "Setting field type",
-                        "type": "string",
-                        "enum": [
-                            "text",
-                            "name",
-                            "uuid",
-                            "code",
-                            "name",
-                            "array",
-                            "code",
-                            "text",
-                            "text",
-                            "numeric"
-                        ],
-                        "example": "code"
-                    },
-                    "domain_setting_value": {
-                        "description": "Setting field type",
-                        "type": "string",
-                        "example": "uk-ua"
-                    },
                     "domain_uuid": {
                         "type": "string",
                         "format": "uuid",
@@ -1182,18 +1114,28 @@
                         "format": "uuid",
                         "readOnly": true
                     },
+                    "domain_setting_category": {
+                        "type": "string"
+                    },
+                    "domain_setting_subcategory": {
+                        "type": "string"
+                    },
+                    "domain_setting_name": {
+                        "type": "string"
+                    },
+                    "domain_setting_value": {
+                        "type": "string"
+                    },
                     "domain_setting_order": {
                         "type": "number"
                     },
                     "domain_setting_enabled": {
-                        "type": "boolean",
-                        "default": true
+                        "type": "boolean"
                     },
                     "domain_setting_description": {
                         "type": "string"
                     }
-                },
-                "type": "object"
+                }
             },
             "ExtensionController": {},
             "ExtensionCreateSchema": {
@@ -1546,7 +1488,7 @@
                     "email_verified_at": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2021-03-21 06:08:59"
+                        "example": "2021-03-21 11:52:28"
                     }
                 }
             },

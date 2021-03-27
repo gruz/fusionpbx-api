@@ -15,7 +15,10 @@ return [
         ],
         'contact' => [
             // @link https://docs.fusionpbx.com/en/latest/applications/contacts.html?highlight=contact%20type#contacts
-            'group' => env('FPBX_DEFAULT_CONTACT_GROUP','user'), 
+            'group' => env('FPBX_DEFAULT_CONTACT_GROUP','user'),
+        ],
+        'user' => [
+            'group' => env('FPBX_DEFAULT_USER_GROUP', 'public'),
         ],
     ],
     'domain' => [

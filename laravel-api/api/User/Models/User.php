@@ -8,6 +8,7 @@ use Api\Status\Models\Status;
 use Api\User\Models\ContactUser;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
+use Api\Extension\Models\ExtensionUser;
 use Api\User\Models\GroupPermission;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
@@ -39,20 +40,6 @@ class User extends AbstractModel implements
     use HasFactory;
     // ~ use HasCustomRelations;
 
-    // /**
-    //  * The attributes that are mass assignable.
-    //  *
-    //  * @var array
-    //  */
-    // protected $fillable = [
-    //     'username',
-    //     'password',
-    //     'user_enabled',
-    //     'add_user',
-    //     'add_date',
-    //     'user_email',
-    // ];
-
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -69,7 +56,8 @@ class User extends AbstractModel implements
         'email',
         // We here hide native user_status field, as we use another more wide table for user status
         // and not sure how the field is intended to be used in the native FusionPBX
-        'user_status',
+        'user_status',  // user_status can be ["Available", "Available (On Demand)",
+        // "On Break", "Do Not Disturb", "Logged Out"] - user can edit it
     ];
 
     /**
@@ -99,8 +87,8 @@ class User extends AbstractModel implements
     ];
 
     /**
-     * _fuda_: 
-     *      Gets user email. Needs to be appended 
+     * _fuda_:
+     *      Gets user email. Needs to be appended
      *      cause fusionpbx has named user email attribute as "user_email"
      *      what is not obviouse for reset password broker which expects email property
      *      to reset the password.
@@ -113,8 +101,8 @@ class User extends AbstractModel implements
     }
 
     /**
-     * _fuda_: 
-     *      Sets user email address. 
+     * _fuda_:
+     *      Sets user email address.
      *      See public function getEmailAttribute() to get why.
      */
     public function setEmailAttribute($email)
@@ -123,11 +111,11 @@ class User extends AbstractModel implements
     }
 
     // /**
-    //  * _fuda_: 
-    //  *      Sets user email address for fusionpbx 
-    //  *      and appended email attribute for password reset. 
+    //  * _fuda_:
+    //  *      Sets user email address for fusionpbx
+    //  *      and appended email attribute for password reset.
     //  */
-    // public function setUserEmailAttribute($email) 
+    // public function setUserEmailAttribute($email)
     // {
     //     $this->attributes['user_email'] = $email;
     //     $this->setEmailAttribute($email);
@@ -135,12 +123,7 @@ class User extends AbstractModel implements
 
     public function groups()
     {
-        return $this->belongsToMany(
-            Group::class,
-            'v_user_groups',
-            'user_uuid',
-            'group_uuid'
-        );
+        return $this->belongsToMany(Group::class, UserGroup::class, 'user_uuid', 'group_uuid');
     }
 
     public function status(): HasOne
@@ -246,7 +229,12 @@ class User extends AbstractModel implements
 
     public function extensions(): BelongsToMany
     {
-        return $this->belongsToMany(Extension::class, 'v_extension_users', 'user_uuid', 'extension_uuid');
+        return $this->belongsToMany(Extension::class, ExtensionUser::class, 'user_uuid', 'extension_uuid');
+    }
+
+    public function contacts(): BelongsToMany
+    {
+        return $this->belongsToMany(Contact::class, ContactUser::class, 'user_uuid', 'contact_uuid');
     }
 
     public function contacts(): BelongsToMany
@@ -282,25 +270,37 @@ class User extends AbstractModel implements
 
     // /**
     //  * Method to return the email for password reset
-    //  *     
+    //  *
     //  * @return string Returns the User Email Address
     //  */
     // public function getEmailForPasswordReset() {
 
     //     $email = $this->getAttribute('user_email');
     //     if (!$email) {
-    //         // 1 Throught Contacts 
+    //         // 1 Throught Contacts
     //         $email = $this->emails()
     //                       ->get()
     //                       ->first()
     //                       ->toArray()['email_address'];
 
     //         // 2 Throught model property
-    //         // $email = $this->user_email; 
+    //         // $email = $this->user_email;
     //     }
 
     //     return $email;
     // }
+
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return array|string
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return $this->domain()->first()->getAttribute('domain_name');
+    }
+
 
     /**
      * Route notifications for the mail channel.

@@ -1,5 +1,4 @@
 <?php
-
 namespace Api\Domain\Testing\Feature;
 
 use stdClass;
@@ -290,7 +289,19 @@ class DomainControllerTest extends TestCase
                     $where[$columnName] = $extensionData[$columnName];
                 }
             }
+            switch ($table) {
+                case 'v_voicemails':
+                    # code...
+                    $this->assertNotEmpty($where['voicemail_password']);
+                    break;
+                default:
+                    $this->assertNotEmpty($where['password']);
+                    break;
+            }
             $this->assertDatabaseHas($table, $where);
         }
     }
+
+    public function testNoExtensionsPassedFails() {}
+    public function testSimilarExtensionsForDifferentUsersInDomainFails() {}
 }

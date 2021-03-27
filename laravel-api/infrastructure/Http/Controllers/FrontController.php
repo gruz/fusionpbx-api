@@ -23,6 +23,24 @@ class FrontController extends BaseController
             return;
         }
 
+        $ral = new User;
+        // d($ral->groups(), $ral->groups()->getPivotColumns(), $ral->contacts()->getPivotColumns());
+
+        d($ral->extensions(), $ral->extensions()->getPivotColumns(), 
+            $ral->extensions()->getPivotClass(),
+            $ral->extensions()->getQualifiedForeignPivotKeyName(),
+            $ral->extensions()->getExistenceCompareKey(),
+            $ral->extensions()->getForeignPivotKeyName(),
+            $ral->extensions()->getQualifiedParentKeyName(),
+            $ral->extensions()->getRelatedKeyName(),
+            $ral->extensions()->getQualifiedRelatedKeyName(),
+            $ral->extensions()->getQualifiedRelatedPivotKeyName(),
+            $ral->extensions()->getTable()
+
+
+        );
+        exit;
+
         $user = \Api\User\Models\User::
             // where('user_uuid', '<>', '')
             skip(1)->first();

@@ -2,7 +2,7 @@
 
 namespace Api\User\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Infrastructure\Database\Eloquent\AbstractModel;
 
 class Pushtoken extends AbstractModel
 {

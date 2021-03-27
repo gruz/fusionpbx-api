@@ -2,8 +2,6 @@
 
 namespace Api\Dialplan\Models;
 
-use Api\User\Models\User;
-
 use Illuminate\Notifications\Notifiable;
 use Infrastructure\Database\Eloquent\AbstractModel;
 

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use Api\User\Exceptions\UserDisabledException;
+use Api\User\Services\UserService;
+use Api\Domain\Exceptions\DomainNotFoundException;
 
 class UserPasswordService
 {
@@ -21,28 +23,32 @@ class UserPasswordService
 
     private $domainRepository;
 
-    private $contact_emailRepository;
+    private $userService;
 
     public function __construct(
-        Application $app,
-        UserRepository $userRepository,
-        DomainRepository $domainRepository,
-        ContactEmailRepository $contact_emailRepository
-    ) {
+      UserRepository $userRepository,
+      DomainRepository $domainRepository,
+      UserService $userService
+    )
+    {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
-        $this->contact_emailRepository = $contact_emailRepository;
-
-        $this->request = $app->make('request');
+        $this->userService = $userService;
     }
 
-    public function generateResetToken($email, $domain_name)
+    /**
+     * Method to generate token (that is necesary to reset password) and link that
+     * will be sent to user via email to enable him to reset the password.
+     *
+     * @param $data Contains:
+     *                  User email for which password needs to be reset.
+     *                  Domain name to which user belongs.
+     * @return array|mixed
+     * @throws InvalidCredentialsException|UserDisabledException
+     */
+    public function generateResetToken($data)
     {
-        $user = $this->getUserCredentials($email, $domain_name);
-        $userCredentials = array_merge(
-            $this->request->only('user_email'),
-            $user->toArray()
-        );
+        $userCredentials = $this->getUserCredentials($data)->toArray();
         $status = Password::sendResetLink($userCredentials);
 
         return [
@@ -51,7 +57,14 @@ class UserPasswordService
         ];
     }
 
-    public function resetPassword($email)
+    /**
+     * Method to reset user password based on user credentials.
+     *
+     * @param $data Data from request
+     * @return array|mixed
+     * @throws InvalidCredentialsException|UserDisabledException
+     */
+    public function resetPassword($data)
     {
         $user = $this->getUserCredentials($email);
         $userCredentials = array_merge(
@@ -67,14 +80,9 @@ class UserPasswordService
         Password::reset(
             $userCredentials,
             function ($user, $password) {
-
-                $data['salt'] = Str::uuid();
-                $data['password'] = md5($data['salt'] . $password);
-
-                $user->password = $data['password'];
+                $data = \encrypt_password_with_salt($password);
                 $user->salt = $data['salt'];
-
-                $user->fill($data);
+                $user->fill(['password' => $data['password']]);
                 $user->save();
                 $user->setRememberToken(Str::random(60));
                 event(new PasswordReset($user));
@@ -89,16 +97,18 @@ class UserPasswordService
     /**
      * Method to prepare user credential for password reset
      * If user user_email attribute is not set then we
-     * should get user by domain and contact. 
+     * should get user by domain and contact.
      *
-     * @param $email User email
-     * @param $domain_name Domain name to which user belongs
-     * @return null|\Api\User\Models\User 
-     * @throws InvalidCredentialsException
+     * @param $data Contains user email and domain name to which user belongs
+     * @return null|\Api\User\Models\User
+     * @throws InvalidCredentialsException|UserDisabledException
      */
     public function getUserCredentials($email, $domain_name = null)
     {
-        $user = $this->getUserByEmail($email);
+        // domain_name is required filed so it cannot be empty
+
+        $domain = $this->domainRepository
+                            ->getWhere('domain_name', $data['domain_name'])->first();
 
         // TODO:
         //      Needs to be refactored. Does we need it ?
@@ -106,6 +116,13 @@ class UserPasswordService
         if (is_null($user) && !is_null($domain_name)) {
             $user = $this->getUserByEmailAndDomainName($email, $domain_name);
         }
+
+        $attributes = [
+            'domain_uuid' => $domain->domain_uuid,
+            'user_email' => $data['user_email'],
+        ];
+
+        $user = $this->userService->getByAttributes($attributes)->first();
 
         if (!is_null($user)) {
 
@@ -121,7 +138,7 @@ class UserPasswordService
 
     /**
      * Method to get user by email (user_email attribute).
-     * 
+     *
      * @param $email User email
      * @return null|\Api\User\Models\User
      */
@@ -133,59 +150,5 @@ class UserPasswordService
             ->first();
 
         return $user;
-    }
-
-    /**
-     * Method to get user by email and domain name.
-     * 
-     * @param $email Email by which user should be gathered.
-     * @param $domain_name Domain name to which user is related
-     *                     and by which user should be gathered.
-     * @return null|\Api\User\Models\User
-     * @throws InvalidCredentialsException
-     */
-    public function getUserByEmailAndDomainName($email, $domain_name)
-    {
-        $domain = $this->domainRepository
-            ->getWhere('domain_name', $domain_name)
-            ->first();
-
-        if (empty($domain)) {
-            throw new InvalidCredentialsException(
-                __('Wrong domain name or domain doesn\'t exists')
-            );
-        }
-
-        // Check for the email in the current domain
-        $contact_email = $this->contact_emailRepository
-            ->getWhereArray([
-                'domain_uuid' => $domain->domain_uuid,
-                'email_address' => $email
-            ])
-            ->first();
-
-        if ($contact_email->count() < 1) {
-            throw new InvalidCredentialsException(__('Wrong contact email or email doesn\'t exists'));
-        }
-
-        // Only first user ? What about others ?
-        $user = $this->userRepository
-            ->getWhereArray([
-                'contact_uuid' => $contact_email->contact_uuid,
-                'domain_uuid' => $domain->domain_uuid
-            ])
-            ->first();
-
-
-        if (!is_null($user)) {
-
-            if ($user->user_enabled != 'true') {
-                throw new UserDisabledException();
-            }
-
-            return $user;
-        }
-
-        throw new InvalidCredentialsException(__('User doesn\'t exists'));
     }
 }

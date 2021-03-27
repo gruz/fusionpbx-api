@@ -10,6 +10,9 @@
   - [Docker setup (please help)](#docker-setup-please-help)
   - [Documenation](#documenation)
   - [Testing](#testing)
+    - [Prepare test database](#prepare-test-database)
+    - [Git hook for pre-push](#git-hook-for-pre-push)
+    - [Working with xDebug at VirtualBox](#working-with-xdebug-at-virtualbox)
 
 
 # Fusionpbx API
@@ -26,6 +29,8 @@ bin/init_server
 ```
 
 ## Development environment setup (Virtual Box)
+
+VirualBox from my local machine available shared: https://mega.nz/folder/02RjQQRD#GMtjv0UXGh2kytUSPfJFmA
 
 ### Clone project to locahost
 
@@ -115,6 +120,43 @@ Requirements I see:
 Check this repository wiki
 
 ## Testing
+
+### Prepare test database
+
+The command below will create a copy of the `fusionpbx` database named `fusionpbx_test` used for testing.
+
+```bash
+php artisan db:maketest
+```
+
+### Git hook for pre-push
+
+To automatically run tests before pushing use such a hook.
+
+Create file `.git/hooks/pre-push` with contents
+
+```
+#!/bin/bash
+
+branch=`git rev-parse --abbrev-ref HEAD`
+echo "Running tests before pushing ...."
+if [ $branch == 'master' ] || [ $branch == 'dev' ]; then
+  # exit_code=$(ssh -t root@192.168.0.160 "cd /var/www/laravel-api; php artisan test" > /dev/null 2>/dev/null )$?
+  ssh -t root@192.168.0.160 "cd /var/www/laravel-api; php artisan db:maketest; php artisan test"
+  LAST=$?
+  if [ $LAST -gt 0 ]
+    then echo "Did not push because of failing tests"
+  fi
+  exit $LAST
+fi
+
+exit 0
+```
+
+Note `192.168.0.160` - this is the IP of the virtualbox. Root SSH must access must be enabled. https://blog.eldernode.com/enable-root-login-via-ssh-in-debian/
+
+
+### Working with xDebug at VirtualBox
 
 To run tests from VirtualBox with xdebug enable login into it and run a laravel test shortcut which uses host IP to call back
 

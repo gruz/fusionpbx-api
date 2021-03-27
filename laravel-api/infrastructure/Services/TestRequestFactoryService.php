@@ -53,7 +53,7 @@ class TestRequestFactoryService
             ->state(function (array $attributes) {
                 $extensions = [];
                 for ($i = 0; $i < rand(1, 4); $i++) {
-                    $extension = Extension::factory(1)->make()->first()->toArray();
+                    $extension = Extension::factory(1)->make()->makeVisible('password')->first()->toArray();
                     $voicemail = Voicemail::factory(1)->make()->first()->toArray();
 
                     $extensions[] = array_merge(

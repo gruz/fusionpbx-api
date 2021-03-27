@@ -2,7 +2,6 @@
 
 namespace Api\User\Repositories;
 
-use Api\User\Models\Group;
 use Illuminate\Database\Query\Builder;
 use Infrastructure\Database\Eloquent\AbstractRepository;
 

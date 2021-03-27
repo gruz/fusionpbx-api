@@ -220,4 +220,33 @@ abstract class AbstractService
 
         $this->database->commit();
     }
+
+    public function getByAttributes(array $attributes)
+    {
+        $data = null;
+
+        if (!empty($attributes) && !is_null($attributes)) {
+            $data = $this->repository->getWhereArray($attributes);
+        }
+
+        return $data;
+    }
+
+    public function getByAttributeValues($attribute, array $values)
+    {
+        $data = null;
+
+        if (
+            !empty($attribute) && !is_null($attribute) &&
+            !empty($values) && !is_null($values) && is_array($values)
+        ) {
+            $data = $this->repository->getWhereIn($attribute, $values)->toArray();
+        }
+
+        return $data;
+    }
+
+    public function setRelation(AbstractModel $parent, AbstractModel $child, $options = []) {
+        return $this->repository->setRelation($parent, $child, $options);
+    }
 }

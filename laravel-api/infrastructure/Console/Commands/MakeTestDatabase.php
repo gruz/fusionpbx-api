@@ -5,7 +5,6 @@ namespace Infrastructure\Console\Commands;
 use Illuminate\Console\Command;
 use Storage;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class MakeTestDatabase extends Command
 {

@@ -13,6 +13,7 @@ function show_usage(){
     printf " -f|--no-fusionpbx, Do not install FusionPBX\n";
     printf " -d|--no-xdebug, Do not install xdebug\n";
     printf " -p|--no-postgres-remote, Do not allow postgres remote connection\n";
+    printf " -m|--no-mailhog, Do not allow mailhog for development purposes\n";
     printf "\n Example: "$(basename "$0")" -f -d -p\n";
     printf " Would install only minimal software set\n";
 }
@@ -20,6 +21,7 @@ function show_usage(){
 INSTALL_FUSIONPBX=true
 INSTALL_XDEBUG=true
 OPEN_POSTGRES=true
+INSTALL_MAILHOG=true
 
 while [ ! -z "$1" ];do
    case "$1" in
@@ -35,6 +37,11 @@ while [ ! -z "$1" ];do
           # shift
           INSTALL_XDEBUG=false
           echo "Omitting xdebug install"
+          ;;
+        -m|--no-mailhog)
+          # shift
+          INSTALL_MAILHOG=false
+          echo "Omitting mailhog install"
           ;;
         -p|--no-postgres-remote)
           # shift
@@ -72,6 +79,24 @@ if [ $OPEN_POSTGRES = true ] ; then
     sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/${PG_VERSION}/main/postgresql.conf
     printf "\nhost    all             all              "${HOST_IP}"/0        md5" >> /etc/postgresql/${PG_VERSION}/main/pg_hba.conf
     sudo iptables -A INPUT -p tcp --dport 5432 --jump ACCEPT
+fi
+
+if [ $INSTALL_MAILHOG = true ] ; then
+  sudo apt-get -y install golang-go
+  go get github.com/mailhog/MailHog
+  sudo iptables -A INPUT -p tcp --dport 8025 --jump ACCEPT
+  printf "[Unit]
+Description=MailHog service
+
+[Service]
+ExecStart=/root/go/bin/MailHog \
+  -api-bind-addr 0.0.0.0:8025 \
+  -ui-bind-addr 0.0.0.0:8025 \
+  -smtp-bind-addr 0.0.0.0:1025
+
+[Install]
+WantedBy=multi-user.target" >  /etc/systemd/system/mailhog.service
+  sudo systemctl enable mailhog
 fi
 
 sudo iptables -A INPUT -p tcp --dport 444 --jump ACCEPT

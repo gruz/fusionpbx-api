@@ -32,11 +32,11 @@ $router->group(['middleware' => ['web']], function ($router) {
          // 'namespace' => 'Api\User\Controllers'
       ]);
    
-      $router->post('/forgot-password', [
-         'uses' => 'UserController@forgotPassword',
-         'as' => 'password.email',
-         // 'namespace' => 'Api\User\Controllers'
-      ]);
+      // $router->post('/forgot-password', [
+      //    'uses' => 'UserController@forgotPassword',
+      //    'as' => 'password.email',
+      //    // 'namespace' => 'Api\User\Controllers'
+      // ]);
    });
 
    // $router->get('/reset-password',

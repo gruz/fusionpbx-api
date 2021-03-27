@@ -55,7 +55,7 @@ class LoginProxy
      */
     public function attemptLogin($username, $password, $domain_name)
     {
-        $domain = $this->domainRepository->getWhere('domain_name', $domain_name)->first();
+        $domain = $this->domainRepository->getWhere('domain_name', $domain_name)->first(); // if domian is not enabled do not allow to login // catch on level of Request
 
         if (empty($domain)) {
             throw new InvalidCredentialsException(__('Wrong domain name or domain doesn\'t exists'));
