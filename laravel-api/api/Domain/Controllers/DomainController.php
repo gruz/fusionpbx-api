@@ -6,7 +6,6 @@ use Infrastructure\Http\Controller;
 use Api\Domain\Requests\DomainSignupRequest;
 use Api\PostponedAction\Services\PostponedActionService;
 use Api\Domain\Requests\DomainSignupVerificationLinkRequest;
-use Api\PostponedAction\Requests\PostponedActionExecuteRequest;
 
 /**
  * @OA\Schema()
@@ -45,7 +44,7 @@ class DomainController extends Controller
                 examples={
                     "Create domain all fields": {},
                     "Create domain basic example": {
-                        "summary" : "`TODO example`",
+                        "summary" : "Some Extended example",
                         "value": {
                             "code": 403,
                             "message": "登录失败",
@@ -75,14 +74,18 @@ class DomainController extends Controller
             ),
         ),
         @OA\Response(
-            response=400,
+            response=422,
             description="`TODO Stub` Could not created domain",
             @OA\JsonContent(
                 example={
-                    "messages": {
-                        "Missing admin user",
-                        "No password for email",
-                    },
+                    "errors": {
+                        {
+                            "status": "422",
+                            "code": 0,
+                            "title": "Validation error",
+                            "detail": "The domain name has already been taken."
+                        }
+                    }
                 },
             ),
         ),
@@ -147,10 +150,10 @@ class DomainController extends Controller
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
     */
-    public function resend($hash, PostponedActionExecuteRequest $request, PostponedActionService $postponedActionService)
-    {
-        return $this->response($postponedActionService->executeByHash($hash), 201);
-    }
+    // public function resend($hash, PostponedActionExecuteRequest $request, PostponedActionService $postponedActionService)
+    // {
+    //     return $this->response($postponedActionService->executeByHash($hash), 201);
+    // }
 
     /**
      * Update a domain `TODO Implement`

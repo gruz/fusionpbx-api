@@ -31,11 +31,22 @@
                             "examples": {
                                 "Create domain all fields": [],
                                 "Create domain basic example": {
-                                    "summary": "`TODO example`",
+                                    "summary": "Some Extended example",
                                     "value": {
                                         "code": 403,
                                         "message": "登录失败",
                                         "data": null
+                                    }
+                                },
+                                "0": {
+                                    "summary": "request-all",
+                                    "value": {
+                                        "summary": "Some requests",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "DIE!",
+                                            "data": null
+                                        }
                                     }
                                 }
                             }
@@ -67,17 +78,46 @@
                             }
                         }
                     },
-                    "400": {
+                    "422": {
                         "description": "`TODO Stub` Could not created domain",
                         "content": {
                             "application/json": {
                                 "schema": {},
                                 "example": {
-                                    "messages": [
-                                        "Missing admin user",
-                                        "No password for email"
+                                    "errors": [
+                                        {
+                                            "status": "422",
+                                            "code": 0,
+                                            "title": "Validation error",
+                                            "detail": "The domain name has already been taken."
+                                        }
                                     ]
                                 }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Very bad response",
+                        "content": {
+                            "application/json": {
+                                "examples": [
+                                    {
+                                        "summary": "Bad another things",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "DIE!",
+                                            "data": null
+                                        }
+                                    },
+                                    {
+                                        "summary": "Bad something",
+                                        "value": {
+                                            "code": 403,
+                                            "message": "LIVE",
+                                            "data": null
+                                        }
+                                    }
+                                ]
                             }
                         }
                     }
@@ -119,8 +159,7 @@
                 "tags": [
                     "Domain"
                 ],
-                "summary": "Resend domain signup verification link",
-                "operationId": "Api_Domain_Controllers_DomainController::resend",
+                "summary": "[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]@OA\\UNDEFINED🙈",
                 "parameters": [
                     {
                         "name": "hash",
@@ -1031,7 +1070,7 @@
                     {
                         "properties": {
                             "is_subdomain": {
-                                "description": "Determines is the current domain should be a top level domain or a subdomain of the mothership domain",
+                                "description": "Determines is the current domain should be a top level domain or a subdomain\n                        of the mothership domain",
                                 "type": "boolean",
                                 "default": "false"
                             }
@@ -1097,8 +1136,76 @@
                 "type": "object"
             },
             "DomainSetting": {
-                "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n *\n *  ```\n * SELECT x.* FROM public.v_default_settings x\n *     WHERE default_setting_category in ('domain' , 'email')\n *     ORDER BY default_setting_category\n * ```",
+                "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n\n ```\nSELECT x.* FROM public.v_default_settings x\n    WHERE default_setting_category in ('domain' , 'email')\n    ORDER BY default_setting_category\n```",
                 "properties": {
+                    "domain_setting_category": {
+                        "description": "Domain settings category",
+                        "type": "string",
+                        "enum": [
+                            "domain",
+                            "email"
+                        ],
+                        "example": "domain"
+                    },
+                    "domain_setting_subcategory": {
+                        "description": "Domain settings sub category",
+                        "type": "string",
+                        "oneOf": [
+                            {
+                                "enum": [
+                                    "dial_string",
+                                    "template",
+                                    "menu",
+                                    "language",
+                                    "time_zone",
+                                    "cidr",
+                                    "country",
+                                    "bridge",
+                                    "time_format",
+                                    "paging"
+                                ],
+                                "example": "language"
+                            },
+                            {
+                                "enum": [
+                                    "smtp_auth",
+                                    "method",
+                                    "smtp_port",
+                                    "smtp_from",
+                                    "smtp_from_name",
+                                    "smtp_hostname",
+                                    "smtp_host",
+                                    "smtp_username",
+                                    "smtp_password",
+                                    "smtp_secure",
+                                    "smtp_validate_certificate"
+                                ],
+                                "example": "smtp_from_name"
+                            }
+                        ]
+                    },
+                    "domain_setting_name": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "enum": [
+                            "text",
+                            "name",
+                            "uuid",
+                            "code",
+                            "name",
+                            "array",
+                            "code",
+                            "text",
+                            "text",
+                            "numeric"
+                        ],
+                        "example": "code"
+                    },
+                    "domain_setting_value": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "example": "uk-ua"
+                    },
                     "domain_uuid": {
                         "type": "string",
                         "format": "uuid",
@@ -1114,28 +1221,18 @@
                         "format": "uuid",
                         "readOnly": true
                     },
-                    "domain_setting_category": {
-                        "type": "string"
-                    },
-                    "domain_setting_subcategory": {
-                        "type": "string"
-                    },
-                    "domain_setting_name": {
-                        "type": "string"
-                    },
-                    "domain_setting_value": {
-                        "type": "string"
-                    },
                     "domain_setting_order": {
                         "type": "number"
                     },
                     "domain_setting_enabled": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "default": true
                     },
                     "domain_setting_description": {
                         "type": "string"
                     }
-                }
+                },
+                "type": "object"
             },
             "ExtensionController": {},
             "ExtensionCreateSchema": {
@@ -1488,7 +1585,7 @@
                     "email_verified_at": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2021-03-21 11:52:28"
+                        "example": "2021-03-27 02:32:26"
                     }
                 }
             },
