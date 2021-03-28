@@ -1,8 +1,0 @@
-{
-    "summary" : "Some requests",
-    "value": {
-        "code": 403,
-        "message": "DIE!",
-        "data": null
-    }
-}

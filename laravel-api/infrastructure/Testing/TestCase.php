@@ -26,10 +26,10 @@ abstract class TestCase extends BaseTestCase
 
     protected function refreshDB() {
         Artisan::call('db:maketest');
-        Artisan::call('migrate:refresh');
+        // Artisan::call('migrate:refresh');
     }
 
-    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false)
+    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [] )
     {
         if ($refreshDB) {
             $this->refreshDB();
@@ -42,7 +42,9 @@ abstract class TestCase extends BaseTestCase
          * @var TestRequestFactoryService
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
-        $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $forceNewRequestGeneration]);
+        if (empty($request)) {
+            $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $forceNewRequestGeneration]);
+        }
         $response = $this->json('post', route('fpbx.post.domain.signup'), $request);
 
         $data = [$request, $response];

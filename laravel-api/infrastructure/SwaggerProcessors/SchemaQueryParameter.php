@@ -264,6 +264,9 @@ class SchemaQueryParameter
         $method = $data['method'];
 
         $responses = $path->$method->responses;
+        if (UNDEFINED === $responses) {
+            $responses = [];
+        }
         $responses = array_merge($responses, $responseExamples);
         $path->$method->responses = $responses;
     }
