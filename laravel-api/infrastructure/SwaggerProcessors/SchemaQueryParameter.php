@@ -56,140 +56,6 @@ class SchemaQueryParameter
             $this->attachRequestExamples($actionPath, $data);
             $this->attachRepsonseExamples($actionPath, $data);
         }
-        return;
-
-        //         $newExample = json_decode('{
-        //             "summary" : "!!!!Extended example",
-        //             "value": {
-        //                 "code": 403,
-        //                 "message": "D111IE!",
-        //                 "data": null
-        //             }
-        //         }', TRUE);
-
-        //         // d($newExample);
-
-        $newExample = new \OpenApi\Annotations\JsonContent([
-            'examples' => '{
-                "summary" : "!!!!Extended example",
-                "value": {
-                    "code": 403,
-                    "message": "DIE!",
-                    "data": null
-                }
-            }'
-        ]);
-
-        // // d($paths[0]->post->responses[0]);
-
-        $resp = new Response([]);
-        $resp->response = '400';
-        $resp->description = 'Success';
-
-        $content = new MediaType([]);
-        $content->mediaType = 'application/json';
-        // $content->example =
-        //     '{
-        //         "summary" : "!!!!Extended example",
-        //         "value": {
-        //             "code": 403,
-        //             "message": "DIE!",
-        //             "data": null
-        //         }
-        //     }';
-
-
-        $content->examples = [
-            json_decode('{
-                    "summary" : "!!!!Extended example",
-                    "value": {
-                        "code": 403,
-                        "message": "D111IE!",
-                        "data": null
-                    }
-                }'),
-            json_decode('{
-                    "summary" : "!!!!Extended example2",
-                    "value": {
-                        "code": 403,
-                        "message": "LIVE!",
-                        "data": null
-                    }
-                }')
-        ];
-
-        // $content->schema = new Schema([]);
-        // $content->schema->ref = '#/components/schemas/Domain';
-
-        // $content = $newExample;
-        $resp->content = [$content];
-        // d($resp);
-        // dd($resp);
-
-        // $newReponse = new \OpenApi\Annotations\Response(['response' => 404,  'content' => $newExample]);
-        foreach ($paths as $path) {
-            // $path->post->responses[] = $resp;
-            // $resp = clone $path->post->responses[1];
-            // $resp->response = 403;
-            $path->post->responses[] = $resp;
-            d($path, $path->post->responses);
-            return;
-        }
-
-
-        $schemas = $analysis->getAnnotationsOfType(Response::class, true);
-        foreach ($schemas as $schema) {
-
-            // // Storage::disk('local')->put('swagger
-            // $files = Storage::allDirectories();
-            // $responsesFolder = 'swagger' . $schema->_context->nested->path . '/' . $schema->_context->nested->method . '/responses';
-            // $responseFiles = Storage::files($responsesFolder);
-            // $newExamples = [];
-            // foreach ($responseFiles as $responseFile) {
-            //     $code = basename($responseFile);
-            //     $example = Storage::get($responseFile);
-            //     $value = json_decode($example);
-
-            //     $newExamples[] = [
-
-            //     ];
-            // }
-            // dd($files, $responsesFolder, Storage::directories($responsesFolder));
-            // // $example = Arr::get($schema, '_unmerged.0.example');
-            // // $examples = Arr::get($schema, '_unmerged.0.examples');
-
-            $example = $schema->_unmerged[0]->example;
-            $examples = $schema->_unmerged[0]->examples;
-
-
-            if ($example === UNDEFINED && $examples === UNDEFINED) {
-                continue;
-            }
-
-            $newExample = [
-                json_decode('{
-                "summary" : "!!!!Extended example",
-                "value": {
-                    "code": 403,
-                    "message": "D111IE!",
-                    "data": null
-                }
-            }'),
-                json_decode('{
-                "summary" : "!!!!Extended example2",
-                "value": {
-                    "code": 403,
-                    "message": "LIVE!",
-                    "data": null
-                }
-            }')
-            ];
-            $schema->_unmerged[0]->examples = array_merge($examples, $newExample);
-            $schema->_unmerged[] = new JsonContent(['examples' => $newExample]);
-            // d($schema, $schema->_context->nested->path, $schema->_context->nested->method,  $examples, );
-
-            break;
-        }
     }
 
     protected function buildSchemaFromModel(Schema $schema)
@@ -384,7 +250,6 @@ class SchemaQueryParameter
         }
 
         Storage::put('swagger/routes.json', json_encode($routes, JSON_PRETTY_PRINT));
-        // dd($routes);
     }
 
     private function getClassName(AbstractAnnotation $annotation)
@@ -401,8 +266,6 @@ class SchemaQueryParameter
         $responses = $path->$method->responses;
         $responses = array_merge($responses, $responseExamples);
         $path->$method->responses = $responses;
-        // d($responseExamples);
-        // exit;
     }
 
     private function getResponseExamples($actionPath)
@@ -430,7 +293,10 @@ class SchemaQueryParameter
             foreach ($responseFiles as $fileName) {
                 # code...
                 $json = Storage::get($fileName);
-                $content->examples[] = json_decode($json);
+                $content->examples[] = [
+                    'summary' => basename($fileName, '.json'),
+                    'value' => json_decode($json),
+                ];
             }
             $resp->content = [$content];
 
@@ -444,30 +310,12 @@ class SchemaQueryParameter
     {
         $requestExamples = $this->getRequestExamples($actionPath);
 
-        // return;
-        // dd($requestExamples);
         $path = $data['pathItem'];
-        // dd($path);
-
         $method = $data['method'];
 
         if (UNDEFINED === $path->$method->requestBody) {
             return;
         }
-
-        if (UNDEFINED === $path->$method->requestBody->content) {
-            $path->$method->requestBody->content = [];
-        }
-
-
-        $json = json_decode('{
-        "summary" : "!!!!Extended example2",
-        "value": {
-            "code": 403,
-            "message": "LIVE!",
-            "data": null
-        }
-    }');
 
         $examples = $path->$method->requestBody->_unmerged[0]->examples;
 
@@ -499,30 +347,5 @@ class SchemaQueryParameter
         }
 
         return $examples;
-
-
-
-
-        $directory = 'swagger/' . $actionPath . '/request';
-
-        $requests = [];
-        $requestFiles = Storage::files($directory);
-
-        $resp = new RequestBody([]);
-        $resp->description = '$description';
-        $content = new MediaType([]);
-        $content->mediaType = 'application/json';
-        $content->examples = [];
-
-        foreach ($requestFiles as $fileName) {
-            $json = Storage::get($fileName);
-            $content->examples[] = json_decode($json);
-            $resp->content = [$content];
-
-            $requests[] = $resp;
-        }
-
-        return $requests;
     }
-
 }
