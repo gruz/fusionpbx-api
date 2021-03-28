@@ -90,21 +90,21 @@ class DomainController extends Controller
     /**
      * Resend domain signup verification link
      *
-    @OA\Get(
+    @ OA\Get(
         tags={"Domain"},
         path="/domain/resend/{hash}",
-        @OA\Parameter(
+        @ OA\Parameter(
             name="hash",
             in="path",
             required=true,
-            @OA\Schema(
+            @ OA\Schema(
                 type="string",
                 format="uuid",
                 example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
             )
         ),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
     */
     // public function resend($hash, PostponedActionExecuteRequest $request, PostponedActionService $postponedActionService)
@@ -117,16 +117,16 @@ class DomainController extends Controller
      *
      * Depending on permissions will allow or not updating certain values
      *
-    @OA\Put(
+    @ OA\Put(
         tags={"Domain"},
         path="/domain/{domain_uuid}",
-        @OA\Parameter(ref="#/components/parameters/domain_uuid"),
-        @OA\RequestBody(
+        @ OA\Parameter(ref="#/components/parameters/domain_uuid"),
+        @ OA\RequestBody(
             description="Domain information",
             required=true,
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 allOf={
-                    @OA\Schema(ref="#/components/schemas/DomainSchema"),
+                    @ OA\Schema(ref="#/components/schemas/DomainSchema"),
                 },
                 examples={
                     "Domain all fields": {},
@@ -141,19 +141,19 @@ class DomainController extends Controller
                 }
             ),
         ),
-        @OA\Response(
+        @ OA\Response(
             response=200,
             description="Domain created response",
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 allOf={
-                    @OA\Schema(ref="#/components/schemas/Domain"),
+                    @ OA\Schema(ref="#/components/schemas/Domain"),
                 },
             ),
         ),
-        @OA\Response(
+        @ OA\Response(
             response=400,
             description="`TODO Stub` Could not created domain",
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 example={
                     "messages": {
                         "Missing admin user",
@@ -170,12 +170,12 @@ class DomainController extends Controller
      *
      * Not implemented yet
      *
-    @OA\Delete(
+    @ OA\Delete(
         tags={"Domain"},
         path="/domain/{domian_uuid}",
-        @OA\Parameter(ref="#/components/parameters/domain_uuid"),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Parameter(ref="#/components/parameters/domain_uuid"),
+        @ OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
     */
 }
