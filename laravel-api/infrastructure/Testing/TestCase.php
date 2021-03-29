@@ -24,12 +24,13 @@ abstract class TestCase extends BaseTestCase
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
     }
 
-    protected function refreshDB() {
+    protected function refreshDB()
+    {
         Artisan::call('db:maketest');
         // Artisan::call('migrate:refresh');
     }
 
-    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [] )
+    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [])
     {
         if ($refreshDB) {
             $this->refreshDB();
@@ -55,11 +56,12 @@ abstract class TestCase extends BaseTestCase
         return $data;
     }
 
-    private function saveResponseForSwagger($method, $path, $response) {
+    private function saveResponseForSwagger($method, $path, $response)
+    {
 
-        $folderPath = 'swagger'. $path . '/' . $method . '/response/';
+        $folderPath = 'swagger' . $path . '/' . $method . '/response/';
         $code = $response->baseResponse->getStatusCode();
-        $mask = $folderPath . $code . '*' ;
+        $mask = $folderPath . $code . '*';
         $mask = storage_path() . '/app/' . $mask;
         $folders = glob($mask);
 
@@ -70,12 +72,11 @@ abstract class TestCase extends BaseTestCase
             $folder = end($folders);
         }
 
-        $file = $folder . '/'. $response->baseResponse::$statusTexts[$code] . '.json';
+        $file = $folder . '/' . $response->baseResponse::$statusTexts[$code] . '.json';
 
-        if (!file_exists($file))  {
+        if (!file_exists($file)) {
             $content = $response->baseResponse->getContent();
-            file_put_contents($file, json_encode(json_decode($content), JSON_PRETTY_PRINT) );
+            file_put_contents($file, json_encode(json_decode($content), JSON_PRETTY_PRINT));
         }
-
     }
 }

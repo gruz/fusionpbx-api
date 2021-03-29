@@ -346,7 +346,6 @@ class SchemaQueryParameter
             ];
 
             $examples[] = $json;
-
         }
 
         return $examples;

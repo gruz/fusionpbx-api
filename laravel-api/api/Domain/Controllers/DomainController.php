@@ -81,7 +81,7 @@ class DomainController extends Controller
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     public function activate($hash, $email, DomainSignupVerificationLinkRequest $request, PostponedActionService $postponedActionService)
     {
         return $this->response($postponedActionService->executeByHash($hash, $email), 201);
@@ -106,7 +106,7 @@ class DomainController extends Controller
         @ OA\Response(response=200, description="`TODO Stub` Success ..."),
         @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
     // public function resend($hash, PostponedActionExecuteRequest $request, PostponedActionService $postponedActionService)
     // {
     //     return $this->response($postponedActionService->executeByHash($hash), 201);
@@ -163,7 +163,7 @@ class DomainController extends Controller
             ),
         ),
     )
-    */
+     */
 
     /**
      * Delete a domain `TODO descendant delete with users, extensions etc`
@@ -177,5 +177,5 @@ class DomainController extends Controller
         @ OA\Response(response=200, description="`TODO Stub` Success ..."),
         @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
-    */
+     */
 }

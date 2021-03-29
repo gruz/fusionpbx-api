@@ -136,7 +136,7 @@ class TeamService extends AbstractService
                     $relatedModel = $this->extensionService->create($extensionData, ['forceFillable' => ['domain_uuid']]);
                     $this->userService->setRelation($userModel, $relatedModel);
                 }
-                
+
                 $groupName = config('fpbx.default.user.group');
                 $relatedModel = Group::where('group_name', $groupName)->first();
                 $this->userService->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);

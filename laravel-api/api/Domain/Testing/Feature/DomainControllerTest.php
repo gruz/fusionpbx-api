@@ -1,4 +1,5 @@
 <?php
+
 namespace Api\Domain\Testing\Feature;
 
 use stdClass;
@@ -320,6 +321,10 @@ class DomainControllerTest extends TestCase
         }
     }
 
-    public function testNoExtensionsPassedFails() {}
-    public function testSimilarExtensionsForDifferentUsersInDomainFails() {}
+    public function testNoExtensionsPassedFails()
+    {
+    }
+    public function testSimilarExtensionsForDifferentUsersInDomainFails()
+    {
+    }
 }
