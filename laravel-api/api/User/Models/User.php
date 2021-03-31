@@ -67,6 +67,7 @@ class User extends AbstractModel implements
      * @var array
      */
     protected $guarded = [
+        'user_uuid',
         'domain_uuid',
         'contact_uuid',
         'salt',
