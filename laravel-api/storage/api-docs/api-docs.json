@@ -8,7 +8,7 @@
         "version": "0.0.1"
     },
     "paths": {
-        "/domain/signup": {
+        "/domain": {
             "post": {
                 "tags": [
                     "Domain"
