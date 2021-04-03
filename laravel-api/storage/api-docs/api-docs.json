@@ -2944,8 +2944,8 @@
                                     "cidr",
                                     "country",
                                     "bridge",
-                                    "time_format",
-                                    "paging"
+                                    "paging",
+                                    "time_format"
                                 ],
                                 "example": "language"
                             },
@@ -2979,8 +2979,8 @@
                             "array",
                             "code",
                             "text",
-                            "text",
-                            "numeric"
+                            "numeric",
+                            "text"
                         ],
                         "example": "code"
                     },
@@ -3329,7 +3329,8 @@
                 "properties": {
                     "user_uuid": {
                         "type": "string",
-                        "format": "uuid"
+                        "format": "uuid",
+                        "readOnly": true
                     },
                     "domain_uuid": {
                         "type": "string",

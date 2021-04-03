@@ -19,7 +19,6 @@ use Illuminate\Notifications\AnonymousNotifiable;
 use Api\Domain\Notifications\DomainSignupNotification;
 use Api\Domain\Notifications\DomainActivateActivatorNotification;
 use Api\Domain\Notifications\DomainActivateMainAdminNotification;
-use Api\Extension\Models\Extension;
 use Api\User\Models\Group;
 use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 
