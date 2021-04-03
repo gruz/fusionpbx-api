@@ -15,6 +15,7 @@ ln -s /var/www/fusionpbx-api/fusionpbx /var/www/fusionpbx
 ln -s /var/www/fusionpbx-api/laravel-api/ /var/www/laravel-api
 
 sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/" /etc/ssh/sshd_config
+echo 'cd /var/www/laravel-api' >> /root/.bashrc
 
 echo "Installing additional libraries"
 apt install -y sudo gnupg;

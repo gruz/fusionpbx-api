@@ -145,7 +145,7 @@ class DomainControllerTest extends TestCase
 
     public function testActivate_SuccessMany()
     {
-        $requestFiles = Storage::files('swagger/domain/signup/post/request/');
+        $requestFiles = Storage::files('swagger/domain/post/request/');
         foreach ($requestFiles as $jsonFile) {
             $data = json_decode(Storage::get($jsonFile), true);
             $faker = Factory::create(Factory::DEFAULT_LOCALE);
@@ -237,7 +237,7 @@ class DomainControllerTest extends TestCase
             //
         ];
 
-        $response = $this->post('/domain/signup', $data);
+        $response = $this->post('/domain', $data);
 
         $response->assertStatus(400);
 
@@ -247,7 +247,7 @@ class DomainControllerTest extends TestCase
             //
         ];
 
-        $response = $this->post('/domain/signup', $data);
+        $response = $this->post('/domain', $data);
 
         $response->assertStatus(400);
     }

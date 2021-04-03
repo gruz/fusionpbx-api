@@ -33,7 +33,7 @@ class DomainController extends Controller
      *
     @OA\Post(
         tags={"Domain"},
-        path="/domain/signup",
+        path="/domain",
         @OA\RequestBody(
             description="Domain information",
             required=true,
