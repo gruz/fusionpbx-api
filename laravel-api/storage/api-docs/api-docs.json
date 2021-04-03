@@ -2611,15 +2611,7 @@
                                 "$ref": "#/components/schemas/UserCreateSchema"
                             },
                             "examples": {
-                                "Create a user": [],
-                                "Create a user basic example": {
-                                    "summary": "`TODO example`",
-                                    "value": {
-                                        "code": 403,
-                                        "message": "登录失败",
-                                        "data": null
-                                    }
-                                }
+                                "Create a user": []
                             }
                         }
                     }
@@ -2634,30 +2626,6 @@
                                         {
                                             "$ref": "#/components/schemas/DomainCreateSchema"
                                         }
-                                    ]
-                                },
-                                "examples": {
-                                    "Create domain basic example1": {
-                                        "summary": "Create domain with language settings",
-                                        "value": {
-                                            "code": 403,
-                                            "message": "登录失败",
-                                            "data": null
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "`TODO Stub` Could not created domain",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": {
-                                    "messages": [
-                                        "Missing admin user",
-                                        "No password for email"
                                     ]
                                 }
                             }

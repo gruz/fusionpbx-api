@@ -5,6 +5,7 @@ namespace Api\Domain\Requests;
 use Infrastructure\Http\ApiRequest;
 use Infrastructure\Rules\HostnameRule;
 use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
+use Infrastructure\Rules\UsernameRule;
 
 class DomainSignupRequest extends ApiRequest
 {
@@ -22,7 +23,13 @@ class DomainSignupRequest extends ApiRequest
             ],
             'users' => 'required',
             // 'is_subdomain' => 'required',
-            'users.*.username' => 'required|distinct',
+            // 'users.*.username' => 'required|distinct|alpha_dash',
+            'users.*.username' => [
+                'required',
+                'string',
+                'max:255',
+                new UsernameRule(),
+            ],
             'users.*.user_email' => 'required|distinct:ignore_case|email',
             'users.*.password' => 'required|min:6|max:25',
             'users.*.extensions.*.extension' => 'required|distinct|integer|min:1|max:999',
