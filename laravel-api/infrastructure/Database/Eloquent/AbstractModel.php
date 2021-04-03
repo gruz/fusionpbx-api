@@ -102,19 +102,36 @@ abstract class AbstractModel extends BaseModel
     public function getTableColumnNames($ignoreFillable = false)
     {
         $getData = function () use ($ignoreFillable) {
+            $result = [];
             $table = $this->getTable();
 
             $tableColumns = $this->getConnection()
                 ->getSchemaBuilder()
                 ->getColumnListing($table);
-
             if ($ignoreFillable) {
                 $result = $tableColumns;
             } else {
                 $fillableProps = $this->getFillable();
-                $result = array_intersect($tableColumns, $fillableProps);
+                $guardedProps = $this->getGuarded();
+                if (!is_null($guardedProps) && !empty($guardedProps)) {
+                    $result = array_diff($tableColumns, $guardedProps);
+                    // dd($result);
+                } else if (!is_null($fillableProps) && !empty($fillableProps)){
+                    $result = array_intersect($tableColumns, $fillableProps);
+                } else {
+                    $result = $tableColumns;
+                }
+                // $test1 = ['one', 'two', 'three', 'four'];
+                // $test2 = ['one', 'four', 'five'];
+                // $test3 = array_intersect($test1, $test2);
+                // dd($test3);
+                // dump($test3);
+                // dump($tableColumns);
+                // dump($this);
+                // dd($result);
             }
-
+            
+            // dd("jjj");
             return $result;
         };
 
@@ -148,7 +165,7 @@ abstract class AbstractModel extends BaseModel
                     ->getDoctrineColumn($this->getTable(), $column_name);
                 $columns_info[$column_name] = $info;
             }
-
+            // dd($columns_info);
             return $columns_info;
         };
 

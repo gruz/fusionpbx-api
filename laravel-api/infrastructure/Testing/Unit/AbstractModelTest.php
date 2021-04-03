@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use Api\User\Models\User;
+use Arr;
+use Cache;
 use Infrastructure\Testing\TestCase;
 
 class AbstractModelTest extends TestCase
@@ -23,6 +25,7 @@ class AbstractModelTest extends TestCase
 
         // set guarded attributes
         $userObj->guard([
+            'user_uuid',
             'domain_uuid',
             'contact_uuid',
             'salt',
@@ -31,16 +34,25 @@ class AbstractModelTest extends TestCase
         ]);
         // assert that after we get columns with getTableColumnsInfo
         // table columns can`t be empty
+        // For future maybe it will be better to disable cache while test is running ???
+        Cache::flush();
         $tableColumns = $userObj->getTableColumnsInfo();
-        $this->assertNotEmpty($tableColumns);
-        $expectedTableColumns = array_diff(
-            array_keys($userObj->getTableColumnsInfo(true)),
-            $userObj->getGuarded()
-        );
+        // $this->assertNotEmpty($tableColumns);
+        // $expectedTableColumns = array_diff(
+        //     array_keys($userObj->getTableColumnsInfo(true)),
+        //     $userObj->getGuarded()
+        // );
+        Cache::flush();
+        $expectedTableColumns = Arr::except($userObj->getTableColumnsInfo(true),
+                                            $userObj->getGuarded());
+        
+        // dump($tableColumns);
+        // dd($expectedTableColumns);
         $this->assertEquals($expectedTableColumns, $tableColumns);
         // remove guarded and tableColumns
         $userObj->guard([]);
         $tableColumns = [];
+        $expectedTableColumns = [];
 
         // set fillable attributes
         $userObj->fillable([
@@ -50,16 +62,25 @@ class AbstractModelTest extends TestCase
         ]);
         // assert that after we get columns with getTableColumnsInfo
         // table columns can`t be empty
+        Cache::flush();
         $tableColumns = $userObj->getTableColumnsInfo();
-        dump($tableColumns);
-        $this->assertNotEmpty($tableColumns);
+        // $this->assertNotEmpty($tableColumns);
+        Cache::flush();
+        $expectedTableColumns = Arr::only($userObj->getTableColumnsInfo(true), $userObj->getFillable());
+        // dump($tableColumns);
+        // dd($expectedTableColumns);
+        $this->assertEquals($expectedTableColumns, $tableColumns);
         // remove fillable and tableColumns
         $userObj->fillable([]);
         $tableColumns = [];
 
         // assert logic without fillable and guarded
+        Cache::flush();
         $tableColumns = $userObj->getTableColumnsInfo();
-        $this->assertNotEmpty($tableColumns);
+        // $this->assertNotEmpty($tableColumns);
+        Cache::flush();
+        $expectedTableColumns = $userObj->getTableColumnsInfo(true);
+        $this->assertEquals($expectedTableColumns, $tableColumns);
 
         // set guarded and fillable
         $userObj->fillable([
@@ -75,29 +96,13 @@ class AbstractModelTest extends TestCase
             'user_status'
         ]);
         // assert some logic
+        Cache::flush();
         $tableColumns = $userObj->getTableColumnsInfo();
-        $this->assertNotEmpty($tableColumns);
-
-
-        
-
-
-        // ____________________________________________________
-
-            // $response = $this->get('/');
-            // $response->dumpHeaders();
-
-            // $response->dumpSession();
-
-            // $response->dump();
-
-            // $response
-            //     ->assertStatus(200)
-            //     ->assertJson([
-            //         'title' => 'FusionPBX API',
-            // ]);
-
-        // ______________________________________________________
+        // $this->assertNotEmpty($tableColumns);
+        Cache::flush();
+        $expectedTableColumns = Arr::except($userObj->getTableColumnsInfo(true),
+                                            $userObj->getGuarded());
+        $this->assertEquals($expectedTableColumns, $tableColumns);
 
     }
 }
