@@ -4,9 +4,9 @@ namespace Infrastructure\Testing;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
-use Api\PostponedAction\Models\PostponedAction;
 use Infrastructure\Services\TestRequestFactoryService;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Storage;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -24,12 +24,13 @@ abstract class TestCase extends BaseTestCase
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
     }
 
-    protected function refreshDB() {
+    protected function refreshDB()
+    {
         Artisan::call('db:maketest');
-        Artisan::call('migrate:refresh');
+        // Artisan::call('migrate:refresh');
     }
 
-    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false)
+    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [])
     {
         if ($refreshDB) {
             $this->refreshDB();
@@ -42,11 +43,40 @@ abstract class TestCase extends BaseTestCase
          * @var TestRequestFactoryService
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
-        $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $forceNewRequestGeneration]);
-        $response = $this->json('post', route('fpbx.post.domain.signup'), $request);
+        if (empty($request)) {
+            $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $forceNewRequestGeneration]);
+        }
+        $response = $this->json('post', route('fpbx.post.domain'), $request);
+
+        // // ##mygruz20210329030026  Disabled for now. Not sure if this makes sense
+        // $this->saveResponseForSwagger('post', route('fpbx.post.domain', [], false), $response);
 
         $data = [$request, $response];
 
         return $data;
+    }
+
+    private function saveResponseForSwagger($method, $path, $response)
+    {
+
+        $folderPath = 'swagger' . $path . '/' . $method . '/response/';
+        $code = $response->baseResponse->getStatusCode();
+        $mask = $folderPath . $code . '*';
+        $mask = storage_path() . '/app/' . $mask;
+        $folders = glob($mask);
+
+        if (empty($folders)) {
+            $folder = $folderPath . $code . ' ' . $response->baseResponse::$statusTexts[$code];
+            Storage::makeDirectory($folder);
+        } else {
+            $folder = end($folders);
+        }
+
+        $file = $folder . '/' . $response->baseResponse::$statusTexts[$code] . '.json';
+
+        if (!file_exists($file)) {
+            $content = $response->baseResponse->getContent();
+            file_put_contents($file, json_encode(json_decode($content), JSON_PRETTY_PRINT));
+        }
     }
 }

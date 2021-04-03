@@ -12,7 +12,12 @@ class PostponedAction extends Model
     protected $casts = [
         'request' => 'json',
     ];
-    
+
+    protected $hidden = [
+        'hash',
+        'id',
+    ];
+
     public static function last()
     {
         return self::latest()->first();

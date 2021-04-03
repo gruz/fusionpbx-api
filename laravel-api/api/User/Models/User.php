@@ -287,15 +287,6 @@ class User extends AbstractModel implements
     // }
 
     /**
-     * Method to get user domain name to which he relates.
-     */
-    public function getDomainNameForPasswordReset()
-    {
-        return $this->domain()->first()->getAttribute('domain_name');
-    }
-
-
-    /**
      * Route notifications for the mail channel.
      *
      * @param  \Illuminate\Notifications\Notification  $notification

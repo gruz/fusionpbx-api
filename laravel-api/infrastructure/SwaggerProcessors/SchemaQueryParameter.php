@@ -45,6 +45,17 @@ class SchemaQueryParameter
         }
 
         $this->makeOperationIdRedocCompatible($analysis);
+        $this->addExamplesFromFiles($analysis);
+    }
+
+    protected function addExamplesFromFiles(Analysis $analysis)
+    {
+        $paths = $this->getAvailablePaths($analysis);
+
+        foreach ($paths as $actionPath => $data) {
+            $this->attachRequestExamples($actionPath, $data);
+            $this->attachRepsonseExamples($actionPath, $data);
+        }
     }
 
     protected function buildSchemaFromModel(Schema $schema)
@@ -126,7 +137,7 @@ class SchemaQueryParameter
             'datetime' =>  [
                 'type' => 'string',
                 'format' => 'date-time',
-                'example' => \Carbon\Carbon::now()->format('Y-m-d h:i:s'),
+                'example' => \Carbon\Carbon::create('2021-03-27 14:32:26')->format('Y-m-d h:i:s'),
             ],
         ];
 
@@ -136,7 +147,6 @@ class SchemaQueryParameter
     protected function getModelFromSchema(Schema $schema)
     {
         $modelClassName = $this->getClassName($schema);
-        // d($modelClassName);
 
         if (!is_subclass_of($modelClassName, AbstractModel::class)) {
             return null;
@@ -175,14 +185,10 @@ class SchemaQueryParameter
         }
     }
 
-    private function registerRoutes(Analysis $analysis)
+    private function getAvailablePaths(Analysis $analysis)
     {
-        // dd($analysis, $analysis->openapi->paths);
-        $routes = [];
-        $paths = $analysis->openapi->paths;
-        // // d($paths[0], $paths[0]->_context->__get('parent')->method);
-        // d();
-        // dd('a');
+        $availablePaths = [];
+
         $availableMethods = [
             'get',
             'put',
@@ -192,43 +198,156 @@ class SchemaQueryParameter
             'head',
             'patch',
         ];
-        foreach ($paths as $path) {
+
+        foreach ($analysis->openapi->paths as $path) {
+            // d($path);
             foreach ($availableMethods as $method) {
                 if ($path->$method !== UNDEFINED) {
-                    $action = $path->_context->__get('method');
-                    if (empty($action)) {
-
-                        $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
-                        // $path->description = 'NOT IMPLEMENTED YET';
-                        continue;
-                    }
-                    $controller = $this->getClassName($path);
-
-                    $auth = false;
-                    if ($path->$method->security !== UNDEFINED) {
-                        foreach ($path->$method->security as $security) {
-                            if (array_key_exists('bearer_auth', $security)) {
-                                $auth = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    $routes[$path->path] = [
-                        'auth' => $auth,
+                    $availablePaths[$path->path . '/' . $method] = [
                         'method' => $method,
-                        'controller' => $controller,
-                        'action' => $action,
+                        'pathItem' => $path,
                     ];
                 }
             }
         }
 
-        Storage::disk('local')->put('swagger/routes.json', json_encode($routes, JSON_PRETTY_PRINT));
-        // dd($routes);
+        return $availablePaths;
     }
 
-    private function getClassName(AbstractAnnotation $annotation) {
+    private function registerRoutes(Analysis $analysis)
+    {
+        $routes = [];
+        $paths = $this->getAvailablePaths($analysis);
+
+        foreach ($paths as $actionPath => $data) {
+            $method = $data['method'];
+            $path = $data['pathItem'];
+            $action = $path->_context->__get('method');
+            if (empty($action)) {
+
+                $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
+                // $path->description = 'NOT IMPLEMENTED YET';
+                continue;
+            }
+            $controller = $this->getClassName($path);
+
+            $auth = false;
+            if ($path->$method->security !== UNDEFINED) {
+                foreach ($path->$method->security as $security) {
+                    if (array_key_exists('bearer_auth', $security)) {
+                        $auth = true;
+                        break;
+                    }
+                }
+            }
+
+            $routes[$path->path] = [
+                'auth' => $auth,
+                'method' => $method,
+                'controller' => $controller,
+                'action' => $action,
+            ];
+        }
+
+        Storage::put('swagger/routes.json', json_encode($routes, JSON_PRETTY_PRINT));
+    }
+
+    private function getClassName(AbstractAnnotation $annotation)
+    {
         return $annotation->_context->__get('namespace') . '\\' . $annotation->_context->class;
+    }
+
+    private function attachRepsonseExamples($actionPath, $data)
+    {
+        $responseExamples = $this->getResponseExamples($actionPath);
+        $path = $data['pathItem'];
+        $method = $data['method'];
+
+        $responses = $path->$method->responses;
+        if (UNDEFINED === $responses) {
+            $responses = [];
+        }
+        $responses = array_merge($responses, $responseExamples);
+        $path->$method->responses = $responses;
+    }
+
+    private function getResponseExamples($actionPath)
+    {
+        $responsesFolder = 'swagger/' . $actionPath . '/response';
+        $responseDirectories = Storage::directories($responsesFolder);
+
+        $responses = [];
+
+        foreach ($responseDirectories as $directory) {
+            $basename = basename($directory);
+            list($code, $description) = explode(' ', $basename, 2);
+            $responseFiles = Storage::files($directory);
+            if (empty($responseFiles)) {
+                continue;
+            }
+
+            $resp = new Response([]);
+            $resp->response = $code;
+            $resp->description = $description;
+            $content = new MediaType([]);
+            $content->mediaType = 'application/json';
+            $content->examples = [];
+
+            foreach ($responseFiles as $fileName) {
+                # code...
+                $json = Storage::get($fileName);
+                $content->examples[] = [
+                    'summary' => basename($fileName, '.json'),
+                    'value' => json_decode($json),
+                ];
+            }
+            $resp->content = [$content];
+
+            $responses[] = $resp;
+        }
+
+        return $responses;
+    }
+
+    private function attachRequestExamples($actionPath, $data)
+    {
+        $requestExamples = $this->getRequestExamples($actionPath);
+
+        $path = $data['pathItem'];
+        $method = $data['method'];
+
+        if (UNDEFINED === $path->$method->requestBody) {
+            return;
+        }
+
+        $examples = $path->$method->requestBody->_unmerged[0]->examples;
+
+        $examples = array_merge($examples, $requestExamples);
+
+        $path->$method->requestBody->_unmerged[0]->examples = $examples;
+    }
+
+    private function getRequestExamples($actionPath)
+    {
+
+        $directory = 'swagger/' . $actionPath . '/request';
+
+        $requestFiles = Storage::files($directory);
+
+        $examples = [];
+
+        foreach ($requestFiles as $fileName) {
+            $fileContents = Storage::get($fileName);
+            $fileContents = json_decode($fileContents);
+
+            $json = [
+                'summary' => basename($fileName, '.json'),
+                'value' => $fileContents,
+            ];
+
+            $examples[] = $json;
+        }
+
+        return $examples;
     }
 }

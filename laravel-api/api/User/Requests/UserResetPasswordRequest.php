@@ -2,9 +2,9 @@
 
 namespace Api\User\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Infrastructure\Http\ApiRequest;
 
-class UserResetPasswordRequest extends FormRequest
+class UserResetPasswordRequest extends ApiRequest
 {
     public function authorize()
     {
@@ -14,17 +14,8 @@ class UserResetPasswordRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:password_resets',
+            'email' => 'required|email',
             'token' => 'required',
-            'domain_name' => 'required|exists:password_resets'
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'domain_name.exists' => __('Invalid data'),
-            'email.exists' => __('Invalid data'),
         ];
     }
 

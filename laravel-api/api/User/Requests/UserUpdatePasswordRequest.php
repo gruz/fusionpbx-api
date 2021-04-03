@@ -5,7 +5,7 @@ namespace Api\User\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Api\Rules\FusionPBXPasswordRequirements;
 
-class UserUpdatePasswordRequest extends FormRequest
+class UserUpdatePasswordRequest extends ApiRequest
 {
     public function authorize()
     {
@@ -22,7 +22,7 @@ class UserUpdatePasswordRequest extends FormRequest
         //     $passwords = $this->checkPasswordSettings($this->only('domain_name', 'user_email'));
 
         return [
-            'user_email' => 'required|email|exists:password_resets,email',
+            'user_email' => 'required|email',
             'token' => 'required',
             // https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#id26
             // password settings needs to be fetched from fusion pbx and set here

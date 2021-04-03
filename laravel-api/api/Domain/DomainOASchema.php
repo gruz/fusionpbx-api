@@ -36,7 +36,9 @@ namespace Api\Domain;
     @OA\Schema(
         schema="DomainCreateSchema",
         allOf={
-            @OA\Schema(@OA\Property( property="is_subdomain", type="boolean", default="false", description="Determines is the current domain should be a top level domain or a subdomain of the mothership domain" )),
+            @OA\Schema(@OA\Property( property="is_subdomain", type="boolean", default="false",
+                        description="Determines is the current domain should be a top level domain or a subdomain
+                        of the mothership domain" )),
             @OA\Schema(ref="#/components/schemas/DomainSchema"),
             @OA\Schema(
                 @OA\Property(
@@ -44,7 +46,8 @@ namespace Api\Domain;
                     type="array",
                     @OA\Items(
                         allOf={
-                            @OA\Schema(@OA\Property( property="is_admin", type="boolean", default="false", description="At least one user must be an admin when creating a new domain" )),
+                            @OA\Schema(@OA\Property( property="is_admin", type="boolean", default="false",
+                                        description="At least one user must be an admin when creating a new domain" )),
                             @OA\Schema(ref="#/components/schemas/UserCreateSchema"),
                         }
                     ),

@@ -1,13 +1,18 @@
 <?php
+
 namespace Api\Domain\Testing\Feature;
 
 use stdClass;
+use Faker\Factory;
 use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Api\User\Models\Contact;
 use Api\Domain\Models\Domain;
+use Api\Extension\Models\Extension;
+use Api\Voicemail\Models\Voicemail;
 use Infrastructure\Testing\TestCase;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 use Api\PostponedAction\Models\PostponedAction;
 use Illuminate\Notifications\AnonymousNotifiable;
@@ -17,7 +22,6 @@ use Api\Domain\Notifications\DomainActivateMainAdminNotification;
 use Api\Extension\Models\Extension;
 use Api\User\Models\Group;
 use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
-use Api\Voicemail\Models\Voicemail;
 
 class DomainControllerTest extends TestCase
 {
@@ -140,9 +144,25 @@ class DomainControllerTest extends TestCase
             }
         }
     }
-    public function testActivate_Success()
+
+    public function testActivate_SuccessMany()
     {
-        $this->simulateSignup(true);
+        $requestFiles = Storage::files('swagger/domain/post/request/');
+        foreach ($requestFiles as $jsonFile) {
+            $data = json_decode(Storage::get($jsonFile), true);
+            $faker = Factory::create(Factory::DEFAULT_LOCALE);
+            $data['domain_name'] = $faker->domainName;
+            $this->testActivate_Success($data);
+        }
+    }
+
+    public function testActivate_Success($data = [])
+    {
+        if (!empty($data)) {
+            $this->simulateSignup(true, false, $data);
+        } else {
+            $this->simulateSignup(true);
+        }
 
         $model = PostponedAction::last();
         $domain_name = Arr::get($model->request, 'domain_name');
@@ -221,7 +241,7 @@ class DomainControllerTest extends TestCase
             //
         ];
 
-        $response = $this->post('/domain/signup', $data);
+        $response = $this->post('/domain', $data);
 
         $response->assertStatus(400);
 
@@ -231,7 +251,7 @@ class DomainControllerTest extends TestCase
             //
         ];
 
-        $response = $this->post('/domain/signup', $data);
+        $response = $this->post('/domain', $data);
 
         $response->assertStatus(400);
     }
@@ -259,7 +279,7 @@ class DomainControllerTest extends TestCase
 
     private function checkContactsCreated($domain, $userData)
     {
-        $contacts = Arr::get($userData, 'contacts');
+        $contacts = Arr::get($userData, 'contacts', []);
         foreach ($contacts as $contactData) {
             $this->assertDatabaseHas('v_contacts', array_merge(
                 ['domain_uuid' => $domain->domain_uuid],

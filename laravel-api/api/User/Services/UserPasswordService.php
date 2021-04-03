@@ -66,8 +66,18 @@ class UserPasswordService
      */
     public function resetPassword($data)
     {
-        $userCredentials = array_merge($this->getUserCredentials($data)->toArray(), $data);
-        $status = Password::reset(
+        $user = $this->getUserCredentials($email);
+        $userCredentials = array_merge(
+            $this->request->only(
+                'user_email',
+                'password',
+                'password_confirmation',
+                'token'
+            ),
+            $user->toArray()
+        );
+
+        Password::reset(
             $userCredentials,
             function ($user, $password) {
                 $data = \encrypt_password_with_salt($password);
@@ -79,10 +89,9 @@ class UserPasswordService
             }
         );
 
-        if ($status !== Password::PASSWORD_RESET )
-            return null;
-
-        return $status;
+        return [
+            'success' => 'Password has been successfully reset',
+        ];
     }
 
     /**
@@ -94,15 +103,18 @@ class UserPasswordService
      * @return null|\Api\User\Models\User
      * @throws InvalidCredentialsException|UserDisabledException
      */
-    public function getUserCredentials($data)
+    public function getUserCredentials($email, $domain_name = null)
     {
         // domain_name is required filed so it cannot be empty
 
         $domain = $this->domainRepository
                             ->getWhere('domain_name', $data['domain_name'])->first();
 
-        if (is_null($domain)) {
-            throw new DomainNotFoundException();
+        // TODO:
+        //      Needs to be refactored. Does we need it ?
+        //      Maybe use better solution with filter...
+        if (is_null($user) && !is_null($domain_name)) {
+            $user = $this->getUserByEmailAndDomainName($email, $domain_name);
         }
 
         $attributes = [
@@ -115,7 +127,7 @@ class UserPasswordService
         if (!is_null($user)) {
 
             if ($user->user_enabled != 'true') {
-              throw new UserDisabledException();
+                throw new UserDisabledException();
             }
 
             return $user;

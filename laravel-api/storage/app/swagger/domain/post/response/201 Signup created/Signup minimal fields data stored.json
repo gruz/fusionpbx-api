@@ -1,0 +1,22 @@
+{
+    "request": {
+        "domain_name": "mertz13.com",
+        "users": [
+            {
+                "is_admin": true,
+                "username": "alyson.dietrich@howe.com",
+                "password": "7A%XQ>*k2?XPSYL1K4",
+                "user_email": "alyson.dietrich@howe.com",
+                "extensions": [
+                    {
+                        "extension": 169,
+                        "password": "somePass",
+                        "voicemail_password": "956"
+                    }
+                ]
+            }
+        ]
+    },
+    "updated_at": "2021-03-28T15:45:33.000000Z",
+    "created_at": "2021-03-28T15:45:33.000000Z"
+}

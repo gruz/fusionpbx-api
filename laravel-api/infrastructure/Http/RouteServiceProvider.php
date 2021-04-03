@@ -5,6 +5,7 @@ namespace Infrastructure\Http;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
@@ -54,7 +55,12 @@ class RouteServiceProvider extends ServiceProvider
     {
         parent::map($router);
 
-        $swaggerRoutes = Storage::disk('local')->get('swagger/routes.json');
+        $filePath = 'swagger/routes.json';
+        if (!Storage::exists($filePath)) {
+            Artisan::call('l5-swagger:generate');
+        }
+
+        $swaggerRoutes = Storage::get($filePath);
         $swaggerRoutes = json_decode($swaggerRoutes);
 
         foreach ($swaggerRoutes as $path => $route) {
