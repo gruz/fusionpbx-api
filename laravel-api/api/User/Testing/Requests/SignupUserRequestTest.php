@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Domain\Testing\Requests;
+namespace Api\User\Testing\Requests;
 
 use Faker\Factory;
 use Illuminate\Support\Arr;
@@ -9,13 +9,14 @@ use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\TestRequestTrait;
 use Infrastructure\Services\TestRequestFactoryService;
 
-class DomainSignupRequestTest extends TestCase
+class SignupUserRequest extends TestCase
 {
     use TestRequestTrait;
 
     public function validationProvider()
     {
-        // return [];
+
+        return [];
         // $this->withoutExceptionHandling();
         /* WithFaker trait doesn't work in the dataProvider */
         $faker = Factory::create(Factory::DEFAULT_LOCALE);
@@ -25,12 +26,12 @@ class DomainSignupRequestTest extends TestCase
          * @var TestRequestFactoryService
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
-        $data = $testRequestFactoryService->makeDomainSignupRequest();
+        $data = $testRequestFactoryService->makeUserSignupRequest();
 
         $systemDomainName = Domain::first()->getAttribute('domain_name');
 
         $return = [
-            'fail_when_domain_exists' => [
+            'fail_when_domain_not_exists' => [
                 'passed' => false,
                 'data' => array_merge($data, ['domain_name' => $systemDomainName]),// TODO get system domain from DB
             ],

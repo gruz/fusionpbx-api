@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 
 class TestRequestFactoryService
 {
-    public function makeDomainRequest($params = [])
+    public function makeDomainSignupRequest($params = [])
     {
         $noCache = Arr::get($params, 'noCache');
         $skey = 'testing/' . Util::normalizePath(__FUNCTION__ . serialize(func_get_args()));
@@ -24,23 +24,69 @@ class TestRequestFactoryService
         if (!$noCache && $data = Cache::store('file')->get($skey)) {
             $data = unserialize($data);
             // Don't delete, for getting JSON requests as example
-            \Illuminate\Support\Facades\Storage::put('request.json', json_encode($data, JSON_PRETTY_PRINT));
+            \Illuminate\Support\Facades\Storage::put('domain.signup.request.json', json_encode($data, JSON_PRETTY_PRINT));
             return $data;
         }
 
         $settings = Setting::factory(2)->make()->toArray();
 
-        $adminIsPresent = Arr::get($params, 'adminIsPresent', true);
-        if ($adminIsPresent) {
-            $is_admin = new Sequence(
-                ['is_admin' => true],
-                ['is_admin' => false],
-            );
-        } else {
-            $is_admin = ['is_admin' => false];
+        $users = $this->makeUserSignupRequest([
+            'numberOfUsers' => 3,
+            'adminIsPresent' => true,
+        ]);
+
+        $model = Domain::factory()->make([
+            'is_subdomain' => false,
+            'settings' => $settings,
+            'users' => $users,
+        ]);
+
+        $return =  $model->toArray();
+
+        if (!$noCache) {
+            Cache::store('file')->set($skey, serialize($return));
+        }
+        // Don't delete, for getting JSON requests as example
+        \Illuminate\Support\Facades\Storage::put('domain.signup.request.json', json_encode($return, JSON_PRETTY_PRINT));
+
+        return $return;
+    }
+
+    public function makeUserSignupRequest($params = [])
+    {
+        $noCache = Arr::get($params, 'noCache');
+        $numberOfUsers = Arr::get($params, 'numberOfUsers', 1);
+        $addDomainName = Arr::get($params, 'addDomainName', false);
+        $domain_name = Arr::get($params, 'domain_name', null);
+
+        $skey = 'testing/' . Util::normalizePath(__FUNCTION__ . serialize(func_get_args()));
+        // dd($skey);
+
+        if (!$noCache && $data = Cache::store('file')->get($skey)) {
+            $data = unserialize($data);
+            // Don't delete, for getting JSON requests as example
+            \Illuminate\Support\Facades\Storage::put('user.signup.request.json', json_encode($data, JSON_PRETTY_PRINT));
+            return $data;
         }
 
-        $users = User::factory(3)
+        $adminIsPresent = Arr::get($params, 'adminIsPresent', null);
+
+        switch (true) {
+            case ($adminIsPresent === true):
+                $is_admin = new Sequence(
+                    ['is_admin' => true],
+                    ['is_admin' => false],
+                );
+                break;
+            case ($adminIsPresent === false):
+                $is_admin = ['is_admin' => false];
+                break;
+            default:
+                $is_admin = [];
+                break;
+        }
+
+        $users = User::factory($numberOfUsers)
             ->state($is_admin)
             ->state(function (array $attributes) {
                 return [
@@ -65,25 +111,35 @@ class TestRequestFactoryService
                 return  [
                     'extensions' => $extensions
                 ];
-            })
-            ->make()
+            });
+
+        if ($addDomainName && !empty($domain_name)) {
+            $users = $users->state(['domain_name' => $domain_name]);
+        }
+
+        $users = $users->make()
             ->makeVisible('user_email')
-            ->makeVisible('password')
-            ->toArray();
+            ->makeVisible('password');
 
-        $model = Domain::factory()->make([
-            'is_subdomain' => false,
-            'settings' => $settings,
-            'users' => $users,
-        ]);
+        if (empty($is_admin)) {
+            $users->makeHidden('is_admin');
+        }
 
-        $return =  $model->toArray();
+        if (!$addDomainName) {
+            $users->makeHidden('domain_name');
+        }
+
+        if (1 === $numberOfUsers) {
+            $return =  $users[0]->toArray();
+        } else {
+            $return =  $users->toArray();
+        }
 
         if (!$noCache) {
             Cache::store('file')->set($skey, serialize($return));
         }
         // Don't delete, for getting JSON requests as example
-        \Illuminate\Support\Facades\Storage::put('request.json', json_encode($return, JSON_PRETTY_PRINT));
+        \Illuminate\Support\Facades\Storage::put('user.signup.request.json', json_encode($return, JSON_PRETTY_PRINT));
 
         return $return;
     }

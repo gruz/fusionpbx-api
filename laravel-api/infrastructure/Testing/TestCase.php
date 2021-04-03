@@ -44,7 +44,7 @@ abstract class TestCase extends BaseTestCase
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
         if (empty($request)) {
-            $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $forceNewRequestGeneration]);
+            $request = $testRequestFactoryService->makeDomainSignupRequest(['noCache' => $forceNewRequestGeneration]);
         }
         $response = $this->json('post', route('fpbx.post.domain'), $request);
 
