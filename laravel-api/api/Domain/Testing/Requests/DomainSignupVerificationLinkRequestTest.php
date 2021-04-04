@@ -17,7 +17,7 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
     {
         $this->app = $this->createApplication();
 
-        list($request, $response) = $this->simulateSignup();
+        list($request, $response) = $this->simulateDomainSignup();
 
         $model = PostponedAction::first();
 
@@ -65,7 +65,7 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
             'pass' => [
                 'passed' => true,
                 'data' => function() {
-                    $this->simulateSignup();
+                    $this->simulateDomainSignup();
                     $model = PostponedAction::last();
                     $emails = Arr::get($model->request, 'users');
                     $emails = collect($emails)->pluck('user_email');

@@ -2,11 +2,13 @@
 
 namespace Infrastructure\Testing;
 
+use Storage;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
+use Api\PostponedAction\Models\PostponedAction;
 use Infrastructure\Services\TestRequestFactoryService;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Storage;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -30,7 +32,7 @@ abstract class TestCase extends BaseTestCase
         // Artisan::call('migrate:refresh');
     }
 
-    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [])
+    protected function simulateDomainSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [])
     {
         if ($refreshDB) {
             $this->refreshDB();
@@ -54,6 +56,16 @@ abstract class TestCase extends BaseTestCase
         $data = [$request, $response];
 
         return $data;
+    }
+
+    protected function simulateDomainSignupAndActivate() {
+        $this->simulateDomainSignup();
+        $model = PostponedAction::last();
+        $emails = Arr::get($model->request, 'users');
+        $emails = collect($emails)->pluck('user_email');
+        $email = $emails[0];
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash, 'email' => $email]));
+        return [ $response, $email];
     }
 
     private function saveResponseForSwagger($method, $path, $response)

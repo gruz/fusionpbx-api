@@ -20,6 +20,7 @@ trait TestRequestTrait
         $this->validator = app()->get('validator');
 
         // $className = trim(get_class($this), 'Test');
+        $className = get_class($this);
         $className = substr(get_class($this), 0, -4);
         $className = explode('\\',$className);
         $className = array_diff($className, ['Testing']);

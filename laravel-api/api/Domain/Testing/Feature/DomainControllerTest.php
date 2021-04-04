@@ -27,7 +27,7 @@ class DomainControllerTest extends TestCase
     {
         // $this->withoutExceptionHandling();
         // $this->expectException(\Exception::class);
-        list($request, $response) = $this->simulateSignup();
+        list($request, $response) = $this->simulateDomainSignup();
 
         $this->assertDatabaseHas('postponed_actions', ['request->domain_name' => $request['domain_name']]);
 
@@ -69,8 +69,8 @@ class DomainControllerTest extends TestCase
     public function testActivate_Failed()
     {
         // $this->withoutExceptionHandling();
-        // list($request, $response) = $this->simulateSignup();
-        $this->simulateSignup();
+        // list($request, $response) = $this->simulateDomainSignup();
+        $this->simulateDomainSignup();
 
         $model = PostponedAction::last();
         $domain_name = Arr::get($model->request, 'domain_name');
@@ -116,7 +116,7 @@ class DomainControllerTest extends TestCase
         foreach ([false, true] as $hasDomainEnabledAttribute) {
             foreach ([false, true] as $key => $domain_enabled_after_activation) {
                 config(['fpbx.domain.enabled' => $domain_enabled_after_activation]);
-                $this->simulateSignup(true);
+                $this->simulateDomainSignup(true);
 
                 /** @var PostponedAction */
                 $model = PostponedAction::last();
@@ -157,9 +157,9 @@ class DomainControllerTest extends TestCase
     public function testActivate_Success($data = [])
     {
         if (!empty($data)) {
-            $this->simulateSignup(true, false, $data);
+            $this->simulateDomainSignup(true, false, $data);
         } else {
-            $this->simulateSignup(true);
+            $this->simulateDomainSignup(true);
         }
 
         $model = PostponedAction::last();

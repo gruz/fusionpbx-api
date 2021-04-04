@@ -5,84 +5,92 @@ namespace Api\User\Testing\Requests;
 use Faker\Factory;
 use Illuminate\Support\Arr;
 use Api\Domain\Models\Domain;
+use Api\Extension\Models\Extension;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\TestRequestTrait;
+use Api\PostponedAction\Models\PostponedAction;
 use Infrastructure\Services\TestRequestFactoryService;
 
-class SignupUserRequest extends TestCase
+class SignupUserRequestTest extends TestCase
 {
     use TestRequestTrait;
 
     public function validationProvider()
     {
 
-        return [];
+        // return [];
         // $this->withoutExceptionHandling();
         /* WithFaker trait doesn't work in the dataProvider */
         $faker = Factory::create(Factory::DEFAULT_LOCALE);
 
-        $this->createApplication();
+        $this->app = $this->createApplication();
+        $systemDomainName = Domain::first()->getAttribute('domain_name');
         /**
          * @var TestRequestFactoryService
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
-        $data = $testRequestFactoryService->makeUserSignupRequest();
-
-        $systemDomainName = Domain::first()->getAttribute('domain_name');
+        $data = $testRequestFactoryService->makeUserSignupRequest([
+            'addDomainName' => true,
+            'domain_name' => $systemDomainName,
+        ]);
 
         $return = [
             'fail_when_domain_not_exists' => [
                 'passed' => false,
-                'data' => array_merge($data, ['domain_name' => $systemDomainName]),// TODO get system domain from DB
+                'data' => $data,
             ],
-            'pass_when_domain_not_exists' => [
+            'fail_when_user_exists_in_a_domain' => [
+                'passed' => false,
+                'data' => function() use($testRequestFactoryService){
+                    $data = $testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
+                    list($response, $email) = $this->simulateDomainSignupAndActivate();
+                    $data['user_email'] = $email;
+                    $data['domain_name'] = $response->json('domain_name');
+                    $extension = Extension::max('extension');
+                    $data['extensions'] = [[
+                        'extension' => ++$extension, // Setting any non-exisiting number
+                        'password' => 'somePass',
+                        "voicemail_password" => "956"
+                    ]];
+                    return $data;
+                },
+            ],
+            'fail_when_user_extension_already_exists' => [
+                'passed' => false,
+                'data' => function() use($testRequestFactoryService){
+                    $data = $testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
+                    list($response, $email) = $this->simulateDomainSignupAndActivate();
+                    $data['user_email'] = $email . 'a'; // To be sure it's an emails doesn't yet exists
+                    $data['domain_name'] = $response->json('domain_name');
+                    $domain_uuid = Domain::where('domain_name', $data['domain_name'])->first()->domain_uuid;
+                    $extensions = Extension::where('domain_uuid', $domain_uuid)->get()->pluck('extension');
+
+                    $data['extensions'] = [[
+                        'extension' => $extensions[0], // Setting any non-exisiting number
+                        'password' => 'somePass',
+                        "voicemail_password" => "956"
+                    ]];
+                    return $data;
+                },
+            ],
+            'pass_valid_data' => [
                 'passed' => true,
-                'data' => $data
+                'data' => function() use($testRequestFactoryService){
+                    $data = $testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
+                    list($response, $email) = $this->simulateDomainSignupAndActivate();
+                    // $data['user_email'] = $email;
+                    $data['domain_name'] = $response->json('domain_name');
+                    $extension = Extension::max('extension');
+                    $data['extensions'] = [[
+                        'extension' => ++$extension, // Setting any non-exisiting number
+                        'password' => 'somePass',
+                        "voicemail_password" => "956"
+                    ]];
+                    return $data;
+                },
             ],
-            'fail_if_not_a_valid_domain' => [
-                'passed' => false,
-                'data' => array_merge($data, ['domain_name' => $faker->sentence]),
-            ],
-            'fail_if_nousers' => [
-                'passed' => false,
-                'data' => array_merge($data, ['users' => []]),
-            ],
-        ];
-
-        $dataModified = $this->makeDuplicatedUserEmails($data);
-        $return['fail_if_same_mails'] = [
-            'passed' => false,
-            'data' => $dataModified,
-        ];
-
-        $dataModified = $this->removeEmails($data);
-        $return['fail_no_user_email'] = [
-            'passed' => false,
-            'data' => $dataModified,
-        ];
-
-        $dataModified = $testRequestFactoryService->makeDomainSignupRequest([
-            'adminIsPresent' => false,
-        ]);
-        $return['fail_if_no_admin_among_user'] = [
-            'passed' => false,
-            'data' => $dataModified,
         ];
 
         return $return;
-    }
-
-    private function makeDuplicatedUserEmails($data) {
-        Arr::set($data, 'users.0.user_email', 'a@a.com');
-        Arr::set($data, 'users.1.user_email', 'a@a.com');
-
-        return $data;
-    }
-
-    private function removeEmails($data) {
-        Arr::forget($data, 'users.0.user_email');
-        Arr::set($data, 'users.1.user_email', '');
-
-        return $data;
     }
 }
