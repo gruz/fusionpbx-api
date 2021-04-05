@@ -11,7 +11,43 @@ use Infrastructure\Services\TestRequestFactoryService;
 
 class DomainSignupRequestTest extends TestCase
 {
-    use TestRequestTrait;
+    public function testFailWhenDomainExists()
+    {
+        $data = $this->testRequestFactoryService->makeDomainSignupRequest();
+        $systemDomainName = Domain::first()->getAttribute('domain_name');
+
+        $data['domain_name'] = $systemDomainName;
+
+        $response = $this->json('post', route('fpbx.domain.signup', $data));
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            "errors" => [
+                ["detail" => "The domain name has already been taken."]
+            ]
+        ]);
+    }
+
+    // public function testPassWhenDomainNotExists()
+    // {
+    //     $data = $this->testRequestFactoryService->makeDomainSignupRequest();
+    //     $systemDomainName = Domain::first()->getAttribute('domain_name');
+
+    //     $data['domain_name'] = $systemDomainName;
+
+    //     $response = $this->json('post', route('fpbx.domain.signup', $data));
+
+    //     $response->assertStatus(422);
+    //     $response->assertJson([
+    //         "errors" => [
+    //             ["detail" => "The domain name has already been taken."]
+    //         ]
+    //     ]);
+    // }
+
+
+
+    // use TestRequestTrait;
 
     public function validationProvider()
     {
@@ -25,7 +61,7 @@ class DomainSignupRequestTest extends TestCase
          * @var TestRequestFactoryService
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
-        $data = $testRequestFactoryService->makeDomainRequest();
+        $data = $testRequestFactoryService->makeDomainSignupRequest();
 
         $systemDomainName = Domain::first()->getAttribute('domain_name');
 
@@ -60,7 +96,7 @@ class DomainSignupRequestTest extends TestCase
             'data' => $dataModified,
         ];
 
-        $dataModified = $testRequestFactoryService->makeDomainRequest([
+        $dataModified = $testRequestFactoryService->makeDomainSignupRequest([
             'adminIsPresent' => false,
         ]);
         $return['fail_if_no_admin_among_user'] = [

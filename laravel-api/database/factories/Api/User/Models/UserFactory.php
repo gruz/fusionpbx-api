@@ -29,6 +29,7 @@ class UserFactory extends Factory
             "username" => $email,
             "user_email" => $email,
             "password" => $this->faker->password,
+            "domain_name" => $this->faker->domainName,
         ];
 
         return $return;

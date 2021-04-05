@@ -23,6 +23,15 @@ class FrontController extends BaseController
             return;
         }
 
+        $this->testRequestFactoryService = app(\Infrastructure\Services\TestRequestFactoryService::class);
+
+        $data = $this->testRequestFactoryService->makeUserSignupRequest([
+            'noCache' => true,
+            'addDomainName' => true,
+        ]);
+
+        dd($data);
+
         $ral = new User;
         // d($ral->groups(), $ral->groups()->getPivotColumns(), $ral->contacts()->getPivotColumns());
 
@@ -80,7 +89,7 @@ dd($model->request);
 
         $this->testRequestFactoryService = app(\Infrastructure\Services\TestRequestFactoryService::class);
 
-        $data = $this->testRequestFactoryService->makeDomainRequest();
+        $data = $this->testRequestFactoryService->makeDomainSignupRequest();
 
         $userData = Arr::get($data, 'users.0');
         /**
@@ -95,7 +104,7 @@ dd($model->request);
         dd($user, $user->getFillable(), $user->getGuarded());
 
         return;
-        $data = $this->testRequestFactoryService->makeDomainRequest([
+        $data = $this->testRequestFactoryService->makeDomainSignupRequest([
             'adminIsPresent' => false,
         ]);
         // \Illuminate\Support\Arr::set($data, 'users.0.user_email', 'a@a.com');

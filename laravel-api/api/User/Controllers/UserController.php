@@ -308,6 +308,7 @@ class UserController extends Controller
     @OA\Post(
         tags={"User"},
         path="/user/signup",
+        x={"route-$path"="fpbx.user.signup"},
         @OA\RequestBody(
             description="User information",
             required=true,

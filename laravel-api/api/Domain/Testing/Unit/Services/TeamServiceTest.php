@@ -29,7 +29,7 @@ class TeamServiceTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $data = $this->testRequestFactoryService->makeDomainRequest();
+        $data = $this->testRequestFactoryService->makeDomainSignupRequest();
 
         $data['domain_name'] = 'site.com';
         config(['fpbx.default.domain.mothership_domain' => 'default.com']);
@@ -54,7 +54,7 @@ class TeamServiceTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $data = $this->testRequestFactoryService->makeDomainRequest();
+        $data = $this->testRequestFactoryService->makeDomainSignupRequest();
 
         config(['fpbx.domain.enabled' => true]);
 

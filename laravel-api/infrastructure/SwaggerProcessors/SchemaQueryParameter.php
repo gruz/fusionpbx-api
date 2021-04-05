@@ -27,7 +27,8 @@ use OpenApi\Annotations\AbstractAnnotation;
  */
 class SchemaQueryParameter
 {
-    const MODEL_ADD_INCLUDES = 'model-add-includes';
+    // const MODEL_ADD_INCLUDES = 'model-add-includes';
+    const ROUTE_PATH = 'route-$path';
 
     public function __invoke(Analysis $analysis)
     {
@@ -222,7 +223,8 @@ class SchemaQueryParameter
         foreach ($paths as $actionPath => $data) {
             $method = $data['method'];
             $path = $data['pathItem'];
-            $action = $path->_context->__get('method');
+            $action = $path->$method->_context->method;
+
             if (empty($action)) {
 
                 $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
@@ -241,12 +243,20 @@ class SchemaQueryParameter
                 }
             }
 
-            $routes[$path->path] = [
+            $route = [
+                'path' => $path->path,
                 'auth' => $auth,
                 'method' => $method,
                 'controller' => $controller,
                 'action' => $action,
             ];
+
+            if ($path->$method->x !== UNDEFINED && $name = Arr::get($path->$method->x, self::ROUTE_PATH)) {
+                $route['name'] = $name;
+            }
+
+            $routes[] = $route;
+
         }
 
         Storage::put('swagger/routes.json', json_encode($routes, JSON_PRETTY_PRINT));

@@ -63,17 +63,22 @@ class RouteServiceProvider extends ServiceProvider
         $swaggerRoutes = Storage::get($filePath);
         $swaggerRoutes = json_decode($swaggerRoutes);
 
-        foreach ($swaggerRoutes as $path => $route) {
-            if ($this->checkRouteIsRegistered($path, $route->method)) {
+        foreach ($swaggerRoutes as $route) {
+            if ($this->checkRouteIsRegistered($route->path, $route->method)) {
                 continue;
             }
 
-            $name = 'fpbx.' . $route->method . str_replace('/', '.', $path);
-            $name = preg_replace('/\.[{].*[}]/', '', $name);
+            if (empty($route->name)) {
+                $name = 'fpbx.' . $route->method . str_replace('/', '.', $route->path);
+                $name = preg_replace('/\.[{].*[}]/', '', $name);
 
-            if ('fpbx.get.' === $name) {
-                $name = 'api.home';
+                if ('fpbx.get.' === $name) {
+                    $name = 'api.home';
+                }
+            } else {
+                $name = $route->name;
             }
+
 
             if ($route->auth) {
                 $middlewares = ['auth:api'];
@@ -82,7 +87,7 @@ class RouteServiceProvider extends ServiceProvider
             }
             Route::middleware($middlewares)
                 ->namespace($this->namespace)
-                ->{$route->method}($path, [
+                ->{$route->method}($route->path, [
                         'uses' => $route->controller . '@' . $route->action,
                         'as' => $name
                     ])

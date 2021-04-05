@@ -33,7 +33,8 @@ class DomainController extends Controller
      *
     @OA\Post(
         tags={"Domain"},
-        path="/domain",
+        path="/domain/signup",
+        x={"route-$path"="fpbx.domain.signup"},
         @OA\RequestBody(
             description="Domain information",
             required=true,

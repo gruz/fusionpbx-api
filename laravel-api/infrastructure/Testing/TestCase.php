@@ -2,11 +2,14 @@
 
 namespace Infrastructure\Testing;
 
+use Storage;
+use Faker\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
+use Api\PostponedAction\Models\PostponedAction;
 use Infrastructure\Services\TestRequestFactoryService;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Storage;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -17,11 +20,18 @@ abstract class TestCase extends BaseTestCase
      */
     public $testRequestFactoryService;
 
+    /**
+     * @var Faker\Faker
+     */
+    public $faker;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
+
+        $this->faker = Factory::create(Factory::DEFAULT_LOCALE);
     }
 
     protected function refreshDB()
@@ -30,7 +40,7 @@ abstract class TestCase extends BaseTestCase
         // Artisan::call('migrate:refresh');
     }
 
-    protected function simulateSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [])
+    protected function simulateDomainSignup($forceNewRequestGeneration = true, $refreshDB = false, $request = [])
     {
         if ($refreshDB) {
             $this->refreshDB();
@@ -44,9 +54,9 @@ abstract class TestCase extends BaseTestCase
          */
         $testRequestFactoryService = app(TestRequestFactoryService::class);
         if (empty($request)) {
-            $request = $testRequestFactoryService->makeDomainRequest(['noCache' => $forceNewRequestGeneration]);
+            $request = $testRequestFactoryService->makeDomainSignupRequest(['noCache' => $forceNewRequestGeneration]);
         }
-        $response = $this->json('post', route('fpbx.post.domain'), $request);
+        $response = $this->json('post', route('fpbx.domain.signup'), $request);
 
         // // ##mygruz20210329030026  Disabled for now. Not sure if this makes sense
         // $this->saveResponseForSwagger('post', route('fpbx.post.domain', [], false), $response);
@@ -54,6 +64,16 @@ abstract class TestCase extends BaseTestCase
         $data = [$request, $response];
 
         return $data;
+    }
+
+    protected function simulateDomainSignupAndActivate() {
+        $this->simulateDomainSignup();
+        $model = PostponedAction::last();
+        $emails = Arr::get($model->request, 'users');
+        $emails = collect($emails)->pluck('user_email');
+        $email = $emails[0];
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash, 'email' => $email]));
+        return [ $response, $email];
     }
 
     private function saveResponseForSwagger($method, $path, $response)
