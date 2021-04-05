@@ -3,6 +3,7 @@
 namespace Infrastructure\Testing;
 
 use Storage;
+use Faker\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
@@ -19,11 +20,18 @@ abstract class TestCase extends BaseTestCase
      */
     public $testRequestFactoryService;
 
+    /**
+     * @var Faker\Faker
+     */
+    public $faker;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
+
+        $this->faker = Factory::create(Factory::DEFAULT_LOCALE);
     }
 
     protected function refreshDB()

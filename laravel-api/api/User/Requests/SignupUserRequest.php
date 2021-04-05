@@ -23,11 +23,18 @@ class SignupUserRequest extends ApiRequest
             'user_email' => [
                 'required',
                 Rule::unique(User::class)->where(function ($query) {
-                    $domain_name = $this->request->get('domain_name');
-                    $domain = Domain::where('domain_name', $domain_name)->first();
+                    // $domain_name = $this->request->get('domain_name');
+                    $domain_name = request()->get('domain_name');
+
+                    $domain = Domain::where('domain_name', $domain_name)
+                        ->where('domain_enabled', true)
+                        ->first();
+
                     if (empty($domain)) {
                         return false;
+                        // return $query->where('domain_uuid', 'fake');
                     }
+
                     return $query->where('domain_uuid', $domain->domain_uuid);
                 }),
             ],
@@ -47,7 +54,9 @@ class SignupUserRequest extends ApiRequest
                 'min:1',
                 'max:999',
                 Rule::unique(Extension::class)->where(function ($query) {
-                    $domain_name = $this->request->get('domain_name');
+                    // $domain_name = $this->request->get('domain_name');
+                    $domain_name = request()->get('domain_name');
+
                     $domain = Domain::where('domain_name', $domain_name)->first();
                     if (empty($domain)) {
                         return false;
