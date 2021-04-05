@@ -9,11 +9,6 @@ use Infrastructure\Testing\TestCase;
 
 class SignupUserRequestTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testFailsIfDomainNotExists()
     {
         $nonExistingDomain = $this->faker->domainName;
@@ -33,7 +28,7 @@ class SignupUserRequestTest extends TestCase
 
         $data['domain_name'] = $nonExistingDomain;
 
-        $response = $this->json('post', route('fpbx.user.signup', $data));
+        $response = $this->json('post', route('fpbx.user.signup'), $data);
 
         $response->assertStatus(422);
         $response->assertJson([

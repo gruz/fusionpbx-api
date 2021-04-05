@@ -56,7 +56,7 @@ abstract class TestCase extends BaseTestCase
         if (empty($request)) {
             $request = $testRequestFactoryService->makeDomainSignupRequest(['noCache' => $forceNewRequestGeneration]);
         }
-        $response = $this->json('post', route('fpbx.post.domain'), $request);
+        $response = $this->json('post', route('fpbx.domain.signup'), $request);
 
         // // ##mygruz20210329030026  Disabled for now. Not sure if this makes sense
         // $this->saveResponseForSwagger('post', route('fpbx.post.domain', [], false), $response);
