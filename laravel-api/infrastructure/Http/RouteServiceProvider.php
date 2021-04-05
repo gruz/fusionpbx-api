@@ -68,12 +68,17 @@ class RouteServiceProvider extends ServiceProvider
                 continue;
             }
 
-            $name = 'fpbx.' . $route->method . str_replace('/', '.', $route->path);
-            $name = preg_replace('/\.[{].*[}]/', '', $name);
+            if (empty($route->name)) {
+                $name = 'fpbx.' . $route->method . str_replace('/', '.', $route->path);
+                $name = preg_replace('/\.[{].*[}]/', '', $name);
 
-            if ('fpbx.get.' === $name) {
-                $name = 'api.home';
+                if ('fpbx.get.' === $name) {
+                    $name = 'api.home';
+                }
+            } else {
+                $name = $route->name;
             }
+
 
             if ($route->auth) {
                 $middlewares = ['auth:api'];

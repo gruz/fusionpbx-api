@@ -2631,7 +2631,8 @@
                             }
                         }
                     }
-                }
+                },
+                "x-route-$path": "fpbx.user.signup"
             }
         },
         "/forgot-password": {
