@@ -222,7 +222,7 @@ class SchemaQueryParameter
         foreach ($paths as $actionPath => $data) {
             $method = $data['method'];
             $path = $data['pathItem'];
-            $action = $path->_context->__get('method');
+            $action = $path->$method->_context->method;
             if (empty($action)) {
 
                 $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
@@ -241,7 +241,8 @@ class SchemaQueryParameter
                 }
             }
 
-            $routes[$path->path] = [
+            $routes[] = [
+                'path' => $path->path,
                 'auth' => $auth,
                 'method' => $method,
                 'controller' => $controller,
