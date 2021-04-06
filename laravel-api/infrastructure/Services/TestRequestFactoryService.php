@@ -169,7 +169,7 @@ class TestRequestFactoryService
             $is_admin = ['is_admin' => false];
         }
 
-        $users = User::factory(3)
+        $users = User::factory(1)
             ->state($is_admin)
             ->state(function (array $attributes) {
                 return [
@@ -205,8 +205,10 @@ class TestRequestFactoryService
             'settings' => $settings,
             'users' => $users,
         ]);
-
-        $return =  $users[0];
+        $return = [
+            'user_email' => $users[0]['user_email'],
+            'domain_name' => $users[0]['domain_name']
+        ];
 
         if (!$noCache) {
             Cache::store('file')->set($skey, serialize($return));
