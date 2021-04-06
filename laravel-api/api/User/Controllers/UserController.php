@@ -13,6 +13,7 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
 use Api\User\Requests\UserUpdatePasswordRequest;
+use Api\User\Requests\SignupUserRequest;
 
 /**
  * @OA\Schema()
@@ -307,6 +308,7 @@ class UserController extends Controller
     @OA\Post(
         tags={"User"},
         path="/user/signup",
+        x={"route-$path"="fpbx.user.signup"},
         @OA\RequestBody(
             description="User information",
             required=true,
@@ -314,14 +316,6 @@ class UserController extends Controller
                 ref="#/components/schemas/UserCreateSchema",
                 examples={
                     "Create a user": {},
-                    "Create a user basic example": {
-                        "summary" : "`TODO example`",
-                        "value": {
-                            "code": 403,
-                            "message": "登录失败",
-                            "data": null
-                        }
-                    },
                 }
             ),
         ),
@@ -331,34 +325,21 @@ class UserController extends Controller
             @OA\JsonContent(
                 allOf={
                     @OA\Schema(ref="#/components/schemas/DomainCreateSchema"),
-                },
-                examples={
-                    "Create domain basic example1": {
-                        "summary": "Create domain with language settings",
-                        "value": {
-                            "code": 403,
-                            "message": "登录失败",
-                            "data": null
-                        }
-                    },
                 }
-            ),
-        ),
-        @OA\Response(
-            response=400,
-            description="`TODO Stub` Could not created domain",
-            @OA\JsonContent(
-                example={
-                    "messages": {
-                        "Missing admin user",
-                        "No password for email",
-                    },
-                },
             ),
         ),
     )
      */
-    public function signup(SignupRequest $request)
+    public function signup(SignupUserRequest $request)
+    {
+        dd('here');
+        $data = $request->get('user', []);
+
+        return $this->response($this->userService->create($data), 201);
+    }
+
+
+    public function signupDEL(SignupRequest $request)
     {
         $data = $request->get('team', []);
 
