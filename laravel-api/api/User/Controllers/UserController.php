@@ -4,13 +4,12 @@ namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
 use Api\User\Services\UserService;
-use Infrastructure\Http\Controller;
 use Api\Domain\Services\TeamService;
+use Infrastructure\Http\Controller;
 use Api\User\Requests\SignupRequest;
-use Api\User\Requests\CreateUserRequest;
-use Api\User\Requests\SignupUserRequest;
-use Api\User\Requests\UserGroupsRequest;
 use Api\User\Services\UserPasswordService;
+use Api\User\Requests\CreateUserRequest;
+use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
 use Api\User\Requests\UserUpdatePasswordRequest;
@@ -308,14 +307,21 @@ class UserController extends Controller
     @OA\Post(
         tags={"User"},
         path="/user/signup",
-        x={"route-$path"="fpbx.user.signup"},
         @OA\RequestBody(
             description="User information",
             required=true,
             @OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
                 examples={
-                    "Create a user": {}
+                    "Create a user": {},
+                    "Create a user basic example": {
+                        "summary" : "`TODO example`",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
                 }
             ),
         ),
@@ -325,22 +331,34 @@ class UserController extends Controller
             @OA\JsonContent(
                 allOf={
                     @OA\Schema(ref="#/components/schemas/DomainCreateSchema"),
+                },
+                examples={
+                    "Create domain basic example1": {
+                        "summary": "Create domain with language settings",
+                        "value": {
+                            "code": 403,
+                            "message": "登录失败",
+                            "data": null
+                        }
+                    },
                 }
+            ),
+        ),
+        @OA\Response(
+            response=400,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(
+                example={
+                    "messages": {
+                        "Missing admin user",
+                        "No password for email",
+                    },
+                },
             ),
         ),
     )
      */
-
-    public function signup(SignupUserRequest $request)
-    {
-        dd('here');
-        $data = $request->get('user', []);
-
-        return $this->response($this->userService->create($data), 201);
-    }
-
-
-    public function signupDEL(SignupRequest $request)
+    public function signup(SignupRequest $request)
     {
         $data = $request->get('team', []);
 
@@ -445,10 +463,9 @@ class UserController extends Controller
      */
     public function forgotPassword(UserForgotPasswordRequest $request)
     {
-        $email = $request->get('user_email');   
-        $domain_name = $request->get('domain_name');
+        $data = $request->only('user_email', 'domain_name');
 
-        return $this->response($this->passwordService->generateResetToken($email, $domain_name));
+        return $this->response($this->passwordService->generateResetToken($data));
     }
 
     /**
@@ -461,14 +478,15 @@ class UserController extends Controller
     {
         return view('user.password.reset-password', [
             'token' => $request->get('token'),
-            'email' => $request->get('email')
+            'email' => $request->get('email'),
+            'domain_name' => $request->get('domain_name')
         ]);
     }
 
     /**
      * User reset password after form submission
      *
-     * @param UserResetPasswordRequest $request
+     * @param UserUpdatePasswordRequest $request
      * @return void
      * 
      @OA\Post(
@@ -531,6 +549,6 @@ class UserController extends Controller
         if ($status === null)
             return back()->withErrors(['password' => __('Invalid data')]);
 
-        return $this->response($this->passwordService->resetPassword($email));
+        return view('user.password.reset-success');
     }
 }
