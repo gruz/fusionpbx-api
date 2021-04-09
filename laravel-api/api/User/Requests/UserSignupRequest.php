@@ -9,7 +9,7 @@ use Api\Extension\Models\Extension;
 use Infrastructure\Http\ApiRequest;
 use Infrastructure\Rules\UsernameRule;
 
-class SignupUserRequest extends ApiRequest
+class UserSignupRequest extends ApiRequest
 {
     public function authorize()
     {
@@ -19,7 +19,11 @@ class SignupUserRequest extends ApiRequest
     public function rules()
     {
         return [
-            'domain_name' => 'required|exists:' . Domain::class . ',domain_name',
+            'domain_name' => [
+                'required',
+                Rule::exists(Domain::class, 'domain_name')
+                ->where('domain_enabled', true),
+            ],
             'user_email' => [
                 'required',
                 Rule::unique(User::class)->where(function ($query) {
@@ -45,6 +49,7 @@ class SignupUserRequest extends ApiRequest
                 new UsernameRule(),
             ],
             'password' => 'required|min:6|max:25',
+
             'extensions' => 'required|array',
             'extensions.*.extension' =>
             [
@@ -66,6 +71,8 @@ class SignupUserRequest extends ApiRequest
             ],
             'extensions.*.password' => 'required|min:6|max:25',
             'extensions.*.voicemail_password' => 'required|integer',
+            'contacts' => 'array',
+            'contacts.*.contact_url' => 'url',
         ];
     }
 }

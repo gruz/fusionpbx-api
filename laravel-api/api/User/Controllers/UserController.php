@@ -8,7 +8,7 @@ use Infrastructure\Http\Controller;
 use Api\Domain\Services\TeamService;
 use Api\User\Requests\SignupRequest;
 use Api\User\Requests\CreateUserRequest;
-use Api\User\Requests\SignupUserRequest;
+use Api\User\Requests\UserSignupRequest;
 use Api\User\Requests\UserGroupsRequest;
 use Api\User\Services\UserPasswordService;
 use Api\User\Requests\UserResetPasswordRequest;
@@ -302,9 +302,6 @@ class UserController extends Controller
      *
      * Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.
      *
-     * @param SignupRequest $request
-     * @return void
-     *
     @OA\Post(
         tags={"User"},
         path="/user/signup",
@@ -331,10 +328,10 @@ class UserController extends Controller
     )
      */
 
-    public function signup(SignupUserRequest $request)
+    public function signup(UserSignupRequest $request)
     {
-        dd('here');
-        $data = $request->get('user', []);
+        $data = $request->all();
+        dd($data);
 
         return $this->response($this->userService->create($data), 201);
     }

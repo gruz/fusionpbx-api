@@ -21,7 +21,7 @@ class DomainSignupRequest extends ApiRequest
                 'required',
                 'unique:Api\\Domain\\Models\\Domain,domain_name'
             ],
-            'users' => 'required',
+            'users' => 'required|array',
             // 'is_subdomain' => 'required',
             // 'users.*.username' => 'required|distinct|alpha_dash',
             'users.*.username' => [
