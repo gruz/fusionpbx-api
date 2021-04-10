@@ -167,15 +167,13 @@ class UserService extends AbstractService
             $this->voicemailService->createMany($voicemailData, ['forceFillable' => ['domain_uuid', 'voicemail_id']]);
 
             $this->dispatchEvent('Created', $userModel, $options);
-// dd('added user');
+            // dd('added user');
         } catch (Exception $e) {
             $this->database->rollBack();
-
             throw $e;
         }
 
         $this->database->commit();
-
 
         return $userModel;
     }
