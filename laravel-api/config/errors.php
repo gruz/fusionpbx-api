@@ -135,4 +135,8 @@ return [
         'message' => 'Wrong status data', 
         'code' => '1031', 
     ],
+    \Infrastructure\Exceptions\MissingDomainUuidException::class => [
+        'message' => 'Missing domain UUID',
+        'code' => 1032
+    ]
 ];

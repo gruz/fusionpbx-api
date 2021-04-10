@@ -276,7 +276,9 @@ abstract class AbstractModel extends BaseModel
         static::creating(function (AbstractModel $model) {
             $columns = $model->getTableColumnNames(true);
 
-            if (in_array('domain_uuid', $columns)) {
+            $primaryKey = $model->getKeyName();
+
+            if ('domain_uuid' !== $primaryKey && in_array('domain_uuid', $columns)) {
                 $domain_uuid = $model->getAttribute('domain_uuid');
                 if (empty($domain_uuid)) {
                     throw new MissingDomainUuidException;

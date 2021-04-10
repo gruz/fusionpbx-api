@@ -42,6 +42,7 @@ class UserWasCreatedSendVeirfyLinkNotification extends Notification implements S
      */
     public function toMail($notifiable)
     {
+        // $this->model->loadMissing('domain');
         $domain_uuid = $this->model->domain->getAttribute('domain_uuid');
         $domain_name = $this->model->domain->getAttribute('domain_name');
         $activationUrl = \Request::root() . '/user/activate/' . $this->model->getAttribute('user_enabled');

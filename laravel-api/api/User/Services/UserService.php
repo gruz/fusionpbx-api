@@ -137,6 +137,7 @@ class UserService extends AbstractService
                 $domain_uuid = $domainModel->domain_uuid;
             }
 
+            $data['domain_uuid'] = $domain_uuid;
             $userModel = $this->repository->create($data);
 
             $contactsData = Arr::get($data, 'contacts', []);
@@ -166,7 +167,7 @@ class UserService extends AbstractService
             $this->voicemailService->createMany($voicemailData, ['forceFillable' => ['domain_uuid', 'voicemail_id']]);
 
             $this->dispatchEvent('Created', $userModel, $options);
-
+// dd('added user');
         } catch (Exception $e) {
             $this->database->rollBack();
 
