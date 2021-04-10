@@ -2,14 +2,15 @@
 
 namespace Infrastructure\Database\Eloquent;
 
+use Illuminate\Support\Str;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Index;
+use Infrastructure\Traits\Uuids;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Infrastructure\Exceptions\MissingDomainUuidException;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Str;
-use Infrastructure\Traits\Uuids;
 
 abstract class AbstractModel extends BaseModel
 {
@@ -55,7 +56,7 @@ abstract class AbstractModel extends BaseModel
         ];
 
         foreach ($keys as $key) {
-            $fields = config('fpbx.table.' . $this->table . '.' . $key , []);
+            $fields = config('fpbx.table.' . $this->table . '.' . $key, []);
 
             if (!empty($fields)) {
                 switch ($key) {
@@ -122,7 +123,7 @@ abstract class AbstractModel extends BaseModel
             $data = $getData();
         } else {
             $data = Cache::remember(
-                __METHOD__ . serialize(func_get_args()). $this->getTable(),
+                __METHOD__ . serialize(func_get_args()) . $this->getTable(),
                 now()->addDay(),
                 $getData
             );
@@ -268,4 +269,19 @@ abstract class AbstractModel extends BaseModel
     //     return $fieldType;
     // }
 
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function (AbstractModel $model) {
+            $columns = $model->getTableColumnNames(true);
+
+            if (in_array('domain_uuid', $columns)) {
+                $domain_uuid = $model->getAttribute('domain_uuid');
+                if (empty($domain_uuid)) {
+                    throw new MissingDomainUuidException;
+                }
+            }
+        });
+    }
 }
