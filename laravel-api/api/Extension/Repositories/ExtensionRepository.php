@@ -27,7 +27,7 @@ class ExtensionRepository extends AbstractRepository
                 $query
                     ->insert(array_map(function ($userId) use ($extension) {
                         return [
-                            'extension_user_uuid' => Str::uuid(),
+                            'extension_user_uuid' => Str::uuid()->toString(),
                             'domain_uuid' => $extension->domain_uuid,
                             'extension_uuid' => $extension->extension_uuid,
                             'user_uuid' => $userId

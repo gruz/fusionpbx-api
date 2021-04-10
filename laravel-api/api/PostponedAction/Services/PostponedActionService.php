@@ -24,7 +24,7 @@ class PostponedActionService
 
     public function create(array $data)
     {
-        $hash = Str::uuid();
+        $hash = Str::uuid()->toString();
 
         $model = new PostponedAction;
         $model->request = $data;

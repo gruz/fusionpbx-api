@@ -22,7 +22,7 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
         $model = PostponedAction::first();
 
         $second = $model->replicate();
-        $second->hash = Str::uuid();
+        $second->hash = Str::uuid()->toString();
         $second->created_at = Carbon::now()->subCentury();
         $second->save();
 
@@ -46,7 +46,7 @@ class DomainSignupVerificationLinkRequestTest extends TestCase
             ],
             'bad_hash_not_found_fails' => [
                 'passed' => false,
-                'data' => ['hash' => Str::uuid()],
+                'data' => ['hash' => Str::uuid()->toString()],
             ],
             'not_uuid_hash' => [
                 'passed' => false,

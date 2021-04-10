@@ -83,7 +83,7 @@ class DomainControllerTest extends TestCase
         $response->assertJsonPath('errors.0.detail', __('validation.uuid'));
 
         // Not hash exists in the table
-        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => Str::uuid(), 'email' => $email]));
+        $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => Str::uuid()->toString(), 'email' => $email]));
         $response->assertStatus(422);
         $response->assertJsonPath('errors.0.title', __('Validation error'));
         $response->assertJsonPath('errors.0.detail', __('validation.exists', ['attribute' => 'hash', 'email' => $email]));

@@ -58,7 +58,7 @@ abstract class AbstractRepository extends BaseRepository
                 }
             }
             if (!array_key_exists($primaryKey, $row)) {
-                $data[$key][$primaryKey] = Str::uuid();
+                $data[$key][$primaryKey] = Str::uuid()->toString();
             }
         }
 
@@ -152,7 +152,7 @@ abstract class AbstractRepository extends BaseRepository
             $pivotData[] = array_merge(
                 $pivotArr,
                 [
-                    $pivotModel->getKeyName() => Str::uuid(),
+                    $pivotModel->getKeyName() => Str::uuid()->toString(),
                     $modelRelated->getKeyName() => $modelRelated->getKey(),
                 ]
             );
@@ -170,7 +170,7 @@ abstract class AbstractRepository extends BaseRepository
         $pivotName = $m[1] . '_uuid';
 
         $options = array_merge([
-            $pivotName => Str::uuid(),
+            $pivotName => Str::uuid()->toString(),
             'domain_uuid' => $parent->domain_uuid,
         ], $options);
 

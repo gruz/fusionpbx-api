@@ -38,7 +38,7 @@ class DomainRepository extends AbstractRepository
             $contactsData = Arr::get($usersData, $k . '.contacts');
             $this->userRepository->attach($user, 'contacts', $contactsData);
             $contactsData = collect($contactsData)->map(function($item, $key) use ($domain) {
-                $item['contact_uuid'] = Str::uuid();
+                $item['contact_uuid'] = Str::uuid()->toString();
                 $item['domain_uuid'] = $domain->domain_uuid;
                 return $item;
             });
@@ -47,7 +47,7 @@ class DomainRepository extends AbstractRepository
 
             foreach ($contactsData as $contactData) {
                 $contact_userData[] = [
-                    'contact_user_uuid' => Str::uuid(),
+                    'contact_user_uuid' => Str::uuid()->toString(),
                     'domain_uuid' => $domain->domain_uuid,
                     'contact_uuid' => $contactData['contact_uuid']->toString(),
                     'user_uuid' => $user->user_uuid,

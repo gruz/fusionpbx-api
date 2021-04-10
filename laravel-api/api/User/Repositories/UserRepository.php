@@ -27,7 +27,7 @@ class UserRepository extends AbstractRepository
         // ~ $salt = uuid();
         // We will use a webpatser/laravel-uuid
         // $data['salt'] = Str::uuid();
-        $data['user_enabled'] = Str::uuid();
+        $data['user_enabled'] = Str::uuid()->toString();
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -89,7 +89,7 @@ class UserRepository extends AbstractRepository
                 $query
                     ->insert(array_map(function ($groupName, $groupId) use ($user) {
                         return [
-                            'user_group_uuid' => Str::uuid(),
+                            'user_group_uuid' => Str::uuid()->toString(),
                             'domain_uuid' => $user->domain_uuid,
                             'group_uuid' => $groupId,
                             'group_name' => $groupName,

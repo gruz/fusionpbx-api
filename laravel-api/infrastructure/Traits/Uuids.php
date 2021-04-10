@@ -10,7 +10,7 @@ trait Uuids
     {
         parent::booted();
         static::creating(function ($model) {
-            $model->{$model->getKeyName()} = Str::uuid();
+            $model->{$model->getKeyName()} = Str::uuid()->toString();
         });
     }
 }
