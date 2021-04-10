@@ -149,8 +149,9 @@ abstract class AbstractService
 
         try {
             foreach ($data as $key => $row) {
-                $model = $this->repository->create($row, $options);
-                $this->dispatchEvent('Created', $model, $options);
+                $model = $this->create($row, $options);
+                // $model = $this->repository->create($row, $options);
+                // $this->dispatchEvent('Created', $model, $options);
                 $models[] = $model;
             }
             // $model = $this->repository->createMany($data);

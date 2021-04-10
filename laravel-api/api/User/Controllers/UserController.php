@@ -330,8 +330,7 @@ class UserController extends Controller
 
     public function signup(UserSignupRequest $request)
     {
-        $data = $request->all();
-        dd($data);
+        $data = $request->except('domain_uuid');
 
         return $this->response($this->userService->create($data), 201);
     }

@@ -19,7 +19,7 @@ class UserRepository extends AbstractRepository
         // TODO. In FusionPBX it uses some format like Y-m-d H:i:s.uZ but directly in Postgre now() function.
         // So a date inserted by FusionPBX looks like 2017-05-01 09:46:30.945188-04
         // I don't know where it taks -04 (time zone), so I use more simple date format here. Maybe to fix later.
-        $data['add_date'] = date('Y-m-d H:i:s');
+        // $data['add_date'] = date('Y-m-d H:i:s');
 
         // ~ $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
 

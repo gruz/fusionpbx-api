@@ -40,6 +40,11 @@ class User extends AbstractModel implements
     use HasFactory;
     // ~ use HasCustomRelations;
 
+    public $timestamps = true;
+
+    const CREATED_AT = 'add_date';
+    const UPDATED_AT = null;
+
     /**
      * The attributes that should be hidden for arrays.
      *

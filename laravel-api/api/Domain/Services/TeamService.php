@@ -3,28 +3,19 @@
 namespace Api\Domain\Services;
 
 use Exception;
-use Api\User\Models\Group;
 use Illuminate\Support\Arr;
 use Api\User\Services\UserService;
 use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;
 use Api\Domain\Events\TeamWasCreated;
-// use Api\Domain\Events\DomainWasCreated;
-use Api\User\Services\ContactService;
 use Api\Domain\Services\DomainService;
-use Api\Extension\Services\ExtensionService;
-use Api\User\Repositories\ContactRepository;
-use Api\Voicemail\Services\VoicemailService;
 use Illuminate\Database\Eloquent\Collection;
 use Api\Domain\Repositories\DomainRepository;
 use Api\Domain\Services\DomainSettingService;
 use Api\User\Exceptions\InvalidGroupException;
 use Api\Domain\Exceptions\DomainExistsException;
-use Api\User\Repositories\ContactUserRepository;
 use Api\Dialplan\Repositories\DialplanRepository;
-use Api\Extension\Repositories\ExtensionRepository;
 use Infrastructure\Database\Eloquent\AbstractService;
-use Api\Extension\Repositories\ExtensionUserRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class TeamService extends AbstractService
@@ -37,25 +28,17 @@ class TeamService extends AbstractService
 
     private $userService;
 
-    private $voicemailService;
-
     public function __construct(
         DomainService $domainSevice,
         DialplanRepository $dialplanRepository,
         DomainSettingService $domainSettingService,
-        UserService $userService,
-        VoicemailService $voicemailService,
-        ContactService $contactService,
-        ExtensionService $extensionService
+        UserService $userService
     ) {
         $this->domainService = $domainSevice;
         $this->dialplanRepository = $dialplanRepository;
-        parent::__construct();
         $this->domainSettingService = $domainSettingService;
         $this->userService = $userService;
-        $this->voicemailService = $voicemailService;
-        $this->contactService = $contactService;
-        $this->extensionService = $extensionService;
+        parent::__construct();
     }
 
     /**
@@ -112,54 +95,10 @@ class TeamService extends AbstractService
             $usersData = $this->injectData($usersData, ['domain_uuid' => $domainModel->domain_uuid]);
             $usersModel = $this->userService->createMany($usersData, ['excludeNotification' => [$activatorEmail]]);
 
-            foreach ($usersModel as $k => $userModel) {
-                $contactsData = Arr::get($data, 'users.' . $k . '.contacts', []);
-                $contactsData = $this->injectData($contactsData, ['domain_uuid' => $domainModel->domain_uuid]);
-                $extensionsData = Arr::get($data, 'users.' . $k . '.extensions', []);
-                $extensionsData = $this->injectData($extensionsData, ['domain_uuid' => $domainModel->domain_uuid]);
-
-                foreach ($contactsData as $contactData) {
-                    $relatedModel = $this->contactService->create($contactData, ['forceFillable' => ['domain_uuid']]);
-                    $this->userService->setRelation($userModel, $relatedModel);
-                }
-
-                foreach ($extensionsData as $extensionData) {
-                    $relatedModel = $this->extensionService->create($extensionData, ['forceFillable' => ['domain_uuid']]);
-                    $this->userService->setRelation($userModel, $relatedModel);
-                }
-
-                $groupName = config('fpbx.default.user.group');
-                $relatedModel = Group::where('group_name', $groupName)->first();
-                $this->userService->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);
-                // $this->userService->createAttachedMany(
-                //     $userModel,
-                //     ContactRepository::class,
-                //     $contactsData,
-                //     ContactUserRepository::class,
-                //     ['forceFillable' => ['domain_uuid', 'contact_uuid']]
-                // );
-                // $this->userService->createAttachedMany(
-                //     $userModel,
-                //     ExtensionRepository::class,
-                //     $extensionsData,
-                //     ExtensionUserRepository::class,
-                //     ['forceFillable' => ['domain_uuid']]
-                // );
-
-
-                // $voicemailData = Arr::get($data, 'users.' . $k . '.extensions', []);
-                // foreach ($voicemailData as $key => $value) {
-                //     $voicemailData[$key]['domain_uuid'] = $domainModel->domain_uuid;
-                // }
-                // $voicemailData = $this->injectData($voicemailData, ['domain_uuid' => $domainModel->domain_uuid]);
-                $voicemailData = $extensionsData;
-                foreach ($voicemailData as $key => $value) {
-                    $voicemailData[$key]['voicemail_id'] = $voicemailData[$key]['extension'];
-                }
-                $this->voicemailService->createMany($voicemailData, ['forceFillable' => ['domain_uuid', 'voicemail_id']]);
-
+            foreach ($usersModel as $userModel) {
                 if ($activatorEmail === $userModel->getAttribute('user_email')) {
                     $this->userService->activate($userModel->getAttribute('user_enabled'), false);
+                    break;
                 }
             }
 

@@ -3,15 +3,18 @@
 namespace Api\User\Services;
 
 use Exception;
+use Api\User\Models\Group;
 use Illuminate\Support\Arr;
 use Api\Extension\Models\Extension;
 use Api\User\Events\UserWasCreated;
-use Api\User\Events\UserWasDeleted;
-use Api\User\Events\UserWasUpdated;
+use Api\User\Services\ContactService;
+use Api\Extension\Services\ExtensionService;
+use Api\Voicemail\Services\VoicemailService;
 use Illuminate\Support\Facades\Auth;
+use Api\User\Events\UserWasActivated;
+use Api\Domain\Services\DomainService;
 use Api\User\Repositories\UserRepository;
 use Api\User\Repositories\GroupRepository;
-use Api\Extension\Services\ExtensionService;
 use Api\User\Exceptions\UserExistsException;
 use Api\User\Repositories\ContactRepository;
 use Api\Domain\Repositories\DomainRepository;
@@ -19,7 +22,6 @@ use Infrastructure\Traits\OneToManyRelationCRUD;
 use Api\User\Repositories\ContactEmailRepository;
 use Api\Domain\Exceptions\DomainNotFoundException;
 use Api\Extension\Repositories\ExtensionRepository;
-use Api\User\Events\UserWasActivated;
 use Infrastructure\Database\Eloquent\AbstractService;
 use Api\User\Exceptions\ActivationHashNotFoundException;
 
@@ -46,15 +48,22 @@ class UserService extends AbstractService
 
     private $scope;
 
+    private $domainService;
+
     public function __construct(
+        DomainService $domainService,
         GroupRepository $groupRepository,
         UserRepository $userRepository,
         ContactRepository $contactRepository,
         ContactEmailRepository $contact_emailRepository,
         ExtensionRepository $extensionRepository,
         DomainRepository $domainRepository,
-        ExtensionService $extensionService
+        ExtensionService $extensionService,
+        VoicemailService $voicemailService,
+        ContactService $contactService
+
     ) {
+        $this->domainService = $domainService;
         $this->groupRepository = $groupRepository;
         $this->userRepository = $userRepository;
         $this->contactRepository = $contactRepository;
@@ -62,9 +71,114 @@ class UserService extends AbstractService
         $this->extensionRepository = $extensionRepository;
         $this->domainRepository = $domainRepository;
         $this->extensionService = $extensionService;
+        $this->voicemailService = $voicemailService;
+        $this->contactService = $contactService;
 
         parent::__construct();
     }
+
+    /**
+     * Updates data posted by a user with system defaults
+     *
+     * The method is public for testing purposes
+     *
+     * @param array $data
+     * @return array
+     * @throws BindingResolutionException
+     */
+    public function prepareData(array $data)
+    {
+        if ($user = Auth::user()) {
+            $data['add_user'] = $user->username;
+        } else {
+            $data['add_user'] = config('fpbx.default.user.creatorName');
+        }
+
+        return $data;
+    }
+
+    public function createMany($data, $options = [])
+    {
+        $this->database->beginTransaction();
+
+        $models = [];
+
+        try {
+            foreach ($data as $key => $row) {
+                $model = $this->create($row, $options);
+                $models[] = $model;
+            }
+        } catch (Exception $e) {
+            $this->database->rollBack();
+
+            throw $e;
+        }
+
+        $this->database->commit();
+
+        return $models;
+    }
+
+
+    public function create($data, $options = [])
+    {
+        $data = $this->prepareData($data);
+
+        $this->database->beginTransaction();
+
+        try {
+            $domain_uuid = Arr::get($data, 'domain_uuid', null);
+
+            if (empty($domain_uuid)) {
+                $domainModel = $this->domainService->getByAttributes([
+                    'domain_name' => $data['domain_name'],
+                    'domain_enabled' => true,
+                ])->first();
+                $domain_uuid = $domainModel->domain_uuid;
+            }
+
+            $userModel = $this->repository->create($data);
+
+            $contactsData = Arr::get($data, 'contacts', []);
+            $contactsData = $this->injectData($contactsData, ['domain_uuid' => $domain_uuid]);
+            $extensionsData = Arr::get($data, 'extensions', []);
+            $extensionsData = $this->injectData($extensionsData, ['domain_uuid' => $domain_uuid]);
+
+            foreach ($contactsData as $contactData) {
+                $relatedModel = $this->contactService->create($contactData, ['forceFillable' => ['domain_uuid']]);
+                $this->setRelation($userModel, $relatedModel);
+            }
+
+            foreach ($extensionsData as $extensionData) {
+                $relatedModel = $this->extensionService->create($extensionData, ['forceFillable' => ['domain_uuid']]);
+                $this->setRelation($userModel, $relatedModel);
+            }
+
+            $groupName = config('fpbx.default.user.group');
+            $relatedModel = Group::where('group_name', $groupName)->first();
+            $this->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);
+
+            $voicemailData = $extensionsData;
+            foreach ($voicemailData as $key => $value) {
+                $voicemailData[$key]['voicemail_id'] = $voicemailData[$key]['extension'];
+            }
+
+            $this->voicemailService->createMany($voicemailData, ['forceFillable' => ['domain_uuid', 'voicemail_id']]);
+
+            $this->dispatchEvent('Created', $userModel, $options);
+
+        } catch (Exception $e) {
+            $this->database->rollBack();
+
+            throw $e;
+        }
+
+        $this->database->commit();
+
+
+        return $userModel;
+    }
+
 
     public function getMe($options = [])
     {
@@ -81,7 +195,7 @@ class UserService extends AbstractService
 
     //     if (!empty($attributes) && !is_null($attributes)) {
     //         $data = $this->userRepository->getWhereArray($attributes)->first();
-    //     } 
+    //     }
 
     //     return $data;
     // }
@@ -232,7 +346,6 @@ class UserService extends AbstractService
             $user->save();
 
             $this->dispatcher->dispatch(new UserWasActivated($user, $sendNotification));
-
         } catch (Exception $e) {
             $this->database->rollBack();
             throw $e;

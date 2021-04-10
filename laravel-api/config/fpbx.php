@@ -18,6 +18,7 @@ return [
             'group' => env('FPBX_DEFAULT_CONTACT_GROUP','user'),
         ],
         'user' => [
+            'creatorName' => env('FPBX_DEFAULT_USER_CREATORNAME', 'admin'),
             'group' => env('FPBX_DEFAULT_USER_GROUP', 'public'),
         ],
     ],

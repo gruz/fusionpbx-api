@@ -13,7 +13,8 @@ class UserWasCreatedListener
     public function handle($event)
     {
         // Send veirification links to users
-        if ($event->user->getAttribute('user_enabled') !== true) {
+        $userActivated = $event->user->getAttribute('user_enabled');
+        if (true !== $userActivated) {
             $excludeNotificationEmails = Arr::get($event->options, 'excludeNotification', []);
             if (!in_array($event->user->user_email, $excludeNotificationEmails)) {
                 $notification = new UserWasCreatedSendVeirfyLinkNotification($event->user);
