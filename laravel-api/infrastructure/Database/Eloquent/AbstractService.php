@@ -249,4 +249,14 @@ abstract class AbstractService
     public function setRelation(AbstractModel $parent, AbstractModel $child, $options = []) {
         return $this->repository->setRelation($parent, $child, $options);
     }
+
+
+    protected function injectData($data, $inject)
+    {
+        foreach ($data as $key => $value) {
+            $data[$key] = array_merge($value, $inject);
+        }
+
+        return $data;
+    }
 }

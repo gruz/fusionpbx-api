@@ -86,15 +86,6 @@ class TeamService extends AbstractService
         return $data;
     }
 
-    private function injectData($data, $inject)
-    {
-        foreach ($data as $key => $value) {
-            $data[$key] = array_merge($value, $inject);
-        }
-
-        return $data;
-    }
-
     public function create($data, $activatorEmail = null)
     {
         $data = $this->prepareData($data);
