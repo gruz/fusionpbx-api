@@ -8,8 +8,6 @@ use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Api\Domain\Models\Domain;
-use Api\Extension\Models\Extension;
-use Api\Voicemail\Models\Voicemail;
 use Infrastructure\Testing\TestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
@@ -20,10 +18,8 @@ use Api\Domain\Notifications\DomainActivateActivatorNotification;
 use Api\Domain\Notifications\DomainActivateMainAdminNotification;
 use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 use Infrastructure\Testing\UserTrait;
-
 class DomainControllerTest extends TestCase
 {
-
     use UserTrait;
 
     public function testDomainSignupSuccess()
@@ -183,9 +179,7 @@ class DomainControllerTest extends TestCase
         $this->checkDomainCreated($domain, $data);
 
         foreach ($requestUsers as $key => $userData) {
-            $this->checkContactsCreated($domain, $userData);
-            $this->checkExtensionsCreated($domain, $userData, Extension::class);
-            $this->checkExtensionsCreated($domain, $userData, Voicemail::class);
+            $this->checkUserWithRelatedDataCreated($domain, $userData);
         }
 
         $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';

@@ -103,6 +103,7 @@ abstract class AbstractModel extends BaseModel
     public function getTableColumnNames($ignoreFillable = false)
     {
         $getData = function () use ($ignoreFillable) {
+            $result = [];
             $table = $this->getTable();
 
             $tableColumns = $this->getConnection()
@@ -113,7 +114,15 @@ abstract class AbstractModel extends BaseModel
                 $result = $tableColumns;
             } else {
                 $fillableProps = $this->getFillable();
-                $result = array_intersect($tableColumns, $fillableProps);
+                $guardedProps = $this->getGuarded();
+                if (!is_null($guardedProps) && !empty($guardedProps)) {
+                    $result = array_diff($tableColumns, $guardedProps);
+                    // dd($result);
+                } else if (!is_null($fillableProps) && !empty($fillableProps)){
+                    $result = array_intersect($tableColumns, $fillableProps);
+                } else {
+                    $result = $tableColumns;
+                }
             }
 
             return $result;

@@ -143,6 +143,7 @@ class UserService extends AbstractService
             $contactsData = $this->injectData($contactsData, ['domain_uuid' => $domain_uuid]);
             $extensionsData = Arr::get($data, 'extensions', []);
             $extensionsData = $this->injectData($extensionsData, ['domain_uuid' => $domain_uuid]);
+            $isAdmin = Arr::get($data, 'is_admin', false);
 
             foreach ($contactsData as $contactData) {
                 $relatedModel = $this->contactService->create($contactData, ['forceFillable' => ['domain_uuid']]);
@@ -154,7 +155,11 @@ class UserService extends AbstractService
                 $this->setRelation($userModel, $relatedModel);
             }
 
-            $groupName = config('fpbx.default.user.group');
+            // $groupName = config('fpbx.default.user.group.public');
+            // needs to be discussed what to do with other groups
+            $groupName = $isAdmin
+                ? config('fpbx.default.user.group.admin')
+                : config('fpbx.default.user.group.public');
             $relatedModel = Group::where('group_name', $groupName)->first();
             $this->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);
 

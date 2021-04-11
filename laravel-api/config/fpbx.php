@@ -19,7 +19,13 @@ return [
         ],
         'user' => [
             'creatorName' => env('FPBX_DEFAULT_USER_CREATORNAME', 'admin'),
-            'group' => env('FPBX_DEFAULT_USER_GROUP', 'public'),
+            'group' => [
+                'public' => env('FPBX_DEFAULT_USER_GROUP', 'public'),
+                'admin' => env('FPBX_ADMIN_USER_GROUP', 'admin'),
+                // 'superadmin' => env('FPBX_SUPERADMIN_USER_GROUP', 'superadmin'),
+                // 'agent' => env('FPBX_AGENT_USER_GROUP', 'agent'),
+                // 'user' => env('FPBX_USER_USER_GROUP', 'user'),
+            ],
         ],
     ],
     'domain' => [

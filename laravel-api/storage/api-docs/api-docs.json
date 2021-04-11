@@ -1310,7 +1310,8 @@
                 "properties": {
                     "user_uuid": {
                         "type": "string",
-                        "format": "uuid"
+                        "format": "uuid",
+                        "readOnly": true
                     },
                     "domain_uuid": {
                         "type": "string",

@@ -122,7 +122,8 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
      */
     protected function getUserDomainName(CanResetPasswordContract $user)
     {
-        return User::find($user->user_uuid)->getDomainNameForPasswordReset();
+        // return User::find($user->user_uuid)->getDomainNameForPasswordReset();
+        return User::find($user->user_uuid)->domain->domaine_name;
     }
     
 }

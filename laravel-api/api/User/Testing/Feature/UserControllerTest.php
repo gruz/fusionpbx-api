@@ -43,12 +43,9 @@ class UserControllerTest extends TestCase
         $user = User::where(['domain_uuid' => $domain_uuid, 'user_email' => $data['user_email']])->first();
         Notification::assertSentTo($user, UserWasCreatedSendVeirfyLinkNotification::class);
 
-
-        $userData = $data;
         $domain = Domain::where('domain_name', $data['domain_name'])->first();
-        $this->checkContactsCreated($domain, $userData);
-        $this->checkExtensionsCreated($domain, $userData, Extension::class);
-        $this->checkExtensionsCreated($domain, $userData, Voicemail::class);
+
+        $this->checkUserWithRelatedDataCreated($domain, $data);
 
         return $user;
     }
@@ -78,6 +75,17 @@ class UserControllerTest extends TestCase
 
         $response = $this->json('get', route('fpbx.user.activate', ['hash' => $hash]));
         $response->assertStatus(422);
+    }
+
+    public function test_ForgotPassword_Success()
+    {
+        // logic when test have to be passed 
+        // (e.x. correct email + domain + user + evth exists etc ...)
+    }
+
+    public function test_ForgotPassword_Failed()
+    {
+        // all cases when test have to fail
     }
 
 

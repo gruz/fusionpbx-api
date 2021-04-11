@@ -3,8 +3,11 @@
 namespace Infrastructure\Testing;
 
 use Api\User\Models\User;
+use Api\User\Models\Group;
 use Illuminate\Support\Arr;
 use Api\User\Models\Contact;
+use Api\Extension\Models\Extension;
+use Api\Voicemail\Models\Voicemail;
 
 trait UserTrait
 {
@@ -81,5 +84,62 @@ trait UserTrait
         }
 
         return $nonExistingEmail;
+    }
+
+    private function checkUserCreated($domain, $userData)
+    {
+        $userWhere = $this->createUserWhereConditions($userData);
+        // dd($userWhere);
+        $this->assertDatabaseHas('v_users', array_merge(
+            ['domain_uuid' => $domain->domain_uuid],
+            $userWhere
+        ));
+    }
+
+    private function checkGroupCreated($domain, $userData)
+    {
+        $isAdmin = Arr::get($userData, 'is_admin');
+        $userWhere = $this->createUserWhereConditions($userData);
+        $userModel = User::where(array_merge(
+            ['domain_uuid' => $domain->domain_uuid],
+            $userWhere
+        ))->first();
+        $groupName = $isAdmin 
+            ? config('fpbx.default.user.group.admin')
+            : config('fpbx.default.user.group.public');
+
+        $this->assertDatabaseHas('v_groups', [
+            'group_name' => $groupName,
+        ]);
+        $groupModel = Group::where('group_name', $groupName)->first();
+        $this->assertDatabaseHas('v_user_groups', [
+            'domain_uuid' => $domain->domain_uuid,
+            'user_uuid' => $userModel->user_uuid,
+            'group_uuid' => $groupModel->group_uuid,
+            'group_name' => $groupModel->group_name,
+        ]);
+    }
+
+    private function createUserWhereConditions($userData) 
+    {
+        $userModel = new User();
+        $userExceptColumns = array_merge($userModel->getGuarded(),['password', 'user_uuid']);
+        $userTableColumns = Arr::except($userModel->getTableColumnsInfo(true), $userExceptColumns);
+        foreach ($userTableColumns as $columnName => $obj) {
+            if (array_key_exists($columnName, $userData)) {
+                $userWhere[$columnName] = $userData[$columnName];
+            }
+        }
+
+        return $userWhere;
+    }
+
+    protected function checkUserWithRelatedDataCreated($domain, $userData)
+    {
+        $this->checkUserCreated($domain, $userData);
+        $this->checkContactsCreated($domain, $userData);
+        $this->checkExtensionsCreated($domain, $userData, Extension::class);
+        $this->checkExtensionsCreated($domain, $userData, Voicemail::class);
+        $this->checkGroupCreated($domain, $userData);
     }
 }
