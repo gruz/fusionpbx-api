@@ -6,7 +6,7 @@ use Infrastructure\Http\ApiRequest;
 use Infrastructure\Rules\DomainSignupHashExpiredRule;
 use Infrastructure\Rules\DomainSignupHashHasEmailExistsRule;
 
-class DomainSignupVerificationLinkRequest extends ApiRequest
+class DomainActivateRequest extends ApiRequest
 {
     public function authorize()
     {

@@ -23,7 +23,6 @@ use Api\User\Repositories\ContactEmailRepository;
 use Api\Domain\Exceptions\DomainNotFoundException;
 use Api\Extension\Repositories\ExtensionRepository;
 use Infrastructure\Database\Eloquent\AbstractService;
-use Api\User\Exceptions\ActivationHashNotFoundException;
 
 class UserService extends AbstractService
 {
@@ -38,7 +37,7 @@ class UserService extends AbstractService
     /**
      * @var ContactEmailRepository
      */
-    private $contact_emailRepository;
+    private $contactEmailRepository;
 
     private $extensionRepository;
 
@@ -55,7 +54,7 @@ class UserService extends AbstractService
         GroupRepository $groupRepository,
         UserRepository $userRepository,
         ContactRepository $contactRepository,
-        ContactEmailRepository $contact_emailRepository,
+        ContactEmailRepository $contactEmailRepository,
         ExtensionRepository $extensionRepository,
         DomainRepository $domainRepository,
         ExtensionService $extensionService,
@@ -67,7 +66,7 @@ class UserService extends AbstractService
         $this->groupRepository = $groupRepository;
         $this->userRepository = $userRepository;
         $this->contactRepository = $contactRepository;
-        $this->contact_emailRepository = $contact_emailRepository;
+        $this->contactEmailRepository = $contactEmailRepository;
         $this->extensionRepository = $extensionRepository;
         $this->domainRepository = $domainRepository;
         $this->extensionService = $extensionService;
@@ -239,7 +238,7 @@ class UserService extends AbstractService
             }
 
             // // Check for the email in the current domain
-            // $contact_email = $this->contact_emailRepository->getWhereArray([
+            // $contact_email = $this->contactEmailRepository->getWhereArray([
             //     'domain_uuid' => $domain['domain_uuid'],
             //     'email_address' => $data['email'],
             // ]);
@@ -264,7 +263,7 @@ class UserService extends AbstractService
             $data['email_primary'] = 1;
             $data['email_address'] = $data['email'];
 
-            $contact_email = $this->contact_emailRepository->create($data);
+            $contact_email = $this->contactEmailRepository->create($data);
 
             // Hide the field in the output
             $contact_email->makeHidden(['domain_uuid', 'contact_uuid']);
@@ -335,10 +334,6 @@ class UserService extends AbstractService
 
         try {
             $user = $this->userRepository->getWhere('user_enabled', $hash)->first();
-
-            if (is_null($user)) {
-                throw new ActivationHashNotFoundException();
-            }
 
             $user->user_enabled = 'true';
 

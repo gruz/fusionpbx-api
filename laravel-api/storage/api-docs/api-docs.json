@@ -570,7 +570,8 @@
                     "400": {
                         "description": "`TODO Stub` Could not ..."
                     }
-                }
+                },
+                "x-route-$path": "fpbx.user.activate"
             }
         },
         "/user/signup": {

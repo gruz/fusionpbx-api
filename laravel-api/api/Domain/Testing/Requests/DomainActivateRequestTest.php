@@ -9,7 +9,7 @@ use Infrastructure\Testing\TestRequestTrait;
 use Api\PostponedAction\Models\PostponedAction;
 use Carbon\Carbon;
 
-class DomainSignupVerificationLinkRequestTest extends TestCase
+class DomainActivateRequestTest extends TestCase
 {
     use TestRequestTrait;
 

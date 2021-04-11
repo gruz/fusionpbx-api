@@ -63,10 +63,6 @@ return [
         'message' => 'User disabled', 
         'code' => '1013', 
     ],
-    'Api\User\Exceptions\ActivationHashNotFoundException' => [
-        'message' => 'User activation failed. Maybe the user has already been activated', 
-        'code' => '1014', 
-    ],
     'Api\User\Exceptions\ActivationHashWrongException' => [
         'message' => 'Wrong activation hash', 
         'code' => '1015', 

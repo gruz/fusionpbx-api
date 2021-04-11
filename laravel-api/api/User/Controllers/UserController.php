@@ -8,8 +8,9 @@ use Infrastructure\Http\Controller;
 use Api\Domain\Services\TeamService;
 use Api\User\Requests\SignupRequest;
 use Api\User\Requests\CreateUserRequest;
-use Api\User\Requests\UserSignupRequest;
 use Api\User\Requests\UserGroupsRequest;
+use Api\User\Requests\UserSignupRequest;
+use Api\User\Requests\UserActivateRequest;
 use Api\User\Services\UserPasswordService;
 use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
@@ -228,6 +229,7 @@ class UserController extends Controller
     @OA\Get(
         tags={"User"},
         path="/user/activate/{hash}",
+        x={"route-$path"="fpbx.user.activate"},
         @OA\Parameter(
             name="hash",
             in="path",
@@ -243,7 +245,7 @@ class UserController extends Controller
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
-    public function activate(string $hash)
+    public function activate(string $hash, UserActivateRequest $request)
     {
         $response = $this->response($this->userService->activate($hash));
 

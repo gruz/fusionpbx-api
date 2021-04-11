@@ -7,7 +7,6 @@ use Faker\Factory;
 use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Api\User\Models\Contact;
 use Api\Domain\Models\Domain;
 use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
@@ -20,10 +19,14 @@ use Api\Domain\Notifications\DomainSignupNotification;
 use Api\Domain\Notifications\DomainActivateActivatorNotification;
 use Api\Domain\Notifications\DomainActivateMainAdminNotification;
 use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
+use Infrastructure\Testing\UserTrait;
 
 class DomainControllerTest extends TestCase
 {
-    public function testSignup_Success()
+
+    use UserTrait;
+
+    public function testDomainSignupSuccess()
     {
         // $this->withoutExceptionHandling();
         // $this->expectException(\Exception::class);
@@ -66,7 +69,7 @@ class DomainControllerTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function testActivate_Failed()
+    public function testDomainActivateFailed()
     {
         // $this->withoutExceptionHandling();
         // list($request, $response) = $this->simulateDomainSignup();
@@ -111,7 +114,7 @@ class DomainControllerTest extends TestCase
         $response->assertJsonPath('errors.0.detail', __('Domain activation link expired'));
     }
 
-    public function testActivate_SuccessDomainEnabledOrDisabledByDefaultDependingOnConfig()
+    public function testActivateSuccessDomainEnabledOrDisabledByDefaultDependingOnConfig()
     {
         foreach ([false, true] as $hasDomainEnabledAttribute) {
             foreach ([false, true] as $key => $domain_enabled_after_activation) {
@@ -143,18 +146,21 @@ class DomainControllerTest extends TestCase
         }
     }
 
-    public function testActivate_SuccessMany()
+    /**
+     * Test using several request stored as json files. Means at least 2 request - much data and minimal data
+     */
+    public function testDomainActivateSuccessMany()
     {
         $requestFiles = Storage::files('swagger/domain/post/request/');
         foreach ($requestFiles as $jsonFile) {
             $data = json_decode(Storage::get($jsonFile), true);
             $faker = Factory::create(Factory::DEFAULT_LOCALE);
             $data['domain_name'] = $faker->domainName;
-            $this->testActivate_Success($data);
+            $this->testDomainActivateSuccess($data);
         }
     }
 
-    public function testActivate_Success($data = [])
+    public function testDomainActivateSuccess($data = [])
     {
         if (!empty($data)) {
             $this->simulateDomainSignup(true, false, $data);
@@ -218,38 +224,11 @@ class DomainControllerTest extends TestCase
 
     public function test_Adding_new_domain_passes_with_several_admin_users_passes()
     {
-    }
-
-    public function test_Adding_existsing_domain_fails()
-    {
-        // $response = $this->get('/');
-
-        // $response->assertStatus(200);
-
-        // $this->assertTrue(true);
+        // Add several admin users, test activation process
     }
 
     public function test_Adding_domain_with_no_or_bad_referral_code_fails()
     {
-        return;
-        $data = [
-            'domain_name' => generate(),
-            //
-        ];
-
-        $response = $this->post('/domain', $data);
-
-        $response->assertStatus(400);
-
-        $data = [
-            'domain_name' => generate(),
-            'rereral_code' => 'bad',
-            //
-        ];
-
-        $response = $this->post('/domain', $data);
-
-        $response->assertStatus(400);
     }
 
     private function checkDomainCreated($domain, $data)
@@ -261,70 +240,5 @@ class DomainControllerTest extends TestCase
                 $requestSetting
             ));
         }
-    }
-
-    private function checkContactsCreated($domain, $userData)
-    {
-        $contacts = Arr::get($userData, 'contacts', []);
-        foreach ($contacts as $contactData) {
-            $this->assertDatabaseHas('v_contacts', array_merge(
-                ['domain_uuid' => $domain->domain_uuid],
-                $contactData
-            ));
-
-            $contactsModel = Contact::where(array_merge(
-                ['domain_uuid' => $domain->domain_uuid],
-                $contactData
-            ));
-
-            foreach ($contactsModel as $contactModel) {
-                $this->assertDatabaseHas('v_contact_users', [
-                    'domain_uuid' => $domain->domain_uuid,
-                    'user_uuid' => $contactModel->user_uuid,
-                    'contact_uuid' => $contactModel->contact_uuid,
-                ]);
-            }
-        }
-    }
-
-    private function checkExtensionsCreated($domain, $userData, $modelClass)
-    {
-        $extensions = Arr::get($userData, 'extensions', []);
-        /**
-         * @var \Infrastructure\Database\Eloquent\AbstractModel
-         */
-        $model = new $modelClass();
-        $table = $model->getTable();
-        foreach ($extensions as $extensionData) {
-            if ('v_voicemails' === $table) {
-                $extensionData['voicemail_id'] = $extensionData['extension'];
-            }
-            $tableColumns = $model->getTableColumnsInfo(true);
-            $where =  [
-                'domain_uuid' => $domain->domain_uuid
-            ];
-            foreach ($tableColumns as $columnName => $obj) {
-                if (array_key_exists($columnName, $extensionData)) {
-                    $where[$columnName] = $extensionData[$columnName];
-                }
-            }
-            switch ($table) {
-                case 'v_voicemails':
-                    # code...
-                    $this->assertNotEmpty($where['voicemail_password']);
-                    break;
-                default:
-                    $this->assertNotEmpty($where['password']);
-                    break;
-            }
-            $this->assertDatabaseHas($table, $where);
-        }
-    }
-
-    public function testNoExtensionsPassedFails()
-    {
-    }
-    public function testSimilarExtensionsForDifferentUsersInDomainFails()
-    {
     }
 }

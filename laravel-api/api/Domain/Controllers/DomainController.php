@@ -5,7 +5,7 @@ namespace Api\Domain\Controllers;
 use Infrastructure\Http\Controller;
 use Api\Domain\Requests\DomainSignupRequest;
 use Api\PostponedAction\Services\PostponedActionService;
-use Api\Domain\Requests\DomainSignupVerificationLinkRequest;
+use Api\Domain\Requests\DomainActivateRequest;
 
 /**
  * @OA\Schema()
@@ -83,7 +83,7 @@ class DomainController extends Controller
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
-    public function activate($hash, $email, DomainSignupVerificationLinkRequest $request, PostponedActionService $postponedActionService)
+    public function activate($hash, $email, DomainActivateRequest $request, PostponedActionService $postponedActionService)
     {
         return $this->response($postponedActionService->executeByHash($hash, $email), 201);
     }

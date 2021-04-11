@@ -47,15 +47,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-
-        if ($this->isHttpException($e)) {
-            if ($e instanceof \Api\User\Exceptions\ActivationHashNotFoundException) {
-                return response()->view('front.activation', ['message' => $e->getMessage()], 200);
-            }
-
-            // ~ return $this->renderHttpException($e);
-        }
-
         $middleware = Route::getCurrentRoute()->middleware();
         if (
             is_array($middleware) && in_array("web", $middleware) ||

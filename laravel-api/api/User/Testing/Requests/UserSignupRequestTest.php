@@ -2,41 +2,14 @@
 
 namespace Api\User\Testing\Requests;
 
-use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Api\Extension\Models\Extension;
 use Infrastructure\Testing\TestCase;
+use Infrastructure\Testing\UserTrait;
 
 class UserSignupRequestTest extends TestCase
 {
-    public function testFailsIfDomainNotExists()
-    {
-        $nonExistingDomain = $this->faker->domainName;
-        while (true) {
-            $domain = Domain::where('domain_name', $nonExistingDomain)->first();
-            if (empty($domain)) {
-                break;
-            } else {
-                $nonExistingDomain = $this->faker->domainName;
-            }
-        }
-
-        $data = $this->testRequestFactoryService->makeUserSignupRequest([
-            'addDomainName' => true,
-            // 'domain_name' => $systemDomainName,
-        ]);
-
-        $data['domain_name'] = $nonExistingDomain;
-
-        $response = $this->json('post', route('fpbx.user.signup'), $data);
-
-        $response->assertStatus(422);
-        $response->assertJson([
-            "errors" => [
-                ["detail" => "The selected domain name is invalid."]
-            ]
-        ]);
-    }
+    use UserTrait;
 
     public function testFailWhenUserExistsInADomain()
     {
@@ -119,22 +92,5 @@ class UserSignupRequestTest extends TestCase
                 ["detail" => "The selected domain name is invalid."]
             ]
         ]);
-    }
-
-    private function prepareNonExistingEmailInDomain($domain_uuid)
-    {
-        $nonExistingEmail = $this->faker->email;
-        while (true) {
-            $user = User::where('domain_uuid', $domain_uuid)
-                ->where('user_email', $nonExistingEmail)
-                ->first();
-            if (empty($user)) {
-                break;
-            } else {
-                $nonExistingEmail = $this->faker->email;
-            }
-        }
-
-        return $nonExistingEmail;
     }
 }
