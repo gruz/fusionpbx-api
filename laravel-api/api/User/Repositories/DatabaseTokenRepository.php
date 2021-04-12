@@ -9,10 +9,10 @@ use Illuminate\Auth\Passwords\DatabaseTokenRepository as OriginalDatabaseTokenRe
 
 class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
 {
-   
+
     /**
-     * Domain name to which user belongs. Due to implementation of interface 
-     * some methods cannot be changed. We use this class variable to set user`s domain name 
+     * Domain name to which user belongs. Due to implementation of interface
+     * some methods cannot be changed. We use this class variable to set user`s domain name
      * and use it when storing data to "password_resets" table.
      */
     private $domainName;
@@ -48,12 +48,13 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
     protected function deleteExisting(CanResetPasswordContract $user)
     {
         return $this->getTable()
-                    ->where([
-                        'email' => $user->getEmailForPasswordReset(),
-                        'domain_name' =>  $this->domainName ?
-                                          $this->domainName : 
-                                          $this->getUserDomainName($user)])
-                    ->delete();
+            ->where([
+                'email' => $user->getEmailForPasswordReset(),
+                'domain_name' =>  $this->domainName ?
+                    $this->domainName :
+                    $this->getUserDomainName($user)
+            ])
+            ->delete();
     }
 
     /**
@@ -86,13 +87,14 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
             ->where([
                 'email' => $user->getEmailForPasswordReset(),
                 'domain_name' =>  $this->domainName ?
-                                  $this->domainName : 
-                                  $this->getUserDomainName($user)])
+                    $this->domainName :
+                    $this->getUserDomainName($user)
+            ])
             ->first();
 
         return $record &&
-               ! $this->tokenExpired($record['created_at']) &&
-                 $this->hasher->check($token, $record['token']);
+            !$this->tokenExpired($record['created_at']) &&
+            $this->hasher->check($token, $record['token']);
     }
 
     /**
@@ -107,8 +109,9 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
             ->where([
                 'email' => $user->getEmailForPasswordReset(),
                 'domain_name' =>  $this->domainName ?
-                                  $this->domainName : 
-                                  $this->getUserDomainName($user)])
+                    $this->domainName :
+                    $this->getUserDomainName($user)
+            ])
             ->first();
 
         return $record && $this->tokenRecentlyCreated($record['created_at']);
@@ -116,14 +119,13 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
 
     /**
      * Function to get users domain name to which he belongs.
-     * 
-     * @param CanResetPasswordContract $user 
+     *
+     * @param CanResetPasswordContract $user
      * @return string Users domain name
      */
     protected function getUserDomainName(CanResetPasswordContract $user)
     {
         // return User::find($user->user_uuid)->getDomainNameForPasswordReset();
-        return User::find($user->user_uuid)->domain->domaine_name;
+        return $user->domain->getAttribute('domain_name');
     }
-    
 }

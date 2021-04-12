@@ -9,6 +9,7 @@ use Api\Voicemail\Models\Voicemail;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\UserTrait;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Api\User\Notifications\UserWasActivatedSelfNotification;
 use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 
@@ -50,23 +51,28 @@ class UserControllerTest extends TestCase
         return $user;
     }
 
-    public function atestUserActivateSuccess()
+    public function testUserActivateSuccess()
     {
-        $model = $this->testUserSignupSuccess();
+        $userModel = $this->testUserSignupSuccess();
 
-        $response = $this->json('get', route('fpbx.user.activate', ['hash' => $model->user_enabled]));
+        $response = $this->json('get', route('fpbx.user.activate', ['hash' => $userModel->user_enabled]));
         $response->assertStatus(200);
 
         $response->assertJsonPath('message', __('User activated'));
 
-        Notification::assertSentTo($model, UserWasActivatedSelfNotification::class);
+        $userModel->refresh();
+        $response->assertJsonPath('user', $userModel->toArray());
+
+        Notification::assertSentTo($userModel, UserWasActivatedSelfNotification::class);
+
+        return $userModel;
     }
 
-    public function atestActivateFailed()
+    public function testActivateFailed()
     {
-        $model = $this->testUserSignupSuccess();
+        $userModel = $this->testUserSignupSuccess();
 
-        $hash = $model->user_enabled . '1';
+        $hash = $userModel->user_enabled . '1';
 
         $response = $this->json('get', route('fpbx.user.activate', ['hash' => $hash]));
         $response->assertStatus(422);
@@ -75,17 +81,39 @@ class UserControllerTest extends TestCase
 
         $response = $this->json('get', route('fpbx.user.activate', ['hash' => $hash]));
         $response->assertStatus(422);
+
+        // Maybe later think of behavior if domain is disabled. Should we allow to activate user? 
+        // Should the activation link work later when currentry disabled domain is activated? 
+        // $domainModel = $userModel->domain;
+        // $domainModel->domain_enabled = false;
+        // $domainModel->save();
     }
 
     public function test_ForgotPassword_Success()
     {
-        // logic when test have to be passed 
-        // (e.x. correct email + domain + user + evth exists etc ...)
+        $userModel = $this->testUserActivateSuccess();
+        $data = [
+            'domain_name' => $userModel->domain->getAttribute('domain_name'),
+            'user_email' => $userModel->user_email,
+        ];
+
+        $response = $this->json('post', route('fpbx.user.forgot-password'), $data);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            "username" => $userModel->username,
+            'domain_uuid' => $userModel->getAttribute('domain_uuid'),
+        ]);
+
+        Notification::assertSentTo($userModel, ResetPassword::class);
+
     }
 
-    public function test_ForgotPassword_Failed()
+    public function test_Adding_user_with_no_or_bad_referral_code_fails()
     {
-        // all cases when test have to fail
+        // If referende code required is enabled in configuration, then
+        // user creation data must provide such a code and it must match
+        // a list of available codes. The list of the codes will be taken from an api.
     }
 
 

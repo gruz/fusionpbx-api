@@ -19,6 +19,7 @@ class DomainActivateRequest extends ApiRequest
 
         $rules = [
             'hash' => [
+                'bail',
                 'required',
                 'uuid',
                 'exists:\Api\PostponedAction\Models\PostponedAction',

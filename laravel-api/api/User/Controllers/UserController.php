@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Api\User\Services\UserService;
 use Infrastructure\Http\Controller;
 use Api\Domain\Services\TeamService;
-use Api\User\Requests\SignupRequest;
 use Api\User\Requests\CreateUserRequest;
 use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserSignupRequest;
@@ -52,26 +51,26 @@ class UserController extends Controller
      * `TODO`, describe in docs and return only some fields available for other users,
      * add parameters in query to select contact info, extension
      *
-    @OA\Get(
+    @ OA\Get(
         tags={"User"},
         path="/users",
-        @OA\Parameter(
+        @ OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
             name="includes[]",
             in="query",
-            @OA\Schema(
+            @ OA\Schema(
                 type="array",
-                @OA\Items(type="string",
+                @ OA\Items(type="string",
                     enum = { "groups", "status", "domain", "permissions", "emails","extensions", },
                 )
             )
         ),
-        @OA\Response(
+        @ OA\Response(
             response=200,
             description="`TODO Stub` Could not created domain",
-            @OA\JsonContent(type="array",
-                @OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+            @ OA\JsonContent(type="array",
+                @ OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
             ),
         ),
         security={{"bearer_auth": {}}}
@@ -90,19 +89,19 @@ class UserController extends Controller
     /**
      * Get user info by ID
      *
-    @OA\Get(
+    @ OA\Get(
         tags={"User"},
         path="/user/{user_uuid}",
-        @OA\Parameter(ref="#/components/parameters/user_uuid"),
-        @OA\Parameter(
+        @ OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @ OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
             name="includes[]",
             in="query",
-            @OA\Schema(ref="#/components/schemas/user_includes")
+            @ OA\Schema(ref="#/components/schemas/user_includes")
         ),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
     public function getById(string $userId)
@@ -118,22 +117,22 @@ class UserController extends Controller
     /**
      * Gets currently logged in user info
      *
-    @OA\Get(
+    @ OA\Get(
         tags={"User"},
         path="/user",
-        @OA\Parameter(
+        @ OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
             name="includes[]",
             in="query",
-            @OA\Schema(ref="#/components/schemas/user_includes")
+            @ OA\Schema(ref="#/components/schemas/user_includes")
         ),
-        @OA\Response(
+        @ OA\Response(
             response=200,
             description="`TODO Stub` Could not created domain",
-            @OA\JsonContent(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+            @ OA\JsonContent(ref="#/components/schemas/UserWithRelatedItemsSchema"),
         ),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
     public function getMe()
@@ -148,15 +147,15 @@ class UserController extends Controller
 
 
     /**
-     * Creates a user inside a domain
+     * Creates a user inside a domain by a user with permissions to create. It's not a signup!
      *
-    @OA\Post(
+    @ OA\Post(
         tags={"User"},
         path="/user",
-        @OA\RequestBody(
+        @ OA\RequestBody(
             description="User information",
             required=true,
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
                 examples={
                     "Create a user": {},
@@ -171,12 +170,12 @@ class UserController extends Controller
                 }
             ),
         ),
-        @OA\Response(
+        @ OA\Response(
             response=200,
             description="`TODO Stub` Could not created domain",
-            @OA\JsonContent(ref="#/components/schemas/User"),
+            @ OA\JsonContent(ref="#/components/schemas/User"),
         ),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
     public function create(CreateUserRequest $request)
@@ -188,16 +187,16 @@ class UserController extends Controller
 
 
     /**
-     * Update oneself or another user if having enoght permissions
+     * Update oneself or another user if having enough permissions
      *
-    @OA\Put(
+    @ OA\Put(
         tags={"User"},
         path="/user/{user_uuid}",
-        @OA\Parameter(ref="#/components/parameters/user_uuid"),
-        @OA\RequestBody(
+        @ OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @ OA\RequestBody(
             description="User information",
             required=true,
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
                 examples={
                     "Create a user": {},
@@ -212,8 +211,8 @@ class UserController extends Controller
                 }
             ),
         ),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
     public function update($userId, Request $request)
@@ -257,12 +256,12 @@ class UserController extends Controller
      *
      * Not implemented yet
      *
-    @OA\Delete(
+    @ OA\Delete(
         tags={"User"},
         path="/user/{user_uuid}",
-        @OA\Parameter(ref="#/components/parameters/user_uuid"),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @ OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
     public function delete($userId)
@@ -329,7 +328,6 @@ class UserController extends Controller
         ),
     )
      */
-
     public function signup(UserSignupRequest $request)
     {
         $data = $request->except('domain_uuid');
@@ -337,33 +335,8 @@ class UserController extends Controller
         return $this->response($this->userService->create($data), 201);
     }
 
-
-    public function signupDEL(SignupRequest $request)
-    {
-        $data = $request->get('team', []);
-
-        if (empty($data)) {
-            $data = $request->get('user', []);
-
-            $data['isTeam'] = false;
-            $data['group_name'] = env('DEFAULT_USER_GROUP_NAME');
-
-            // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
-            // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
-            $data['user_enabled'] = md5(uniqid() . microtime());
-
-            return $this->response($this->userService->create($data, false), 201);
-        }
-
-        $data['isTeam'] = true;
-        $data['user_enabled'] = 'true';
-        $data['group_name'] = env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME');
-
-        return $this->response($this->teamService->createDeperacted($data), 201);
-    }
-
     /**
-     * User forgot password 
+     * User forgot password - request email link to reset password
      *
      * @param UserForgotPasswordRequest $request
      * @return void
@@ -371,6 +344,7 @@ class UserController extends Controller
     @OA\Post(
         tags={"User"},
         path="/forgot-password",
+        x={"route-$path"="fpbx.user.forgot-password"},
         @OA\RequestBody(
             description="User information to reset his password",
             required=true,
@@ -393,7 +367,7 @@ class UserController extends Controller
             @OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
                 examples={
-                    "Password resent link basic example1": {
+                    "Password resent link basic example": {
                         "username": "user_Destany.Windler",
                         "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
                     },
@@ -443,11 +417,6 @@ class UserController extends Controller
      */
     public function forgotPassword(UserForgotPasswordRequest $request)
     {
-        // $email = $request->get('user_email');   
-        // $domain_name = $request->get('domain_name');
-
-        // return $this->response($this->passwordService->generateResetToken($email, $domain_name));
-
         $data = $request->only('user_email', 'domain_name');
 
         return $this->response($this->passwordService->generateResetToken($data));

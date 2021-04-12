@@ -2,11 +2,9 @@
 
 namespace Api\User\Services;
 
-use Illuminate\Foundation\Application;
 use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
 use Api\Domain\Repositories\DomainRepository;
-use Api\User\Repositories\ContactEmailRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
@@ -17,8 +15,6 @@ use Api\Domain\Exceptions\DomainNotFoundException;
 class UserPasswordService
 {
 
-    private $request;
-
     private $userRepository;
 
     private $domainRepository;
@@ -26,11 +22,10 @@ class UserPasswordService
     private $userService;
 
     public function __construct(
-      UserRepository $userRepository,
-      DomainRepository $domainRepository,
-      UserService $userService
-    )
-    {
+        UserRepository $userRepository,
+        DomainRepository $domainRepository,
+        UserService $userService
+    ) {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
         $this->userService = $userService;
@@ -49,7 +44,7 @@ class UserPasswordService
     public function generateResetToken($data)
     {
         $userCredentials = $this->getUserCredentials($data)->toArray();
-        $status = Password::sendResetLink($userCredentials);
+        Password::sendResetLink($userCredentials);
 
         return [
             'username' => $userCredentials['username'],
@@ -66,18 +61,8 @@ class UserPasswordService
      */
     public function resetPassword($data)
     {
-        $user = $this->getUserCredentials($email);
-        $userCredentials = array_merge(
-            $this->request->only(
-                'user_email',
-                'password',
-                'password_confirmation',
-                'token'
-            ),
-            $user->toArray()
-        );
-
-        Password::reset(
+        $userCredentials = array_merge($this->getUserCredentials($data)->toArray(), $data);
+        $status = Password::reset(
             $userCredentials,
             function ($user, $password) {
                 $data = \encrypt_password_with_salt($password);
@@ -89,9 +74,15 @@ class UserPasswordService
             }
         );
 
-        return [
-            'success' => 'Password has been successfully reset',
-        ];
+        if ($status !== Password::PASSWORD_RESET) {
+            return null;
+        }
+
+        return $status;
+
+        // return [
+        //     'success' => 'Password has been successfully reset',
+        // ];
     }
 
     /**
@@ -103,18 +94,15 @@ class UserPasswordService
      * @return null|\Api\User\Models\User
      * @throws InvalidCredentialsException|UserDisabledException
      */
-    public function getUserCredentials($email, $domain_name = null)
+    public function getUserCredentials($data)
     {
         // domain_name is required filed so it cannot be empty
 
         $domain = $this->domainRepository
-                            ->getWhere('domain_name', $data['domain_name'])->first();
+            ->getWhere('domain_name', $data['domain_name'])->first();
 
-        // TODO:
-        //      Needs to be refactored. Does we need it ?
-        //      Maybe use better solution with filter...
-        if (is_null($user) && !is_null($domain_name)) {
-            $user = $this->getUserByEmailAndDomainName($email, $domain_name);
+        if (is_null($domain)) {
+            throw new DomainNotFoundException();
         }
 
         $attributes = [

@@ -1,7 +1,7 @@
 @component('mail::message')
 # @lang('A new user registered')
 
-@lang('A new domain is ready :domain', ['domain' => $user->domain->domain_name])
+@lang('A new domain is ready :domain', ['domain' => $user->domain->getAttribute('domain_name')])
 
 
 @lang('Username'): **{{ $user->username }}**

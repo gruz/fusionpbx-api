@@ -22,9 +22,9 @@ class DomainSignupHashExpiredRule implements Rule
             $GLOBALS['test_signup_hash'] = $value;
         }
 
-        if (!Str::isUuid($value)) {
-            return false;
-        }
+        // if (!Str::isUuid($value)) {
+        //     return false;
+        // }
 
         $model = PostponedAction::where('hash', $value)->first();
 

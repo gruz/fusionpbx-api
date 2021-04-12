@@ -176,7 +176,7 @@ class DomainControllerTest extends TestCase
 
         $domain = Domain::where('domain_name', $domain_name)->first();
 
-        $this->checkDomainCreated($domain, $data);
+        $this->checkDomainSettingsCreated($domain, $data);
 
         foreach ($requestUsers as $key => $userData) {
             $this->checkUserWithRelatedDataCreated($domain, $userData);
@@ -216,16 +216,11 @@ class DomainControllerTest extends TestCase
         );
     }
 
-    public function test_Adding_new_domain_passes_with_several_admin_users_passes()
-    {
-        // Add several admin users, test activation process
-    }
-
     public function test_Adding_domain_with_no_or_bad_referral_code_fails()
     {
     }
 
-    private function checkDomainCreated($domain, $data)
+    private function checkDomainSettingsCreated($domain, $data)
     {
         $requestSettings = collect($data->get('settings'));
         foreach ($requestSettings as $requestSetting) {

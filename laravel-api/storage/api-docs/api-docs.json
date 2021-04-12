@@ -318,231 +318,6 @@
                 }
             }
         },
-        "/users": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get user list in domain",
-                "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
-                "operationId": "Api_User_Controllers_UserController::getAll",
-                "parameters": [
-                    {
-                        "name": "includes[]",
-                        "in": "query",
-                        "description": "Relations to be attached",
-                        "allowReserved": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "groups",
-                                    "status",
-                                    "domain",
-                                    "permissions",
-                                    "emails",
-                                    "extensions"
-                                ]
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "`TODO Stub` Could not created domain",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_auth": []
-                    }
-                ]
-            }
-        },
-        "/user/{user_uuid}": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get user info by ID",
-                "operationId": "Api_User_Controllers_UserController::getById",
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/user_uuid"
-                    },
-                    {
-                        "name": "includes[]",
-                        "in": "query",
-                        "description": "Relations to be attached",
-                        "allowReserved": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/user_includes"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "`TODO Stub` Success ..."
-                    },
-                    "400": {
-                        "description": "`TODO Stub` Could not ..."
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Update oneself or another user if having enoght permissions",
-                "operationId": "Api_User_Controllers_UserController::update",
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/user_uuid"
-                    }
-                ],
-                "requestBody": {
-                    "description": "User information",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserCreateSchema"
-                            },
-                            "examples": {
-                                "Create a user": [],
-                                "Create a user basic example": {
-                                    "summary": "`TODO example`",
-                                    "value": {
-                                        "code": 403,
-                                        "message": "登录失败",
-                                        "data": null
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "`TODO Stub` Success ..."
-                    },
-                    "400": {
-                        "description": "`TODO Stub` Could not ..."
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition`",
-                "description": "Not implemented yet",
-                "operationId": "Api_User_Controllers_UserController::delete",
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/user_uuid"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "`TODO Stub` Success ..."
-                    },
-                    "400": {
-                        "description": "`TODO Stub` Could not ..."
-                    }
-                }
-            }
-        },
-        "/user": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Gets currently logged in user info",
-                "operationId": "Api_User_Controllers_UserController::getMe",
-                "parameters": [
-                    {
-                        "name": "includes[]",
-                        "in": "query",
-                        "description": "Relations to be attached",
-                        "allowReserved": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/user_includes"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "`TODO Stub` Could not created domain",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "`TODO Stub` Could not ..."
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Creates a user inside a domain",
-                "operationId": "Api_User_Controllers_UserController::create",
-                "requestBody": {
-                    "description": "User information",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserCreateSchema"
-                            },
-                            "examples": {
-                                "Create a user": [],
-                                "Create a user basic example": {
-                                    "summary": "`TODO example`",
-                                    "value": {
-                                        "code": 403,
-                                        "message": "登录失败",
-                                        "data": null
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "`TODO Stub` Could not created domain",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "`TODO Stub` Could not ..."
-                    }
-                }
-            }
-        },
         "/user/activate/{hash}": {
             "get": {
                 "tags": [
@@ -620,7 +395,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "User forgot password",
+                "summary": "User forgot password - request email link to reset password",
                 "operationId": "Api_User_Controllers_UserController::forgotPassword",
                 "requestBody": {
                     "description": "User information to reset his password",
@@ -651,7 +426,7 @@
                                     "$ref": "#/components/schemas/UserCreateSchema"
                                 },
                                 "examples": {
-                                    "Password resent link basic example1": {
+                                    "Password resent link basic example": {
                                         "username": "user_Destany.Windler",
                                         "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
                                     }
@@ -666,27 +441,27 @@
                                 "schema": {
                                     "properties": {
                                         "errors": {
-                                            "description": "User forgot password",
+                                            "description": "User forgot password - request email link to reset password",
                                             "type": "array",
                                             "items": {
                                                 "properties": {
                                                     "status": {
-                                                        "description": "User forgot password",
+                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "string",
                                                         "example": "422"
                                                     },
                                                     "code": {
-                                                        "description": "User forgot password",
+                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "number",
                                                         "example": 0
                                                     },
                                                     "title": {
-                                                        "description": "User forgot password",
+                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "string",
                                                         "example": "Validation error"
                                                     },
                                                     "detail": {
-                                                        "description": "User forgot password",
+                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "string",
                                                         "example": "The user email is required."
                                                     }
@@ -708,7 +483,8 @@
                             }
                         }
                     }
-                }
+                },
+                "x-route-$path": "fpbx.user.forgot-password"
             }
         },
         "/update-password": {

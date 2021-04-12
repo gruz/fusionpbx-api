@@ -32,7 +32,7 @@ class DomainNew extends Mailable
     public function build()
     {
         $body = $this->markdown('emails.domain.new')
-            ->subject(config('app.name') . ': ' . __('A new domain is created :domain', ['domain' => $this->user->domain->domain_name]))
+            ->subject(config('app.name') . ': ' . __('A new domain is created :domain', ['domain' => $this->user->domain->getAttribute('domain_name')]))
             ->with([
                 'user' => $this->user,
             ]);

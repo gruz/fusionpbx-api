@@ -39,10 +39,6 @@ return [
         'message' => 'The group with ID :groupId is not a group', 
         'code' => '1007', 
     ],
-    'Api\User\Exceptions\WrongSignupDataException' => [
-        'message' => 'WrongSignupDataException', 
-        'code' => '1008', 
-    ],
     'Api\Domain\Exceptions\DomainNotFoundException' => [
         'message' => 'Domain not found', 
         'code' => '1009', 

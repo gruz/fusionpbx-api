@@ -43,7 +43,7 @@ class ResetPasswordLink extends Mailable
         ], false));
 
         $body = $this->markdown('emails.password.reset')
-            ->subject(__('Password reset has been requested at :domain', ['domain' => $this->user->domain->domain_name]))
+            ->subject(__('Password reset has been requested at :domain', ['domain' => $this->user->domain->getAttribute('domain_name')]))
             ->with([
                 'user' => $this->user,
                 // 'url' => \Request::root() . '/reset-password/?token=' . $this->token,

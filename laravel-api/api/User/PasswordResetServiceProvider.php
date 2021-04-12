@@ -36,7 +36,7 @@ class PasswordResetServiceProvider extends OriginalPasswordResetServiceProvider
                     'token' => $token,
                     'email' => $user->getEmailForPasswordReset(),
                     // 'domain_name' => $user->getDomainNameForPasswordReset()
-                    'domain_name' => $user->domain->domain_name,
+                    'domain_name' => $user->domain->getAttribute('domain_name'),
                 ], false));
         });
 

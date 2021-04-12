@@ -60,7 +60,6 @@ class TestRequestFactoryService
         $domain_name = Arr::get($params, 'domain_name', null);
 
         $skey = 'testing/' . Util::normalizePath(__FUNCTION__ . serialize(func_get_args()));
-        // dd($skey);
 
         if (!$noCache && $data = Cache::store('file')->get($skey)) {
             $data = unserialize($data);

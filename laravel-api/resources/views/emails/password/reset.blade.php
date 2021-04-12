@@ -1,7 +1,7 @@
 @component('mail::message')
 # @lang('Password reset has been requested')
 
-@lang('Password reset has been requested at your domain :domain', ['domain' => $user->domain->domain_name])
+@lang('Password reset has been requested at your domain :domain', ['domain' => $user->domain->getAttribute('domain_name')])
 
 
 @lang('Username'): **{{ $user->username }}**
