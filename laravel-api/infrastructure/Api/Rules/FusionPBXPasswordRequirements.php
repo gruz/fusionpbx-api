@@ -35,8 +35,7 @@ class FusionPBXPasswordRequirements implements Rule
         string $domainName,
         string $userEmail,
         string $passwordFor
-    )
-    {
+    ) {
         $this->domainName = $domainName;
         $this->userEmail = $userEmail;
         $this->passwordFor = $passwordFor;
@@ -57,13 +56,15 @@ class FusionPBXPasswordRequirements implements Rule
         ];
 
         $fPBXDefaultSettings = $this->defaultSettingService->getByAttributes([
-                                                                'default_setting_category' => $this->passwordFor]);
+            'default_setting_category' => $this->passwordFor
+        ]);
         $this->appUuid = $fPBXDefaultSettings->pluck('app_uuid')->first();
         $this->passwordSettingNames = $fPBXDefaultSettings
-                                            ->filter(function($defaultSetting) { 
-                                                return Str::contains($defaultSetting->default_setting_subcategory, 'password_'); })
-                                            ->pluck('default_setting_subcategory')
-                                            ->toArray();
+            ->filter(function ($defaultSetting) {
+                return Str::contains($defaultSetting->default_setting_subcategory, 'password_');
+            })
+            ->pluck('default_setting_subcategory')
+            ->toArray();
     }
 
     /**
@@ -88,44 +89,50 @@ class FusionPBXPasswordRequirements implements Rule
 
         $domain_uuid = $domain->domain_uuid;
         $arrayOfSettings['user'] = $this->userSettingService
-                                        ->getByAttributes([
-                                            'domain_uuid' => $domain_uuid,
-                                            'user_uuid' => $user->user_uuid,
-                                            'user_setting_category' => $this->passwordFor,
-                                            'user_setting_subcategory' => $this->passwordSettingNames,
-                                            'user_setting_enabled' => true])
-                                        ->map/*(function($setting) { return $setting->toArray(); })*/
-                                        ->only([
-                                            'user_setting_subcategory',
-                                            'user_setting_name',
-                                            'user_setting_value'])
-                                        ->all();
+            ->getByAttributes([
+                'domain_uuid' => $domain_uuid,
+                'user_uuid' => $user->user_uuid,
+                'user_setting_category' => $this->passwordFor,
+                'user_setting_subcategory' => $this->passwordSettingNames,
+                'user_setting_enabled' => true
+            ])
+            ->map/*(function($setting) { return $setting->toArray(); })*/
+            ->only([
+                'user_setting_subcategory',
+                'user_setting_name',
+                'user_setting_value'
+            ])
+            ->all();
 
         $arrayOfSettings['domain'] = $this->domainSettingService
-                                           ->getByAttributes([
-                                                'domain_uuid' => $domain_uuid,
-                                                'domain_setting_category' => $this->passwordFor,
-                                                'domain_setting_subcategory' => $this->passwordSettingNames,
-                                                'domain_setting_enabled' => true])
-                                           ->map/*(function($setting) { return $setting->toArray(); })*/
-                                           ->only([
-                                                'domain_setting_subcategory',
-                                                'domain_setting_name',
-                                                'domain_setting_value'])
-                                           ->all();
+            ->getByAttributes([
+                'domain_uuid' => $domain_uuid,
+                'domain_setting_category' => $this->passwordFor,
+                'domain_setting_subcategory' => $this->passwordSettingNames,
+                'domain_setting_enabled' => true
+            ])
+            ->map/*(function($setting) { return $setting->toArray(); })*/
+            ->only([
+                'domain_setting_subcategory',
+                'domain_setting_name',
+                'domain_setting_value'
+            ])
+            ->all();
 
         $arrayOfSettings['default'] = $this->defaultSettingService
-                                           ->getByAttributes([
-                                                'app_uuid' => $this->appUuid,
-                                                'default_setting_category' => $this->passwordFor,
-                                                'default_setting_subcategory' => $this->passwordSettingNames,
-                                                'default_setting_enabled' => true])
-                                           ->map/*(function($setting) { return $setting->toArray(); })*/
-                                           ->only([
-                                                'default_setting_subcategory',
-                                                'default_setting_name',
-                                                'default_setting_value'])
-                                           ->all();
+            ->getByAttributes([
+                'app_uuid' => $this->appUuid,
+                'default_setting_category' => $this->passwordFor,
+                'default_setting_subcategory' => $this->passwordSettingNames,
+                'default_setting_enabled' => true
+            ])
+            ->map/*(function($setting) { return $setting->toArray(); })*/
+            ->only([
+                'default_setting_subcategory',
+                'default_setting_name',
+                'default_setting_value'
+            ])
+            ->all();
 
         // $passwordSettingNames = $this->defaultSettingService
         //                              ->getByAttributes([
@@ -234,15 +241,15 @@ class FusionPBXPasswordRequirements implements Rule
     {
         $res = [];
         foreach ($settings as $settingType => $settingsConfigurations) {
-            foreach($settingsConfigurations as $setting) {
+            foreach ($settingsConfigurations as $setting) {
                 $requirement = Str::singular($this->passwordFor) . '.' .
-                                        $setting[$settingType . '_setting_subcategory'] . '.' .
-                                        $setting[$settingType . '_setting_name'];
+                    $setting[$settingType . '_setting_subcategory'] . '.' .
+                    $setting[$settingType . '_setting_name'];
                 if (!Arr::has($res, $requirement)) {
-                                Arr::set($res, $requirement, $setting[$settingType . '_setting_value']);
+                    Arr::set($res, $requirement, $setting[$settingType . '_setting_value']);
                 }
             }
-        }   
+        }
 
         return $res;
     }

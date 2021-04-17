@@ -338,9 +338,6 @@ class UserController extends Controller
     /**
      * User forgot password - request email link to reset password
      *
-     * @param UserForgotPasswordRequest $request
-     * @return void
-     * 
     @OA\Post(
         tags={"User"},
         path="/forgot-password",
@@ -423,69 +420,15 @@ class UserController extends Controller
     }
 
     /**
-     * User get reset password action
-     * 
-     * @param UserResetPasswordRequest $request
-     * @return void
-     */
-    public function resetPassword(UserResetPasswordRequest $request)
-    {
-        return view('user.password.reset-password', [
-            'token' => $request->get('token'),
-            'email' => $request->get('email'),
-            'domain_name' => $request->get('domain_name')
-        ]);
-    }
-
-    /**
      * User reset password after form submission
      *
-     * @param UserUpdatePasswordRequest $request
-     * @return void
-     * 
      @OA\Post(
         tags={"User"},
-        path="/update-password",
-        @OA\RequestBody(
-            description="Update user new password request",
-            required=true,
-            @OA\JsonContent(
-                ref="#/components/schemas/UserUpdatePasswordSchema",
-                examples={
-                    "Set new user password basic example": {
-                        "summary": "Set new user password basic example",
-                        "value": {
-                            "token":"0e07a67a80460d08b72fa6e88703586668455d70afef08e51ef8ce3bdf9fe8a8",
-                            "password":"my_secure_password",
-                            "password_confirmation":"my_secure_password",
-                            "user_email":"your_user@email.com"
-                        }
-                    },
-                }
-            )
-        ),
-        @OA\Response(
-            response=200,
-            description="Update user password response",
-            @OA\JsonContent(
-                @OA\Schema(@OA\Property(
-                    property="success",
-                    type="string",
-                    description="Update user password response" 
-                )),
-                example={
-                    "success": "User password has been successfully set",
-                }
-            ),
-        ),
-        @OA\Response(
-            response=422,
-            description="Validation error - ...",
-        ),
-        @OA\Response(
-            response=400,
-            description="Could not ...",
-        ),
+        path="/reset-password",
+        x={
+            "route-$path"="password.update",
+            "route-$middlewares"="web",
+        },
     )
      */
     public function updatePassword(UserUpdatePasswordRequest $request)
@@ -500,8 +443,9 @@ class UserController extends Controller
 
         $status = $this->passwordService->resetPassword($data);
 
-        if ($status === null)
+        if ($status === null) {
             return back()->withErrors(['password' => __('Invalid data')]);
+        }
 
         // return $this->response($this->passwordService->resetPassword($email));
         return view('user.password.reset-success');

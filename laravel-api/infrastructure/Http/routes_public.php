@@ -20,17 +20,17 @@ $router->group(['middleware' => ['web']], function ($router) {
     */
 
    $router->namespace('\Api\User\Controllers')->group(function ($router) {
-      $router->get('/reset-password', [
-         'uses' => 'UserController@resetPassword',
-         'as' => 'password.reset',
-         // 'namespace' => 'Api\User\Controllers'
-      ]);
+      // $router->get('/reset-password', [
+      //    'uses' => 'UserController@resetPassword',
+      //    'as' => 'password.reset',
+      //    // 'namespace' => 'Api\User\Controllers'
+      // ]);
    
-      $router->post('/reset-password', [
-         'uses' => 'UserController@updatePassword',
-         'as' => 'password.update',
-         // 'namespace' => 'Api\User\Controllers'
-      ]);
+      // $router->post('/reset-password', [
+      //    'uses' => 'UserController@updatePassword',
+      //    'as' => 'password.update',
+      //    // 'namespace' => 'Api\User\Controllers'
+      // ]);
    
       // $router->post('/forgot-password', [
       //    'uses' => 'UserController@forgotPassword',

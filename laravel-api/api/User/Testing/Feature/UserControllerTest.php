@@ -5,7 +5,6 @@ namespace Api\User\Testing\Feature;
 use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Api\Extension\Models\Extension;
-use Api\Voicemail\Models\Voicemail;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\UserTrait;
 use Illuminate\Support\Facades\Notification;
@@ -76,14 +75,14 @@ class UserControllerTest extends TestCase
 
         $response = $this->json('get', route('fpbx.user.activate', ['hash' => $hash]));
         $response->assertStatus(422);
-        
+
         $hash = \Str::uuid()->toString();
 
         $response = $this->json('get', route('fpbx.user.activate', ['hash' => $hash]));
         $response->assertStatus(422);
 
-        // Maybe later think of behavior if domain is disabled. Should we allow to activate user? 
-        // Should the activation link work later when currentry disabled domain is activated? 
+        // Maybe later think of behavior if domain is disabled. Should we allow to activate user?
+        // Should the activation link work later when currentry disabled domain is activated?
         // $domainModel = $userModel->domain;
         // $domainModel->domain_enabled = false;
         // $domainModel->save();
@@ -107,6 +106,36 @@ class UserControllerTest extends TestCase
 
         Notification::assertSentTo($userModel, ResetPassword::class);
 
+        return [$data, $response];
+    }
+
+    public function testResetPasswordShowFormSuccess()
+    {
+        list($data, $response) = $this->test_ForgotPassword_Success();
+        $resetRecord = \DB::table(('password_resets'))->where([
+            ['email', $data['user_email']],
+            ['domain_name', $data['domain_name']],
+        ])->first();
+
+
+        $url = url(route('password.reset', [
+            'token' => $resetRecord->token,
+            'email' => $resetRecord->email,
+            'domain_name' => $resetRecord->domain_name,
+        ], false));
+
+        $response = $this->json('get', $url);
+        // $response->assertViewHas('Reset Password');
+        $response->assertSee('Reset Password');
+        $response->assertSee($resetRecord->token);
+        $response->assertSee($resetRecord->email);
+
+        // dd($resetRecord, $url);
+
+        // dd($data, $response->offsetGet('domain_uuid'));
+
+        // $view = $this->view('welcome', ['name' => 'Taylor']);
+
     }
 
     public function test_Adding_user_with_no_or_bad_referral_code_fails()
@@ -115,6 +144,4 @@ class UserControllerTest extends TestCase
         // user creation data must provide such a code and it must match
         // a list of available codes. The list of the codes will be taken from an api.
     }
-
-
 }

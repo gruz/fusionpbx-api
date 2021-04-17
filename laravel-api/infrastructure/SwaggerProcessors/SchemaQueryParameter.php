@@ -29,6 +29,7 @@ class SchemaQueryParameter
 {
     // const MODEL_ADD_INCLUDES = 'model-add-includes';
     const ROUTE_PATH = 'route-$path';
+    const ROUTE_MIDDLEWARES = 'route-$middlewares';
 
     public function __invoke(Analysis $analysis)
     {
@@ -231,7 +232,7 @@ class SchemaQueryParameter
                 // $path->description = 'NOT IMPLEMENTED YET';
                 continue;
             }
-            $controller = $this->getClassName($path);
+            $controller = $this->getClassName($path->$method);
 
             $auth = false;
             if ($path->$method->security !== UNDEFINED) {
@@ -251,12 +252,18 @@ class SchemaQueryParameter
                 'action' => $action,
             ];
 
-            if ($path->$method->x !== UNDEFINED && $name = Arr::get($path->$method->x, self::ROUTE_PATH)) {
-                $route['name'] = $name;
+            if ($path->$method->x !== UNDEFINED) {
+                if ($name = Arr::get($path->$method->x, self::ROUTE_PATH)) {
+                    $route['name'] = $name;
+                }
+                if ($middlewares = Arr::get($path->$method->x, self::ROUTE_MIDDLEWARES)) {
+                    $middlewares = explode(',', $middlewares);
+                    $middlewares = array_map('trim', $middlewares);
+                    $route['middlewares'] = $middlewares;
+                }
             }
 
             $routes[] = $route;
-
         }
 
         Storage::put('swagger/routes.json', json_encode($routes, JSON_PRETTY_PRINT));

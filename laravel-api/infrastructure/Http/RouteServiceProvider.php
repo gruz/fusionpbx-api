@@ -79,11 +79,16 @@ class RouteServiceProvider extends ServiceProvider
                 $name = $route->name;
             }
 
-
-            if ($route->auth) {
-                $middlewares = ['auth:api'];
+            // d($route);
+            $middlewares = [];
+            if (!empty($route->middlewares)) {
+                $middlewares = $route->middlewares;
             } else {
-                $middlewares = ['api'];
+                if ($route->auth) {
+                    $middlewares = ['auth:api'];
+                } else {
+                    $middlewares = ['api'];
+                }
             }
             Route::middleware($middlewares)
                 ->namespace($this->namespace)

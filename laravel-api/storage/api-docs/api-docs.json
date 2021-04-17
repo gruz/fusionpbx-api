@@ -487,54 +487,69 @@
                 "x-route-$path": "fpbx.user.forgot-password"
             }
         },
-        "/update-password": {
+        "/reset-password": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Http_User_Controllers_UserController::getResetPasswordForm",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "some@email.com"
+                        }
+                    },
+                    {
+                        "name": "domain_name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "url",
+                            "example": "email.com"
+                        }
+                    },
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71b4770ba36a165533fd75786a41793ea501f60f282f2464d27e16d2bb6bf516"
+                        }
+                    }
+                ],
+                "responses": {},
+                "x-route-$path": "password.reset",
+                "x-route-$middlewares": "web"
+            },
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "User reset password after form submission",
                 "operationId": "Api_User_Controllers_UserController::updatePassword",
-                "requestBody": {
-                    "description": "Update user new password request",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserUpdatePasswordSchema"
-                            },
-                            "examples": {
-                                "Set new user password basic example": {
-                                    "summary": "Set new user password basic example",
-                                    "value": {
-                                        "token": "0e07a67a80460d08b72fa6e88703586668455d70afef08e51ef8ce3bdf9fe8a8",
-                                        "password": "my_secure_password",
-                                        "password_confirmation": "my_secure_password",
-                                        "user_email": "your_user@email.com"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Update user password response",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": {
-                                    "success": "User password has been successfully set"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error - ..."
-                    },
-                    "400": {
-                        "description": "Could not ..."
-                    }
-                }
+                "responses": {},
+                "x-route-$path": "password.update",
+                "x-route-$middlewares": "web"
+            }
+        },
+        "/invalid-link": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Http_User_Controllers_UserController::invalidLink",
+                "responses": {},
+                "x-route-$path": "password.invalid-link",
+                "x-route-$middlewares": "web"
             }
         },
         "/": {
@@ -1398,7 +1413,8 @@
                         "readOnly": true
                     }
                 }
-            }
+            },
+            "HttpUserController": {}
         },
         "parameters": {
             "domain_uuid": {

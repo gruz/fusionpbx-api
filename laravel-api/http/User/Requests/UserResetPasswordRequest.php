@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\User\Requests;
+namespace Http\User\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,12 +11,14 @@ class UserResetPasswordRequest extends FormRequest
         return true;
     }
 
+    // public $redirect = '/';
+
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:password_resets',
             'token' => 'required',
-            'domain_name' => 'required|exists:password_resets'
+            // 'domain_name' => 'required|exists:password_resets',
+            'email' => 'required|email|exists:password_resets,email,domain_name,' . request()->domain_name,
         ];
     }
 

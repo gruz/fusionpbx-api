@@ -26,7 +26,7 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
     public function create(CanResetPasswordContract $user)
     {
         $email = $user->getEmailForPasswordReset();
-        $this->domainName  = $this->getUserDomainName($user);
+        $this->domainName  = $user->domain->getAttribute('domain_name');
         $this->deleteExisting($user);
 
         // We will create a new, random token for the user so that we can e-mail them
@@ -52,7 +52,7 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
                 'email' => $user->getEmailForPasswordReset(),
                 'domain_name' =>  $this->domainName ?
                     $this->domainName :
-                    $this->getUserDomainName($user)
+                    $user->domain->getAttribute('domain_name')
             ])
             ->delete();
     }
@@ -88,7 +88,7 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
                 'email' => $user->getEmailForPasswordReset(),
                 'domain_name' =>  $this->domainName ?
                     $this->domainName :
-                    $this->getUserDomainName($user)
+                    $user->domain->getAttribute('domain_name')
             ])
             ->first();
 
@@ -110,22 +110,11 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
                 'email' => $user->getEmailForPasswordReset(),
                 'domain_name' =>  $this->domainName ?
                     $this->domainName :
-                    $this->getUserDomainName($user)
+                    $user->domain->getAttribute('domain_name')
             ])
             ->first();
 
         return $record && $this->tokenRecentlyCreated($record['created_at']);
     }
 
-    /**
-     * Function to get users domain name to which he belongs.
-     *
-     * @param CanResetPasswordContract $user
-     * @return string Users domain name
-     */
-    protected function getUserDomainName(CanResetPasswordContract $user)
-    {
-        // return User::find($user->user_uuid)->getDomainNameForPasswordReset();
-        return $user->domain->getAttribute('domain_name');
-    }
 }

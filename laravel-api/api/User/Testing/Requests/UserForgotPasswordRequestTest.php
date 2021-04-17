@@ -3,12 +3,10 @@
 namespace Api\User\Testing\Requests;
 
 use Api\User\Models\User;
-use Illuminate\Support\Arr;
 use Api\Domain\Models\Domain;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\UserTrait;
 use Infrastructure\Testing\DomainTrait;
-use Api\PostponedAction\Models\PostponedAction;
 
 class UserForgotPasswordRequestTest extends TestCase
 {
@@ -73,6 +71,7 @@ class UserForgotPasswordRequestTest extends TestCase
             ]
         ]);
     }
+
     public function testFailWhenUserNotExistsInADomain()
     {
         list($response, $email) = $this->simulateDomainSignupAndActivate();
