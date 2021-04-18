@@ -91,8 +91,13 @@ class TeamService extends AbstractService
             $settingsData = $this->injectData($settingsData, ['domain_uuid' => $domainModel->domain_uuid]);
             $this->domainSettingService->createMany($settingsData, ['forceFillable' => ['domain_uuid']]);
 
+            $reseller_reference_code = Arr::get($data, 'reseller_reference_code');
             $usersData = Arr::get($data, 'users', []);
             $usersData = $this->injectData($usersData, ['domain_uuid' => $domainModel->domain_uuid]);
+            if (!empty($reseller_reference_code)) {
+                $usersData = $this->injectData($usersData, ['reseller_reference_code' => $reseller_reference_code]);
+            }
+
             $usersModel = $this->userService->createMany($usersData, ['excludeNotification' => [$activatorEmail]]);
 
             foreach ($usersModel as $userModel) {

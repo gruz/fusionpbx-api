@@ -3,12 +3,14 @@
 namespace Api\User\Models;
 
 use Infrastructure\Database\Eloquent\AbstractModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @OA\Schema()
  */
 class UserSetting extends AbstractModel
 {
+    use HasFactory;
 
     public $fillable = [
         // 'user_setting_uuid',

@@ -104,7 +104,7 @@ trait UserTrait
             ['domain_uuid' => $domain->domain_uuid],
             $userWhere
         ))->first();
-        $groupName = $isAdmin 
+        $groupName = $isAdmin
             ? config('fpbx.default.user.group.admin')
             : config('fpbx.default.user.group.public');
 
@@ -120,10 +120,10 @@ trait UserTrait
         ]);
     }
 
-    private function createUserWhereConditions($userData) 
+    private function createUserWhereConditions($userData)
     {
         $userModel = new User();
-        $userExceptColumns = array_merge($userModel->getGuarded(),['password', 'user_uuid']);
+        $userExceptColumns = array_merge($userModel->getGuarded(), ['password', 'user_uuid']);
         $userTableColumns = Arr::except($userModel->getTableColumnsInfo(true), $userExceptColumns);
         foreach ($userTableColumns as $columnName => $obj) {
             if (array_key_exists($columnName, $userData)) {
@@ -134,6 +134,30 @@ trait UserTrait
         return $userWhere;
     }
 
+    private function checkUserSettingCreated($domain, $userData)
+    {
+        // dd($userData);
+        $userSettings = Arr::get($userData, 'user_settings', []);
+        if (empty($userSettings)) {
+            return;
+        }
+        $userWhere = $this->createUserWhereConditions($userData);
+        $userModel = User::where(array_merge(
+            ['domain_uuid' => $domain->domain_uuid],
+            $userWhere
+        ))->first();
+
+        foreach ($userSettings as $key => $userSetting) {
+            $this->assertDatabaseHas('v_user_settings', [
+                'domain_uuid' => $domain->domain_uuid,
+                'user_uuid' => $userModel->user_uuid,
+                'user_setting_category' => $userSetting['user_setting_category'],
+                'user_setting_subcategory' => $userSetting['user_setting_subcategory'],
+                'user_setting_value' => $userSetting['user_setting_value'],
+            ]);
+        }
+    }
+
     protected function checkUserWithRelatedDataCreated($domain, $userData)
     {
         $this->checkUserCreated($domain, $userData);
@@ -141,5 +165,6 @@ trait UserTrait
         $this->checkExtensionsCreated($domain, $userData, Extension::class);
         $this->checkExtensionsCreated($domain, $userData, Voicemail::class);
         $this->checkGroupCreated($domain, $userData);
+        $this->checkUserSettingCreated($domain, $userData);
     }
 }

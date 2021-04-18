@@ -254,8 +254,8 @@ abstract class AbstractService
 
     protected function injectData($data, $inject)
     {
-        foreach ($data as $key => $value) {
-            $data[$key] = array_merge($value, $inject);
+        foreach ($data as $key => $row) {
+            $data[$key] = array_merge($inject, $row);
         }
 
         return $data;

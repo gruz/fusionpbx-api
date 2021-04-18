@@ -49,6 +49,8 @@ class UserService extends AbstractService
 
     private $domainService;
 
+    private $userSettingService;
+
     public function __construct(
         DomainService $domainService,
         GroupRepository $groupRepository,
@@ -59,8 +61,8 @@ class UserService extends AbstractService
         DomainRepository $domainRepository,
         ExtensionService $extensionService,
         VoicemailService $voicemailService,
-        ContactService $contactService
-
+        ContactService $contactService,
+        UserSettingService $userSettingService
     ) {
         $this->domainService = $domainService;
         $this->groupRepository = $groupRepository;
@@ -72,6 +74,7 @@ class UserService extends AbstractService
         $this->extensionService = $extensionService;
         $this->voicemailService = $voicemailService;
         $this->contactService = $contactService;
+        $this->userSettingService = $userSettingService;
 
         parent::__construct();
     }
@@ -139,22 +142,33 @@ class UserService extends AbstractService
             $data['domain_uuid'] = $domain_uuid;
             $userModel = $this->repository->create($data);
 
-            $contactsData = Arr::get($data, 'contacts', []);
-            $contactsData = $this->injectData($contactsData, ['domain_uuid' => $domain_uuid]);
-            $extensionsData = Arr::get($data, 'extensions', []);
-            $extensionsData = $this->injectData($extensionsData, ['domain_uuid' => $domain_uuid]);
+            $this->addRelations($userModel, $data, 'contacts', $this->contactService);
+            $this->addRelations($userModel, $data, 'extensions', $this->extensionService);
+
+            $reseller_reference_code = Arr::get($data, 'reseller_reference_code');
+
+            if ($reseller_reference_code) {
+                $userSettings = Arr::get($data, 'user_settings', []);
+                $userSettings[] = [
+                    "user_setting_category" => "payment",
+                    "user_setting_subcategory" => "reseller_code",
+                    "user_setting_name" => "text",
+                    "user_setting_value" => $reseller_reference_code,
+                    "user_setting_order" => 0,
+                    "user_setting_enabled" => true,
+                    "user_setting_description" => 'Reseller code used for payment',
+                ];
+                // Arr::set($data, 'user_settings', $userSettings);
+                // $this->addRelations($userModel, $data, 'user_settings', $this->userSettingService);
+                // $settingsData = Arr::get($data, 'settings', []);
+                $userSettings = $this->injectData($userSettings, [
+                    'user_uuid' => $userModel->getAttribute('user_uuid'),
+                    'domain_uuid' => $userModel->domain->getAttribute('domain_uuid'),
+                ]);
+                $this->userSettingService->createMany($userSettings, ['forceFillable' => ['domain_uuid', 'user_uuid']]);
+            }
+
             $isAdmin = Arr::get($data, 'is_admin', false);
-
-            foreach ($contactsData as $contactData) {
-                $relatedModel = $this->contactService->create($contactData, ['forceFillable' => ['domain_uuid']]);
-                $this->setRelation($userModel, $relatedModel);
-            }
-
-            foreach ($extensionsData as $extensionData) {
-                $relatedModel = $this->extensionService->create($extensionData, ['forceFillable' => ['domain_uuid']]);
-                $this->setRelation($userModel, $relatedModel);
-            }
-
             // $groupName = config('fpbx.default.user.group.public');
             // needs to be discussed what to do with other groups
             $groupName = $isAdmin
@@ -163,6 +177,8 @@ class UserService extends AbstractService
             $relatedModel = Group::where('group_name', $groupName)->first();
             $this->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);
 
+            $extensionsData = Arr::get($data, 'extensions', []);
+            $extensionsData = $this->injectData($extensionsData, ['domain_uuid' => $domain_uuid]);
             $voicemailData = $extensionsData;
             foreach ($voicemailData as $key => $value) {
                 $voicemailData[$key]['voicemail_id'] = $voicemailData[$key]['extension'];
@@ -182,7 +198,6 @@ class UserService extends AbstractService
         return $userModel;
     }
 
-
     public function getMe($options = [])
     {
         //return Auth::user();
@@ -190,19 +205,6 @@ class UserService extends AbstractService
         $class::$staticMakeVisible = ['password'];
         return $this->userRepository->getWhere('user_uuid', Auth::user()->user_uuid)->first();
     }
-
-
-    // public function getByAttributes(array $attributes)
-    // {
-    //     $data = null;
-
-    //     if (!empty($attributes) && !is_null($attributes)) {
-    //         $data = $this->userRepository->getWhereArray($attributes)->first();
-    //     }
-
-    //     return $data;
-    // }
-
 
     /**
      * Creates a user
@@ -362,5 +364,16 @@ class UserService extends AbstractService
 
     public function getUserByEmailAndDomain($user_email, $domain_name) {
         return $this->userRepository->getUserByEmailAndDomain($user_email, $domain_name);
+    }
+
+    private function addRelations($userModel, $data, $type, $service) {
+
+        $relatedData = Arr::get($data, $type, []);
+        $relatedData = $this->injectData($relatedData, ['domain_uuid' => $userModel->getAttribute('domain_uuid')]);
+
+        foreach ($relatedData as $row) {
+            $relatedModel = $service->create($row, ['forceFillable' => ['domain_uuid']]);
+            $this->setRelation($userModel, $relatedModel);
+        }
     }
 }

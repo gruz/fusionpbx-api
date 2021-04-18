@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Api\Extension\Models\Extension;
 use Infrastructure\Http\ApiRequest;
 use Infrastructure\Rules\UsernameRule;
+use Api\Settings\Models\DefaultSetting;
 
 class UserSignupRequest extends ApiRequest
 {
@@ -18,7 +19,7 @@ class UserSignupRequest extends ApiRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'domain_name' => [
                 'required',
                 Rule::exists(Domain::class, 'domain_name')
@@ -74,5 +75,18 @@ class UserSignupRequest extends ApiRequest
             'contacts' => 'array',
             'contacts.*.contact_url' => 'url',
         ];
+
+        $resellerCodeRequired = config('fpbx.resellerCodeRequired');
+        if ($resellerCodeRequired) {
+            $rules['reseller_reference_code'] = [
+                'required',
+                Rule::exists(DefaultSetting::class, 'default_setting_value')
+                    ->where('default_setting_category', 'billing')
+                    ->where('default_setting_subcategory', 'reseller_code'),
+            ];
+        }
+
+        return $rules;
+
     }
 }

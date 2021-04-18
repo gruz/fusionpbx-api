@@ -2,10 +2,12 @@
 
 namespace Api\Domain\Requests;
 
+use Illuminate\Validation\Rule;
 use Infrastructure\Http\ApiRequest;
 use Infrastructure\Rules\HostnameRule;
-use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
 use Infrastructure\Rules\UsernameRule;
+use Api\Settings\Models\DefaultSetting;
+use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
 
 class DomainSignupRequest extends ApiRequest
 {
@@ -37,6 +39,18 @@ class DomainSignupRequest extends ApiRequest
             'users.*.extensions.*.voicemail_password' => 'required|integer',
             'users' => new ArrayAtLeastOneAcceptedRule('is_admin'),
         ];
+
+        $resellerCodeRequired = config('fpbx.resellerCodeRequired');
+        if ($resellerCodeRequired) {
+            $resellecrCodeCheck = [
+                Rule::exists(DefaultSetting::class, 'default_setting_value')
+                    ->where('default_setting_category', 'billing')
+                    ->where('default_setting_subcategory', 'reseller_code'),
+            ];
+
+            $rules['reseller_reference_code'] = array_merge(['required'], $resellecrCodeCheck);
+            $rules['users.*.reseller_reference_code'] = $resellecrCodeCheck;
+        }
 
         if (!$this->request->get('is_subdomain')) {
             $rules['domain_name'][] = new HostnameRule();

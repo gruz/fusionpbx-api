@@ -56,11 +56,20 @@ class UserSignupRequestTest extends TestCase
 
         $response = $this->json('post', route('fpbx.user.signup', $data));
         $response->assertStatus(422);
-        $response->assertJson([
-            "errors" => [
-                ["detail" => "The extensions.0.extension has already been taken."]
-            ]
-        ]);
+        $response->assertJsonFragment(['detail' => 'The extensions.0.extension has already been taken.']);
+
+        // $res_array = (array)json_decode($response->content());
+        // $this->assertArr
+        // $this->assertArrayHasKey('errors.*.detail', $res_array);
+        // $this->assertArrayHasKey('expires_in', $res_array);
+
+
+        // $response->assertJsonPath('errors.*.detail.*', "The extensions.0.extension has already been taken.");
+        // $response->assertJson([
+        //     "errors" => [
+        //         ["detail" => "The extensions.0.extension has already been taken."]
+        //     ]
+        // ]);
     }
 
     public function testFailWhenDomainDisabled()

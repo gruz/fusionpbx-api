@@ -4,7 +4,9 @@ namespace Infrastructure\Testing;
 
 use Storage;
 use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Support\Arr;
+use Api\Settings\Models\DefaultSetting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
 use Api\PostponedAction\Models\PostponedAction;
@@ -21,7 +23,7 @@ abstract class TestCase extends BaseTestCase
     public $testRequestFactoryService;
 
     /**
-     * @var Faker\Faker
+     * @var Generator
      */
     public $faker;
 
@@ -56,6 +58,12 @@ abstract class TestCase extends BaseTestCase
         if (empty($request)) {
             $request = $testRequestFactoryService->makeDomainSignupRequest(['noCache' => $forceNewRequestGeneration]);
         }
+
+        if (config('fpbx.resellerCodeRequired')) {
+            $reseller_code = $this->createResellerCode();
+            $request['reseller_reference_code'] = $reseller_code;
+        }
+
         $response = $this->json('post', route('fpbx.domain.signup'), $request);
 
         // // ##mygruz20210329030026  Disabled for now. Not sure if this makes sense
@@ -64,6 +72,15 @@ abstract class TestCase extends BaseTestCase
         $data = [$request, $response];
 
         return $data;
+    }
+
+    protected function createResellerCode() {
+        $faker = Factory::create(Factory::DEFAULT_LOCALE);;
+        $reseller_code = $faker->word;
+        $defaultSettingModel = new DefaultSetting;
+        $defaultSettingModel->createResellerCodeRecord($reseller_code);
+
+        return $reseller_code;
     }
 
     protected function simulateDomainSignupAndActivate() {

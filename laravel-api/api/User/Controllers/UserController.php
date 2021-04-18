@@ -5,14 +5,12 @@ namespace Api\User\Controllers;
 use Illuminate\Http\Request;
 use Api\User\Services\UserService;
 use Infrastructure\Http\Controller;
-use Api\Domain\Services\TeamService;
 use Api\User\Requests\CreateUserRequest;
 use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserSignupRequest;
 use Api\User\Requests\UserActivateRequest;
 use Api\User\Services\UserPasswordService;
 use Api\User\Requests\UserForgotPasswordRequest;
-use Api\User\Requests\UserUpdatePasswordRequest;
 
 /**
  * @OA\Schema()
@@ -24,24 +22,10 @@ class UserController extends Controller
      */
     private $userService;
 
-    /**
-     * @var TeamService
-     */
-    private $teamService;
-
-    /**
-     * @var UserPasswordService
-     */
-    private $passwordService;
-
     public function __construct(
-        UserService $userService,
-        TeamService $teamService,
-        UserPasswordService $passwordService
+        UserService $userService
     ) {
         $this->userService = $userService;
-        $this->teamService = $teamService;
-        $this->passwordService = $passwordService;
     }
 
     /**
@@ -411,42 +395,10 @@ class UserController extends Controller
         ),
     )
      */
-    public function forgotPassword(UserForgotPasswordRequest $request)
+    public function forgotPassword(UserForgotPasswordRequest $request, UserPasswordService $userPasswordService)
     {
         $data = $request->only('user_email', 'domain_name');
 
-        return $this->response($this->passwordService->generateResetToken($data));
-    }
-
-    /**
-     * User reset password after form submission
-     *
-     @OA\Post(
-        tags={"User"},
-        path="/reset-password",
-        x={
-            "route-$path"="password.update",
-            "route-$middlewares"="web",
-        },
-    )
-     */
-    public function updatePassword(UserUpdatePasswordRequest $request)
-    {
-        $data = $request->only(
-            'user_email',
-            'password',
-            'password_confirmation',
-            'token',
-            'domain_name'
-        );
-
-        $status = $this->passwordService->resetPassword($data);
-
-        if ($status === null) {
-            return back()->withErrors(['password' => __('Invalid data')]);
-        }
-
-        // return $this->response($this->passwordService->resetPassword($email));
-        return view('user.password.reset-success');
+        return $this->response($userPasswordService->generateResetToken($data));
     }
 }

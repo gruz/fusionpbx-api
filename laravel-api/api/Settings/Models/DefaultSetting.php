@@ -21,4 +21,12 @@ class DefaultSetting extends AbstractModel
         // ~ 'password',
     ];
 
+    public function createResellerCodeRecord($reseller_code) {
+        $this->setAttribute('default_setting_category', 'billing');
+        $this->setAttribute('default_setting_subcategory', 'reseller_code');
+        $this->setAttribute('default_setting_name', 'array');
+        $this->setAttribute('default_setting_enabled', 1);
+        $this->setAttribute('default_setting_value', $reseller_code);
+        $this->save();
+    }
 }

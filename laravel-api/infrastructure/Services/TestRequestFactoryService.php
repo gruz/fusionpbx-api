@@ -9,6 +9,7 @@ use Api\User\Models\Contact;
 use Api\Domain\Models\Domain;
 use Api\Settings\Models\Setting;
 use Api\Extension\Models\Extension;
+use Api\User\Models\UserSetting;
 use Api\Voicemail\Models\Voicemail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -58,6 +59,7 @@ class TestRequestFactoryService
         $numberOfUsers = Arr::get($params, 'numberOfUsers', 1);
         $addDomainName = Arr::get($params, 'addDomainName', false);
         $domain_name = Arr::get($params, 'domain_name', null);
+        $addResellerCode = Arr::get($params, 'addResellerCode', null);
 
         $skey = 'testing/' . Util::normalizePath(__FUNCTION__ . serialize(func_get_args()));
 
@@ -114,6 +116,17 @@ class TestRequestFactoryService
 
         if ($addDomainName && !empty($domain_name)) {
             $users = $users->state(['domain_name' => $domain_name]);
+        }
+
+        if ($addResellerCode) {
+            $users = $users->state(function (array $attributes) {
+                return [
+                    'user_settings' => UserSetting::factory(1)
+                        ->make()
+                        // ->makeVisible('password')
+                        ->toArray(),
+                ];
+            });
         }
 
         $users = $users->make()

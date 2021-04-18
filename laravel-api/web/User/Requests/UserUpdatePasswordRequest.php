@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\User\Requests;
+namespace Web\User\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Api\Rules\FusionPBXPasswordRequirements;

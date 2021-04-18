@@ -55,13 +55,15 @@ class LoginProxy
      */
     public function attemptLogin($username, $password, $domain_name)
     {
-        $domain = $this->domainRepository->getWhere('domain_name', $domain_name)->first(); // if domian is not enabled do not allow to login // catch on level of Request
+        // $domain = $this->domainRepository->getWhere('domain_name', $domain_name)->first(); // if domian is not enabled do not allow to login // catch on level of Request
 
-        if (empty($domain)) {
-            throw new InvalidCredentialsException(__('Wrong domain name or domain doesn\'t exists'));
-        }
+        // if (empty($domain)) {
+        //     throw new InvalidCredentialsException(__('Wrong domain name or domain doesn\'t exists'));
+        // }
 
-        $user = $this->userRepository->getWhereArray(['username' => $username, 'domain_uuid' => $domain->domain_uuid])->first();
+        // $user = $this->userRepository->getWhereArray(['username' => $username, 'domain_uuid' => $domain->domain_uuid])->first();
+
+        $user = $this->userRepository->getUserByUsernameAndDomain($username, $domain_name);
 
         if (!is_null($user)) {
 
@@ -69,12 +71,14 @@ class LoginProxy
                 throw new UserDisabledException();
             }
 
-            return $this->proxy('password', [
-                'username' => ['username' => $username, 'domain_uuid' => $domain->domain_uuid],
+            $data = [
+                'username' => ['username' => $username, 'domain_uuid' => $user->domain->getAttribute('domain_uuid')],
                 'password' => $password,
                 'user_uuid' => $user->user_uuid,
                 'domain_uuid' => $user->domain_uuid,
-            ]);
+            ];
+
+            return $this->proxy('password', $data);
         }
 
         throw new InvalidCredentialsException(__('User doesn\'t exists'));

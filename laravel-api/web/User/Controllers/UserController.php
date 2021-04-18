@@ -2,7 +2,9 @@
 
 namespace Web\User\Controllers;
 
+use Api\User\Services\UserPasswordService;
 use Web\User\Requests\UserResetPasswordRequest;
+use Web\User\Requests\UserUpdatePasswordRequest;
 use Illuminate\Routing\Controller as BaseController;
 
 /**
@@ -94,5 +96,37 @@ class UserController extends BaseController
     public function invalidLink()
     {
         return view('user.password.invalid-link');
+    }
+
+    /**
+     * User reset password after form submission
+     *
+     @OA\Post(
+        tags={"User"},
+        path="/password-update",
+        x={
+            "route-$path"="password.update",
+            "route-$middlewares"="web",
+        },
+    )
+     */
+    public function passwordUpdate(UserUpdatePasswordRequest $request, UserPasswordService $userPasswordService )
+    {
+        $data = $request->only(
+            'user_email',
+            'password',
+            'password_confirmation',
+            'token',
+            'domain_name',
+        );
+
+        $status = $userPasswordService->resetPassword($data);
+
+        if ($status === null) {
+            return back()->withErrors(['password' => __('Invalid data')]);
+        }
+
+        // return $this->response($this->passwordService->resetPassword($email));
+        return view('user.password.updated');
     }
 }

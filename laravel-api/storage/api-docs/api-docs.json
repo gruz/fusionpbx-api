@@ -487,59 +487,6 @@
                 "x-route-$path": "fpbx.user.forgot-password"
             }
         },
-        "/reset-password": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Web_User_Controllers_UserController::getNewPasswordForm",
-                "parameters": [
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "email",
-                            "example": "some@email.com"
-                        }
-                    },
-                    {
-                        "name": "domain_name",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "url",
-                            "example": "email.com"
-                        }
-                    },
-                    {
-                        "name": "token",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "example": "71b4770ba36a165533fd75786a41793ea501f60f282f2464d27e16d2bb6bf516"
-                        }
-                    }
-                ],
-                "responses": {},
-                "x-route-$path": "password.reset",
-                "x-route-$middlewares": "web"
-            },
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User reset password after form submission",
-                "operationId": "Api_User_Controllers_UserController::updatePassword",
-                "responses": {},
-                "x-route-$path": "password.update",
-                "x-route-$middlewares": "web"
-            }
-        },
         "/": {
             "get": {
                 "tags": [
@@ -594,6 +541,49 @@
                 "x-route-$middlewares": "web"
             }
         },
+        "/reset-password": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Web_User_Controllers_UserController::getNewPasswordForm",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "some@email.com"
+                        }
+                    },
+                    {
+                        "name": "domain_name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "url",
+                            "example": "email.com"
+                        }
+                    },
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71b4770ba36a165533fd75786a41793ea501f60f282f2464d27e16d2bb6bf516"
+                        }
+                    }
+                ],
+                "responses": {},
+                "x-route-$path": "password.reset",
+                "x-route-$middlewares": "web"
+            }
+        },
         "/invalid-link": {
             "get": {
                 "tags": [
@@ -603,6 +593,18 @@
                 "operationId": "Web_User_Controllers_UserController::invalidLink",
                 "responses": {},
                 "x-route-$path": "password.invalid-link",
+                "x-route-$middlewares": "web"
+            }
+        },
+        "/password-update": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User reset password after form submission",
+                "operationId": "Web_User_Controllers_UserController::passwordUpdate",
+                "responses": {},
+                "x-route-$path": "password.update",
                 "x-route-$middlewares": "web"
             }
         }
@@ -1149,11 +1151,6 @@
                     },
                     "add_date": {
                         "type": "string"
-                    },
-                    "email_verified_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2021-03-27 02:32:26"
                     }
                 }
             },

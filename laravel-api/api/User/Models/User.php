@@ -6,18 +6,19 @@ use Api\User\Models\Contact;
 use Api\Domain\Models\Domain;
 use Api\Status\Models\Status;
 use Api\User\Models\ContactUser;
+use Api\User\Models\UserSetting;
 use Laravel\Passport\HasApiTokens;
 use Api\Extension\Models\Extension;
-use Api\Extension\Models\ExtensionUser;
 use Api\User\Models\GroupPermission;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
+use Api\Extension\Models\ExtensionUser;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\AbstractModel;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Infrastructure\Database\Eloquent\AbstractModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -241,6 +242,11 @@ class User extends AbstractModel implements
     public function contacts(): BelongsToMany
     {
         return $this->belongsToMany(Contact::class, ContactUser::class, 'user_uuid', 'contact_uuid');
+    }
+
+    public function user_settings(): HasMany
+    {
+        return $this->hasMany(UserSetting::class, 'user_uuid', 'user_uuid');
     }
 
     /**

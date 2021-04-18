@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\User\Testing\Requests;
+namespace Web\User\Testing\Requests;
 
 use Infrastructure\Testing\TestCase;
 

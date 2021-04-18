@@ -114,4 +114,13 @@ class UserRepository extends AbstractRepository
 
         return $userModel;
     }
+
+    public function getUserByUsernameAndDomain($username, $domain_name)
+    {
+        $userModel = $this->getModel()->whereHas('domain', function ($q) use ($username, $domain_name) {
+            $q->where('domain_name', '=', $domain_name);
+        })->where('username', $username)->first();
+
+        return $userModel;
+    }
 }

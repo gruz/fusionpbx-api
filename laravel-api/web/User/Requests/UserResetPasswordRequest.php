@@ -7,6 +7,8 @@ use Infrastructure\Rules\ResetPasswordTokenValidRule;
 
 class UserResetPasswordRequest extends FormRequest
 {
+    public $reridrectRoute = 'password.invalid-link';
+
     public function authorize()
     {
         return true;
@@ -30,9 +32,5 @@ class UserResetPasswordRequest extends FormRequest
             'domain_name.exists' => __('Invalid data'),
             'email.exists' => __('Invalid data'),
         ];
-    }
-
-    public function getRedirectUrl() {
-        return route('password.invalid-link');
     }
 }

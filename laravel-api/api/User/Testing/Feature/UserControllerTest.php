@@ -3,10 +3,13 @@
 namespace Api\User\Testing\Feature;
 
 use Api\User\Models\User;
+use Illuminate\Support\Arr;
 use Api\Domain\Models\Domain;
 use Api\Extension\Models\Extension;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\UserTrait;
+use Api\Settings\Models\DefaultSetting;
+use Api\User\Models\UserSetting;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Api\User\Notifications\UserWasActivatedSelfNotification;
@@ -16,8 +19,10 @@ class UserControllerTest extends TestCase
 {
     use UserTrait;
 
-    public function testUserSignupSuccess()
+    public function testUserSignupSuccess($resellerCodeRequired = false)
     {
+        config(['fpbx.resellerCodeRequired' => $resellerCodeRequired]);
+
         $data = $this->testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
         list($response, $email) = $this->simulateDomainSignupAndActivate();
         $domain_name = $response->json('domain_name');
@@ -37,6 +42,21 @@ class UserControllerTest extends TestCase
             "voicemail_password" => "956"
         ]];
 
+        if ($resellerCodeRequired) {
+            $reseller_code = DefaultSetting::where([
+                ['default_setting_category', 'billing'],
+                ['default_setting_subcategory', 'reseller_code'],
+                ['default_setting_enabled', true],
+            ])->first();
+
+            if (empty($reseller_code)) {
+                $reseller_code = $this->createResellerCode();
+            } else {
+                $reseller_code = $reseller_code->getAttribute('default_setting_value');
+            }
+            $data['reseller_reference_code'] = $reseller_code;
+        }
+
         $response = $this->json('post', route('fpbx.user.signup', $data));
         $response->assertStatus(201);
 
@@ -45,9 +65,24 @@ class UserControllerTest extends TestCase
 
         $domain = Domain::where('domain_name', $data['domain_name'])->first();
 
+        if ($resellerCodeRequired) {
+            $userSettings = Arr::get($data, 'user_settings', []);
+            $userSettings[] = [
+                "user_setting_category" => "payment",
+                "user_setting_subcategory" => "reseller_code",
+                "user_setting_value" => $reseller_code,
+            ];
+            Arr::set($data, 'user_settings', $userSettings);
+        }
+
         $this->checkUserWithRelatedDataCreated($domain, $data);
 
         return $user;
+    }
+
+    public function testUserSignupSuccessWithResellerCodeRequired()
+    {
+        $this->testUserSignupSuccess(true);
     }
 
     public function testUserActivateSuccess()
@@ -113,33 +148,12 @@ class UserControllerTest extends TestCase
             ResetPassword::class,
             function ($notification, $channels) use (&$token) {
                 $token = $notification->token;
-        
+
                 return true;
             });
 
         return [$data, $response, $token];
     }
-
-    public function testResetPasswordShowFormSuccess()
-    {
-        list($data, $response, $token) = $this->test_ForgotPassword_Success();
-        $resetRecord = \DB::table(('password_resets'))->where([
-            ['email', $data['user_email']],
-            ['domain_name', $data['domain_name']],
-        ])->first();
-
-
-        $url = url(route('password.reset', [
-            'token' => $token,
-            'email' => $resetRecord->email,
-            'domain_name' => $resetRecord->domain_name,
-        ], false));
-        $response = $this->json('get', $url);
-
-        $response->assertSee('Reset Password');
-        $response->assertSee($token);
-        $response->assertSee($resetRecord->email);
-   }
 
     public function test_Adding_user_with_no_or_bad_referral_code_fails()
     {
