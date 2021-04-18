@@ -8,7 +8,7 @@ use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class UserRepository extends AbstractRepository
 {
-    public function create(array $data, $options =[ ])
+    public function create(array $data, $options = [])
     {
         // $user = $this->getModel();
         if (empty($data['add_user'])) {
@@ -104,5 +104,14 @@ class UserRepository extends AbstractRepository
         }
 
         $this->database->commit();
+    }
+
+    public function getUserByEmailAndDomain($user_email, $domain_name)
+    {
+        $userModel = $this->getModel()->whereHas('domain', function ($q) use ($user_email, $domain_name) {
+            $q->where('domain_name', '=', $domain_name);
+        })->where('user_email', $user_email)->first();
+
+        return $userModel;
     }
 }

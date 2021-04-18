@@ -1,8 +1,9 @@
 <?php
 
-namespace Http\User\Requests;
+namespace Web\User\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Infrastructure\Rules\ResetPasswordTokenValidRule;
 
 class UserResetPasswordRequest extends FormRequest
 {
@@ -11,12 +12,13 @@ class UserResetPasswordRequest extends FormRequest
         return true;
     }
 
-    // public $redirect = '/';
-
     public function rules()
     {
         return [
-            'token' => 'required',
+            'token' => [
+                'required',
+                new ResetPasswordTokenValidRule(request()->email, request()->domain_name, request()->token),
+            ],
             // 'domain_name' => 'required|exists:password_resets',
             'email' => 'required|email|exists:password_resets,email,domain_name,' . request()->domain_name,
         ];
@@ -28,5 +30,9 @@ class UserResetPasswordRequest extends FormRequest
             'domain_name.exists' => __('Invalid data'),
             'email.exists' => __('Invalid data'),
         ];
+    }
+
+    public function getRedirectUrl() {
+        return route('password.invalid-link');
     }
 }

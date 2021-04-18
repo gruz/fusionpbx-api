@@ -23,7 +23,7 @@
         "psr-4": {
             "Infrastructure\\": "infrastructure/",
             "Api\\": "api/",
-            "Http\\": "http/",
+            "Web\\": "web/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },

@@ -36,7 +36,7 @@ return [
                 'annotations' => [
                     base_path('infrastructure'),
                     base_path('api'),
-                    base_path('http'),
+                    base_path('web'),
                 ],
 
             ],

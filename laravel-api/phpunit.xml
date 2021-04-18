@@ -16,6 +16,9 @@
         <testsuite name="Api">
             <directory>./api/</directory>
         </testsuite>
+        <testsuite name="Web">
+            <directory>./web/</directory>
+        </testsuite>
         <testsuite name="Infrastructure">
             <directory>./infrastructure/</directory>
         </testsuite>

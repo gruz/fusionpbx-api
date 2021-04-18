@@ -359,4 +359,8 @@ class UserService extends AbstractService
 
         return $response;
     }
+
+    public function getUserByEmailAndDomain($user_email, $domain_name) {
+        return $this->userRepository->getUserByEmailAndDomain($user_email, $domain_name);
+    }
 }

@@ -11,7 +11,6 @@ use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserSignupRequest;
 use Api\User\Requests\UserActivateRequest;
 use Api\User\Services\UserPasswordService;
-use Api\User\Requests\UserResetPasswordRequest;
 use Api\User\Requests\UserForgotPasswordRequest;
 use Api\User\Requests\UserUpdatePasswordRequest;
 

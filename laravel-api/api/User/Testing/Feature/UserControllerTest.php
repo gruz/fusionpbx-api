@@ -104,14 +104,25 @@ class UserControllerTest extends TestCase
             'domain_uuid' => $userModel->getAttribute('domain_uuid'),
         ]);
 
-        Notification::assertSentTo($userModel, ResetPassword::class);
+        // Notification::assertSentTo($userModel, ResetPassword::class);
 
-        return [$data, $response];
+        $token = '';
+
+        Notification::assertSentTo(
+            $userModel,
+            ResetPassword::class,
+            function ($notification, $channels) use (&$token) {
+                $token = $notification->token;
+        
+                return true;
+            });
+
+        return [$data, $response, $token];
     }
 
     public function testResetPasswordShowFormSuccess()
     {
-        list($data, $response) = $this->test_ForgotPassword_Success();
+        list($data, $response, $token) = $this->test_ForgotPassword_Success();
         $resetRecord = \DB::table(('password_resets'))->where([
             ['email', $data['user_email']],
             ['domain_name', $data['domain_name']],
@@ -119,24 +130,16 @@ class UserControllerTest extends TestCase
 
 
         $url = url(route('password.reset', [
-            'token' => $resetRecord->token,
+            'token' => $token,
             'email' => $resetRecord->email,
             'domain_name' => $resetRecord->domain_name,
         ], false));
-
         $response = $this->json('get', $url);
-        // $response->assertViewHas('Reset Password');
+
         $response->assertSee('Reset Password');
-        $response->assertSee($resetRecord->token);
+        $response->assertSee($token);
         $response->assertSee($resetRecord->email);
-
-        // dd($resetRecord, $url);
-
-        // dd($data, $response->offsetGet('domain_uuid'));
-
-        // $view = $this->view('welcome', ['name' => 'Taylor']);
-
-    }
+   }
 
     public function test_Adding_user_with_no_or_bad_referral_code_fails()
     {

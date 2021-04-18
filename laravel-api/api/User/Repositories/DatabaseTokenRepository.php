@@ -4,7 +4,6 @@ namespace Api\User\Repositories;
 
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Support\Carbon;
-use Api\User\Models\User;
 use Illuminate\Auth\Passwords\DatabaseTokenRepository as OriginalDatabaseTokenRepository;
 
 class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
@@ -116,5 +115,4 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
 
         return $record && $this->tokenRecentlyCreated($record['created_at']);
     }
-
 }

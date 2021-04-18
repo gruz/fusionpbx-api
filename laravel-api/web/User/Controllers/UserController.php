@@ -1,17 +1,34 @@
 <?php
 
-namespace Http\User\Controllers;
+namespace Web\User\Controllers;
 
-use Http\User\Requests\UserResetPasswordRequest;
+use Web\User\Requests\UserResetPasswordRequest;
 use Illuminate\Routing\Controller as BaseController;
 
 /**
  * @OA\Schema(
- *  schema="HttpUserController"
+ *  schema="WebUserController"
  * )
  */
 class UserController extends BaseController
 {
+    /**
+     * User get reset password action. Displays password reset form
+     *
+     @OA\Get(
+        tags={"User"},
+        path="/remind-password",
+        x={
+            "route-$path"="password.forgot",
+            "route-$middlewares"="web",
+        }
+    )
+     */
+    public function getForgotPasswordForm()
+    {
+        return view('user.password.remind-password');
+    }
+
     /**
      * User get reset password action. Displays password reset form
      *
@@ -53,7 +70,7 @@ class UserController extends BaseController
         ),
     )
      */
-    public function getResetPasswordForm(UserResetPasswordRequest $request)
+    public function getNewPasswordForm(UserResetPasswordRequest $request)
     {
         return view('user.password.reset-password', [
             'token' => $request->get('token'),

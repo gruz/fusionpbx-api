@@ -493,7 +493,7 @@
                     "User"
                 ],
                 "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Http_User_Controllers_UserController::getResetPasswordForm",
+                "operationId": "Web_User_Controllers_UserController::getNewPasswordForm",
                 "parameters": [
                     {
                         "name": "email",
@@ -540,18 +540,6 @@
                 "x-route-$middlewares": "web"
             }
         },
-        "/invalid-link": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Http_User_Controllers_UserController::invalidLink",
-                "responses": {},
-                "x-route-$path": "password.invalid-link",
-                "x-route-$middlewares": "web"
-            }
-        },
         "/": {
             "get": {
                 "tags": [
@@ -592,6 +580,30 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/remind-password": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Web_User_Controllers_UserController::getForgotPasswordForm",
+                "responses": {},
+                "x-route-$path": "password.forgot",
+                "x-route-$middlewares": "web"
+            }
+        },
+        "/invalid-link": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Web_User_Controllers_UserController::invalidLink",
+                "responses": {},
+                "x-route-$path": "password.invalid-link",
+                "x-route-$middlewares": "web"
             }
         }
     },
@@ -1414,7 +1426,7 @@
                     }
                 }
             },
-            "HttpUserController": {}
+            "WebUserController": {}
         },
         "parameters": {
             "domain_uuid": {
