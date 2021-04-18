@@ -9,7 +9,6 @@ use Api\Extension\Models\Extension;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\UserTrait;
 use Api\Settings\Models\DefaultSetting;
-use Api\User\Models\UserSetting;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Api\User\Notifications\UserWasActivatedSelfNotification;
@@ -153,12 +152,5 @@ class UserControllerTest extends TestCase
             });
 
         return [$data, $response, $token];
-    }
-
-    public function test_Adding_user_with_no_or_bad_referral_code_fails()
-    {
-        // If referende code required is enabled in configuration, then
-        // user creation data must provide such a code and it must match
-        // a list of available codes. The list of the codes will be taken from an api.
     }
 }

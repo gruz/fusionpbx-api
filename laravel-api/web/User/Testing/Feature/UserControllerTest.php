@@ -82,28 +82,5 @@ class UserControllerTest extends \Api\User\Testing\Feature\UserControllerTest
         $res_array = (array)json_decode($response->content());
         $this->assertArrayHasKey('access_token', $res_array);
         $this->assertArrayHasKey('expires_in', $res_array);
-
-        // dd($response->getContent());
-        // $response->assertJsonStructure(['token_type','expires_in','access_token','refresh_token']);
-
-    //    dd($postData);
-       // $resetRecord = \DB::table(('password_resets'))->where([
-       //     ['email', $data['user_email']],
-       //     ['domain_name', $data['domain_name']],
-       // ])->first();
-
-
-       // $url = url(route('password.reset', [
-       //     'token' => $token,
-       //     'email' => $resetRecord->email,
-       //     'domain_name' => $resetRecord->domain_name,
-       // ], false));
-       // $response = $this->json('get', $url);
-
-       // $response->assertSee('Reset Password');
-       // $response->assertSee($token);
-       // $response->assertSee($resetRecord->email);
   }
-
-
 }

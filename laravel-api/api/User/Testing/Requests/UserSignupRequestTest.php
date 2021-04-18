@@ -57,19 +57,6 @@ class UserSignupRequestTest extends TestCase
         $response = $this->json('post', route('fpbx.user.signup', $data));
         $response->assertStatus(422);
         $response->assertJsonFragment(['detail' => 'The extensions.0.extension has already been taken.']);
-
-        // $res_array = (array)json_decode($response->content());
-        // $this->assertArr
-        // $this->assertArrayHasKey('errors.*.detail', $res_array);
-        // $this->assertArrayHasKey('expires_in', $res_array);
-
-
-        // $response->assertJsonPath('errors.*.detail.*', "The extensions.0.extension has already been taken.");
-        // $response->assertJson([
-        //     "errors" => [
-        //         ["detail" => "The extensions.0.extension has already been taken."]
-        //     ]
-        // ]);
     }
 
     public function testFailWhenDomainDisabled()
@@ -102,4 +89,39 @@ class UserSignupRequestTest extends TestCase
             ]
         ]);
     }
+
+    public function testFailBadResellerCode()
+    {
+        config(['fpbx.resellerCodeRequired' => true]);
+        $data = $this->testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
+        list($response, $email) = $this->simulateDomainSignupAndActivate();
+        $domain_name = $response->json('domain_name');
+        $domainModel = Domain::where('domain_name', $domain_name)->first();
+        $domain_uuid = $domainModel->domain_uuid;
+
+        $nonExistingEmail = $this->prepareNonExistingEmailInDomain($domain_uuid);
+
+        $data['user_email'] = $nonExistingEmail;
+        $data['domain_name'] = $domain_name;
+
+        $extension = Extension::where('domain_uuid', $domain_uuid)->max('extension');
+
+        $data['extensions'] = [[
+            'extension' => ++$extension, // Setting any non-exisiting number
+            'password' => 'somePass',
+            "voicemail_password" => "956"
+        ]];
+
+        $response = $this->json('post', route('fpbx.user.signup', $data));
+        $response->assertStatus(422);
+        $response->assertJsonFragment(["detail" => "The reseller reference code is required."]);
+
+        $data['reseller_reference_code'] = uniqid();
+
+        $response = $this->json('post', route('fpbx.user.signup', $data));
+        $response->assertStatus(422);
+        $response->assertJsonFragment(["detail" => "The selected reseller reference code is invalid."]);
+
+    }
+
 }

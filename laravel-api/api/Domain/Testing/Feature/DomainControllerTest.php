@@ -216,10 +216,6 @@ class DomainControllerTest extends TestCase
         );
     }
 
-    public function test_Adding_domain_with_no_or_bad_referral_code_fails()
-    {
-    }
-
     private function checkDomainSettingsCreated($domain, $data)
     {
         $requestSettings = collect($data->get('settings'));

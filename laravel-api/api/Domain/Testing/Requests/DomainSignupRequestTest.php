@@ -26,6 +26,22 @@ class DomainSignupRequestTest extends TestCase
                 ["detail" => "The domain name has already been taken."]
             ]
         ]);
+
+    }
+    public function testFailWhenNoOrBadReferenceCode()
+    {
+        $data = $this->testRequestFactoryService->makeDomainSignupRequest();
+
+        config(['fpbx.resellerCodeRequired' => true]);
+
+        $response = $this->json('post', route('fpbx.domain.signup', $data));
+        $response->assertStatus(422);
+        $response->assertJsonFragment(["detail" => "The reseller reference code is required."]);
+
+        $data['reseller_reference_code'] = uniqid();
+        $response = $this->json('post', route('fpbx.domain.signup', $data));
+        $response->assertStatus(422);
+        $response->assertJsonFragment(["detail" => "The selected reseller reference code is invalid."]);
     }
 
     // public function testPassWhenDomainNotExists()
