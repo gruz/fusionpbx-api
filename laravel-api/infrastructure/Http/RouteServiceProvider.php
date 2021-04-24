@@ -26,11 +26,15 @@ class RouteServiceProvider extends ServiceProvider
             $routes = \Route::getRoutes()->getRoutes();
         }
 
-        foreach ($routes as /** @var \Route $r */ $r) {
+        foreach ($routes as
+        /** @var \Route $r */
+        $r) {
             $paths[$r->uri] = $r->methods;
         }
         // dd($route, $method, $paths);
-        foreach ($routes as /** @var \Route $r */ $r) {
+        foreach ($routes as
+        /** @var \Route $r */
+        $r) {
 
             if ($r->uri === $route && in_array($method, $r->methods)) {
                 return true;
@@ -79,26 +83,15 @@ class RouteServiceProvider extends ServiceProvider
                 $name = $route->name;
             }
 
-            // d($route);
-            $middlewares = [];
-            if (!empty($route->middlewares)) {
-                $middlewares = $route->middlewares;
-            } else {
-                if ($route->auth) {
-                    $middlewares = ['auth:api'];
-                } else {
-                    $middlewares = ['api'];
-                }
-            }
+            $middlewares = empty($route->middlewares) ? [] : $route->middlewares;
 
             Route::middleware($middlewares)
                 ->namespace($this->namespace)
                 ->prefix($route->prefix)
                 ->{$route->method}($route->path, [
-                        'uses' => $route->controller . '@' . $route->action,
-                        'as' => $name
-                    ])
-                ;
+                    'uses' => $route->controller . '@' . $route->action,
+                    'as' => $name
+                ]);
         }
     }
 }

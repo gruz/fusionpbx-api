@@ -357,7 +357,7 @@
                 "summary": "User get reset password action. Displays password reset form",
                 "operationId": "Web_User_Controllers_UserController::signip",
                 "responses": {},
-                "x-route-$path": "password.invalid-link",
+                "x-route-$path": "user.signup.form",
                 "x-route-$middlewares": "web"
             },
             "post": {

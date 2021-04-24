@@ -235,20 +235,9 @@ class SchemaQueryParameter
             $controller = $this->getClassName($path->$method);
             $prefix = $this->getPathPrefix($path->$method);
 
-            $auth = false;
-            if ($path->$method->security !== UNDEFINED) {
-                foreach ($path->$method->security as $security) {
-                    if (array_key_exists('bearer_auth', $security)) {
-                        $auth = true;
-                        break;
-                    }
-                }
-            }
-
             $route = [
                 'prefix' => $prefix,
                 'path' => $path->path,
-                'auth' => $auth,
                 'method' => $method,
                 'controller' => $controller,
                 'action' => $action,
@@ -258,12 +247,8 @@ class SchemaQueryParameter
                 if ($name = Arr::get($path->$method->x, self::ROUTE_PATH)) {
                     $route['name'] = $name;
                 }
-                if ($middlewares = Arr::get($path->$method->x, self::ROUTE_MIDDLEWARES)) {
-                    $middlewares = explode(',', $middlewares);
-                    $middlewares = array_map('trim', $middlewares);
-                    $route['middlewares'] = $middlewares;
-                }
             }
+            $route['middlewares'] = $this->getMiddlewares($path->$method);
 
             $routes[] = $route;
         }
@@ -275,10 +260,51 @@ class SchemaQueryParameter
     {
         return $annotation->_context->__get('namespace') . '\\' . $annotation->_context->class;
     }
+
     private function getPathPrefix(AbstractAnnotation $annotation)
     {
         $prefix = strpos($annotation->_context->__get('namespace'), 'Api\\') === 0 ? 'api' : '';
         return $prefix;
+    }
+
+    private function getMiddlewares(AbstractAnnotation $annotation)
+    {
+        if ($middlewares = Arr::get($annotation->x, self::ROUTE_MIDDLEWARES, [])) {
+            $middlewares = explode(',', $middlewares);
+            $middlewares = array_map('trim', $middlewares);
+            return $middlewares;
+        }
+
+        $isApi = strpos($annotation->_context->__get('namespace'), 'Api\\') === 0;
+
+        if ($isApi) {
+            $auth = false;
+            if ($annotation->security !== UNDEFINED) {
+                foreach ($annotation->security as $security) {
+                    if (array_key_exists('bearer_auth', $security)) {
+                        $auth = true;
+                        break;
+                    }
+                }
+            }
+            if ($auth) {
+                $middlewares = ['auth:api'];
+            } else {
+                $middlewares = ['api'];
+            }
+        } else {
+            $middlewares = ['web'];
+        }
+        // if (!empty($route->middlewares)) {
+        //     $middlewares = $route->middlewares;
+        // } else {
+        //     if ($route->auth) {
+        //         $middlewares = ['auth:api'];
+        //     } else {
+        //         $middlewares = ['api'];
+        //     }
+        // }
+        return $middlewares;
     }
 
     private function attachRepsonseExamples($actionPath, $data)
