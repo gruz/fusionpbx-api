@@ -233,6 +233,7 @@ class SchemaQueryParameter
                 continue;
             }
             $controller = $this->getClassName($path->$method);
+            $prefix = $this->getPathPrefix($path->$method);
 
             $auth = false;
             if ($path->$method->security !== UNDEFINED) {
@@ -245,6 +246,7 @@ class SchemaQueryParameter
             }
 
             $route = [
+                'prefix' => $prefix,
                 'path' => $path->path,
                 'auth' => $auth,
                 'method' => $method,
@@ -272,6 +274,11 @@ class SchemaQueryParameter
     private function getClassName(AbstractAnnotation $annotation)
     {
         return $annotation->_context->__get('namespace') . '\\' . $annotation->_context->class;
+    }
+    private function getPathPrefix(AbstractAnnotation $annotation)
+    {
+        $prefix = strpos($annotation->_context->__get('namespace'), 'Api\\') === 0 ? 'api' : '';
+        return $prefix;
     }
 
     private function attachRepsonseExamples($actionPath, $data)

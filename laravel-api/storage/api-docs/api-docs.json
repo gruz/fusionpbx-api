@@ -350,6 +350,16 @@
             }
         },
         "/user/signup": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Web_User_Controllers_UserController::signip",
+                "responses": {},
+                "x-route-$path": "password.invalid-link",
+                "x-route-$middlewares": "web"
+            },
             "post": {
                 "tags": [
                     "User"
@@ -1423,7 +1433,7 @@
                     }
                 }
             },
-            "WebUserController": {}
+            "Web/UserController": {}
         },
         "parameters": {
             "domain_uuid": {

@@ -90,8 +90,10 @@ class RouteServiceProvider extends ServiceProvider
                     $middlewares = ['api'];
                 }
             }
+
             Route::middleware($middlewares)
                 ->namespace($this->namespace)
+                ->prefix($route->prefix)
                 ->{$route->method}($route->path, [
                         'uses' => $route->controller . '@' . $route->action,
                         'as' => $name
