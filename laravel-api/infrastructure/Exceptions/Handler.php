@@ -48,10 +48,8 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         $middleware = Route::getCurrentRoute()->middleware();
-        if (
-            is_array($middleware) && in_array("web", $middleware) ||
-            $middleware == "web"
-        ) {
+
+        if (is_array($middleware) && in_array("web", $middleware) || $middleware == "web") {
             $handler = new LaravelExceptionHandler($this->container);
 
             return $handler->render($request, $e);
