@@ -2,9 +2,10 @@
 
 namespace Api\Extension;
 
-use Infrastructure\Events\EventServiceProvider;
-use Infrastructure\Listeners\ClearFusionPBXCache;
+
 use Api\Extension\Events\ExtensionWasCreated;
+use Infrastructure\Listeners\ClearFusionPBXCache;
+use Infrastructure\Providers\EventServiceProvider;
 
 class ExtensionServiceProvider extends EventServiceProvider
 {

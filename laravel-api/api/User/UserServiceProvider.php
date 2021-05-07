@@ -2,7 +2,6 @@
 
 namespace Api\User;
 
-// ~ use Infrastructure\Events\EventServiceProvider;
 use Api\User\Events\UserWasCreated;
 use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;

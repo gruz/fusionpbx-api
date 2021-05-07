@@ -55,7 +55,7 @@ class Kernel extends ConsoleKernel
         new LoadConstantsHelper('/' . config('l5-swagger.defaults.routes.docs') . '/' . config('l5-swagger.documentations.default.paths.docs_json'));
         $this->load(__DIR__.'/Commands');
 
-        require base_path('infrastructure/Console/routes.php');
+        require_once base_path('infrastructure/Console/routes.php');
 
         $config = config('optimus.components');
 

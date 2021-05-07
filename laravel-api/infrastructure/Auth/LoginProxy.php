@@ -13,6 +13,10 @@ class LoginProxy
 {
     const REFRESH_TOKEN = 'refreshToken';
 
+    /**
+     * 
+     * @var \Optimus\ApiConsumer\Router
+     */
     private $apiConsumer;
 
     private $auth;
