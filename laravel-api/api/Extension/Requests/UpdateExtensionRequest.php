@@ -3,10 +3,13 @@
 namespace Api\Extension\Requests;
 
 use Api\Extension\Models\Extension;
-use Infrastructure\Http\ApiRequest;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateExtensionRequest extends ApiRequest
+class UpdateExtensionRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         $extensionId = request()->route()->parameter('id');

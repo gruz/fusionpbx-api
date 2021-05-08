@@ -8,14 +8,12 @@ use Doctrine\DBAL\Types\Type;
 use Illuminate\Validation\Rule;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-abstract class ApiRequest extends FormRequest
+trait ApiRequestTrait
 {
-
     public $mapping = [
         "decimal" => "numeric",
         "text" => "string",

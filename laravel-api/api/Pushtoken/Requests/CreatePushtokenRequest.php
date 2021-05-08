@@ -2,15 +2,18 @@
 
 namespace Api\Pushtoken\Requests;
 
-use Infrastructure\Http\ApiRequest;
 use Illuminate\Support\Arr;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Api\Pushtoken\Exceptions\WrongPushtokenDataException;
 use Api\Pushtoken\Exceptions\InvalidPushtokenTypeException;
 use Api\Pushtoken\Exceptions\InvalidPushtokenClassException;
 
-class CreatePushtokenRequest extends ApiRequest
+class CreatePushtokenRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

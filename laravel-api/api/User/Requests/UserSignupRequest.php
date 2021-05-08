@@ -6,12 +6,15 @@ use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Illuminate\Validation\Rule;
 use Api\Extension\Models\Extension;
-use Infrastructure\Http\ApiRequest;
 use Infrastructure\Rules\UsernameRule;
 use Api\Settings\Models\DefaultSetting;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UserSignupRequest extends ApiRequest
+class UserSignupRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

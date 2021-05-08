@@ -2,12 +2,15 @@
 
 namespace Api\Domain\Requests;
 
-use Infrastructure\Http\ApiRequest;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Rules\DomainSignupHashExpiredRule;
 use Infrastructure\Rules\DomainSignupHashHasEmailExistsRule;
 
-class DomainActivateRequest extends ApiRequest
+class DomainActivateRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

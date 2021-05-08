@@ -2,17 +2,16 @@
 
 namespace Api\Status\Requests;
 
-use Infrastructure\Http\ApiRequest;
 use Illuminate\Support\Arr;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Api\Status\Exceptions\InvalidStatusException;
-use Api\Status\Exceptions\InvalidStatusOSException;
 use Api\Status\Exceptions\WrongStatusDataException;
-use Api\Status\Exceptions\InvalidServiceListException;
 
-
-class SetStatusRequest extends ApiRequest
+class SetStatusRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

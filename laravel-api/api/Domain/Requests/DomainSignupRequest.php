@@ -3,14 +3,17 @@
 namespace Api\Domain\Requests;
 
 use Illuminate\Validation\Rule;
-use Infrastructure\Http\ApiRequest;
 use Infrastructure\Rules\HostnameRule;
 use Infrastructure\Rules\UsernameRule;
 use Api\Settings\Models\DefaultSetting;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
 
-class DomainSignupRequest extends ApiRequest
+class DomainSignupRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

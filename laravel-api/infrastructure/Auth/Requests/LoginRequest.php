@@ -2,10 +2,13 @@
 
 namespace Infrastructure\Auth\Requests;
 
-use Infrastructure\Http\ApiRequest;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends ApiRequest
+class LoginRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

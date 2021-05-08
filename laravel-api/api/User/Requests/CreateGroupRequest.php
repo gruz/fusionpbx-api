@@ -2,10 +2,13 @@
 
 namespace Api\User\Requests;
 
-use Infrastructure\Http\ApiRequest;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CreateGroupRequest extends ApiRequest
+class CreateGroupRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

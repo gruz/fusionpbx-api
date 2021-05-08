@@ -2,11 +2,13 @@
 
 namespace Api\User\Requests;
 
-use Infrastructure\Http\ApiRequest;
-use Infrastructure\Rules\DomainSignupHashExpiredRule;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UserActivateRequest extends ApiRequest
+class UserActivateRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;

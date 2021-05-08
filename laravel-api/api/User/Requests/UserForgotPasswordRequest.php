@@ -5,11 +5,14 @@ namespace Api\User\Requests;
 use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Illuminate\Validation\Rule;
-use Infrastructure\Http\ApiRequest;
+use Infrastructure\Http\ApiRequestTrait;
+use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Rules\UserExistsInDomainRule;
 
-class UserForgotPasswordRequest extends ApiRequest
+class UserForgotPasswordRequest extends FormRequest
 {
+    use ApiRequestTrait;
+
     public function authorize()
     {
         return true;
