@@ -1,14 +1,15 @@
 <?php
 
-use Symfony\Component\HttpKernel\Exception as SymfonyException;
 use Optimus\Heimdal\Formatters;
+use Symfony\Component\HttpKernel\Exception as SymfonyException;
+use Infrastructure\Exceptions\Formatters\UnprocessableEntityHttpExceptionFormatter;
 
 return [
     'add_cors_headers' => false,
 
     // Has to be in prioritized order, e.g. highest priority first.
     'formatters' => [
-        SymfonyException\UnprocessableEntityHttpException::class => Formatters\UnprocessableEntityHttpExceptionFormatter::class,
+        SymfonyException\UnprocessableEntityHttpException::class => UnprocessableEntityHttpExceptionFormatter::class,
         SymfonyException\HttpException::class => Formatters\HttpExceptionFormatter::class,
         Exception::class => Formatters\ExceptionFormatter::class,
     ],
