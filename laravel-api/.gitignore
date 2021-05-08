@@ -8,3 +8,6 @@ Homestead.json
 /storage/*.key
 /resources/certs/*
 .phpunit.result.cache
+/public/hot
+.env.backup
+.phpunit.result.cache
