@@ -3,7 +3,7 @@
 namespace Web\Http\Controllers\Auth;
 
 use Api\User\Models\User;
-use Api\Domain\Models\Domain;
+use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
 use Web\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
@@ -17,9 +17,9 @@ class RegisteredUserController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(DomainService $domainService)
     {
-        $domains = Domain::where('domain_enabled', true)->get()->pluck('domain_name', 'domain_uuid')->toArray();
+        $domains = $domainService->getDomainsArray();
         return view('auth.register', ['domains' => $domains]);
     }
 
