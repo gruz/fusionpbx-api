@@ -73,7 +73,7 @@ class UserSignupRequestTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $response->json('domain_name');
 
-        $extension = Extension::where('domain_uuid', $domain_uuid)->max('extension');
+        $extension = app(ExtensionService::class)->getMaxExtension($this->domain_uuid);
 
         $data['extensions'] = [[
             'extension' => ++$extension, // Setting any non-exisiting number
@@ -104,7 +104,7 @@ class UserSignupRequestTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
-        $extension = Extension::where('domain_uuid', $domain_uuid)->max('extension');
+        $extension = app(ExtensionService::class)->getMaxExtension($this->domain_uuid);
 
         $data['extensions'] = [[
             'extension' => ++$extension, // Setting any non-exisiting number

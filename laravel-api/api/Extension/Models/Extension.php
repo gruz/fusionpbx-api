@@ -3,9 +3,11 @@
 namespace Api\Extension\Models;
 
 use Api\User\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Api\Voicemail\Models\Voicemail;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Infrastructure\Database\Eloquent\AbstractModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -121,5 +123,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
     public function users() : BelongsToMany
     {
         return $this->belongsToMany(User::class, 'v_extension_users', 'extension_uuid', 'user_uuid');
+    }
+
+    public function voicemail() : HasOne
+    {
+        return $this->hasOne(Voicemail::class, ['voicemail_id', 'domain_uuid'], ['extension', 'domain_uuid']);
     }
 }

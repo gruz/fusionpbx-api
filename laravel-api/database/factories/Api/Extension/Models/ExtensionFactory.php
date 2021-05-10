@@ -26,7 +26,7 @@ class ExtensionFactory extends Factory
 
         $i = 0;
         while (true) {
-            $extension = $this->faker->numberBetween(100, 200);
+            $extension = $this->faker->numberBetween(config('fpbx.extension.min'), config('fpbx.extension.max'));
             if (!in_array($extension, $usedExtensions)) {
                 $usedExtensions[] = $extension;
                 break;

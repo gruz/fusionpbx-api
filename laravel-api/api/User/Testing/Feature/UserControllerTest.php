@@ -5,10 +5,10 @@ namespace Api\User\Testing\Feature;
 use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Api\Domain\Models\Domain;
-use Api\Extension\Models\Extension;
 use Infrastructure\Testing\TestCase;
 use Infrastructure\Testing\UserTrait;
 use Api\Settings\Models\DefaultSetting;
+use Api\Extension\Services\ExtensionService;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Api\User\Notifications\UserWasActivatedSelfNotification;
@@ -33,7 +33,7 @@ class UserControllerTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
-        $extension = Extension::where('domain_uuid', $domain_uuid)->max('extension');
+        $extension = app(ExtensionService::class)->getMaxExtension($this->domain_uuid);
 
         $data['extensions'] = [[
             'extension' => ++$extension, // Setting any non-exisiting number

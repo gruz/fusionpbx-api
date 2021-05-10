@@ -4,6 +4,7 @@ namespace Api\User\Repositories;
 
 use Api\User\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class UserRepository extends AbstractRepository
@@ -20,6 +21,7 @@ class UserRepository extends AbstractRepository
         // So a date inserted by FusionPBX looks like 2017-05-01 09:46:30.945188-04
         // I don't know where it taks -04 (time zone), so I use more simple date format here. Maybe to fix later.
         // $data['add_date'] = date('Y-m-d H:i:s');
+        $data['add_date'] = \Carbon\Carbon::now()->format(config('fpbx.time_format'));
 
         // ~ $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
 
@@ -34,9 +36,12 @@ class UserRepository extends AbstractRepository
 
         // ~ FusionPBX approach
         // $data['password'] = md5($data['salt'] . $data['password']);
-        $passwordData = \encrypt_password_with_salt($data['password']);
-        $data['password'] = $passwordData['password'];
-        $data['salt'] = $passwordData['salt'];
+
+        // $passwordData = \encrypt_password_with_salt($data['password']);
+        // $data['password'] = $passwordData['password'];
+        // $data['salt'] = $passwordData['salt'];
+        
+        $data['password'] = Hash::make($data['password']);
 
         // ~ TODO Improve logic here, remove hardcoded
         // ~ $data['user_enabled'] = 'true';

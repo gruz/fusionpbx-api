@@ -43,6 +43,11 @@ return [
         'description' => env('FPBX_DOMAIN_DESCRIPTION', 'Created via api at ' . date('Y-m-d H:i:s', time())),
     ],
 
+    'extension' => [
+        'min' => 10000000,
+        'max' => 99999999,
+    ],
+
     /**
      * Overrides model level defined fillable fields
      */
@@ -72,6 +77,8 @@ return [
         //         'salt'
         //     ],
         // ]
-    ]
+    ],
+    'time_format' => 'Y-m-d H:i:s.uO',
+
 
 ];

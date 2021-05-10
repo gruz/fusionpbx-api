@@ -8,8 +8,14 @@ use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class ExtensionRepository extends AbstractRepository
 {
+    public function getMaxExtension($domain_uuid) {
+        $extension = $this->model->where('domain_uuid', $domain_uuid)->selectRaw('max("extension"::integer)')->first()->max;  
+        return $extension;
+    }
+
     public function setUsers(Extension $extension, array $addUsers, array $removeUsers = [])
     {
+
         $this->database->beginTransaction();
 
         try {

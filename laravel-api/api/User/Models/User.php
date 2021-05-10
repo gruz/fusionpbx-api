@@ -221,7 +221,7 @@ class User extends AbstractModel implements
                 $query->whereIn('permission_name', ['user_add', 'user_edit']);
             })->with(['emails']);
 
-        return $admins;
+        return $admins->get();
     }
 
     public function emails(): HasMany
@@ -247,6 +247,10 @@ class User extends AbstractModel implements
     public function user_settings(): HasMany
     {
         return $this->hasMany(UserSetting::class, 'user_uuid', 'user_uuid');
+    }
+
+    public function getResellerCodeAttribute() {
+        return optional($this->user_settings->where('user_setting_category', 'payment')->where('user_setting_subcategory', 'reseller_code')->first())->user_setting_value;
     }
 
     /**
@@ -300,7 +304,7 @@ class User extends AbstractModel implements
     /**
      * Method to get user domain name to which he relates.
      */
-    // public function getDomainNameForPasswordReset()
+    // public function getDomainNameAttribute()
     // {
     //     return $this->domain()->first()->getAttribute('domain_name');
     // }
@@ -314,5 +318,31 @@ class User extends AbstractModel implements
     public function routeNotificationForMail($notification)
     {
         return $this->getAttribute('user_email');
+    }
+
+    public function getNameAttribute() {
+        return $this->username;
+    }
+
+    /**
+     * Determine if the user has verified their email address.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail()
+    {
+        return 'true' === $this->user_enabled;
+    }
+
+    /**
+     * Mark the given user's email as verified.
+     *
+     * @return bool
+     */
+    public function markEmailAsVerified()
+    {
+        return $this->forceFill([
+            'user_enabled' => 'true',
+        ])->save();
     }
 }
