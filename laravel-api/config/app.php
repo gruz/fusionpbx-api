@@ -185,24 +185,30 @@ return [
          */
 
         Laravel\Passport\PassportServiceProvider::class,
-        Infrastructure\Providers\EventServiceProvider::class,
         // Optimus\Api\System\TranslationServiceProvider::class,
         Optimus\Api\System\ViewServiceProvider::class,
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
         Optimus\Heimdal\Provider\LaravelServiceProvider::class,
+        Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
-        Infrastructure\Auth\AuthServiceProvider::class,
-        Infrastructure\Http\RouteServiceProvider::class,
+        Infrastructure\Providers\AppServiceProvider::class,
+        Infrastructure\Providers\AuthServiceProvider::class,
+        // Infrastructure\Providers\BroadcastServiceProvider::class,
+        Infrastructure\Providers\EventServiceProvider::class,
+        Infrastructure\Providers\RouteServiceProvider::class,
+        Infrastructure\Providers\HelperServiceProvider::class,
+
+        /**
+         * API Service Providers
+         */
         Api\Domain\TeamServiceProvider::class,
         Api\User\UserServiceProvider::class,
         Api\Domain\DomainServiceProvider::class,
         Api\PostponedAction\PostponedActionServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,
-        Infrastructure\Providers\HelperServiceProvider::class,
-        Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
         Api\User\PasswordResetServiceProvider::class,
 
     ],
@@ -231,6 +237,7 @@ return [
         'Config' => Illuminate\Support\Facades\Config::class,
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
+        'Date' => Illuminate\Support\Facades\Date::class,
         'DB' => Illuminate\Support\Facades\DB::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,

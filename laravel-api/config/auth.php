@@ -14,7 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'api',
+        'guard' => 'web',
+        // 'guard' => 'api',
         'passwords' => 'users',
     ],
 
@@ -42,7 +43,8 @@ return [
         ],
 
         'api' => [
-            'driver' => 'passport',
+            // 'driver' => 'passport',
+            'driver' => 'token',
             'provider' => 'users',
             'hash' => false,
         ],
@@ -99,7 +101,7 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'email' => 'auth.emails.password',
+            // 'email' => 'auth.emails.password',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

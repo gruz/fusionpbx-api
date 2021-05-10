@@ -2,6 +2,11 @@
 
 namespace Web\User\Controllers;
 
+use Illuminate\Http\Request;
+use Api\Domain\Models\Domain;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\ViewErrorBag;
+use Illuminate\Support\Facades\Route;
 use Api\User\Services\UserPasswordService;
 use Web\User\Requests\UserResetPasswordRequest;
 use Web\User\Requests\UserUpdatePasswordRequest;
@@ -9,7 +14,7 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
  * @OA\Schema(
- *  schema="WebUserController"
+ *  schema="Web/UserController"
  * )
  */
 class UserController extends BaseController
@@ -19,10 +24,63 @@ class UserController extends BaseController
      *
      @OA\Get(
         tags={"User"},
+        path="/user/register",
+        x={
+            "route-$path"="web.user.show.signup.form",
+        }
+    )
+     */
+    public function showSignipForm(MessageBag $messageBag, ViewErrorBag $viewErrorBag)
+    {
+        $domains = Domain::where('domain_enabled', true)->get()->toArray();
+        return view('user.signup.form', ['domains' => $domains]);
+        // // dd($domains);
+        // $errors = $messageBag;
+        // $errors->add('domain_name', 'Bad name');
+        // $errors->add('email', 'godd email');
+
+        // $viewErrorBag->put('default', $errors);
+
+        // d($errors, $viewErrorBag);
+        // return view('user.signup.form', ['domains' => $domains, 'errors' => $viewErrorBag]);
+    }
+
+    /**
+     * User get reset password action. Displays password reset form
+     *
+     @OA\Post(
+        tags={"User"},
+        path="/user/register",
+        x={
+            "route-$path"="web.user.process.signup",
+        }
+    )
+     */
+    public function register(Request $request)
+    {
+        $request = \Illuminate\Support\Facades\Request::create(route('fpbx.user.signup'), 'POST', $request->all());
+
+        $response = Route::dispatch($request);
+
+        $validationErrors = json_decode($response->exception->getMessage(), true);
+        $messageBag = new \Illuminate\Support\MessageBag;
+        $messageBag->merge($validationErrors);
+        return redirect()->back()->withErrors($messageBag->getMessages());
+
+
+        d($response, $response->exception->getMessage());
+        dd($response, json_decode($response->exception->getMessage()));
+        return 'done';
+    }
+
+    /**
+     * User get reset password action. Displays password reset form
+     *
+     @OA\Get(
+        tags={"User"},
         path="/remind-password",
         x={
-            "route-$path"="password.forgot",
-            "route-$middlewares"="web",
+            "route-$path"="password.forgot"
         }
     )
      */
@@ -38,8 +96,7 @@ class UserController extends BaseController
         tags={"User"},
         path="/reset-password",
         x={
-            "route-$path"="password.reset",
-            "route-$middlewares"="web",
+            "route-$path"="password.reset"
         },
         @OA\Parameter(
             name="email",
@@ -88,8 +145,7 @@ class UserController extends BaseController
         tags={"User"},
         path="/invalid-link",
         x={
-            "route-$path"="password.invalid-link",
-            "route-$middlewares"="web",
+            "route-$path"="password.invalid-link"
         }
     )
      */
@@ -105,12 +161,11 @@ class UserController extends BaseController
         tags={"User"},
         path="/password-update",
         x={
-            "route-$path"="password.update",
-            "route-$middlewares"="web",
+            "route-$path"="password.update"
         },
     )
      */
-    public function passwordUpdate(UserUpdatePasswordRequest $request, UserPasswordService $userPasswordService )
+    public function passwordUpdate(UserUpdatePasswordRequest $request, UserPasswordService $userPasswordService)
     {
         $data = $request->only(
             'user_email',

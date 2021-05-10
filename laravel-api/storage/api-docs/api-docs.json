@@ -350,16 +350,6 @@
             }
         },
         "/user/signup": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Web_User_Controllers_UserController::signip",
-                "responses": {},
-                "x-route-$path": "user.signup.form",
-                "x-route-$middlewares": "web"
-            },
             "post": {
                 "tags": [
                     "User"
@@ -497,7 +487,7 @@
                 "x-route-$path": "fpbx.user.forgot-password"
             }
         },
-        "/": {
+        "/api": {
             "get": {
                 "tags": [
                     "Default"
@@ -539,6 +529,26 @@
                 "security": []
             }
         },
+        "/user/register": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Web_User_Controllers_UserController::showSignipForm",
+                "responses": {},
+                "x-route-$path": "web.user.show.signup.form"
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User get reset password action. Displays password reset form",
+                "operationId": "Web_User_Controllers_UserController::register",
+                "responses": {},
+                "x-route-$path": "web.user.process.signup"
+            }
+        },
         "/remind-password": {
             "get": {
                 "tags": [
@@ -547,8 +557,7 @@
                 "summary": "User get reset password action. Displays password reset form",
                 "operationId": "Web_User_Controllers_UserController::getForgotPasswordForm",
                 "responses": {},
-                "x-route-$path": "password.forgot",
-                "x-route-$middlewares": "web"
+                "x-route-$path": "password.forgot"
             }
         },
         "/reset-password": {
@@ -590,8 +599,7 @@
                     }
                 ],
                 "responses": {},
-                "x-route-$path": "password.reset",
-                "x-route-$middlewares": "web"
+                "x-route-$path": "password.reset"
             }
         },
         "/invalid-link": {
@@ -602,8 +610,7 @@
                 "summary": "User get reset password action. Displays password reset form",
                 "operationId": "Web_User_Controllers_UserController::invalidLink",
                 "responses": {},
-                "x-route-$path": "password.invalid-link",
-                "x-route-$middlewares": "web"
+                "x-route-$path": "password.invalid-link"
             }
         },
         "/password-update": {
@@ -614,8 +621,7 @@
                 "summary": "User reset password after form submission",
                 "operationId": "Web_User_Controllers_UserController::passwordUpdate",
                 "responses": {},
-                "x-route-$path": "password.update",
-                "x-route-$middlewares": "web"
+                "x-route-$path": "password.update"
             }
         }
     },
@@ -1048,6 +1054,9 @@
                         "default": null
                     },
                     "force_ping": {
+                        "type": "string"
+                    },
+                    "max_registrations": {
                         "type": "string"
                     }
                 }
