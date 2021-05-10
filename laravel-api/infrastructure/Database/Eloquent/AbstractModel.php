@@ -8,6 +8,7 @@ use Doctrine\DBAL\Schema\Index;
 use Infrastructure\Traits\Uuids;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Infrastructure\Listeners\ClearFusionPBXCache;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Infrastructure\Exceptions\MissingDomainUuidException;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -15,6 +16,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 abstract class AbstractModel extends BaseModel
 {
     use Uuids;
+    use \Awobaz\Compoships\Compoships;
 
     public static $staticAppends;
     public static $staticHidden;
@@ -278,6 +280,15 @@ abstract class AbstractModel extends BaseModel
     //     return $fieldType;
     // }
 
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'saved' => ClearFusionPBXCache::class,
+        'deleted' => ClearFusionPBXCache::class,
+    ];
 
     protected static function boot()
     {

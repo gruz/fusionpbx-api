@@ -11,13 +11,13 @@ class ExtensionServiceProvider extends EventServiceProvider
 {
     protected $listen = [
         ExtensionWasCreated::class => [
-            ClearFusionPBXCache::class,
+            // ClearFusionPBXCache::class,
         ],
         ExtensionWasDeleted::class => [
-            ClearFusionPBXCache::class,
+            // ClearFusionPBXCache::class,
         ],
         ExtensionWasUpdated::class => [
-            ClearFusionPBXCache::class,
+            // ClearFusionPBXCache::class,
         ]
     ];
 }

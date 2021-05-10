@@ -10,7 +10,7 @@ class DomainServiceProvider extends ServiceProvider
 {
     protected $listen = [
         DomainWasCreated::class => [
-            ClearFusionPBXCache::class,
+            // ClearFusionPBXCache::class,
         ],
     ];
 }
