@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=7.3.0",
+        "awobaz/compoships": "^2.1",
         "darkaonline/l5-swagger": "dev-master",
         "doctrine/annotations": "^1.12",
         "fideloper/proxy": "^4.4",
