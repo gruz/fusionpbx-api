@@ -3,7 +3,7 @@
 namespace Api\Pushtoken\Requests;
 
 use Illuminate\Support\Arr;
-use Infrastructure\Http\ApiRequestTrait;
+use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Api\Pushtoken\Exceptions\WrongPushtokenDataException;

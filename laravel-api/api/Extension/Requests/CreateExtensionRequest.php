@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Requests;
 
-use Infrastructure\Http\ApiRequestTrait;
+use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateExtensionRequest extends FormRequest

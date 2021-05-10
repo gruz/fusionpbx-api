@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Http;
+namespace Infrastructure\Traits;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

@@ -3,7 +3,7 @@
 namespace Api\Dialplan\Requests;
 
 use Illuminate\Support\Arr;
-use Infrastructure\Http\ApiRequestTrait;
+use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Api\Dialplan\Exceptions\WrongPushtokenDataException;

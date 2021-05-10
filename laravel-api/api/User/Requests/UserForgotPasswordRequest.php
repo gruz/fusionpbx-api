@@ -5,7 +5,7 @@ namespace Api\User\Requests;
 use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Illuminate\Validation\Rule;
-use Infrastructure\Http\ApiRequestTrait;
+use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Rules\UserExistsInDomainRule;
 

@@ -2,7 +2,7 @@
 
 namespace Api\Domain\Requests;
 
-use Infrastructure\Http\ApiRequestTrait;
+use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Rules\DomainSignupHashExpiredRule;
 use Infrastructure\Rules\DomainSignupHashHasEmailExistsRule;

@@ -2,7 +2,7 @@
 
 namespace Api\Settings\Requests;
 
-use Infrastructure\Http\ApiRequestTrait;
+use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateSettingRequest extends FormRequest

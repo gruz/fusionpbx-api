@@ -6,7 +6,7 @@ use Illuminate\Validation\Rule;
 use Infrastructure\Rules\HostnameRule;
 use Infrastructure\Rules\UsernameRule;
 use Api\Settings\Models\DefaultSetting;
-use Infrastructure\Http\ApiRequestTrait;
+use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
 
