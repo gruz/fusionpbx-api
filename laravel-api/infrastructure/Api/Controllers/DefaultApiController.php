@@ -48,7 +48,7 @@ class DefaultApiController extends BaseController
      * @OA\Get(
      *  tags={"Default"},
      *  description="Get application name and version",
-     *  path="/",
+     *  path="/api",
      *  security={},
      *      @OA\Response(
      *      description="Application name and version",
