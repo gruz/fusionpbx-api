@@ -5,13 +5,20 @@ namespace Infrastructure\Auth\Requests;
 use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Illuminate\Validation\Rule;
-use Api\Extension\Models\Extension;
 use Infrastructure\Rules\UsernameRule;
 use Api\Settings\Models\DefaultSetting;
 use Illuminate\Foundation\Http\FormRequest;
+use Infrastructure\Services\ValidationRulesService;
 
-class UserSignupRequestAbstract extends FormRequest
+class UserSignupRequest extends FormRequest
 {
+    private $validationRulesService;
+
+    public function __construct(ValidationRulesService $validationRulesService)
+    {
+        $this->validationRulesService = $validationRulesService;
+    }
+
     public function authorize()
     {
         return true;
@@ -19,16 +26,6 @@ class UserSignupRequestAbstract extends FormRequest
 
     public function rules()
     {
-        $password_rule = [
-            'required',
-            'string',
-            'min:8',             // must be at least 10 characters in length
-            'max:255',
-            'regex:/[a-z]/',      // must contain at least one lowercase letter
-            'regex:/[A-Z]/',      // must contain at least one uppercase letter
-            'regex:/[0-9]/',      // must contain at least one digit
-            'regex:/[@$!%*#?&]/', // must contain a special character
-        ];
         $rules = [
             'domain_name' => [
                 'required',
@@ -75,29 +72,12 @@ class UserSignupRequestAbstract extends FormRequest
                 }),
             ],
 
-            'password' => $password_rule,
+            'password' => $this->validationRulesService->getPasswordRules('user'),
 
             'extensions' => 'required|array',
-            'extensions.*.extension' =>
-            [
-                'required',
-                'distinct',
-                'integer',
-                'min:' . config('fpbx.extension.min'),
-                'max:' . config('fpbx.extension.max'),
-                Rule::unique(Extension::class)->where(function ($query) {
-                    // $domain_name = $this->request->get('domain_name');
-                    $domain_name = request()->get('domain_name');
-
-                    $domain = Domain::where('domain_name', $domain_name)->first();
-                    if (empty($domain)) {
-                        return false;
-                    }
-                    return $query->where('domain_uuid', $domain->domain_uuid);
-                }),
-            ],
-            'extensions.*.password' => $password_rule,
-            'extensions.*.voicemail_password' => 'required|integer',
+            'extensions.*.extension' => $this->validationRulesService->getExtensionRules(request()->get('domain_name')),
+            'extensions.*.password' => $this->validationRulesService->getPasswordRules('extension'),
+            'extensions.*.voicemail_password' => $this->validationRulesService->getPasswordRules('voicemail'),
             'contacts' => 'array',
             'contacts.*.contact_url' => 'url',
         ];

@@ -1,18 +1,15 @@
 <?php
 
-namespace Api\User\Requests;
+namespace Infrastructure\Auth\Requests;
 
 use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Illuminate\Validation\Rule;
-use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Infrastructure\Rules\UserExistsInDomainRule;
 
 class UserForgotPasswordRequest extends FormRequest
 {
-    use ApiRequestTrait;
-
     public function authorize()
     {
         return true;
@@ -28,6 +25,7 @@ class UserForgotPasswordRequest extends FormRequest
             ],
             'user_email' =>
             [
+                'bail',
                 'required',
                 'email',
                 Rule::exists(User::class, 'user_email')->where('user_enabled', 'true'),

@@ -7,8 +7,8 @@ use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
 use Web\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
-use Web\Http\Requests\Auth\UserSignupRequest;
 use Infrastructure\Providers\RouteServiceProvider;
+use Web\Http\Requests\Auth\UserSignupRequestWeb;
 
 class RegisteredUserController extends Controller
 {
@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(UserSignupRequest $request)
+    public function store(UserSignupRequestWeb $request)
     {
         $validated = $request->validated();
         // dd($validated);

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Infrastructure\Database\Eloquent\AbstractModel;
+use Infrastructure\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -249,7 +250,8 @@ class User extends AbstractModel implements
         return $this->hasMany(UserSetting::class, 'user_uuid', 'user_uuid');
     }
 
-    public function getResellerCodeAttribute() {
+    public function getResellerCodeAttribute()
+    {
         return optional($this->user_settings->where('user_setting_category', 'payment')->where('user_setting_subcategory', 'reseller_code')->first())->user_setting_value;
     }
 
@@ -320,7 +322,8 @@ class User extends AbstractModel implements
         return $this->getAttribute('user_email');
     }
 
-    public function getNameAttribute() {
+    public function getNameAttribute()
+    {
         return $this->username;
     }
 
@@ -344,5 +347,16 @@ class User extends AbstractModel implements
         return $this->forceFill([
             'user_enabled' => 'true',
         ])->save();
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token, $this));
     }
 }

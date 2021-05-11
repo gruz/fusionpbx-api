@@ -4,9 +4,9 @@ namespace Web\Http\Requests\Auth;
 
 use Api\Domain\Models\Domain;
 use Api\Extension\Services\ExtensionService;
-use Infrastructure\Auth\Requests\UserSignupRequestAbstract;
+use Infrastructure\Auth\Requests\UserSignupRequest;
 
-class UserSignupRequest extends UserSignupRequestAbstract
+class UserSignupRequestWeb extends UserSignupRequest
 {
     /**
      * Prepare the data for validation.

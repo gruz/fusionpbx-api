@@ -13,7 +13,7 @@ use Web\User\Requests\UserUpdatePasswordRequest;
 use Illuminate\Routing\Controller as BaseController;
 
 /**
- * @OA\Schema(
+ * @ OA\Schema(
  *  schema="Web/UserController"
  * )
  */
@@ -22,7 +22,7 @@ class UserController extends BaseController
     /**
      * User get reset password action. Displays password reset form
      *
-     @OA\Get(
+     @ OA\Get(
         tags={"User"},
         path="/user/register",
         x={
@@ -48,7 +48,7 @@ class UserController extends BaseController
     /**
      * User get reset password action. Displays password reset form
      *
-     @OA\Post(
+     @ OA\Post(
         tags={"User"},
         path="/user/register",
         x={
@@ -76,7 +76,7 @@ class UserController extends BaseController
     /**
      * User get reset password action. Displays password reset form
      *
-     @OA\Get(
+     @ OA\Get(
         tags={"User"},
         path="/remind-password",
         x={
@@ -92,37 +92,37 @@ class UserController extends BaseController
     /**
      * User get reset password action. Displays password reset form
      *
-     @OA\Get(
+     @ OA\Get(
         tags={"User"},
         path="/reset-password",
         x={
             "route-$path"="password.reset"
         },
-        @OA\Parameter(
+        @ OA\Parameter(
             name="email",
             in="query",
             required=true,
-            @OA\Schema(
+            @ OA\Schema(
                 type="string",
                 format="email",
                 example="some@email.com",
             ),
         ),
-        @OA\Parameter(
+        @ OA\Parameter(
             name="domain_name",
             in="query",
             required=true,
-            @OA\Schema(
+            @ OA\Schema(
                 type="string",
                 format="url",
                 example="email.com",
             ),
         ),
-        @OA\Parameter(
+        @ OA\Parameter(
             name="token",
             in="query",
             required=true,
-            @OA\Schema(
+            @ OA\Schema(
                 type="string",
                 example="71b4770ba36a165533fd75786a41793ea501f60f282f2464d27e16d2bb6bf516",
             ),
@@ -141,7 +141,7 @@ class UserController extends BaseController
     /**
      * User get reset password action. Displays password reset form
      *
-     @OA\Get(
+     @ OA\Get(
         tags={"User"},
         path="/invalid-link",
         x={
@@ -157,7 +157,7 @@ class UserController extends BaseController
     /**
      * User reset password after form submission
      *
-     @OA\Post(
+     @ OA\Post(
         tags={"User"},
         path="/password-update",
         x={

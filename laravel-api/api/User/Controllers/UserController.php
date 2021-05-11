@@ -7,10 +7,10 @@ use Api\User\Services\UserService;
 use Infrastructure\Http\Controller;
 use Api\User\Requests\CreateUserRequest;
 use Api\User\Requests\UserGroupsRequest;
-use Api\User\Requests\UserSignupRequest;
+use Api\User\Requests\UserSignupRequestApi;
 use Api\User\Requests\UserActivateRequest;
 use Api\User\Services\UserPasswordService;
-use Api\User\Requests\UserForgotPasswordRequest;
+use Api\User\Requests\UserForgotPasswordRequestApi;
 
 /**
  * @OA\Schema()
@@ -311,7 +311,7 @@ class UserController extends Controller
         ),
     )
      */
-    public function signup(UserSignupRequest $request)
+    public function signup(UserSignupRequestApi $request)
     {
         $data = $request->except('domain_uuid');
 
@@ -395,7 +395,7 @@ class UserController extends Controller
         ),
     )
      */
-    public function forgotPassword(UserForgotPasswordRequest $request, UserPasswordService $userPasswordService)
+    public function forgotPassword(UserForgotPasswordRequestApi $request, UserPasswordService $userPasswordService)
     {
         $data = $request->only('user_email', 'domain_name');
 

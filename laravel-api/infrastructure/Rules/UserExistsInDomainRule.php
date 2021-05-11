@@ -55,6 +55,6 @@ class UserExistsInDomainRule implements Rule
      */
     public function message()
     {
-        return 'Activation link for your email not found';
+        return __('User not found');
     }
 }

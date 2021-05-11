@@ -8,11 +8,19 @@ use Infrastructure\Rules\UsernameRule;
 use Api\Settings\Models\DefaultSetting;
 use Infrastructure\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Infrastructure\Services\ValidationRulesService;
 use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
 
 class DomainSignupRequest extends FormRequest
 {
     use ApiRequestTrait;
+
+    private $validationRulesService;
+
+    public function __construct(ValidationRulesService $validationRulesService)
+    {
+        $this->validationRulesService = $validationRulesService;
+    }
 
     public function authorize()
     {
@@ -36,10 +44,10 @@ class DomainSignupRequest extends FormRequest
                 new UsernameRule(),
             ],
             'users.*.user_email' => 'required|distinct:ignore_case|email',
-            'users.*.password' => 'required|min:6|max:25',
-            'users.*.extensions.*.extension' => 'required|distinct|integer|min:1|max:999',
-            'users.*.extensions.*.password' => 'required|min:6|max:25',
-            'users.*.extensions.*.voicemail_password' => 'required|integer',
+            'users.*.password' => $this->validationRulesService->getPasswordRules('user'),
+            'users.*.extensions.*.extension' => $this->validationRulesService->getExtensionRules(),
+            'users.*.extensions.*.password' => $this->validationRulesService->getPasswordRules('extension'),
+            'users.*.extensions.*.voicemail_password' => $this->validationRulesService->getPasswordRules('voicemail'),
             'users' => new ArrayAtLeastOneAcceptedRule('is_admin'),
         ];
 

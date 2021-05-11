@@ -23,6 +23,13 @@ class FrontController extends BaseController
             return;
         }
 
+        \DB::enableQueryLog();
+        $user = User::where('username', 'mplotnikov01')->first();
+        dd(
+            $user->domain_name,
+            $user->getDomainAdmins(),
+);
+
         $this->testRequestFactoryService = app(\Infrastructure\Services\TestRequestFactoryService::class);
 
         $data = $this->testRequestFactoryService->makeUserSignupRequest([

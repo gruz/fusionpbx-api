@@ -528,101 +528,6 @@
                 },
                 "security": []
             }
-        },
-        "/user/register": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Web_User_Controllers_UserController::showSignipForm",
-                "responses": {},
-                "x-route-$path": "web.user.show.signup.form"
-            },
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Web_User_Controllers_UserController::register",
-                "responses": {},
-                "x-route-$path": "web.user.process.signup"
-            }
-        },
-        "/remind-password": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Web_User_Controllers_UserController::getForgotPasswordForm",
-                "responses": {},
-                "x-route-$path": "password.forgot"
-            }
-        },
-        "/reset-password": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Web_User_Controllers_UserController::getNewPasswordForm",
-                "parameters": [
-                    {
-                        "name": "email",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "email",
-                            "example": "some@email.com"
-                        }
-                    },
-                    {
-                        "name": "domain_name",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "url",
-                            "example": "email.com"
-                        }
-                    },
-                    {
-                        "name": "token",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "example": "71b4770ba36a165533fd75786a41793ea501f60f282f2464d27e16d2bb6bf516"
-                        }
-                    }
-                ],
-                "responses": {},
-                "x-route-$path": "password.reset"
-            }
-        },
-        "/invalid-link": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User get reset password action. Displays password reset form",
-                "operationId": "Web_User_Controllers_UserController::invalidLink",
-                "responses": {},
-                "x-route-$path": "password.invalid-link"
-            }
-        },
-        "/password-update": {
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "User reset password after form submission",
-                "operationId": "Web_User_Controllers_UserController::passwordUpdate",
-                "responses": {},
-                "x-route-$path": "password.update"
-            }
         }
     },
     "components": {
@@ -1441,8 +1346,7 @@
                         "readOnly": true
                     }
                 }
-            },
-            "Web/UserController": {}
+            }
         },
         "parameters": {
             "domain_uuid": {

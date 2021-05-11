@@ -2,12 +2,12 @@
 
 namespace Web\Http\Controllers\Auth;
 
-use Web\Http\Controllers\Controller;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Web\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
+use Infrastructure\Services\ValidationRulesService;
 
 class NewPasswordController extends Controller
 {
@@ -30,23 +30,25 @@ class NewPasswordController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request, ValidationRulesService $validationRulesService)
     {
+        $password_rules = $validationRulesService->getPasswordRules('user');
+        $password_rules[] = 'confirmed';
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|string|confirmed|min:8',
+            'user_email' => 'required|email',
+            'password' => $password_rules,
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('user_email', 'password', 'password_confirmation', 'token'),
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
+                    // 'remember_token' => Str::random(60),
                 ])->save();
 
                 event(new PasswordReset($user));

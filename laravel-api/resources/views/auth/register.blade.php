@@ -1,3 +1,4 @@
+<?php $class = 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 '; ?>
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
@@ -10,7 +11,6 @@
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
         <x-form :action="route('register')">
-            <?php $class = 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 '; ?>
             <x-form-select name="domain_uuid" :options="$domains" :class="$class" :label="__('Domain')"/>
             <x-form-input name="username" :label="__('Username')" :class="$class" required autofocus />
             <x-form-input name="effective_caller_id_name" :label="__('Effective Caller ID name')" :class="$class" required autofocus />

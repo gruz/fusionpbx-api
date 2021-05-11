@@ -1,3 +1,4 @@
+<?php $class = 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 '; ?>
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
@@ -19,12 +20,16 @@
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
 
+            <x-form-select name="domain_name" :options="$domains" :class="$class" :label="__('Domain')"/>
+            <x-form-input type="email" name="user_email" :class="$class" :label="__('Email')" required />
+
+
             <!-- Email Address -->
-            <div>
+            {{-- <div>
                 <x-label for="email" :value="__('Email')" />
 
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            </div>
+            </div> --}}
 
             <div class="flex items-center justify-end mt-4">
                 <x-button>
