@@ -107,6 +107,10 @@ class RouteServiceProvider extends ServiceProvider
 
             $middlewares = empty($route->middlewares) ? [] : $route->middlewares;
 
+            if (!isset($route->prefix)) {
+                $route->prefix = null;
+            }
+
             Route::middleware($middlewares)
                 ->namespace($this->namespace)
                 ->prefix($route->prefix)

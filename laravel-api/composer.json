@@ -35,8 +35,8 @@
         "files": [
             "infrastructure/Helpers/helpers.php",
             "api/User/Helpers/user_helpers.php",
-            "../fusionpbx/resources/functions.php",
-            "../fusionpbx/resources/classes/message.php"
+            "/var/www/fusionpbx/resources/functions.php",
+            "/var/www/fusionpbx/resources/classes/message.php"
         ]
     },
     "scripts": {
