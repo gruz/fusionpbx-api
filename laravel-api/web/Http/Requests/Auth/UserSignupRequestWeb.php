@@ -35,7 +35,7 @@ class UserSignupRequestWeb extends UserSignupRequest
                     'voicemail_password' => $this->voicemail_password,
                     'effective_caller_id_name' => $this->effective_caller_id_name,
                     'effective_caller_id_number' => $extension,
-                    'force_ping' => true,
+                    'force_ping' => 'true',
                 ]
             ],
         ]);
@@ -45,8 +45,9 @@ class UserSignupRequestWeb extends UserSignupRequest
     {
         $rules = parent::rules();
 
-        $rules['captcha'] = 'required|captcha';
-
+        if (config('fpbx.captcha_enabled')) {
+            $rules['captcha'] = 'required|captcha';
+        }
 
         return $rules;
     }

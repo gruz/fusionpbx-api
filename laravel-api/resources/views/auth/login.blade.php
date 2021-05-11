@@ -13,10 +13,9 @@
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
         <x-form :action="route('login')">
-            <?php $class = 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 '; ?>
-            <x-form-select name="domain_uuid" :options="$domains" :class="$class" :label="__('Domain')"/>
-            <x-form-input name="username" :label="__('Username')" :class="$class" required autofocus />
-            <x-form-input name="password" :label="__('Password')" :class="$class" required autocomplete="current-password" type="password"/>
+            <x-form-select name="domain_uuid" :options="$domains" :label="__('Domain')"/>
+            <x-form-input name="username" :label="__('Username')" required autofocus />
+            <x-form-input name="password" :label="__('Password')" required autocomplete="current-password" type="password"/>
 
             <div class="block mt-4">
                 <label for="remember_me" class="inline-flex items-center">

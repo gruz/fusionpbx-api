@@ -3,7 +3,7 @@
         <x-form-label :label="$label" />
 
         <input {!! $attributes->merge([
-            'class' => 'block w-full ' . ($label ? 'mt-1' : '')
+            'class' => 'block w-full ' . ($label ? 'mt-1' : '') . ' ' . $fieldClass
         ]) !!}
             @if($isWired())
                 wire:model{!! $wireModifier() !!}="{{ $name }}"
