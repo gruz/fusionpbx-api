@@ -40,4 +40,14 @@ class UserSignupRequestWeb extends UserSignupRequest
             ],
         ]);
     }
+
+    public function rules()
+    {
+        $rules = parent::rules();
+
+        $rules['captcha'] = 'required|captcha';
+
+
+        return $rules;
+    }
 }

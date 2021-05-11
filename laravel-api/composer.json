@@ -16,6 +16,7 @@
         "laravel/framework": "^8.33",
         "laravel/passport": "^10.1",
         "laravel/tinker": "^2.6",
+        "mews/captcha": "^3.2",
         "optimus/api-consumer": "^0.4.0",
         "optimus/architect": "^2.0",
         "optimus/bruno": "^6.0",
@@ -34,9 +35,7 @@
         },
         "files": [
             "infrastructure/Helpers/helpers.php",
-            "api/User/Helpers/user_helpers.php",
-            "/var/www/fusionpbx/resources/functions.php",
-            "/var/www/fusionpbx/resources/classes/message.php"
+            "api/User/Helpers/user_helpers.php"
         ]
     },
     "scripts": {

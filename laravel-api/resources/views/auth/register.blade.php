@@ -1,4 +1,5 @@
-<?php $class = 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 '; ?>
+<?php $class = 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring
+focus:ring-indigo-200 focus:ring-opacity-50 '; ?>
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
@@ -11,22 +12,25 @@
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
         <x-form :action="route('register')">
-            <x-form-select name="domain_uuid" :options="$domains" :class="$class" :label="__('Domain')"/>
+            <x-form-select name="domain_uuid" :options="$domains" :class="$class" :label="__('Domain')" />
             <x-form-input name="username" :label="__('Username')" :class="$class" required autofocus />
-            <x-form-input name="effective_caller_id_name" :label="__('Effective Caller ID name')" :class="$class" required autofocus />
-            <x-form-input name="password" :label="__('Password')" :class="$class" required autocomplete="new-password" type="password"/>
+            <x-form-input name="effective_caller_id_name" :label="__('Effective Caller ID name')" :class="$class"
+                required autofocus />
+            <x-form-input name="password" :label="__('Password')" :class="$class" required autocomplete="new-password"
+                type="password" />
             {{-- <x-form-input name="password_confirmation" :label="__('Confirm password')" :class="$class" required type="password"/> --}}
 
             <x-form-input type="email" name="user_email" :class="$class" :label="__('Email')" required />
 
-            <?php $label = __('Voicemail password') .' (' . __('Only digits') . ')'; ?>
-            <x-form-input name="voicemail_password" pattern="[0-9]+" :label="$label" :class="$class" required autocomplete="new-password" type="password"/>
+            <?php $label = __('Voicemail password') . ' (' . __('Only digits') . ')'; ?>
+            <x-form-input name="voicemail_password" pattern="[0-9]+" :label="$label" :class="$class" required
+                autocomplete="new-password" type="password" />
             {{-- <x-form-input name="voicemail_password_confirmation" pattern="[0-9]+" :label="__('Confirm voicemail password')" :class="$class" required type="password"/> --}}
 
             <x-form-input name="reseller_reference_code" :label="__('Reference code')" :class="$class" required />
 
-            {{-- <div class="mt-10">
-            </div> --}}
+            <div class="mt-10">
+            </div>
 
             {{-- <!-- Name -->
             <div class="mt-4">
@@ -60,6 +64,45 @@
                                 type="password"
                                 name="password_confirmation" required />
             </div> --}}
+
+            <div class="mt-4 p-4 border rounded shadow">
+                <?php $captcha_type = 'flat2'; ?>
+                <div class="captcha">
+                    <div style="height:46px;">{!! captcha_img($captcha_type) !!}</div>
+                    <button type="button" class="btn btn-danger" class="refresh-captcha" id="refresh-captcha">
+                        &#x21bb;
+                    </button>
+                </div>
+                <x-form-input name="captcha" id="captcha" :label="__('Captcha')" :class="$class" required autofocus />
+                <script type="text/javascript">
+                    let refreshCaptcha = document.querySelector("#refresh-captcha");
+                    refreshCaptcha.addEventListener('click', function() {
+                        fetch('refresh-captcha?type={{ $captcha_type }}')
+                            .then(response => {
+                                // console.log(response, response.json());
+                                return response.json();
+                            })
+                            .then(data => {
+                                let captchaElement = document.querySelector('.captcha div');
+                                captchaElement.innerHTML = data.captcha;
+                                // $(".captcha span").html(data.captcha);
+                                // console.log(data)
+                            });
+
+                    });
+
+                    // $('#refresh-captcha').click(function () {
+                    //     $.ajax({
+                    //         type: 'GET',
+                    //         url: 'refresh-captcha',
+                    //         success: function (data) {
+                    //             $(".captcha span").html(data.captcha);
+                    //         }
+                    //     });
+                    // });
+
+                </script>
+            </div>
 
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">

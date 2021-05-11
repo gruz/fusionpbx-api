@@ -1,5 +1,12 @@
 <?php
 
+
+
+$path = __DIR__ . '/../../../';
+
+require_once $path . "/fusionpbx/resources/functions.php";
+require_once $path . "/fusionpbx/resources/classes/message.php";
+
 if (!function_exists('get_composer_json_namespaces')) {
 
     function get_composer_json_namespaces()

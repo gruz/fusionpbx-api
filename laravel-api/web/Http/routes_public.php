@@ -1,14 +1,15 @@
 <?php
 
-use Web\Http\Controllers\Auth\AuthenticatedSessionController;
-use Web\Http\Controllers\Auth\ConfirmablePasswordController;
-use Web\Http\Controllers\Auth\EmailVerificationNotificationController;
-use Web\Http\Controllers\Auth\EmailVerificationPromptController;
-use Web\Http\Controllers\Auth\NewPasswordController;
-use Web\Http\Controllers\Auth\PasswordResetLinkController;
-use Web\Http\Controllers\Auth\RegisteredUserController;
-use Web\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Infrastructure\Http\Controllers\FrontController;
+use Web\Http\Controllers\Auth\NewPasswordController;
+use Web\Http\Controllers\Auth\VerifyEmailController;
+use Web\Http\Controllers\Auth\RegisteredUserController;
+use Web\Http\Controllers\Auth\PasswordResetLinkController;
+use Web\Http\Controllers\Auth\ConfirmablePasswordController;
+use Web\Http\Controllers\Auth\AuthenticatedSessionController;
+use Web\Http\Controllers\Auth\EmailVerificationPromptController;
+use Web\Http\Controllers\Auth\EmailVerificationNotificationController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/', function () {
@@ -79,4 +80,6 @@ Route::middleware(['web'])->group(function () {
             return redirect('/');
         }
     });
+
+    Route::get('/refresh-captcha', [FrontController::class, 'refreshCaptcha']);
 });

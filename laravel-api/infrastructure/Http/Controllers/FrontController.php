@@ -18,6 +18,12 @@ use Infrastructure\Services\FreeSwicthSocketService;
 
 class FrontController extends BaseController
 {
+    public function refreshCaptcha(Request $request)
+    {
+        $type = $request->get('type', '');
+        return response()->json(['captcha'=> captcha_img($type)]);
+    }
+
     public function test(Request $request)
     {
         if (!config('app.debug')) {
