@@ -56,10 +56,10 @@ class UserWasActivatedSelfNotification extends Notification implements ShouldQue
             ->line(__('Your domain **:domain_name**', [
                 'domain_name' => $domain_name
             ]))
-            ->line(__('Domain UUID is:'))
-            ->line(__('**:domain_uuid**', [
-                'domain_uuid' => $domain_uuid,
-            ]))
+            // ->line(__('Domain UUID is:'))
+            // ->line(__('**:domain_uuid**', [
+            //     'domain_uuid' => $domain_uuid,
+            // ]))
             ->salutation(__('Thank you for using our service!'))
             ;
     }
