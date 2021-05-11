@@ -22,5 +22,12 @@ class UserWasActivatedListener
 
         Notification::route('mail', $mainAdminEmail)
             ->notify(new UserWasActivatedDomainAdminNotification($event->user));
+
+
+        /**
+         * @var \Api\User\Models\User
+         */
+        $user = $event->user;
+        $user->extensions()->update(['enabled' => 'true']);
     }
 }

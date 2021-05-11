@@ -226,6 +226,8 @@
                                     <div class="grid grid-cols-2">
                                         <div class="px-4 py-2 font-semibold">{{ __('Voicemail password') }}</div>
                                         <div class="px-4 py-2">{{ $extension->voicemail->voicemail_password }}</div>
+                                        <div class="px-4 py-2 font-semibold">{{ __('Enabled') }}</div>
+                                        <div class="px-4 py-2">{{ $extension->enabled }}</div>
                                     </div>
                                 </div>
                                 <div class="my-10"></div>

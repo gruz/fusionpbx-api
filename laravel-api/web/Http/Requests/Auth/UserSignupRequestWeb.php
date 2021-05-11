@@ -36,7 +36,6 @@ class UserSignupRequestWeb extends UserSignupRequest
                     'effective_caller_id_name' => $this->effective_caller_id_name,
                     'effective_caller_id_number' => $extension,
                     'force_ping' => true,
-
                 ]
             ],
         ]);

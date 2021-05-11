@@ -246,6 +246,14 @@ class UserService extends AbstractService
         $relatedData = Arr::get($data, $type, []);
         $relatedData = $this->injectData($relatedData, ['domain_uuid' => $userModel->getAttribute('domain_uuid')]);
 
+        switch ($type) {
+            case 'extensions':
+                $relatedData = $this->injectData($relatedData, ['enabled' => 'false']);
+                break;
+            default:
+                break;
+        }
+
         foreach ($relatedData as $row) {
             $relatedModel = $service->create($row, ['forceFillable' => ['domain_uuid']]);
             $this->setRelation($userModel, $relatedModel);
