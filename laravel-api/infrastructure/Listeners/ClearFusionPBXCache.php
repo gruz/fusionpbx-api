@@ -11,12 +11,13 @@ class ClearFusionPBXCache
     {
       $socket = new FSSocketService;
 
-      $clearCacheOptions = Arr::get($event->options, 'clearCacheUri');
-      if (!empty($clearCacheOptions))
-      {
-        $socket->clearCache($clearCacheOptions);
-      }
+      // $clearCacheOptions = Arr::get($event->options, 'clearCacheUri');
+      // if (!empty($clearCacheOptions))
+      // {
+      //   $socket->clearCache($clearCacheOptions);
+      // }
 
+      $socket->clearCache(null);
       $socket->reloadXML();
       return true;
 

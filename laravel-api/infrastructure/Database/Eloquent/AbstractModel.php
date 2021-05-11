@@ -8,8 +8,8 @@ use Doctrine\DBAL\Schema\Index;
 use Infrastructure\Traits\Uuids;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use Infrastructure\Listeners\ClearFusionPBXCache;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Infrastructure\Services\FreeSwicthSocketService;
 use Infrastructure\Exceptions\MissingDomainUuidException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
@@ -280,16 +280,6 @@ abstract class AbstractModel extends BaseModel
     //     return $fieldType;
     // }
 
-    /**
-     * The event map for the model.
-     *
-     * @var array
-     */
-    protected $dispatchesEvents = [
-        'saved' => ClearFusionPBXCache::class,
-        'deleted' => ClearFusionPBXCache::class,
-    ];
-
     protected static function boot()
     {
         parent::boot();
@@ -304,6 +294,12 @@ abstract class AbstractModel extends BaseModel
                     throw new MissingDomainUuidException;
                 }
             }
+        });
+
+        static::saved(function (AbstractModel $model) {
+            $s = new FreeSwicthSocketService;
+            $reponse = $s->clearCache(null);
+            $reponse = $s->reloadXML(null);
         });
     }
 }

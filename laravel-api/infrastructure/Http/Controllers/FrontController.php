@@ -14,6 +14,7 @@ use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
+use Infrastructure\Services\FreeSwicthSocketService;
 
 class FrontController extends BaseController
 {
@@ -22,6 +23,11 @@ class FrontController extends BaseController
         if (!config('app.debug')) {
             return;
         }
+
+        $s = new FreeSwicthSocketService;
+        $s->clearCache(null);
+        $s->reloadXML(null);
+        dd();
 
         \DB::enableQueryLog();
         $user = User::where('username', 'mplotnikov01')->first();

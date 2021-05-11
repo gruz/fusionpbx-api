@@ -19,8 +19,8 @@ class FreeSwicthSocketService
     public function reloadXML()
     {
         $fp = $this->event_socket_create();
+        // $response = event_socket_request($fp, 'api flush cache');
         $response = event_socket_request($fp, 'api reloadxml');
-        // $response = event_socket_request($fp, 'api FLUSH CACHE');
 
         fclose($fp);
 
@@ -40,11 +40,15 @@ class FreeSwicthSocketService
     {
         // We need to load params into the $_SESSION var here to make native FusionPBX class fire
         $this->loadSocketParams(true);
-        require_once config('app.fpath_document_root') . '/resources/classes/cache.php';
+        $file = config('app.fpath_document_root') . '/resources/classes/cache.php';
+        require_once $file;
 
         //clear the cache
         $cache = new \cache;
-        $cache->delete($uri);
+        // $cache->delete($uri);
+        $response = $cache->flush();
+
+        return $response;
     }
 
     /**
