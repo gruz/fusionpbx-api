@@ -1,8 +1,10 @@
 <?php
 
-
-
-$path = __DIR__ . '/../../../';
+$api_root = realpath(__DIR__ . '/../../');
+$path = realpath($api_root . '/../');
+if ('/var/www/fusionpbx-api' === $path) {
+    $path = '/var/www';
+}
 
 require_once $path . "/fusionpbx/resources/functions.php";
 require_once $path . "/fusionpbx/resources/classes/message.php";
