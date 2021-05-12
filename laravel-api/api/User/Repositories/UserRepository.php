@@ -113,6 +113,10 @@ class UserRepository extends AbstractRepository
 
     public function getUserByEmailAndDomain($user_email, $domain_name)
     {
+        \DB::enableQueryLog();
+        /**
+         * @var User
+         */
         $userModel = $this->getModel()->whereHas('domain', function ($q) use ($user_email, $domain_name) {
             $q->where('domain_name', '=', $domain_name);
         })->where('user_email', $user_email)->first();

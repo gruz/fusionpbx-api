@@ -13,7 +13,11 @@
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
         <x-form :action="route('login')">
-            <x-form-select name="domain_uuid" :options="$domains" :label="__('Domain')"/>
+            @if(config('fpbx.domain.allow_select'))
+                <x-form-select name="domain_name" :options="$domains" :label="__('Domain')" />
+            @else
+                <x-form-input name="domain_name" :label="__('Domain')" autofocus />
+            @endif
             <x-form-input name="username" :label="__('Username')" required autofocus />
             <x-form-input name="password" :label="__('Password')" required autocomplete="current-password" type="password"/>
 

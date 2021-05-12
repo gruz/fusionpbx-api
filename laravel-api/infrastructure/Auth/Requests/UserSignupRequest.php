@@ -36,7 +36,7 @@ class UserSignupRequest extends FormRequest
                 'required',
                 Rule::unique(User::class)->where(function ($query) {
                     // $domain_name = $this->request->get('domain_name');
-                    $domain_name = request()->get('domain_name');
+                    $domain_name = $this->get('domain_name');
 
                     $domain = Domain::where('domain_name', $domain_name)
                         ->where('domain_enabled', true)
@@ -57,7 +57,7 @@ class UserSignupRequest extends FormRequest
                 new UsernameRule(),
                 Rule::unique(User::class)->where(function ($query) {
                     // $domain_name = $this->request->get('domain_name');
-                    $domain_name = request()->get('domain_name');
+                    $domain_name = $this->get('domain_name');
 
                     $domain = Domain::where('domain_name', $domain_name)
                         ->where('domain_enabled', true)
@@ -75,7 +75,7 @@ class UserSignupRequest extends FormRequest
             'password' => $this->validationRulesService->getPasswordRules('user'),
 
             'extensions' => 'required|array',
-            'extensions.*.extension' => $this->validationRulesService->getExtensionRules(request()->get('domain_name')),
+            'extensions.*.extension' => $this->validationRulesService->getExtensionRules($this->get('domain_name')),
             'extensions.*.password' => $this->validationRulesService->getPasswordRules('extension'),
             'extensions.*.voicemail_password' => $this->validationRulesService->getPasswordRules('voicemail'),
             'contacts' => 'array',

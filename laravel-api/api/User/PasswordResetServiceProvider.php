@@ -32,6 +32,7 @@ class PasswordResetServiceProvider extends OriginalPasswordResetServiceProvider
          * @var User $user
          */
         ResetPassword::createUrlUsing(function ($user, string $token) {
+            $a = 'aa';
             return url(route('password.reset', [
                     'token' => $token,
                     'email' => $user->getEmailForPasswordReset(),

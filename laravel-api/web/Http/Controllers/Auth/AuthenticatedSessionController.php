@@ -19,7 +19,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(DomainService $domainService)
     {
-        $domains = Domain::where('domain_enabled', true)->get()->pluck('domain_name', 'domain_uuid')->toArray();
+        $domains = $domainService->getDomainsArray();
         return view('auth.login', ['domains' => $domains]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace Web\Http\Controllers\Auth;
 
+use Api\Domain\Services\DomainService;
 use Illuminate\Http\Request;
 use Web\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +31,7 @@ class NewPasswordController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request, ValidationRulesService $validationRulesService)
+    public function store(Request $request, ValidationRulesService $validationRulesService, DomainService $domainService)
     {
         $password_rules = $validationRulesService->getPasswordRules('user');
         $password_rules[] = 'confirmed';
@@ -40,11 +41,17 @@ class NewPasswordController extends Controller
             'password' => $password_rules,
         ]);
 
+        $data = $request->only('user_email', 'password', 'password_confirmation', 'token');
+        $domain_name = $request->get('domain_name');
+
+        $domainModel = $domainService->getByAttributes(['domain_name' => $domain_name, 'domain_enabled' => true])->first();
+        $data['domain_uuid'] = optional($domainModel)->domain_uuid;
+
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
         $status = Password::reset(
-            $request->only('user_email', 'password', 'password_confirmation', 'token'),
+            $data,
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),

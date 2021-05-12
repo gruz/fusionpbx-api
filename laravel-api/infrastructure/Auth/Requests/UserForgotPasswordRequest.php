@@ -17,7 +17,7 @@ class UserForgotPasswordRequest extends FormRequest
 
     public function rules()
     {
-        $domain_name = request()->get('domain_name');
+        $domain_name = $this->get('domain_name');
         return [
             'domain_name' => [
                 'required',

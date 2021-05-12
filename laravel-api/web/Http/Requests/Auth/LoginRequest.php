@@ -5,12 +5,21 @@ namespace Web\Http\Requests\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
+use Api\Domain\Services\DomainService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
+    private $domainService;
+
+    public function __construct(DomainService $domainService)
+    {
+        $this->domainService = $domainService;
+    }
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,7 +38,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'domain_uuid' => 'required|string|uuid',
+            'domain_name' => 'nullable|string',
             'username' => 'required|string',
             'password' => 'required|string',
         ];
@@ -46,7 +55,17 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $data = $this->only('domain_uuid', 'username', 'password');
+        $domain_name = $this->get('domain_name');
+        if (empty($domain_name)) {
+            $domainModel = $this->domainService->getSystemDomain();
+            // $domain_name = $domainModel->getAttribute('domain_name');
+        } else {
+            $domainModel = $this->domainService->getByAttributes(['domain_name' => $domain_name, 'domain_enabled' => true])->first();
+        }
+        $domain_uuid = optional($domainModel)->getAttribute('domain_uuid');
+        // dd($domain_name, $domain_uuid);
+        $data = $this->only('username', 'password');
+        $data['domain_uuid'] = $domain_uuid;
         // $data['user_enabled'] = 'true';
         // $data['domain_uuid'] = 'ff1f7bf7-9dcb-46a1-ad77-ff22e0a08f26';
         // $data['username'] = 'admin';
@@ -54,18 +73,6 @@ class LoginRequest extends FormRequest
 
         if (! Auth::attempt($data, $this->filled('remember'))) {
             RateLimiter::hit($this->throttleKey());
-
-            // $user = User::where([
-            //     ['domain_uuid' ,$data['domain_uuid']],
-            //     ['username' ,$data['username']],
-            // ])->first();
-            // if (!empty($user) && $user->user_enabled !== 'true') {
-            //     throw ValidationException::withMessages([
-            //         'user_enabled' => __('auth.verify'),
-            //     ]);
-            // }
-            // dd($data, $user, $user->user_enabled);
-    
 
             throw ValidationException::withMessages([
                 'username' => __('auth.failed'),
