@@ -10,11 +10,7 @@
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
         <x-form :action="route('register')">
-            @if(config('fpbx.domain.allow_select'))
-                <x-form-select name="domain_name" :options="$domains" :label="__('Domain')" />
-            @else
-                <x-form-input name="domain_name" :label="__('Domain')" autofocus />
-            @endif
+            <x-select-domain />
             <x-form-input name="username" :label="__('Username')" :required="'bbb'" autofocus />
             <x-form-input name="effective_caller_id_name" :label="__('Effective Caller ID name')" required />
             <x-form-input name="password" :label="__('Password')" required autocomplete="new-password"
