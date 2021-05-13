@@ -11,8 +11,8 @@
 
         <x-form :action="route('register')">
             <x-select-domain />
-            <x-form-input name="username" :label="__('Username')" :required="'bbb'" autofocus />
-            <x-form-input name="effective_caller_id_name" :label="__('Effective Caller ID name')" required />
+            <x-form-input name="username" :label="__('Unique username')" required autofocus />
+            <x-form-input name="effective_caller_id_name" :label="__('Display name for calls')" required />
             <x-form-input name="password" :label="__('Password')" required autocomplete="new-password"
                 type="password" />
             {{-- <x-form-input name="password_confirmation" :label="__('Confirm password')" required type="password"/> --}}

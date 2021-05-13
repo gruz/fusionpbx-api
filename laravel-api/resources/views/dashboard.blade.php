@@ -3,6 +3,11 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
+        <div class="hidden fixed top-0 left-0 px-6 py-4 sm:block">
+            @foreach ($langs as $lang)
+                <a href="{{ route('lang', $lang) }}" class="text-sm {{ App::currentLocale() === $lang ? 'text-gray-200 ' : 'text-gray-700 ' }} underline">{{ $lang }}</a>
+            @endforeach
+        </div>
     </x-slot>
 
     {{-- <div class="py-12">

@@ -16,7 +16,7 @@ class Kernel extends HttpKernel
     protected $middleware = [
         // \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Infrastructure\Http\Middleware\L5SwaggerLoadConstants::class,
-        
+
         // \Infrastructure\Http\Middleware\TrustHosts::class,
         \Infrastructure\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Infrastructure\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Infrastructure\Http\Middleware\Localization::class,
         ],
         'api' => [
             'throttle:api',

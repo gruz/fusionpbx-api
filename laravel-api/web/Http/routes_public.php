@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Web\Http\Controllers\LocalizationController;
 use Infrastructure\Http\Controllers\FrontController;
 use Web\Http\Controllers\Auth\NewPasswordController;
 use Web\Http\Controllers\Auth\VerifyEmailController;
@@ -82,4 +83,5 @@ Route::middleware(['web'])->group(function () {
     });
 
     Route::get('/refresh-captcha', [FrontController::class, 'refreshCaptcha']);
+    Route::get('lang/{locale}', [LocalizationController::class, 'lang'])->name('lang');
 });
