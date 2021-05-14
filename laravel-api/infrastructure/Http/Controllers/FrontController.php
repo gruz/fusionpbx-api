@@ -12,9 +12,9 @@ use Api\Domain\Models\Domain;
 use Api\Settings\Models\Setting;
 use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
+use Infrastructure\Services\FreeSwicthHookService;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
-use Infrastructure\Services\FreeSwicthSocketService;
 
 class FrontController extends BaseController
 {
@@ -30,10 +30,9 @@ class FrontController extends BaseController
             return;
         }
 
-        $s = new FreeSwicthSocketService;
-        $s->clearCache(null);
-        $s->reloadXML(null);
-        dd();
+        $s = new FreeSwicthHookService;
+        $response = $s->reload();
+        dd($response);
 
         \DB::enableQueryLog();
         $user = User::where('username', 'mplotnikov01')->first();

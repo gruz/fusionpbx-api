@@ -8,8 +8,8 @@ use Doctrine\DBAL\Schema\Index;
 use Infrastructure\Traits\Uuids;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Infrastructure\Services\FreeSwicthHookService;
 use Illuminate\Database\Eloquent\Model as BaseModel;
-use Infrastructure\Services\FreeSwicthSocketService;
 use Infrastructure\Exceptions\MissingDomainUuidException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
@@ -297,9 +297,8 @@ abstract class AbstractModel extends BaseModel
         });
 
         static::saved(function (AbstractModel $model) {
-            $s = new FreeSwicthSocketService;
-            $reponse = $s->clearCache(null);
-            $reponse = $s->reloadXML(null);
+            $s = new FreeSwicthHookService;
+            $reponse = $s->reload();
         });
     }
 }

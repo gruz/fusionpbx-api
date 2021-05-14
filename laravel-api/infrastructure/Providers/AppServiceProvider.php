@@ -26,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         View::share('fieldClass', 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ');
-        View::share('langs', [ 'en' , 'ru', 'ua']);
+        View::share('langs', [ 'en', 'es', 'uk', 'ru']);
     }
 }

@@ -14,7 +14,6 @@
 
         <x-form :action="route('login')">
             <x-select-domain />
-            {{ __('auth.failed') }}
             <x-form-input name="username" :label="__('Unique username')" required autofocus />
             <x-form-input name="password" :label="__('Password')" required autocomplete="current-password" type="password"/>
 

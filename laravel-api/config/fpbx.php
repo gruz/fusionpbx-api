@@ -81,4 +81,6 @@ return [
     ],
     'time_format' => 'Y-m-d H:i:s.uO',
     'captcha_enabled' => env('CAPTCHA_ENABLED', true),
+    'hook_command' => env('FPBX_HOOK', 'php /var/www/fusionpbx/bin/fpbx_hook.php /var/www/fusionpbx'),
+
 ];
