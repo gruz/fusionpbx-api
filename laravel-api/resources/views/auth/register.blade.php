@@ -24,7 +24,10 @@
                 autocomplete="new-password" type="password" />
             {{-- <x-form-input name="voicemail_password_confirmation" pattern="[0-9]+" :label="__('Confirm voicemail password')" required type="password"/> --}}
 
-            <x-form-input name="reseller_reference_code" :label="__('Reference code')" required />
+            <?php
+            $label = __('Get it from your reseller or contact <a href="mailto::email">:email</a>',[ 'email' => config('app.contact_email') ] );
+            ?>
+            <x-form-input name="reseller_reference_code" :label="__('Reseller code') . '<br/><small>(' . $label . ')</small>' " required />
 
             <div class="mt-10">
             </div>
