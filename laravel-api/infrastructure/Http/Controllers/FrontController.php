@@ -30,6 +30,8 @@ class FrontController extends BaseController
             return;
         }
 
+        dd(config('domain_enabled_field_type'));
+
         $s = new FreeSwicthHookService;
         $response = $s->reload();
         dd($response);
