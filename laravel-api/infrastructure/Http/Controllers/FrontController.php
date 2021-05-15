@@ -21,7 +21,7 @@ class FrontController extends BaseController
     public function refreshCaptcha(Request $request)
     {
         $type = $request->get('type', '');
-        return response()->json(['captcha'=> captcha_img($type)]);
+        return response()->json(['captcha' => captcha_img($type)]);
     }
 
     public function test(Request $request)
@@ -41,7 +41,7 @@ class FrontController extends BaseController
         dd(
             $user->domain_name,
             $user->getDomainAdmins(),
-);
+        );
 
         $this->testRequestFactoryService = app(\Infrastructure\Services\TestRequestFactoryService::class);
 
@@ -55,7 +55,9 @@ class FrontController extends BaseController
         $ral = new User;
         // d($ral->groups(), $ral->groups()->getPivotColumns(), $ral->contacts()->getPivotColumns());
 
-        d($ral->extensions(), $ral->extensions()->getPivotColumns(), 
+        d(
+            $ral->extensions(),
+            $ral->extensions()->getPivotColumns(),
             $ral->extensions()->getPivotClass(),
             $ral->extensions()->getQualifiedForeignPivotKeyName(),
             $ral->extensions()->getExistenceCompareKey(),
@@ -82,9 +84,9 @@ class FrontController extends BaseController
         // $model = $model->first();
         // $model = $model->where('request->users', '@>', 'alyson.dietrich@howe.com')
         $model = $model->whereJsonContains('request->users', [
-            [ "user_email" => "alyson.dietrich@howe.com" ]
+            ["user_email" => "alyson.dietrich@howe.com"]
         ])
-        ->first();
+            ->first();
 
         dd(optional($model)->toArray(), \DB::getQueryLog());
 
@@ -94,11 +96,11 @@ class FrontController extends BaseController
         // $model->save();
 
         // $model->setAttribute('request->dddd', 'aaaa');
--
+        -
         // $field = $model->request;
         // $field['aaa'] = 'bbb';
         // $model->request = $field;
-dd($model->request);
+        dd($model->request);
 
         $model->save();
 
@@ -139,31 +141,34 @@ dd($model->request);
         );
 
         $users = User::factory(3)
-                ->state($is_admin)
-                ->state(function (array $attributes) {return [
+            ->state($is_admin)
+            ->state(function (array $attributes) {
+                return [
                     'contacts' => Contact::factory(2)
                         ->make()
                         ->makeVisible('password')
                         ->toArray(),
-                ];})
-                ->state(function (array $attributes) {
-                    $extensions = [];
-                    for ($i=0; $i < rand(1,4); $i++) {
-                        $extension = Extension::factory(1)->make()->first()->toArray();
-                        $voicemail = Voicemail::factory(1)->make()->first()->toArray();
+                ];
+            })
+            ->state(function (array $attributes) {
+                $extensions = [];
+                for ($i = 0; $i < rand(1, 4); $i++) {
+                    $extension = Extension::factory(1)->make()->first()->toArray();
+                    $voicemail = Voicemail::factory(1)->make()->first()->toArray();
 
-                        $extensions[] = array_merge(
-                            $extension,
-                            $voicemail
-                        );
-                    }
-                    // dd($extension, $voicemail);
-                    return  [
-                    'extensions' => $extensions];
-                })
-                ->make()
-                ->makeVisible('password')
-                ->toArray();
+                    $extensions[] = array_merge(
+                        $extension,
+                        $voicemail
+                    );
+                }
+                // dd($extension, $voicemail);
+                return  [
+                    'extensions' => $extensions
+                ];
+            })
+            ->make()
+            ->makeVisible('password')
+            ->toArray();
 
         $model = Domain::factory()->make([
             'settings' => $settings,

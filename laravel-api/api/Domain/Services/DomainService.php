@@ -26,7 +26,7 @@ class DomainService extends AbstractService
 
     public function getByAttributes(array $attributes, $options = [])
     {
-        $domain_enabled = \Arr::get('domain_enabled', null);
+        $domain_enabled = \Arr::get($attributes, 'domain_enabled', null);
 
         if (null !== $domain_enabled) {
             if (config('domain_enabled_field_type') === 'text') {
