@@ -237,11 +237,13 @@ class UserService extends AbstractService
         return $response;
     }
 
-    public function getUserByEmailAndDomain($user_email, $domain_name) {
+    public function getUserByEmailAndDomain($user_email, $domain_name)
+    {
         return $this->userRepository->getUserByEmailAndDomain($user_email, $domain_name);
     }
 
-    private function addRelations($userModel, $data, $type, $service) {
+    private function addRelations($userModel, $data, $type, $service)
+    {
 
         $relatedData = Arr::get($data, $type, []);
         $relatedData = $this->injectData($relatedData, ['domain_uuid' => $userModel->getAttribute('domain_uuid')]);

@@ -97,7 +97,6 @@ abstract class AbstractService
     {
         $collection = $this->repository->getById($id, $options);
         $model = $this->repository->model;
-        dd('Here LOAD DATA TO MODEL IF NEEDED');
 
         if (is_null($collection)) {
             $this->throwNotFoundException();
@@ -222,12 +221,12 @@ abstract class AbstractService
         $this->database->commit();
     }
 
-    public function getByAttributes(array $attributes)
+    public function getByAttributes(array $attributes, $options = [])
     {
         $data = null;
 
         if (!empty($attributes) && !is_null($attributes)) {
-            $data = $this->repository->getWhereArray($attributes);
+            $data = $this->repository->getWhereArray($attributes, $options);
         }
 
         return $data;

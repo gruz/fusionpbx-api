@@ -3,7 +3,7 @@
 namespace Web\User\Controllers;
 
 use Illuminate\Http\Request;
-use Api\Domain\Models\Domain;
+use Api\Domain\Services\DomainService;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\Support\Facades\Route;
@@ -30,9 +30,9 @@ class UserController extends BaseController
         }
     )
      */
-    public function showSignipForm(MessageBag $messageBag, ViewErrorBag $viewErrorBag)
+    public function showSignipForm(MessageBag $messageBag, ViewErrorBag $viewErrorBag, DomainService $domainService)
     {
-        $domains = Domain::where('domain_enabled', true)->get()->toArray();
+        $domains = $domainService->getByAttributes([ 'domain_enabled' => true])->get();
         return view('user.signup.form', ['domains' => $domains]);
         // // dd($domains);
         // $errors = $messageBag;

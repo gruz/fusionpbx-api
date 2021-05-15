@@ -22,6 +22,7 @@ class UserSignupRequestWeb extends UserSignupRequest
         $domainService = app(DomainService::class);
         if (empty($this->domain_name)) {
             $domainModel = $domainService->getSystemDomain();
+
             $this->domain_name = $domainModel->getAttribute('domain_name');
         } else {
             $domainModel = $domainService->getByAttributes(['domain_name' => $this->domain_name, 'domain_enabled' => true])->first();

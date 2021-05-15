@@ -60,7 +60,7 @@ class LoginRequest extends FormRequest
             $domainModel = $this->domainService->getSystemDomain();
             // $domain_name = $domainModel->getAttribute('domain_name');
         } else {
-            $domainModel = $this->domainService->getByAttributes(['domain_name' => $domain_name, 'domain_enabled' => true])->first();
+            $domainModel = $this->domainService->getByAttributes(['domain_name' => $domain_name, 'domain_enabled' => true], ['limit' => 1])->first();
         }
         $domain_uuid = optional($domainModel)->getAttribute('domain_uuid');
         // dd($domain_name, $domain_uuid);

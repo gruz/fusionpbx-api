@@ -64,6 +64,10 @@ class TeamService extends AbstractService
             $data['domain_enabled'] = Arr::get($data, 'domain_enabled', config('fpbx.domain.enabled'));
         }
 
+        if (config('domain_enabled_field_type') === 'text') {
+            $data['domain_enabled'] = $data['domain_enabled'] ? 'true' : 'false';
+        }
+
         $data['domain_description'] =  Arr::get($data, 'domain_description', config('fpbx.domain.description'));
 
         return $data;
@@ -128,96 +132,6 @@ class TeamService extends AbstractService
 
         return $domainModel;
     }
-
-    /**
-     * @deprecated Will be removed because of adding in a new way // ##mygruz20210130124229
-     */
-    // public function createDeperacted($data)
-    // {
-    //     $this->database->beginTransaction();
-
-    //     try {
-    //         if ($this->domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0) {
-    //             throw new DomainExistsException();
-    //         }
-
-    //         $data['domain_enabled'] =  'true';
-    //         $data['domain_description'] =  'Created via api at ' . date('Y-m-d H:i:s', time());
-
-    //         $domain = $this->domainService->create($data);
-
-    //         $this->dialplanRepository->createDefaultDialplanRules($data);
-
-    //         $data['domain_uuid'] = $domain->getAttribute('domain_uuid');
-
-    //         $user = $this->userService->create($data);
-
-
-    //         // fuda :
-    //         //      Maybe set relation ? (User->Domain)
-
-    //         // ~ $data = array_merge($data, $user);
-    //         /*
-    //         $data['contact_type'] = 'user';
-    //         $data['contact_nickname'] = $data['email'];
-
-
-    //         $contact = $this->contactRepository->create($data);
-    //         $contact->makeHidden(['domain_uuid']);
-    //         $data['contact_uuid'] = $contact->getAttribute('contact_uuid');
-
-    //         $data['email_primary'] = 1;
-    //         $data['email_address'] = $data['email'];
-
-    //         $contact_email = $this->contact_emailRepository->create($data);
-    //         $contact_email->makeHidden(['domain_uuid', 'contact_uuid']);
-
-    //         // ~ $data['username'] = $data['email'];
-    //         $data['user_enabled'] = 'true';
-    //         // $data['add_user'] = 'admin';
-    //         // $data['add_date'] = 'admin';
-
-    //         $user = $this->userRepository->create($data);
-    //         $user->makeHidden(['domain_uuid', 'contact_uuid']);
-
-    //         // Get default group for a new team
-    //         $group = $this->groupRepository->getWhere('group_name', env('MOTHERSHIP_DOMAIN_DEFAULT_GROUP_NAME'));
-    //         $data['group_uuid'] = $group->first()->group_uuid;
-
-    //         $this->userService->setGroups($user->user_uuid, [$data['group_uuid']]);
-    //         //$user = $this->userService->addGroup($data);
-
-
-    //         $contact->setRelation('contact_email', $contact_email);
-    //         $user->setRelation('contact', $contact);
-    //         */
-
-    //         $domain->setRelation('admin_user', $user);
-
-    //         $domain->message = __('messages.team created', [
-    //             'username' => $data['username'],
-    //             'domain_name' => $data['domain_name'],
-    //             'password' => $data['password']
-    //         ]);
-
-    //         // This event to be created if really needed. E.g. to notify superadmins about the fact
-    //         // ~ $this->dispatcher->dispatch(new TeamWasCreated($domain));
-
-    //     } catch (Exception $e) {
-    //         $this->database->rollBack();
-
-    //         throw $e;
-    //     }
-
-    //     $this->database->commit();
-
-    //     $this->dispatcher->dispatch(new DomainWasCreated($domain, true));
-
-    //     // $this->runFusionPBX_upgrade_domains($domain);
-
-    //     return $domain;
-    // }
-
     /**
      * TODO Name or short description
      *

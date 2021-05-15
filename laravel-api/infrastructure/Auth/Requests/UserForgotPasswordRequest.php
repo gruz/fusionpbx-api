@@ -18,10 +18,14 @@ class UserForgotPasswordRequest extends FormRequest
     public function rules()
     {
         $domain_name = $this->get('domain_name');
+        $domain_enabled = true;
+        if (config('domain_enabled_field_type') === 'text') {
+            $domain_enabled = $domain_enabled ? 'true' : 'false';
+        }
         return [
             'domain_name' => [
                 'required',
-                Rule::exists(Domain::class, 'domain_name')->where('domain_enabled', true),
+                Rule::exists(Domain::class, 'domain_name')->where('domain_enabled', $domain_enabled),
             ],
             'user_email' =>
             [

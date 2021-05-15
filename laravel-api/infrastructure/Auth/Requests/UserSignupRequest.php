@@ -26,20 +26,25 @@ class UserSignupRequest extends FormRequest
 
     public function rules()
     {
+        $domain_enabled = true;
+
+        if (config('domain_enabled_field_type') === 'text') {
+            $domain_enabled = $domain_enabled ? 'true' : 'false';
+        }
         $rules = [
             'domain_name' => [
                 'required',
                 Rule::exists(Domain::class, 'domain_name')
-                ->where('domain_enabled', true),
+                ->where('domain_enabled', $domain_enabled),
             ],
             'user_email' => [
                 'required',
-                Rule::unique(User::class)->where(function ($query) {
+                Rule::unique(User::class)->where(function ($query) use ($domain_enabled) {
                     // $domain_name = $this->request->get('domain_name');
                     $domain_name = $this->get('domain_name');
 
                     $domain = Domain::where('domain_name', $domain_name)
-                        ->where('domain_enabled', true)
+                        ->where('domain_enabled', $domain_enabled)
                         ->first();
 
                     if (empty($domain)) {
@@ -55,12 +60,12 @@ class UserSignupRequest extends FormRequest
                 'string',
                 'max:255',
                 new UsernameRule(),
-                Rule::unique(User::class)->where(function ($query) {
+                Rule::unique(User::class)->where(function ($query) use ($domain_enabled) {
                     // $domain_name = $this->request->get('domain_name');
                     $domain_name = $this->get('domain_name');
 
                     $domain = Domain::where('domain_name', $domain_name)
-                        ->where('domain_enabled', true)
+                        ->where('domain_enabled', $domain_enabled)
                         ->first();
 
                     if (empty($domain)) {
