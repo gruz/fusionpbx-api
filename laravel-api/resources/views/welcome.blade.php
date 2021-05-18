@@ -214,6 +214,9 @@
         .right-0 {
             right: 0
         }
+        .left-0 {
+            left: 0
+        }
 
         .shadow {
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06)
@@ -403,13 +406,13 @@
 <body class="antialiased">
     <div
         class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
-        <div class="hidden fixed top-0 left-0 px-6 py-4 sm:block">
+        <div class="fixed top-0 left-0 px-6 py-4 sm:block">
             @foreach ($langs as $lang)
                 <a href="{{ route('lang', $lang) }}" class="text-sm {{ App::currentLocale() === $lang ? 'text-gray-200 ' : 'text-gray-700 ' }} underline">{{ $lang }}</a>
             @endforeach
         </div>
         @if (Route::has('login'))
-            <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
+            <div class="fixed top-0 right-0 px-6 py-4 sm:block">
                 @auth
                     <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 underline">{{ __('Dashboard') }}</a>
                 @else
