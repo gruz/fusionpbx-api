@@ -13,6 +13,7 @@ use Api\Settings\Models\Setting;
 use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
 use Infrastructure\Services\FreeSwicthHookService;
+use Api\Extension\Repositories\ExtensionRepository;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -29,6 +30,18 @@ class FrontController extends BaseController
         if (!config('app.debug')) {
             return;
         }
+
+        /**
+         * @var ExtensionRepository
+         */
+        $extensionRepository = app(ExtensionRepository::class);
+
+        // \DB::enableQueryLog();
+        $extension = $extensionRepository->getNewExtension('ab14e310-c12e-4b08-b95c-0e7239a1f623');
+        // dd($extension, \DB::getQueryLog());
+
+        return $extension;
+
 
         dd(config('domain_enabled_field_type'));
 
