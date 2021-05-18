@@ -23,10 +23,11 @@ class ExtensionRepository extends AbstractRepository
 
         for ($i = config('fpbx.extension.min'); $i <= config('fpbx.extension.max'); $i++) {
             if (!in_array($i, $extensions)) {
-                $extension = ++$i;
+                $extension = $i;
                 break;
             }
         }
+        // \Log::debug($extension, $extensions);
 
         return $extension;
     }
