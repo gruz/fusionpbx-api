@@ -37,14 +37,7 @@ class UserSignupRequestWeb extends UserSignupRequest
             return;
         }
 
-        $extension = app(ExtensionService::class)->getMaxExtension($this->domain_uuid);
-        $min_extension = config('fpbx.extension.min');
-
-        if ($extension < $min_extension) {
-            $extension = $min_extension;
-        } else {
-            $extension++;
-        }
+        $extension = app(ExtensionService::class)->getNewExtension($this->domain_uuid);
 
         $this->merge([
             'domain_name' => $this->domain_name,

@@ -33,10 +33,10 @@ class UserControllerTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
-        $extension = app(ExtensionService::class)->getMaxExtension($this->domain_uuid);
+        $extension = app(ExtensionService::class)->getNewExtension($this->domain_uuid);
 
         $data['extensions'] = [[
-            'extension' => ++$extension, // Setting any non-exisiting number
+            'extension' => $extension, // Setting any non-exisiting number
             'password' => 'somePass',
             "voicemail_password" => "956"
         ]];

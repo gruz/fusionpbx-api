@@ -8,8 +8,26 @@ use Infrastructure\Database\Eloquent\AbstractRepository;
 
 class ExtensionRepository extends AbstractRepository
 {
-    public function getMaxExtension($domain_uuid) {
-        $extension = $this->model->where('domain_uuid', $domain_uuid)->selectRaw('max("extension"::bigint)')->first()->max;  
+    public function getNewExtension($domain_uuid)
+    {
+        $extensions = $this->model->where([
+            ['domain_uuid', $domain_uuid],
+        ])
+            ->selectRaw('"extension"::bigint')
+            ->whereRaw('"extension"::bigint >=' . config('fpbx.extension.min'))
+            ->whereRaw('"extension"::bigint <=' . config('fpbx.extension.max'))
+            ->get()
+            ->pluck('extension')
+            ->sort()
+            ->toArray();
+
+        for ($i = config('fpbx.extension.min'); $i <= config('fpbx.extension.max'); $i++) {
+            if (!in_array($i, $extensions)) {
+                $extension = ++$i;
+                break;
+            }
+        }
+
         return $extension;
     }
 
