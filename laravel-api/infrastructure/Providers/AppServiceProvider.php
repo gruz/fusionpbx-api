@@ -24,9 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if (config('app.env') === 'production') {
+            \URL::forceScheme('https');
+        }
         View::share('fieldClass', 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ');
-        View::share('langs', [ 'en', 'es', 'uk', 'ru']);
+        View::share('langs', ['en', 'es', 'uk', 'ru']);
         config(['domain_enabled_field_type' => app(\Api\Domain\Models\Domain::class)->getTableColumnsInfo(true)['domain_enabled']->getType()->getName()]);
     }
 }
