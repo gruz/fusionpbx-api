@@ -215,7 +215,7 @@
                                 </svg>
 
                             </span>
-                            <span class="tracking-wide">{{ __('Extensions') }}</span>
+                            <span class="tracking-wide">{{ __('My voice accounts') }}</span>
                         </div>
                         <div class="text-gray-700">
                             @foreach (Auth::user()->extensions as $extension)
