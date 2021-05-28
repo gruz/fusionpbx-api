@@ -50,18 +50,28 @@ class UserWasActivatedSelfNotification extends Notification implements ShouldQue
         $domain_uuid = $this->model->domain->getAttribute('domain_uuid');
         $domain_name = $this->model->domain->getAttribute('domain_name');
 
-        return (new MailMessage)
+        $extensions = $this->model->extensions->pluck('password', 'extension');
+
+        $mailMessage =  (new MailMessage)
             ->subject(__('Your email was verified'))
             ->greeting(__('Your account has been activated'))
             ->line(__('Your domain **:domain_name**', [
                 'domain_name' => $domain_name
-            ]))
-            // ->line(__('Domain UUID is:'))
-            // ->line(__('**:domain_uuid**', [
-            //     'domain_uuid' => $domain_uuid,
-            // ]))
-            ->salutation(__('Thank you for using our service!'))
-            ;
+            ]));
+
+            if ($extensions->count() > 0) {
+                $mailMessage->line( '# '. __('You voice account(s) to login with the app'));
+                foreach ($extensions as $extension => $password) {
+                    $mailMessage->line( ' * ' . __('Login') . ': **' . $extension . '** ');
+                }
+                $mailMessage->line( __('Use the password you have specified on registration'));
+            }
+
+            $mailMessage->line( '# ' . __('Web portal'));
+            $mailMessage->line(__('Use username **:username** to login into web-application', ['username' => $this->model->username]));
+            $mailMessage->salutation(__('Thank you for using our service!'));
+
+        return $mailMessage;
     }
 
     /**

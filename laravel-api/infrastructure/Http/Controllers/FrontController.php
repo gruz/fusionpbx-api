@@ -9,10 +9,11 @@ use Illuminate\Support\Str;
 use Api\User\Models\Contact;
 use Illuminate\Http\Request;
 use Api\Domain\Models\Domain;
-use Api\Domain\Services\DomainService;
 use Api\Settings\Models\Setting;
 use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
+use Api\Domain\Services\DomainService;
+use Illuminate\Support\Facades\Notification;
 use Infrastructure\Services\FreeSwicthHookService;
 use Api\Extension\Repositories\ExtensionRepository;
 use Illuminate\Database\Eloquent\Factories\Sequence;
@@ -31,6 +32,16 @@ class FrontController extends BaseController
         if (!config('app.debug')) {
             return;
         }
+
+        // Route::get('/test-mail', function (){
+            $user = User::where('username', 'A05lyson.dietrich.howe.com')->first();
+            $n = new \Api\User\Notifications\UserWasActivatedSelfNotification($user);
+            return $n->toMail($user);
+            dd($user, $n->toMail($user));
+            Notification::route('mail', 'some@s')->notify(new UserWasActivatedSelfNotification());
+            // return 'Sent';
+        // });
+
 
         $s = app(DomainService::class);
         dd($s->getSystemDomain());
