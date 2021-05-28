@@ -174,5 +174,6 @@
     "You may not leave a team that you created.": "You may not leave a team that you created.",
     "Your email address is not verified.": "Your email address is not verified.",
     "First letter, alphanumeric symbols and dash, 6-32 chars length" : "First letter, alphanumeric symbols, dash, dot, 6-32 chars length",
-    "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit" : "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit"
+    "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit" : "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit",
+    "Captcha validation failed" : "Captcha validation failed"
 }
