@@ -213,7 +213,7 @@
     "Enabled": "Увімкнено",
     "This is a secure area of the application. Please confirm your password before continuing.": "Ця область програми вимагає авторизації. Будь ласка, підтвердьте ваше гасло, перш ніж продовжити.",
     "Log in": "Вхід",
-    "Only digits": "Лише цифри",
+    "4-10 digits": "4-10 цифр",
     "Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you did not receive the email, we will gladly send you another.": "Дякуємо за реєстрацію! Перед початком роботи підтвердіть е-пошту за посиланням, яке ми щойно надіслали вам. Якщо ви не отримали повідомлення на е-пошту, ми із задоволенням надішлемо вам інше.",
     "Log out": "Вихід",
     "A fresh verification link has been sent to your email address" : "Нове посилання для підтвердження надіслано на е-пошту",

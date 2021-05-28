@@ -12,22 +12,25 @@
         <x-form :action="route('register')">
             <x-select-domain />
             <?php $sublabel = __('First letter, alphanumeric symbols and dash, 6-32 chars length'); ?>
-            <x-form-input name="username" :label="__('Unique username') . '<br/><small>(' . $sublabel . ')</small>' " required autofocus />
+            <x-form-input name="username" :label="__('Unique username') . '<br/><small>' . $sublabel . '</small>' " required autofocus />
             <x-form-input name="effective_caller_id_name" :label="__('Display name for calls')" required />
 
             <?php $sublabel = __('Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit'); ?>
-            <x-form-input name="password" :label="__('Password') . '<br/><small>(' . $sublabel . ')</small>'" required autocomplete="new-password" type="password" />
+            <x-form-input name="password" :label="__('Password') . '<br/><small>' . $sublabel . '</small>'" required autocomplete="new-password" type="password" />
             {{-- <x-form-input name="password_confirmation" :label="__('Confirm password')" required type="password"/> --}}
 
             <x-form-input type="email" name="user_email" :label="__('Email')" required />
 
-            <?php $label = __('Voicemail password') . ' (' . __('Only digits') . ')'; ?>
+            <?php
+            $sublabel =  __('4-10 digits');
+            $label = __('Voicemail password') . '<br/><small>' . $sublabel . '</small>';
+             ?>
             <x-form-input name="voicemail_password" pattern="[0-9]+" :label="$label" required
                 autocomplete="new-password" type="password" inputmode="numeric" />
             {{-- <x-form-input name="voicemail_password_confirmation" pattern="[0-9]+" :label="__('Confirm voicemail password')" required type="password"/> --}}
 
             <?php $sublabel = __('Get it from your reseller or contact <a href="mailto::email">:email</a>',[ 'email' => config('app.contact_email') ] ); ?>
-            <x-form-input name="reseller_reference_code" :label="__('Reseller code') . '<br/><small>(' . $sublabel . ')</small>'" required />
+            <x-form-input name="reseller_reference_code" :label="__('Reseller code') . '<br/><small>' . $sublabel . '</small>'" required />
 
             <div class="mt-10">
             </div>
