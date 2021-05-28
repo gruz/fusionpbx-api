@@ -19,7 +19,11 @@ class DomainService extends AbstractService
 
     public function getSystemDomain()
     {
-        $domain = $this->getByAttributes(['domain_enabled' => true], ['limit' => 1])->first();
+        $systemDomainName = config('fpbx.default.domain.mothership_domain');
+        $domain = $this->getByAttributes(['domain_enabled' => true, 'domain_name' => $systemDomainName], ['limit' => 1])->first();
+        if (!$domain) {
+            $domain = $this->getByAttributes(['domain_enabled' => true], ['limit' => 1])->first();
+        }
 
         return $domain;
     }

@@ -35,14 +35,12 @@ class LoginRequest extends FormRequest
     {
         $data = parent::get($key, $default);
 
-        if (empty($data))
-        {
-          return $data;
+        if (empty($data)) {
+            return $data;
         }
 
-        if ($key == 'domain_name' && strpos($data, '.') === false)
-        {
-          $data = $data . '.' . env('MOTHERSHIP_DOMAIN');
+        if ($key == 'domain_name' && strpos($data, '.') === false) {
+            $data = $data . '.' . config('fpbx.default.domain.mothership_domain');
         }
 
         return $data;

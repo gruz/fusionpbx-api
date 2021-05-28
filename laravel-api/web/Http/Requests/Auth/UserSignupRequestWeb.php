@@ -2,6 +2,7 @@
 
 namespace Web\Http\Requests\Auth;
 
+use Illuminate\Support\Arr;
 use Api\Domain\Services\DomainService;
 use Api\Extension\Services\ExtensionService;
 use Infrastructure\Auth\Requests\UserSignupRequest;
@@ -57,6 +58,15 @@ class UserSignupRequestWeb extends UserSignupRequest
     public function rules()
     {
         $rules = parent::rules();
+
+        $rules['voicemail_password'] = $rules['extensions.*.voicemail_password'];
+
+        foreach ($rules as $key => $value) {
+            if (strpos($key,'extensions') === 0) {
+                Arr::forget($rules, $key);
+            }
+        }
+
         if ($this->onlyDomain) {
             $rules = [
                 'domain_name' => $rules['domain_name'],
@@ -68,5 +78,18 @@ class UserSignupRequestWeb extends UserSignupRequest
         }
 
         return $rules;
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'voicemail_password' => __('Voicemail password'),
+            'user_email' => __('E-Mail Address'),
+        ];
     }
 }

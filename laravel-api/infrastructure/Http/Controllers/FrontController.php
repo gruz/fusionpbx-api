@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Api\User\Models\Contact;
 use Illuminate\Http\Request;
 use Api\Domain\Models\Domain;
+use Api\Domain\Services\DomainService;
 use Api\Settings\Models\Setting;
 use Api\Extension\Models\Extension;
 use Api\Voicemail\Models\Voicemail;
@@ -31,6 +32,8 @@ class FrontController extends BaseController
             return;
         }
 
+        $s = app(DomainService::class);
+        dd($s->getSystemDomain());
         /**
          * @var ExtensionRepository
          */

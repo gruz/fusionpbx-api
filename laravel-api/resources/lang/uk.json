@@ -220,6 +220,6 @@
     "Captcha": "Код перевірки",
     "Password link is expired or invalid" : "Посилання з гаслом браковане чи протерміноване",
     "Let's talk" : "Потеревенимо",
-    "First letter, alphanumeric symbols and dash, 6-32 chars length" : "Латинські літери, цифри, підкреслення, крапка, @, довжина 6-32 символів, перший символ - літера",
+    "First letter, alphanumeric symbols and dash, 6-32 chars length" : "Латинські літери, цифри, підкреслення, крапка, довжина 6-32 символів, перший символ - літера",
     "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit" : "Мінімум 6 символів, розмір має значення, принаймні одна маленька, одна велика літери та одна цифра"
 }

@@ -18,7 +18,7 @@ class ValidationRulesService
     {
         switch ($type) {
             case 'voicemail':
-                $password_rules = 'required|integer';
+                $password_rules = 'required|digits_between:4,10';
                 break;
 
             default:

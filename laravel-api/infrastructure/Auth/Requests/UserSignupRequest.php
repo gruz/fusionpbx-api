@@ -98,4 +98,17 @@ class UserSignupRequest extends FormRequest
 
         return $rules;
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'extensions.*.voicemail_password.digits_between' => __('Voicemail password must be between 4 and 10 digits'),
+            'password.regex' => __('Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit'),
+        ];
+    }
 }
