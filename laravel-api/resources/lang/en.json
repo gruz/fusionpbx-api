@@ -180,5 +180,7 @@
     "You voice account(s) to login with the app" : "You voice account(s) to login with the app",
     "Use the password you have specified on registration" : "Use the password you have specified on registration",
     "Web portal" : "Web portal",
-    "Use username **:username** to login into web-application" : "Use username **:username** to login into web-application"
+    "Use username **:username** to login into web-application" : "Use username **:username** to login into web-application",
+    "My voice accounts" : "My voice accounts",
+    "Voice account (Login)" : "Voice account (Login)"
 }

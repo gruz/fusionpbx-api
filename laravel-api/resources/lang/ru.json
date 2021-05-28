@@ -220,7 +220,6 @@
     "A fresh verification link has been sent to your email address" : "Новую ссылку для подтверждения отправлено на мейл",
     "Captcha": "Код проверки",
     "Password link is expired or invalid" : "Ссылка для пароля бракована или просрочена",
-    "Let's talk" : "Взболтнём",
     "Get it from your reseller or contact <a href=\"mailto::email\">:email</a>" : "Получите код у вашего реселлера или напишите нам <a href=\"mailto::email\">:email</a>",
     "First letter, alphanumeric symbols and dash, 6-32 chars length" : "Латинские буквы, цифры, подчёркивание, точка, длина 6-32 символов, первый символ - буква",
     "Should be a valid username" : "Уникальное имя пользователя не удовлятворяет условиям",
@@ -229,5 +228,7 @@
     "You voice account(s) to login with the app" : "Голосовые аккаунты для логина в приложения",
     "Use the password you have specified on registration" : "Используйте пароль, указанный при регистрации",
     "Web portal" : "Веб-интерфейс",
-    "Use username **:username** to login into web-application" : "Имя пользователя для логина в веб-интерфейс: **:username**"
+    "Use username **:username** to login into web-application" : "Имя пользователя для логина в веб-интерфейс: **:username**",
+    "My voice accounts" : "Голосовые аккаунты",
+    "Voice account (Login)" : "Голосовой аккаунт (Логин)"
 }

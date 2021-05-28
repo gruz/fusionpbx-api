@@ -221,9 +221,9 @@
                             @foreach (Auth::user()->extensions as $extension)
                                 <div class="grid md:grid-cols-2 text-sm">
                                     <div class="grid grid-cols-2">
-                                        <div class="px-4 py-2 font-semibold">{{ __('Extension') }}</div>
+                                        <div class="px-4 py-2 font-semibold">{{ __('Voice account (Login)') }}</div>
                                         <div class="px-4 py-2">{{ $extension->extension }}</div>
-                                        <div class="px-4 py-2 font-semibold">{{ __('Extension password') }}</div>
+                                        <div class="px-4 py-2 font-semibold">{{ __('Password') }}</div>
                                         <div class="px-4 py-2">{{ $extension->password }}</div>
                                     </div>
                                     <div class="grid grid-cols-2">

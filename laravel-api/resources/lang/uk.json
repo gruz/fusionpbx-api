@@ -219,12 +219,13 @@
     "A fresh verification link has been sent to your email address" : "Нове посилання для підтвердження надіслано на е-пошту",
     "Captcha": "Код перевірки",
     "Password link is expired or invalid" : "Посилання з гаслом браковане чи протерміноване",
-    "Let's talk" : "Потеревенимо",
     "First letter, alphanumeric symbols and dash, 6-32 chars length" : "Латинські літери, цифри, підкреслення, крапка, довжина 6-32 символів, перший символ - літера",
     "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit" : "Мінімум 6 символів, розмір має значення, принаймні одна маленька, одна велика літери та одна цифра",
     "Captcha validation failed" : "Код перевірки не співпадає",
     "You voice account(s) to login with the app" : "Голосові облікові записи для логіна в додаток телефонії",
     "Use the password you have specified on registration" : "Використовуйте пароль, що ви зазначали при реєстрації",
     "Web portal" : "Веб-додаток",
-    "Use username **:username** to login into web-application" : "Псевдо для логіна у веб-додаток:  **:username**"
+    "Use username **:username** to login into web-application" : "Псевдо для логіна у веб-додаток:  **:username**",
+    "My voice accounts" : "Голосові облікові записи",
+    "Voice account (Login)" : "Голосовий обліковий запис (Логін)"
 }
