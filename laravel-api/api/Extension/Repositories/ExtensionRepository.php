@@ -2,6 +2,7 @@
 
 namespace Api\Extension\Repositories;
 
+use Api\Domain\Repositories\DomainRepository;
 use Illuminate\Support\Str;
 use Api\Extension\Models\Extension;
 use Infrastructure\Database\Eloquent\AbstractRepository;
@@ -71,4 +72,20 @@ class ExtensionRepository extends AbstractRepository
 
         $this->database->commit();
     }
+
+    public function create(array $data, $options = [])
+    {
+        if (empty($data['user_context'])) {
+            /**
+             * @var DomainRepository
+             */
+            $domainRepository = app(DomainRepository::class);
+            $domain = $domainRepository->getWhere('domain_uuid', $data['domain_uuid'])->first();
+            // getById($data['domain_uuid'])->first();
+            $data['user_context'] = $domain->getAttribute('domain_name');
+        }
+
+        return parent::create($data, $options);
+    }
+
 }
