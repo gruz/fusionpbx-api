@@ -221,5 +221,8 @@
     "Captcha": "Код проверки",
     "Password link is expired or invalid" : "Ссылка для пароля бракована или просрочена",
     "Let's talk" : "Взболтнём",
-    "Get it from your reseller or contact <a href=\"mailto::email\">:email</a>" : "Получите код у вашего реселлера или напишите нам <a href=\"mailto::email\">:email</a>"
+    "Get it from your reseller or contact <a href=\"mailto::email\">:email</a>" : "Получите код у вашего реселлера или напишите нам <a href=\"mailto::email\">:email</a>",
+    "First letter, alphanumeric symbols and dash, 6-32 chars length" : "Латинские буквы, цифры, подчёркивание, точка, @, длина 6-32 символов, первый символ - буква",
+    "Should be a valid username" : "Уникальное имя пользователя не удовлятворяет условиям",
+    "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit" : "Минимально 6 символов, размер имеет значение, по крайней мере одна большая, одна маленька буквы и цифра"
 }

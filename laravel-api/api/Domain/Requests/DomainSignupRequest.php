@@ -40,7 +40,6 @@ class DomainSignupRequest extends FormRequest
             'users.*.username' => [
                 'required',
                 'string',
-                'max:255',
                 new UsernameRule(),
             ],
             'users.*.user_email' => 'required|distinct:ignore_case|email',

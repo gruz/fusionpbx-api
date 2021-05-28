@@ -1,5 +1,6 @@
 <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900 ">
-    <div>
+    <div class="flex justify-center pt-0 sm:justify-start sm:pt-0">
+        @include('layouts.guest-navigation')
         {{ $logo }}
     </div>
 

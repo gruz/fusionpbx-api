@@ -58,7 +58,6 @@ class UserSignupRequest extends FormRequest
             'username' => [
                 'required',
                 'string',
-                'max:255',
                 new UsernameRule(),
                 Rule::unique(User::class)->where(function ($query) use ($domain_enabled) {
                     // $domain_name = $this->request->get('domain_name');

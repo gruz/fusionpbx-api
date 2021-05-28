@@ -27,10 +27,10 @@
 <body class="antialiased dark">
     <div
         class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
-        @include('layouts.guest-navigation')
-
+        
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
+                @include('layouts.guest-navigation')
                 <svg viewBox="0 0 978.32062 622.57142" fill="none" xmlns="http://www.w3.org/2000/svg"
                     class="h-16 w-auto text-gray-700 sm:h-20">
                     <g transform="translate(180.33325,-76.557339)" fill="#EF3B2D" clip-path="url(#clip0)">

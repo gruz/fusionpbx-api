@@ -25,7 +25,7 @@ class UsernameRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match("/^[A-Za-z][A-Za-z0-9@.]{5,31}$/", $value);
+        return preg_match("/^[A-Za-z][A-Za-z0-9@._]{5,31}$/", $value);
     }
 
     /**
@@ -35,6 +35,6 @@ class UsernameRule implements Rule
      */
     public function message()
     {
-        return 'Should be a valid username.';
+        return __('Should be a valid username');
     }
 }
