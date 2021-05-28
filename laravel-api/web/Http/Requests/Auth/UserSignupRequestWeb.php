@@ -61,11 +61,11 @@ class UserSignupRequestWeb extends UserSignupRequest
 
         $rules['voicemail_password'] = $rules['extensions.*.voicemail_password'];
 
-        foreach ($rules as $key => $value) {
-            if (strpos($key,'extensions') === 0) {
-                Arr::forget($rules, $key);
-            }
-        }
+        // foreach ($rules as $key => $value) {
+        //     if (strpos($key,'extensions') === 0) {
+        //         Arr::forget($rules, $key);
+        //     }
+        // }
 
         if ($this->onlyDomain) {
             $rules = [
@@ -91,5 +91,41 @@ class UserSignupRequestWeb extends UserSignupRequest
             'voicemail_password' => __('Voicemail password'),
             'user_email' => __('E-Mail Address'),
         ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+
+        $messages = parent::messages();
+
+        $messages = array_merge($messages, [
+            'extensions.0.password.regex' => false,
+            'extensions.*.voicemail_password.digits_between' => false,
+            // 'password.regex' => __('Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit'),
+        ]);
+        // dd($messages);
+        return $messages;
+
+
+        $rules = $this->rules();
+        foreach ($rules as $key => $value) {
+            if (strpos($key,'extensions') === 0) {
+                // Arr::forget($rules, $key);
+                $messages[$key] = '';
+            }
+        }
+        foreach ($messages as $key => $value) {
+            if (strpos($key,'extensions') === 0) {
+                // Arr::forget($rules, $key);
+                $messages[$key] = '';
+            }
+        }
+// dd($messages);
+        return $messages;
     }
 }
