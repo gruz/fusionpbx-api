@@ -33,7 +33,8 @@ Route::middleware(['web'])->group(function () {
         ->name('login');
 
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-        ->middleware('guest');
+        ->middleware('guest')
+        ->name('do.login');
 
     Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
         ->middleware('guest')
