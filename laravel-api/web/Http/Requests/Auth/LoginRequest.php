@@ -3,6 +3,7 @@
 namespace Web\Http\Requests\Auth;
 
 use Illuminate\Support\Str;
+use Api\User\Services\UserService;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Api\Domain\Services\DomainService;
@@ -14,11 +15,30 @@ class LoginRequest extends FormRequest
 {
     private $domainService;
 
-    public function __construct(DomainService $domainService)
+    private $userService;
+
+    public function __construct(DomainService $domainService, UserService $userService)
     {
         $this->domainService = $domainService;
+        $this->userService = $userService;
     }
 
+    protected function prepareForValidation()
+    {
+        if (empty($this->domain_name)) {
+            $domainModel = $this->domainService->getSystemDomain();
+        } else {
+            $domainModel = $this->domainService->getByAttributes(['domain_name' => $this->domain_name, 'domain_enabled' => true])->first();
+        }
+
+        $this->domain_uuid = optional($domainModel)->domain_uuid;
+
+        $userModel = $this->userService->getByAttributes(['user_email' => $this->email, 'domain_uuid' => $this->domain_uuid])->first();
+
+        $this->merge([
+            'username' => optional($userModel)->username,
+        ]);
+    }
 
     /**
      * Determine if the user is authorized to make this request.
