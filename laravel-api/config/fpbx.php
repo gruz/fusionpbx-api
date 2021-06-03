@@ -38,6 +38,9 @@ return [
             ],
         ],
     ],
+    'user' => [
+        'include_username_in_reset_password_email' => env('FPBX_USER_INCLUDE_USERNAME_IN_RESET_PASSWORD_EMAIL', false),
+    ],
     'domain' => [
         'enabled' => env('FPBX_DOMAIN_ENABLED', true), // If domain is enabled by default after activation
         'description' => env('FPBX_DOMAIN_DESCRIPTION', 'Created via api at ' . date('Y-m-d H:i:s', time())),

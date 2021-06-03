@@ -2,6 +2,7 @@
 
 namespace Infrastructure\Auth\Notifications;
 
+use config;
 use Illuminate\Support\Facades\Lang;
 
 class ResetPassword extends \Illuminate\Auth\Notifications\ResetPassword
@@ -32,7 +33,9 @@ class ResetPassword extends \Illuminate\Auth\Notifications\ResetPassword
     protected function buildMailMessage($url)
     {
         $mailMessage = parent::buildMailMessage($url);
-        $mailMessage->line(Lang::get('Username') . ': **' . $this->user->username . '**');
+        if (config('fpbx.user.include_username_in_reset_password_email')) {
+            $mailMessage->line(Lang::get('Username') . ': **' . $this->user->username . '**');
+        }
         return $mailMessage;
     }
 }
