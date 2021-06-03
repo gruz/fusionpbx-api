@@ -12,14 +12,14 @@
         <x-form :action="route('register')">
             <x-select-domain />
             <?php $sublabel = __('First letter, alphanumeric symbols and dash, 6-32 chars length'); ?>
-            <x-form-input name="username" :label="__('Unique username') . '<br/><small>' . $sublabel . '</small>' " required autofocus />
-            <x-form-input name="effective_caller_id_name" :label="__('Display name for calls')" required />
-
+            <x-form-input type="email" name="user_email" :label="__('Email')" required />
+            {{-- <x-form-input name="username" :label="__('Unique username') . '<br/><small>' . $sublabel . '</small>' " required autofocus /> --}}
+            
             <?php $sublabel = __('Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit'); ?>
             <x-form-input name="password" :label="__('Password') . '<br/><small>' . $sublabel . '</small>'" required autocomplete="new-password" type="password" />
             {{-- <x-form-input name="password_confirmation" :label="__('Confirm password')" required type="password"/> --}}
-
-            <x-form-input type="email" name="user_email" :label="__('Email')" required />
+            
+            <x-form-input name="effective_caller_id_name" :label="__('Display name for calls')" required />
 
             <?php
             $sublabel =  __('4-10 digits');

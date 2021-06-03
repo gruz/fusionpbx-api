@@ -34,6 +34,7 @@ class RegisteredUserController extends Controller
     public function store(UserSignupRequestWeb $request)
     {
         $validated = $request->validated();
+        $validated['username'] = $request->get('user_email');
         // dd($validated, $request->get('extensions'));
         // $domain_name = Domain::where('domain_uuid', $validated['domain_uuid'])
 

@@ -2,10 +2,10 @@
 
 namespace Web\Http\Requests\Auth;
 
-use Illuminate\Support\Arr;
 use Api\Domain\Services\DomainService;
 use Api\Extension\Services\ExtensionService;
 use Infrastructure\Auth\Requests\UserSignupRequest;
+use Infrastructure\Rules\UsernameRule;
 
 class UserSignupRequestWeb extends UserSignupRequest
 {
@@ -59,13 +59,9 @@ class UserSignupRequestWeb extends UserSignupRequest
     {
         $rules = parent::rules();
 
-        $rules['voicemail_password'] = $rules['extensions.*.voicemail_password'];
+        unset($rules['username']);
 
-        // foreach ($rules as $key => $value) {
-        //     if (strpos($key,'extensions') === 0) {
-        //         Arr::forget($rules, $key);
-        //     }
-        // }
+        $rules['voicemail_password'] = $rules['extensions.*.voicemail_password'];
 
         if ($this->onlyDomain) {
             $rules = [
@@ -108,24 +104,7 @@ class UserSignupRequestWeb extends UserSignupRequest
             'extensions.*.voicemail_password.digits_between' => false,
             // 'password.regex' => __('Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit'),
         ]);
-        // dd($messages);
-        return $messages;
 
-
-        $rules = $this->rules();
-        foreach ($rules as $key => $value) {
-            if (strpos($key,'extensions') === 0) {
-                // Arr::forget($rules, $key);
-                $messages[$key] = '';
-            }
-        }
-        foreach ($messages as $key => $value) {
-            if (strpos($key,'extensions') === 0) {
-                // Arr::forget($rules, $key);
-                $messages[$key] = '';
-            }
-        }
-// dd($messages);
         return $messages;
     }
 }
