@@ -6,8 +6,8 @@ use Api\User\Models\User;
 use Api\Domain\Models\Domain;
 use Illuminate\Validation\Rule;
 use Infrastructure\Rules\UsernameRule;
-use Api\Settings\Models\DefaultSetting;
 use Illuminate\Foundation\Http\FormRequest;
+use Infrastructure\Rules\CheckReferenceCodeRule;
 use Infrastructure\Services\ValidationRulesService;
 
 class UserSignupRequest extends FormRequest
@@ -35,7 +35,7 @@ class UserSignupRequest extends FormRequest
             'domain_name' => [
                 'required',
                 Rule::exists(Domain::class, 'domain_name')
-                ->where('domain_enabled', $domain_enabled),
+                    ->where('domain_enabled', $domain_enabled),
             ],
             'user_email' => [
                 'required',
@@ -86,13 +86,11 @@ class UserSignupRequest extends FormRequest
             'contacts.*.contact_url' => 'url',
         ];
 
-        $resellerCodeRequired = config('fpbx.resellerCodeRequired');
+        $resellerCodeRequired = config('fpbx.resellerCode.required');
         if ($resellerCodeRequired) {
             $rules['reseller_reference_code'] = [
                 'required',
-                Rule::exists(DefaultSetting::class, 'default_setting_value')
-                    ->where('default_setting_category', 'billing')
-                    ->where('default_setting_subcategory', 'reseller_code'),
+                new CheckReferenceCodeRule(),
             ];
         }
 

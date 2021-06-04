@@ -13,7 +13,11 @@ return [
      *     ('68fa39da-5201-4b7a-8c22-484ef7c8d24c'::uuid,NULL,'billing','reseller_code','array','Code02',0,true,NULL);
      * ```
      */
-    'resellerCodeRequired' => true,
+    'resellerCode' => [
+        'required' => true,
+        'checkInDefaultSettings' => true,
+        'checkInCGRT' => true,
+    ],
     'default' => [
         'contact' => [
             'contact_type' => 'customer',
@@ -85,4 +89,10 @@ return [
     'time_format' => 'Y-m-d H:i:s.uO',
     'captcha_enabled' => env('CAPTCHA_ENABLED', true),
     'hook_command' => env('FPBX_HOOK', 'php /var/www/fusionpbx/bin/fpbx_hook.php /var/www/fusionpbx'),
+    'cgrt' => [
+        'enabled' => env('FPBX_CGRT_ENABLED', false),
+        'base_uri' => env('FPBX_CGRT_BASE_URI'),
+        'username' => env('FPBX_CGRT_USERNAME'),
+        'password' => env('FPBX_CGRT_PASSWORD'),
+    ],
 ];
