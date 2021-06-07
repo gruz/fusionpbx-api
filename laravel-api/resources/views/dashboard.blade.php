@@ -121,7 +121,7 @@
 
                                 </span>
                             </li>
-                            @if (Auth::user()->account_code)
+                            {{-- @if (Auth::user()->account_code)
                             <li class="flex items-center py-3">
                                 <span>{{ __('Account code') }}</span>
                                 <span class="ml-auto text-right">
@@ -151,7 +151,7 @@
                                 </ul>
                                 </span>
                                 @endforeach
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                     <?php
