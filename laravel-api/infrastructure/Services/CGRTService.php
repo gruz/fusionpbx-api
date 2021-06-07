@@ -187,7 +187,15 @@ class CGRTService
     {
         $tenants = $this->getTenants();
 
-        $tenant = in_array($domain_name, $tenants) ? $domain_name : $tenants[0];
+        $tenant = config('fpbx.default.domain.mothership_domain');
+
+        if (in_array($domain_name, $tenants)) {
+            $tenant = $domain_name;
+        }
+        if (empty($tenant)) {
+            $tenants = $tenants[0];
+        }
+
 
         return $tenant;
     }
@@ -272,12 +280,25 @@ class CGRTService
         return $responses;
     }
 
+    private function getTariffplanName($tenant)
+    {
+        return strtoupper(str_replace('.', '_', $tenant));
+    }
+
+    private function getRoutingplanName($tenant)
+    {
+        return strtoupper(str_replace('.', '_', $tenant));
+    }
+
     public function assignTariffPlan($client_added)
     {
         $data = [];
         $data = array_merge(config('fpbx.cgrt.default.tariffplan_assign'), [
             "client_account_code" => $client_added->account_code,
+            "tariffplan_name" => $this->getTariffplanName($client_added->tenant),
+            "routingplan_name" => $this->getRoutingplanName($client_added->tenant),
         ]);
+
         $request = ['json' => $data];
 
         try {
@@ -289,5 +310,25 @@ class CGRTService
         }
 
         return $responseJson;
+    }
+
+    public function getBalance($account_code) {
+        $data = [
+            "client_account_code" => $account_code,
+        ];
+
+        $request = ['json' => $data];
+
+        try {
+            $response = $this->client->post('users/get_credit_balance', $request);
+            $responseJson = json_decode($response->getBody()->getContents())->results;
+        } catch (\Throwable $th) {
+            event(new CGRTFailedEvent($request, $th->getMessage()));
+            return false;
+        }
+
+        $balance = optional(\Arr::get($responseJson, '0', new \stdClass))->credit_balance;
+
+        return $balance;
     }
 }
