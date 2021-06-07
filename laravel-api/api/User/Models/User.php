@@ -327,6 +327,22 @@ class User extends AbstractModel implements
         ])->first())->user_setting_value;
     }
 
+    public function getCGRTBalanceAttribute() {
+        if (!config('fpbx.cgrt.enabled')) {
+            return null;
+        }
+
+        /**
+         * @var \Infrastructure\Services\CGRTService
+         */
+        $client = app(\Infrastructure\Services\CGRTService::class);
+        $account_code = $this->getAccountCodeAttribute();
+
+        $balance = $client->getBalance($account_code);
+
+        return $balance;
+    }
+
     /**
      * Route notifications for the mail channel.
      *

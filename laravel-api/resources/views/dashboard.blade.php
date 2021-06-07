@@ -132,6 +132,19 @@
                             </li>
                             @endif
 
+                            <?php
+                            $balance = Auth::user()->getCGRTBalanceAttribute();
+                            ?>
+                            @if ($balance !== null )
+                            <li class="flex items-center py-3">
+                                <span>{{ __('Balance') }}</span>
+                                <span class="ml-auto text-right">
+                                    {!! $balance !!}
+
+                                </span>
+                            </li>
+                            @endif
+
                             {{--
                             <li class="flex items-center py-3">
                                 <span>{{ __('Reseller code') }}</span>
