@@ -63,8 +63,10 @@ class fpbx_hook
      */
     public function reloadXML()
     {
+        // error_reporting(E_ALL);
+        // print_r($this->settings);
         $fp = event_socket_create($this->settings->event_socket_ip_address, $this->settings->event_socket_port, $this->settings->event_socket_password);
-
+        // print_r($fp);
         $response = event_socket_request($fp, 'api reloadxml');
 
         fclose($fp);

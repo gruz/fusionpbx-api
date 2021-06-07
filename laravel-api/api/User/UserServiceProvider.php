@@ -11,6 +11,7 @@ use Api\User\Events\GroupWasUpdated;
 use Api\User\Events\UserWasActivated;
 use Api\User\Listeners\UserWasCreatedListener;
 use Api\User\Listeners\UserWasActivatedListener;
+use Api\User\Listeners\UserWasActivatedCGRTListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class UserServiceProvider extends ServiceProvider
@@ -37,6 +38,7 @@ class UserServiceProvider extends ServiceProvider
         ],
         UserWasActivated::class => [
             UserWasActivatedListener::class,
+            UserWasActivatedCGRTListener::class,
         ],
     ];
 }

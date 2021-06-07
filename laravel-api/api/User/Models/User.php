@@ -252,7 +252,12 @@ class User extends AbstractModel implements
 
     public function getResellerCodeAttribute()
     {
-        return optional($this->user_settings->where('user_setting_category', 'payment')->where('user_setting_subcategory', 'reseller_code')->first())->user_setting_value;
+        return optional(
+            $this->user_settings
+                ->where('user_setting_category', 'payment')
+                ->where('user_setting_subcategory', 'reseller_code')
+                ->first()
+        )->user_setting_value;
     }
 
     /**
@@ -306,10 +311,10 @@ class User extends AbstractModel implements
     /**
      * Method to get user domain name to which he relates.
      */
-    // public function getDomainNameAttribute()
-    // {
-    //     return $this->domain()->first()->getAttribute('domain_name');
-    // }
+    public function getDomainNameAttribute()
+    {
+        return $this->domain()->first()->getAttribute('domain_name');
+    }
 
     /**
      * Route notifications for the mail channel.

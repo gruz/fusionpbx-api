@@ -18,6 +18,7 @@ use Infrastructure\Services\FreeSwicthHookService;
 use Api\Extension\Repositories\ExtensionRepository;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
+use Infrastructure\Services\CGRTService;
 
 class FrontController extends BaseController
 {
@@ -32,6 +33,18 @@ class FrontController extends BaseController
         if (!config('app.debug')) {
             return;
         }
+
+
+        /**
+         * @var CGRTService
+         */
+        $client = app(CGRTService::class);
+        // $r = $client->getReferenceCodes();
+        $user = User::where('user_uuid', '27d11471-1643-4905-a24c-0fdb2a597d11')->first();
+        $client->addClient($user);
+        $r = $client->getTenants();
+        dd($r);
+        exit;
 
         // Route::get('/test-mail', function (){
             $user = User::where('username', 'A05lyson.dietrich.howe.com')->first();

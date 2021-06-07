@@ -3,6 +3,8 @@
 namespace Infrastructure\Providers;
 
 use Illuminate\Auth\Events\Registered;
+use Infrastructure\Events\CGRTFailedEvent;
+use Infrastructure\Listeners\CGRTFailedListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -17,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        CGRTFailedEvent::class => [
+            CGRTFailedListener::class,
+        ]
     ];
 
     /**
@@ -27,7 +32,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }
