@@ -14,5 +14,7 @@ class CGRTFailedListener
 
         Notification::route('mail', $mainAdminEmail)
             ->notify(new CGRTFailedNotification($event));
+
+        \Log::error($event->response);
     }
 }
