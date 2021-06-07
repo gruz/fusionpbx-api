@@ -121,9 +121,10 @@
 
                                 </span>
                             </li>
-                            {{-- @if (Auth::user()->account_code)
+
+                            @if (Auth::user()->account_code)
                             <li class="flex items-center py-3">
-                                <span>{{ __('Account code') }}</span>
+                                <span>{{ __('Account reference code') }}</span>
                                 <span class="ml-auto text-right">
                                     {{ Auth::user()->account_code }}
 
@@ -131,6 +132,7 @@
                             </li>
                             @endif
 
+                            {{--
                             <li class="flex items-center py-3">
                                 <span>{{ __('Reseller code') }}</span>
                                 <span class="ml-auto text-right">
