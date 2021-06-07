@@ -5,7 +5,6 @@ namespace Web\Http\Requests\Auth;
 use Api\Domain\Services\DomainService;
 use Api\Extension\Services\ExtensionService;
 use Infrastructure\Auth\Requests\UserSignupRequest;
-use Infrastructure\Rules\UsernameRule;
 
 class UserSignupRequestWeb extends UserSignupRequest
 {
@@ -40,12 +39,15 @@ class UserSignupRequestWeb extends UserSignupRequest
 
         $extension = app(ExtensionService::class)->getNewExtension($this->domain_uuid);
 
+        $s = \Arr::random(['!', '@', '#', '$', '%', '^', '&', '*']);
+        $extension_password = str_shuffle(\Str::random(8) . rand(0,9) . $s);
+
         $this->merge([
             'domain_name' => $this->domain_name,
             'extensions' => [
                 [
                     'extension' => $extension,
-                    'password' => $this->password,
+                    'password' => $extension_password,
                     'voicemail_password' => $this->voicemail_password,
                     'effective_caller_id_name' => $this->effective_caller_id_name,
                     'effective_caller_id_number' => $extension,
