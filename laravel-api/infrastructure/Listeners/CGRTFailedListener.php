@@ -10,7 +10,7 @@ class CGRTFailedListener
 {
     public function handle($event)
     {
-        $mainAdminEmail = config('mail.from.address');
+        $mainAdminEmail = config('app.contact_email');
 
         Notification::route('mail', $mainAdminEmail)
             ->notify(new CGRTFailedNotification($event));
