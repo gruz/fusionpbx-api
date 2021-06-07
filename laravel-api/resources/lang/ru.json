@@ -225,9 +225,9 @@
     "Should be a valid username" : "Уникальное имя пользователя не удовлятворяет условиям",
     "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit" : "Минимально 6 символов, размер имеет значение, по крайней мере одна большая, одна маленька буквы и цифра",
     "Captcha validation failed" : "Код проверки не совпадает",
-    "You voice account(s) to login with the app" : "Голосовые аккаунты для логина в приложения",
+    "You voice account(s) to login with the app" : "Данные для входа в приложение",
     "Use the password you have specified on registration" : "Используйте пароль, указанный при регистрации",
-    "Web portal" : "Веб-интерфейс",
+    "Web portal" : "Данные для входа в веб-интерфейс",
     "Use username **:username** to login into web-application" : "Имя пользователя для логина в веб-интерфейс: **:username**",
     "My voice accounts" : "Голосовые аккаунты",
     "Voice account (Login)" : "Голосовой аккаунт (Логин)"
