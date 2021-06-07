@@ -210,7 +210,7 @@
     "Extension": "Расширение",
     "Extension password": "Пароль расширения",
     "Effective caller number": "Номер для входящих",
-    "Effective caller name": "Имя отображаемое при звонках",
+    "Effective caller name": "Имя, отображаемое при звонках",
     "Voicemail password": "Пароль голосовой почты",
     "Enabled": "Включено",
     "Log in": "Вход",
@@ -227,11 +227,11 @@
     "Captcha validation failed" : "Код проверки не совпадает",
     "You voice account(s) to login with the app" : "Данные для входа в приложение",
     "Use the password you have specified on registration" : "Используйте пароль, указанный при регистрации",
-    "Web portal" : "Данные для входа в веб-интерфейс",
+    "[Web portal](:url) login data" : "Данные для входа в [веб-интерфейс](:url)",
     "Use username **:username** to login into web-application" : "Имя пользователя для логина в веб-интерфейс: **:username**",
     "My voice accounts" : "Голосовые аккаунты",
     "Voice account (Login)" : "Голосовой аккаунт (Логин)",
     "Account reference code" : "Реферальный код вашего акаунта",
-    "Login to web portal to get password" : "Войдите в веб-интерфейс, чтобы узнать пароль",
+    "Login to [web portal](:url) to get password" : "Войдите в [веб-интерфейс](:url), чтобы узнать пароль",
     "Balance" : "Баланс"
 }

@@ -224,11 +224,11 @@
     "Captcha validation failed" : "Код перевірки не співпадає",
     "You voice account(s) to login with the app" : "Голосові облікові записи для логіна в додаток телефонії",
     "Use the password you have specified on registration" : "Використовуйте пароль, що ви зазначали при реєстрації",
-    "Web portal" : "Веб-додаток",
+    "[Web portal](:url) login data" : "Вхід до [веб-додатка](:url)",
     "Use username **:username** to login into web-application" : "Псевдо для логіна у веб-додаток:  **:username**",
     "My voice accounts" : "Голосові облікові записи",
     "Voice account (Login)" : "Голосовий обліковий запис (Логін)",
     "Account reference code" : "Реферальний код облікового запису",
-    "Login to web portal to get password" : "Увійдіть у веб-додаток для отримання пароля",
+    "Login to [web portal](:url) to get password" : "Увійдіть у [веб-додаток](:url) для отримання пароля",
     "Balance" : "Баланс"
 }

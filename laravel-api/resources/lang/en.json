@@ -179,11 +179,11 @@
     "Voice account" : "Voice account",
     "You voice account(s) to login with the app" : "You voice account(s) to login with the app",
     "Use the password you have specified on registration" : "Use the password you have specified on registration",
-    "Web portal" : "Web portal",
+    "[Web portal](:url) login data" : "[Web portal](:url) login data",
     "Use username **:username** to login into web-application" : "Use username **:username** to login into web-application",
     "My voice accounts" : "My voice accounts",
     "Voice account (Login)" : "Voice account (Login)",
     "Account reference code" : "Account reference code",
-    "Login to web portal to get password" : "Login to web portal to get password",
+    "Login to [web portal](:url) to get password" : "Login to [web portal](:url) to get password",
     "Balance" : "Balance"
 }
