@@ -228,5 +228,7 @@
     "Use username **:username** to login into web-application" : "Псевдо для логіна у веб-додаток:  **:username**",
     "My voice accounts" : "Голосові облікові записи",
     "Voice account (Login)" : "Голосовий обліковий запис (Логін)",
-    "Account reference code" : "Реферальний код облікового запису"
+    "Account reference code" : "Реферальний код облікового запису",
+    "Login to web portal to get password" : "Увійдіть у веб-додаток для отримання пароля",
+    "Balance" : "Баланс"
 }

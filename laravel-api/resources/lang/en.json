@@ -183,5 +183,7 @@
     "Use username **:username** to login into web-application" : "Use username **:username** to login into web-application",
     "My voice accounts" : "My voice accounts",
     "Voice account (Login)" : "Voice account (Login)",
-    "Account reference code" : "Account reference code"
+    "Account reference code" : "Account reference code",
+    "Login to web portal to get password" : "Login to web portal to get password",
+    "Balance" : "Balance"
 }

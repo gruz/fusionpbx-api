@@ -231,5 +231,7 @@
     "Use username **:username** to login into web-application" : "Имя пользователя для логина в веб-интерфейс: **:username**",
     "My voice accounts" : "Голосовые аккаунты",
     "Voice account (Login)" : "Голосовой аккаунт (Логин)",
-    "Account reference code" : "Реферальный код вашего акаунта"
+    "Account reference code" : "Реферальный код вашего акаунта",
+    "Login to web portal to get password" : "Войдите в веб-интерфейс, чтобы узнать пароль",
+    "Balance" : "Баланс"
 }
