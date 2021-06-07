@@ -317,6 +317,17 @@ class User extends AbstractModel implements
     }
 
     /**
+     * Method to get user domain name to which he relates.
+     */
+    public function getAccountCodeAttribute()
+    {
+        return optional($this->user_settings()->where([
+            ["user_setting_category", "payment"],
+            ["user_setting_subcategory", "account_code"],
+        ])->first())->user_setting_value;
+    }
+
+    /**
      * Route notifications for the mail channel.
      *
      * @param  \Illuminate\Notifications\Notification  $notification
