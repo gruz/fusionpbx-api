@@ -68,7 +68,9 @@ class UserWasActivatedSelfNotification extends Notification implements ShouldQue
             }
 
             $mailMessage->line( '# ' . __('Web portal'));
-            $mailMessage->line(__('Use username **:username** to login into web-application', ['username' => $this->model->username]));
+            $mailMessage->line( ' * ' . __('Login') . ': **' . $this->model->username . '** ');
+            $mailMessage->line( __('Use the password you have specified on registration'));
+            // $mailMessage->line(__('Use username **:username** to login into web-application', ['username' => $this->model->username]));
             $mailMessage->salutation(__('Thank you for using our service!'));
 
         return $mailMessage;
