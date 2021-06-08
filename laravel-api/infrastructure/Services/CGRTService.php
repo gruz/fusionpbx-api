@@ -217,8 +217,10 @@ class CGRTService
         $cgrt_username = $user->username;
         $cgrt_username = \Str::substr(uniqid() . ' '  . $user->username, 0, 29);
 
+        $tenant = $this->getTenant($user->domainName);
+
         $data = array_merge(config('fpbx.cgrt.default.client_add'), [
-            "tenant" => $this->getTenant($user->domainName),
+            "tenant" => $tenant,
             // "country" => "US",
             // "account_code" => "3847623914",
             // "account_alias" => null,
@@ -237,6 +239,7 @@ class CGRTService
             // "invoice_email_cc" => null,
             // "noc_email" => null,
             // "rates_email" => null,
+            'billing_profile' => $tenant . ' - Monthly',
         ]);
 
         $request = ['json' => $data];
@@ -295,7 +298,7 @@ class CGRTService
         $data = [];
         $data = array_merge(config('fpbx.cgrt.default.tariffplan_assign'), [
             "client_account_code" => $client_added->account_code,
-            "tariffplan_name" => $this->getTariffplanName($client_added->tenant),
+            // "tariffplan_name" => $this->getTariffplanName($client_added->tenant),
             "routingplan_name" => $this->getRoutingplanName($client_added->tenant),
         ]);
 

@@ -184,7 +184,7 @@ return [
             ],
             'tariffplan_assign' => [
                 "tariffplan_name" => env('FPBX_CGRT_DEFAULT_TARIFFPLAN_ASSIGN_TARIFFPLAN_NAME', "GLOBAL_STANDARD"),
-                "routingplan_name" => env('FPBX_CGRT_DEFAULT_TARIFFPLAN_ASSIGN_ROUTINGPLAN_NAME', "DEFAULT"),
+                // "routingplan_name" => env('FPBX_CGRT_DEFAULT_TARIFFPLAN_ASSIGN_ROUTINGPLAN_NAME', "DEFAULT"),
                 "tech_prefix" => env('FPBX_CGRT_DEFAULT_TARIFFPLAN_ASSIGN_TECH_PREFIX', ""),
             ],
         ],
