@@ -214,10 +214,10 @@ class CGRTService
 
         // $cgrt_username = $user->username . '@' . $user->domain_name;
         // $cgrt_username = $user->user_uuid;
-        $cgrt_username = $user->username;
-        $cgrt_username = \Str::substr(uniqid() . ' '  . $user->username, 0, 29);
-
         $tenant = $this->getTenant($user->domainName);
+
+        $cgrt_username = $user->username;
+        $cgrt_username = \Str::substr($user->username . '_' . $tenant , 0, 29);
 
         $data = array_merge(config('fpbx.cgrt.default.client_add'), [
             "tenant" => $tenant,
