@@ -222,13 +222,13 @@
     "First letter, alphanumeric symbols and dash, 6-32 chars length" : "Латинські літери, цифри, підкреслення, крапка, довжина 6-32 символів, перший символ - літера",
     "Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit" : "Мінімум 6 символів, розмір має значення, принаймні одна маленька, одна велика літери та одна цифра",
     "Captcha validation failed" : "Код перевірки не співпадає",
-    "You voice account(s) to login with the app" : "Голосові облікові записи для логіна в додаток телефонії",
+    "Voice & chat account for mobile apps" : "Голосові облікові записи для логіна в додаток телефонії",
     "Use the password you have specified on registration" : "Використовуйте пароль, що ви зазначали при реєстрації",
-    "[Web portal](:url) login data" : "Вхід до [веб-додатка](:url)",
+    "[Web portal](:url) access" : "Вхід до [веб-додатка](:url)",
     "Use username **:username** to login into web-application" : "Псевдо для логіна у веб-додаток:  **:username**",
     "My voice accounts" : "Голосові облікові записи",
     "Voice account (Login)" : "Голосовий обліковий запис (Логін)",
     "Account reference code" : "Реферальний код облікового запису",
-    "Login to [web portal](:url) to get password" : "Увійдіть у [веб-додаток](:url) для отримання пароля",
+    "Login to [web portal](:url) to get the password" : "Увійдіть у [веб-додаток](:url) для отримання пароля",
     "Balance" : "Баланс"
 }

@@ -60,14 +60,14 @@ class UserWasActivatedSelfNotification extends Notification implements ShouldQue
             ]));
 
             if ($extensions->count() > 0) {
-                $mailMessage->line( '# '. __('You voice account(s) to login with the app'));
+                $mailMessage->line( '# '. __('Voice & chat account for mobile apps') . ': ');
                 foreach ($extensions as $extension => $password) {
                     $mailMessage->line( ' * ' . __('Login') . ': **' . $extension . '** ');
                 }
-                $mailMessage->line( __('Login to [web portal](:url) to get password', ['url' => route('dashboard')]));
+                $mailMessage->line( __('Login to [web portal](:url) to get the password', ['url' => route('login')]));
             }
 
-            $mailMessage->line( '# ' . __('[Web portal](:url) login data', ['url' => route('dashboard')]));
+            $mailMessage->line( '# ' . __('[Web portal](:url) access', ['url' => route('login')]) . ': ');
             $mailMessage->line( ' * ' . __('Login') . ': **' . $this->model->username . '** ');
             $mailMessage->line( __('Use the password you have specified on registration'));
             // $mailMessage->line(__('Use username **:username** to login into web-application', ['username' => $this->model->username]));
