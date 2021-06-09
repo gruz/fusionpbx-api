@@ -88,7 +88,7 @@
                         <div class="image overflow-hidden">
                             <img class="h-auto w-full mx-auto" src="/img/profile_stub_eddie.png" alt="">
                         </div>
-                        <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">{{ Auth::user()->username }}</h1>
+                        {{-- <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">{{ Auth::user()->username }}</h1> --}}
                         <h3 class="text-gray-600 font-lg text-semibold leading-6">
                             <a class="text-blue-800"
                                 href="mailto:{{ Auth::user()->user_email }}">{{ Auth::user()->user_email }}</a>

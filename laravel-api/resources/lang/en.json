@@ -185,5 +185,7 @@
     "Voice account (Login)" : "Voice account (Login)",
     "Account reference code" : "Account reference code",
     "Login to [web portal](:url) to get password" : "Login to [web portal](:url) to get password",
-    "Balance" : "Balance"
+    "Balance" : "Balance",
+    "Effective caller number": "Internal phone number",
+    "Effective caller name": "Display Name"
 }
