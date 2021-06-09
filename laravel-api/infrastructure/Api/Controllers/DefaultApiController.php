@@ -48,6 +48,7 @@ class DefaultApiController extends BaseController
      * @OA\Get(
      *  tags={"Default"},
      *  description="Get application name and version",
+     *  x={"route-$middlewares"="api"},
      *  path="/api",
      *  security={},
      *      @OA\Response(

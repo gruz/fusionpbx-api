@@ -4,6 +4,7 @@ return [
     'debug' => [
         'swaggerProcessor' => false,
     ],
+    'api_token' => env('API_TOKEN', null),
     /**
      * If enabled, then users or domains must provide a reseller code to be registered.
      * For now we add available reseller codes to `v_default_settings`

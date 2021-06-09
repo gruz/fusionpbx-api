@@ -16,6 +16,7 @@ use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Notification;
 use Infrastructure\Services\FreeSwicthHookService;
 use Api\Extension\Repositories\ExtensionRepository;
+use Api\User\Models\UserSetting;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
 use Infrastructure\Services\CGRTService;
@@ -33,18 +34,44 @@ class FrontController extends BaseController
         if (!config('app.debug')) {
             return;
         }
+        // $user = User::where('user_uuid', '39583b9c-91aa-46aa-bcc3-5871ce1ad927')->first();
+        // dd($user->getCGRTBalanceAttribute());
+        // $account_code = 'aaa';
+
+        // $data = [
+        //     "user_uuid" => $user->user_uuid,
+        //     "domain_uuid" => $user->domain_uuid,
+        //     "user_setting_category" => "payment",
+        //     "user_setting_subcategory" => "account_code",
+        //     "user_setting_name" => "text",
+        //     "user_setting_value" => $account_code,
+        //     "user_setting_order" => 0,
+        //     "user_setting_enabled" => true,
+        //     "user_setting_description" => 'CGRT account code',
+        // ];
+        // $user_setting = new UserSetting();
+        // $user_setting->fillable[] = 'domain_uuid';
+        // $user_setting->fillable[] = 'user_uuid';
+        // $user_setting->fill($data);
+        // // foreach ($data as $key => $value) {
+        // //     $user_setting->$key = $value;
+        // // }
+        // $user_setting->save();
+        // d($user->user_settings());
+        // dd($user->user_settings());
+        // $user->user_settings()->create($data);
 
 
-        /**
-         * @var CGRTService
-         */
-        $client = app(CGRTService::class);
-        // $r = $client->getReferenceCodes();
-        $user = User::where('user_uuid', '27d11471-1643-4905-a24c-0fdb2a597d11')->first();
-        $client->addClient($user);
-        $r = $client->getTenants();
-        dd($r);
-        exit;
+        // /**
+        //  * @var CGRTService
+        //  */
+        // $client = app(CGRTService::class);
+        // // $r = $client->getReferenceCodes();
+        // $user = User::where('user_uuid', '27d11471-1643-4905-a24c-0fdb2a597d11')->first();
+        // $client->addClient($user);
+        // $r = $client->getTenants();
+        // dd($r);
+        // exit;
 
         // Route::get('/test-mail', function (){
             $user = User::where('username', 'A05lyson.dietrich.howe.com')->first();

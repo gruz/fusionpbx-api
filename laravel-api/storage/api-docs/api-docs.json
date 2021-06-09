@@ -526,7 +526,8 @@
                         }
                     }
                 },
-                "security": []
+                "security": [],
+                "x-route-$middlewares": "api"
             }
         }
     },
