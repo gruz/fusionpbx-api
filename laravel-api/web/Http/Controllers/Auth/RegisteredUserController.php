@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
 
         $request = \Illuminate\Support\Facades\Request::create(route('fpbx.user.signup'), 'POST');
         \Request::replace($validated);
-        $request->headers->set('X-apitoken', 'assa');
+        $request->headers->set('X-apitoken', config('fpbx.api_token'));
         $response = Route::dispatch($request);
 
         // $statusCode = $response->getStatusCode();
