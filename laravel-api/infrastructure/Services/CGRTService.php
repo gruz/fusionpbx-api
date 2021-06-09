@@ -239,7 +239,7 @@ class CGRTService
             // "invoice_email_cc" => null,
             // "noc_email" => null,
             // "rates_email" => null,
-            'billing_profile' => $tenant . ' - Monthly',
+            // 'billing_profile' => $tenant . ' - Monthly',
         ]);
 
         $request = ['json' => $data];

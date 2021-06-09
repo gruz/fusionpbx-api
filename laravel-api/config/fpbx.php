@@ -149,7 +149,7 @@ return [
                 "subreseller" => env('FPBX_CGRT_DEFAULT_CLIENT_ADD_SUBRESELLER', null),
                 "currency" => env('FPBX_CGRT_DEFAULT_CLIENT_ADD_CURRENCY', 'USD'),
                 "default_tax" => env('FPBX_CGRT_DEFAULT_CLIENT_ADD_DEFAULT_TAX', null),
-                'billing_profile' => env('FPBX_CGRT_DEFAULT_CLIENT_ADD_BILLING_PROFILE', 'Monthly'),
+                // 'billing_profile' => env('FPBX_CGRT_DEFAULT_CLIENT_ADD_BILLING_PROFILE', 'Monthly'),
             ],
             'add_sipaccount' => [
                 "register" => env('FPBX_CGRT_DEFAULT_ADD_SIPACCOUNT_REGISTER', false),
