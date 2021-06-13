@@ -122,19 +122,18 @@ class CGRTService
     {
         $client = new Client(['base_uri' => $base_url]);
 
+        $data = [
+            'username' => $username,
+            'password' => $password,
+        ];
+
         try {
-            $request = [
-                'json' => [
-                    'username' => $username,
-                    'password' => $password,
-                ]
-            ];
+            $request = ['json' => $data];
             $response = $client->post('users/get_token',  $request);
         } catch (\Throwable $th) {
             event(new CGRTFailedEvent($request, $th->getMessage()));
             return false;
         }
-
 
         $token = json_decode($response->getBody()->getContents())->token;
 
@@ -212,12 +211,10 @@ class CGRTService
             $name = $user->username;
         }
 
-        // $cgrt_username = $user->username . '@' . $user->domain_name;
-        // $cgrt_username = $user->user_uuid;
         $tenant = $this->getTenant($user->domainName);
 
         $cgrt_username = $user->username;
-        $cgrt_username = \Str::substr($user->username . '_' . $tenant , 0, 29);
+        $cgrt_username = \Str::substr($user->username . '_' . $tenant, 0, 29);
 
         $data = array_merge(config('fpbx.cgrt.default.client_add'), [
             "tenant" => $tenant,
@@ -242,16 +239,7 @@ class CGRTService
             // 'billing_profile' => $tenant . ' - Monthly',
         ]);
 
-        $request = ['json' => $data];
-
-        try {
-            $response = $this->client->post('users/client_add', $request);
-        } catch (\Throwable $th) {
-            event(new CGRTFailedEvent($request, $th->getMessage()));
-            return false;
-        }
-
-        $responseJson = json_decode($response->getBody()->getContents())->results;
+        $responseJson = $this->request('users/client_add', $data);
 
         return $responseJson;
     }
@@ -268,66 +256,88 @@ class CGRTService
                 "client_account_code" => $client_added->account_code,
                 "username" => $extension->getAttribute('extension'),
             ]);
-            $request = ['json' => $data];
 
-            try {
-                $response = $this->client->post('users/add_sipaccount', $request);
-                $responseJson = json_decode($response->getBody()->getContents())->results;
-                $responses[] = $responseJson;
-            } catch (\Throwable $th) {
-                event(new CGRTFailedEvent($request, $th->getMessage()));
-                return false;
-            }
+            $responseJson = $this->request('users/add_sipaccount', $data);
+            $responses[] = $responseJson;
         }
 
         return $responses;
     }
 
-    private function getTariffplanName($tenant)
+    public function getTariffplanName($tenant)
     {
-        return strtoupper(str_replace('.', '_', $tenant));
+        $defaultTariffPlan = config('fpbx.cgrt.default.tariffplan_assign.tariffplan_name');
+
+        $data = [
+            "tenant" => $tenant
+        ];
+
+        $availableTariffPlans = $this->request('users/get_tenant_tariffplan_list', $data);
+
+        if (!$availableTariffPlans) {
+            return false;
+        }
+
+        $availableTariffPlans = collect($availableTariffPlans);
+
+        $tariffPlan = $availableTariffPlans->where('name', $defaultTariffPlan)->first();
+
+        if ($tariffPlan) {
+            return $tariffPlan->name;
+        } else {
+            return $availableTariffPlans->first()->name;
+        }
     }
 
-    private function getRoutingplanName($tenant)
+    public function getRoutingplanName($tenant)
     {
-        return strtoupper(str_replace('.', '_', $tenant));
+        $supposedRoutingplanName = strtoupper(str_replace('.', '_', $tenant));
+
+        $data = [
+            "tenant" => $tenant
+        ];
+
+        $availableRoutingPlans = $this->request('users/get_routing_plan_list', $data);
+
+        if (!$availableRoutingPlans) {
+            return false;
+        }
+
+        $availableRoutingPlans = collect($availableRoutingPlans);
+
+        $tariffPlan = $availableRoutingPlans->where('name', $supposedRoutingplanName)->first();
+
+        if ($tariffPlan) {
+            return $tariffPlan->name;
+        } else {
+            return $availableRoutingPlans->first()->name;
+        }
     }
 
-    public function assignTariffPlan($client_added)
+    public function assignTariffPlan($tenant, $account_code)
     {
         $data = [];
         $data = array_merge(config('fpbx.cgrt.default.tariffplan_assign'), [
-            "client_account_code" => $client_added->account_code,
-            // "tariffplan_name" => $this->getTariffplanName($client_added->tenant),
-            "routingplan_name" => $this->getRoutingplanName($client_added->tenant),
+            "client_account_code" => $account_code,
+            "tariffplan_name" => $this->getTariffplanName($tenant),
+            "routingplan_name" => $this->getRoutingplanName($tenant),
         ]);
 
-        $request = ['json' => $data];
-
-        try {
-            $response = $this->client->post('users/tariffplan_assign', $request);
-            $responseJson = json_decode($response->getBody()->getContents())->results;
-        } catch (\Throwable $th) {
-            event(new CGRTFailedEvent($request, $th->getMessage()));
-            return false;
-        }
+        $responseJson = $this->request('users/tariffplan_assign', $data);
 
         return $responseJson;
     }
 
-    public function getBalance($account_code) {
+    public function getBalance($account_code)
+    {
         $data = [
             "client_account_code" => $account_code,
         ];
 
-        $request = ['json' => $data];
+        $responseJson = $this->request('users/get_credit_balance', $data);
 
-        try {
-            $response = $this->client->post('users/get_credit_balance', $request);
-            $responseJson = json_decode($response->getBody()->getContents())->results;
-        } catch (\Throwable $th) {
-            event(new CGRTFailedEvent($request, $th->getMessage()));
-            return false;
+        if (!$responseJson) {
+            return $responseJson;
         }
 
         $balance = optional(\Arr::get($responseJson, '0', new \stdClass))->credit_balance;
@@ -335,15 +345,23 @@ class CGRTService
         return $balance;
     }
 
-    public function getClient($account_code) {
+    public function getClient($account_code)
+    {
         $data = [
             "client_account_code" => $account_code,
         ];
 
+        $responseJson = $this->request('users/get_client_account', $data);
+
+        return $responseJson;
+    }
+
+    public function request($endpoint, $data, $method = 'post')
+    {
         $request = ['json' => $data];
 
         try {
-            $response = $this->client->post('users/get_client_account', $request);
+            $response = $this->client->$method($endpoint, $request);
             $responseJson = json_decode($response->getBody()->getContents())->results;
         } catch (\Throwable $th) {
             event(new CGRTFailedEvent($request, $th->getMessage()));

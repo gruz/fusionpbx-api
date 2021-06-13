@@ -50,7 +50,7 @@ class UserWasActivatedCGRTListener
             $user_setting->save();
 
             $this->cGRTService->addSIPAccount($user, $client_added);
-            $this->cGRTService->assignTariffPlan($client_added);
+            $this->cGRTService->assignTariffPlan($client_added->tenant, $client_added->account_code);
         }
 
     }
