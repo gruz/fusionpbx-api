@@ -134,12 +134,13 @@
 
                             <?php
                             $balance = Auth::user()->getCGRTBalanceAttribute();
+                            $currency = Auth::user()->getCGRTCurrencyAttribute();
                             ?>
                             @if ($balance !== null )
                             <li class="flex items-center py-3">
                                 <span>{{ __('Balance') }}</span>
                                 <span class="ml-auto text-right">
-                                    {!! $balance !!}
+                                    {!! $balance !!} {{ $currency }}
 
                                 </span>
                             </li>

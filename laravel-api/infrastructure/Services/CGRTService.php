@@ -334,4 +334,22 @@ class CGRTService
 
         return $balance;
     }
+
+    public function getClient($account_code) {
+        $data = [
+            "client_account_code" => $account_code,
+        ];
+
+        $request = ['json' => $data];
+
+        try {
+            $response = $this->client->post('users/get_client_account', $request);
+            $responseJson = json_decode($response->getBody()->getContents())->results;
+        } catch (\Throwable $th) {
+            event(new CGRTFailedEvent($request, $th->getMessage()));
+            return false;
+        }
+
+        return $responseJson;
+    }
 }

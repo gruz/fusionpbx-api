@@ -341,6 +341,22 @@ class User extends AbstractModel implements
         $balance = $client->getBalance($account_code);
 
         return $balance;
+
+    }
+    public function getCGRTCurrencyAttribute() {
+        if (!config('fpbx.cgrt.enabled')) {
+            return null;
+        }
+
+        /**
+         * @var \Infrastructure\Services\CGRTService
+         */
+        $client = app(\Infrastructure\Services\CGRTService::class);
+        $account_code = $this->getAccountCodeAttribute();
+
+        $currency_code = optional($client->getClient($account_code))->currency_code;
+
+        return $currency_code;
     }
 
     /**
