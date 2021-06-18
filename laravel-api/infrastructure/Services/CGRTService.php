@@ -120,22 +120,14 @@ class CGRTService
 
     public function __construct($base_url, $username, $password)
     {
-        $client = new Client(['base_uri' => $base_url]);
+        $this->client = new Client(['base_uri' => $base_url]);
 
         $data = [
             'username' => $username,
             'password' => $password,
         ];
 
-        try {
-            $request = ['json' => $data];
-            $response = $client->post('users/get_token',  $request);
-        } catch (\Throwable $th) {
-            event(new CGRTFailedEvent($request, $th->getMessage()));
-            return false;
-        }
-
-        $token = json_decode($response->getBody()->getContents())->token;
+        $token = $this->request('users/get_token', $data);
 
         $this->client = new Client([
             'base_uri' => $base_url,
@@ -147,14 +139,7 @@ class CGRTService
 
     public function getTenants(): array
     {
-        try {
-            $r = $this->client->post('users/get_tenants_list');
-        } catch (\Throwable $th) {
-            event(new CGRTFailedEvent(null, $th->getMessage()));
-            return [];
-        }
-
-        $results = json_decode($r->getBody()->getContents())->results;
+        $results = $this->request('users/get_tenants_list');
 
         return $results;
     }
@@ -166,13 +151,8 @@ class CGRTService
         $reseller_codes = [];
 
         foreach ($tenants as $key => $tenant) {
-            $request = ['json' => ['tenant' => $tenant]];
-            try {
-                $clients = json_decode($this->client->post('users/get_clients', $request)->getBody()->getContents())->results;
-            } catch (\Throwable $th) {
-                event(new CGRTFailedEvent($request, $th->getMessage()));
-                return [];
-            }
+            $data = ['tenant' => $tenant];
+            $clients = $this->request('users/get_clients', $data);
 
             $clients = collect($clients);
             $account_codes = $clients->pluck('account_code')->toArray();
@@ -194,7 +174,6 @@ class CGRTService
         if (empty($tenant)) {
             $tenants = $tenants[0];
         }
-
 
         return $tenant;
     }
@@ -356,15 +335,26 @@ class CGRTService
         return $responseJson;
     }
 
-    public function request($endpoint, $data, $method = 'post')
+    public function request($endpoint, $data = null, $method = 'post')
     {
-        $request = ['json' => $data];
+        $request = [];
+        if (null !== $data) {
+            $request = ['json' => $data];
+        }
 
         try {
             $response = $this->client->$method($endpoint, $request);
-            $responseJson = json_decode($response->getBody()->getContents())->results;
+
+            switch ($endpoint) {
+                case 'users/get_token':
+                    $responseJson = json_decode($response->getBody()->getContents())->token;
+                    break;
+                default:
+                    $responseJson = json_decode($response->getBody()->getContents())->results;
+                    break;
+            }
         } catch (\Throwable $th) {
-            event(new CGRTFailedEvent($request, $th->getMessage()));
+            event(new CGRTFailedEvent($request, $th->getMessage()), \Auth::user());
             return false;
         }
 

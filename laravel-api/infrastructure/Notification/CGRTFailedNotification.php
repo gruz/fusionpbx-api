@@ -43,6 +43,7 @@ class CGRTFailedNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $userData = \Str::markdown('```' . PHP_EOL . print_r($this->event->userData, true) . PHP_EOL . '```');
         $request = \Str::markdown('```' . PHP_EOL . print_r($this->event->request, true) . PHP_EOL . '```');
         $response = \Str::markdown('```' . PHP_EOL . print_r($this->event->response, true) . PHP_EOL . '```');
         return (new MailMessage)
@@ -52,7 +53,9 @@ class CGRTFailedNotification extends Notification implements ShouldQueue
             ->line(__('Request') . ': ')
             ->line(new HtmlString($request))
             ->line(__('Response') . ': ')
-            ->line(new HtmlString($response));
+            ->line(new HtmlString($response))
+            ->line(__('User info') . ': ')
+            ->line(new HtmlString($userData));
     }
 
     /**

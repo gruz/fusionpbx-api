@@ -10,9 +10,12 @@ class CGRTFailedEvent extends Event
 
     public $response;
 
-    public function __construct($request, $response)
+    public $userData;
+
+    public function __construct($request, $response, $userData = [])
     {
         $this->request = $request;
         $this->response = $response;
+        $this->userData = $userData;
     }
 }
