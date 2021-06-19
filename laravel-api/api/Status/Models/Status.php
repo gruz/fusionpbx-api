@@ -3,12 +3,9 @@
 namespace Api\Status\Models;
 
 use Infrastructure\Database\Eloquent\AbstractModel;
-use Infrastructure\Traits\Uuids;
 
 class Status extends AbstractModel
 {
-    use Uuids;
-
     /**
      * The table associated with the model.
      *
