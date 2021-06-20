@@ -4,7 +4,7 @@ namespace Api\Domain\Testing\Requests;
 
 use Faker\Factory;
 use Illuminate\Support\Arr;
-use Api\Domain\Models\Domain;
+use App\Models\Domain;
 use App\Testing\TestCase;
 use App\Testing\TestRequestTrait;
 use App\Services\TestRequestFactoryService;

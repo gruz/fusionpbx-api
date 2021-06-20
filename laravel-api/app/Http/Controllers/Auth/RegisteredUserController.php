@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Api\User\Models\User;
+use App\Models\User;
 use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;

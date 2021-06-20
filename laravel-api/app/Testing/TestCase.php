@@ -6,10 +6,10 @@ use Storage;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\Arr;
-use Api\Settings\Models\DefaultSetting;
+use App\Models\DefaultSetting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
-use Api\PostponedAction\Models\PostponedAction;
+use App\Models\PostponedAction;
 use App\Services\TestRequestFactoryService;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 

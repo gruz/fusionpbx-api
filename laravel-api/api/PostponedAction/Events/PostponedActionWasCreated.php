@@ -3,7 +3,7 @@
 namespace Api\PostponedAction\Events;
 
 use App\Events\Event;
-use Api\PostponedAction\Models\PostponedAction;
+use App\Models\PostponedAction;
 use Illuminate\Support\Collection;
 
 class PostponedActionWasCreated extends Event

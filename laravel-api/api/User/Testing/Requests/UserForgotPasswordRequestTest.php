@@ -2,8 +2,8 @@
 
 namespace Api\User\Testing\Requests;
 
-use Api\User\Models\User;
-use Api\Domain\Models\Domain;
+use App\Models\User;
+use App\Models\Domain;
 use App\Testing\TestCase;
 use App\Testing\UserTrait;
 use App\Testing\DomainTrait;

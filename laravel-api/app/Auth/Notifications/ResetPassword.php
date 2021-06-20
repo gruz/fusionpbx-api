@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Lang;
 class ResetPassword extends \Illuminate\Auth\Notifications\ResetPassword
 {
     /**
-     * @var \Api\User\Models\User
+     * @var \App\Models\User
      */
     public $user;
 

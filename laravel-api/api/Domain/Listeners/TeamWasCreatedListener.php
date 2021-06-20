@@ -2,7 +2,7 @@
 
 namespace Api\Domain\Listeners;
 
-use Api\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Notification;
 
 use Api\Domain\Notifications\DomainActivateActivatorNotification;

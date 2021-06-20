@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use Api\User\Models\User;
+use App\Models\User;
 use League\Flysystem\Util;
 use Illuminate\Support\Arr;
-use Api\User\Models\Contact;
-use Api\Domain\Models\Domain;
-use Api\Settings\Models\Setting;
-use Api\Extension\Models\Extension;
-use Api\User\Models\UserSetting;
-use Api\Voicemail\Models\Voicemail;
+use App\Models\Contact;
+use App\Models\Domain;
+use App\Models\Setting;
+use App\Models\Extension;
+use App\Models\UserSetting;
+use App\Models\Voicemail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 

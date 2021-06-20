@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Testing\TestCase;
 use App\Testing\TestRequestTrait;
-use Api\PostponedAction\Models\PostponedAction;
+use App\Models\PostponedAction;
 use Carbon\Carbon;
 
 class DomainActivateRequestTest extends TestCase

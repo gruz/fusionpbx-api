@@ -2,7 +2,7 @@
 
 namespace App\Testing;
 
-use Api\Domain\Models\Domain;
+use App\Models\Domain;
 
 trait DomainTrait
 {

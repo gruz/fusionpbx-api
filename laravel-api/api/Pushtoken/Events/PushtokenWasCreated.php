@@ -3,7 +3,7 @@
 namespace Api\Pushtoken\Events;
 
 use App\Events\Event;
-use Api\Pushtoken\Models\Pushtoken;
+use App\Models\Pushtoken;
 
 class PushtokenWasCreated extends Event
 {

@@ -17,7 +17,7 @@ use Api\User\Repositories\UserRepository;
 use Api\Domain\Repositories\DomainRepository;
 use Api\User\Services\UserService;
 
-use Api\User\Models\User;
+use App\Models\User;
 
 class PushService
 {

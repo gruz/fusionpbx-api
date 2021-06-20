@@ -3,7 +3,7 @@
 namespace Api\Domain\Events;
 
 use App\Events\Event;
-use Api\Domain\Models\Domain;
+use App\Models\Domain;
 
 class DomainWasCreated extends Event
 {

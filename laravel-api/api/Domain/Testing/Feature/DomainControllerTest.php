@@ -4,14 +4,14 @@ namespace Api\Domain\Testing\Feature;
 
 use stdClass;
 use Faker\Factory;
-use Api\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Api\Domain\Models\Domain;
+use App\Models\Domain;
 use App\Testing\TestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
-use Api\PostponedAction\Models\PostponedAction;
+use App\Models\PostponedAction;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Api\Domain\Notifications\DomainSignupNotification;
 use Api\Domain\Notifications\DomainActivateActivatorNotification;

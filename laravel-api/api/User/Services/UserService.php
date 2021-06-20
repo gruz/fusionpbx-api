@@ -3,9 +3,9 @@
 namespace Api\User\Services;
 
 use Exception;
-use Api\User\Models\Group;
+use App\Models\Group;
 use Illuminate\Support\Arr;
-use Api\Extension\Models\Extension;
+use App\Models\Extension;
 use Illuminate\Support\Facades\Auth;
 use Api\User\Events\UserWasActivated;
 use Api\User\Services\ContactService;

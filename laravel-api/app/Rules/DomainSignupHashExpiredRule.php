@@ -4,7 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Validation\Rule;
-use Api\PostponedAction\Models\PostponedAction;
+use App\Models\PostponedAction;
 
 class DomainSignupHashExpiredRule implements Rule
 {

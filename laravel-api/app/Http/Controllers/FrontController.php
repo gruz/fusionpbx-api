@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 
-use Api\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Api\User\Models\Contact;
+use App\Models\Contact;
 use Illuminate\Http\Request;
-use Api\Domain\Models\Domain;
-use Api\Settings\Models\Setting;
-use Api\Extension\Models\Extension;
-use Api\Voicemail\Models\Voicemail;
+use App\Models\Domain;
+use App\Models\Setting;
+use App\Models\Extension;
+use App\Models\Voicemail;
 use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Notification;
 use App\Services\FreeSwicthHookService;
 use Api\Extension\Repositories\ExtensionRepository;
-use Api\User\Models\UserSetting;
+use App\Models\UserSetting;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
 use App\Services\CGRTService;
@@ -139,7 +139,7 @@ class FrontController extends BaseController
         );
         exit;
 
-        $user = \Api\User\Models\User::
+        $user = \App\Models\User::
             // where('user_uuid', '<>', '')
             skip(1)->first();
         $notification = new \Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification($user);
@@ -147,7 +147,7 @@ class FrontController extends BaseController
         return 'Sent';
 
         \DB::enableQueryLog();
-        $model = new \Api\PostponedAction\Models\PostponedAction;
+        $model = new \App\Models\PostponedAction;
         // $model = $model->first();
         // $model = $model->where('request->users', '@>', 'alyson.dietrich@howe.com')
         $model = $model->whereJsonContains('request->users', [
@@ -171,7 +171,7 @@ class FrontController extends BaseController
 
         $model->save();
 
-        // $model2 = \Api\PostponedAction\Models\PostponedAction::where('request->domain_name', 'aaa.com')->firstOrFail();
+        // $model2 = \App\Models\PostponedAction::where('request->domain_name', 'aaa.com')->firstOrFail();
         dd($model);
 
         $expireDate = $model->created_at->add();
@@ -246,7 +246,7 @@ class FrontController extends BaseController
 
 
         \DB::enableQueryLog(); // Enable query log
-        $items = \Api\Extension\Models\Extension::with('extension_users.permissions')
+        $items = \App\Models\Extension::with('extension_users.permissions')
             ->where('extension_uuid', '63045580-4ce3-11eb-b21b-47744eb6524b')
             ->get()
             ->toArray();

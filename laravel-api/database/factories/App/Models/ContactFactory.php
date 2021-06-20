@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Factories\Api\User\Models;
+namespace Database\Factories\App\Models;
 
 use Illuminate\Support\Arr;
-use Api\User\Models\Contact;
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 

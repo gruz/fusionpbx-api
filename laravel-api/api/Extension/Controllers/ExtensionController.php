@@ -126,10 +126,11 @@ class ExtensionController extends Controller
                         ),
                     )),
                 },
+                @OA\Examples(example="Asdsads", summary="App info", value={"title": "FusionPBX API", "version" : "0.0.8-62-g192d97b"}),
                 examples={
                     "Create an exnetsion": {},
                     "Create an exnetsion basic example": {
-                        "summary" : "`TODO example`",
+                        "summary" : "`TODO example111`",
                         "value": {
                             "code": 403,
                             "message": "登录失败",
@@ -148,7 +149,7 @@ class ExtensionController extends Controller
             response=400,
             description="`TODO Stub` Could not created domain",
             @OA\JsonContent(
-                example={
+                examples={
                     "messages": {
                         "Missing admin user",
                         "No password for email",
@@ -218,13 +219,6 @@ class ExtensionController extends Controller
         @OA\Response(
             response=200,
             description="`TODO Stub` Success ...",
-            @OA\JsonContent(
-                example={
-                    "messages": {
-                        "`TODO` Describe response",
-                    },
-                },
-            ),
         ),
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )

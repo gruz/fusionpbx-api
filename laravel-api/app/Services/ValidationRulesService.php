@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Api\Domain\Models\Domain;
+use App\Models\Domain;
 use Illuminate\Validation\Rule;
-use Api\Extension\Models\Extension;
+use App\Models\Extension;
 
 /**
  * Class to provide password settings for laravel based on FPBX settings

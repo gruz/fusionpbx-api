@@ -112,14 +112,9 @@ abstract class AbstractRepository extends BaseRepository
      */
     protected function getModel()
     {
-        $className = substr(get_class($this), 0, -1 * strlen('Repository'));
-        $className = explode('\\', $className);
-        $className = array_diff($className, ['Repositories']);
-        $modelName = array_pop($className);
-        $className[] = 'Models';
-        $className[] = $modelName;
+        preg_match('~.*\\\\(.*)Repository$~', get_class($this), $matches);
 
-        $className = implode('\\', $className);
+        $className = 'App\\Models\\' . $matches[1];
 
         $model =  new $className();
 

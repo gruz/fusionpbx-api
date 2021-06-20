@@ -5,7 +5,7 @@ namespace Api\Domain\Requests;
 use Illuminate\Validation\Rule;
 use App\Rules\HostnameRule;
 use App\Rules\UsernameRule;
-use Api\Settings\Models\DefaultSetting;
+use App\Models\DefaultSetting;
 use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Services\ValidationRulesService;

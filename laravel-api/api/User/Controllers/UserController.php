@@ -362,12 +362,6 @@ class UserController extends Controller
                 @OA\Property(
                     property="errors",
                     type="array",
-                    example={{
-                        "status": "422",
-                        "code": 0,
-                        "title": "Validation error",
-                        "detail": "The user email is required."
-                    }},
                     @OA\Items(
                         @OA\Property(
                           property="status",

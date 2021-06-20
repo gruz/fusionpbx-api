@@ -27,7 +27,7 @@ class LoadConstantsHelper
         $isSecondRun = true;
 
         $getData = function () {
-            return \Api\Settings\Models\DefaultSetting::get();
+            return \App\Models\DefaultSetting::get();
         };
 
         if (config('fpbx.debug.swaggerProcessor')) {

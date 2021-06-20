@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
-use Api\User\Models\User;
+use App\Models\User;
 use App\Events\CGRTFailedEvent;
 
 /**

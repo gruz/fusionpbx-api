@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Api\Domain\Models\Domain;
+use App\Models\Domain;
 use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;

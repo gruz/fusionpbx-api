@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Requests;
 
-use Api\Extension\Models\Extension;
+use App\Models\Extension;
 use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 

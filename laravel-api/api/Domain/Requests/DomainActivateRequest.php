@@ -25,7 +25,7 @@ class DomainActivateRequest extends FormRequest
                 'bail',
                 'required',
                 'uuid',
-                'exists:\Api\PostponedAction\Models\PostponedAction',
+                'exists:\App\Models\PostponedAction',
                 new DomainSignupHashExpiredRule(),
             ],
             'email' => [

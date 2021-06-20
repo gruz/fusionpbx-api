@@ -2,8 +2,8 @@
 
 namespace Api\User\Listeners;
 
-use Api\User\Models\User;
-use Api\User\Models\UserSetting;
+use App\Models\User;
+use App\Models\UserSetting;
 use App\Services\CGRTService;
 
 class UserWasActivatedCGRTListener

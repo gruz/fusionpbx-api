@@ -20,7 +20,7 @@ class UserActivateRequest extends FormRequest
             'hash' => [
                 'required',
                 'uuid',
-                'exists:\Api\User\Models\User,user_enabled',
+                'exists:\App\Models\User,user_enabled',
 
             ],
         ];

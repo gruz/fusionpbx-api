@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use const OpenApi\UNDEFINED;
 use OpenApi\Annotations\Items;
 use OpenApi\Annotations\Schema;
+use OpenApi\Annotations\Examples;
 use OpenApi\Annotations\Property;
 use OpenApi\Annotations\Response;
 use OpenApi\Annotations\MediaType;
@@ -310,9 +311,10 @@ class SchemaQueryParameter
     private function attachRepsonseExamples($actionPath, $data)
     {
         $responseExamples = $this->getResponseExamples($actionPath);
+
         $path = $data['pathItem'];
         $method = $data['method'];
-
+        
         $responses = $path->$method->responses;
         if (UNDEFINED === $responses) {
             $responses = [];
@@ -369,10 +371,39 @@ class SchemaQueryParameter
         if (UNDEFINED === $path->$method->requestBody) {
             return;
         }
-
+        
         $examples = $path->$method->requestBody->_unmerged[0]->examples;
+        if (UNDEFINED === $examples) {
+            return;
+        }
 
-        $examples = array_merge($examples, $requestExamples);
+        $responses = [];
+
+        foreach ($examples as $description => $value ) {
+            $code = 200;
+            $resp = new Examples([
+                'summary' => $description,
+                'value' => $value
+            ]);
+            // $resp->response = $code;
+            // $resp->description = $description;
+            // $content = new MediaType([]);
+            // $content->mediaType = 'application/json';
+            // $content->examples = [];
+
+            // $content->examples[] = [
+            //     'summary' => $description,
+            //     'value' => $value,
+            // ];
+            // $resp->content = [$content];
+
+            $responses[] = $resp;
+        }
+
+        
+        // dd($examples, $responses);
+        $examples = array_merge($responses, $requestExamples);
+
 
         $path->$method->requestBody->_unmerged[0]->examples = $examples;
     }

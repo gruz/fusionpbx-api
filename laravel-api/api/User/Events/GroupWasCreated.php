@@ -3,7 +3,7 @@
 namespace Api\User\Events;
 
 use App\Events\Event;
-use Api\User\Models\Group;
+use App\Models\Group;
 
 class GroupWasCreated extends Event
 {

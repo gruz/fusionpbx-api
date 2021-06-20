@@ -2,7 +2,7 @@
 
 namespace Api\User\Repositories;
 
-use Api\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Database\Eloquent\AbstractRepository;

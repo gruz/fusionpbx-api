@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use Api\Settings\Models\DefaultSetting;
+use App\Models\DefaultSetting;
 use App\Services\CGRTService;
 use Illuminate\Contracts\Validation\Rule;
 

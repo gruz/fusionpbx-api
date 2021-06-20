@@ -25,7 +25,7 @@ class UserWasActivatedListener
 
 
         /**
-         * @var \Api\User\Models\User
+         * @var \App\Models\User
          */
         $user = $event->user;
         $user->extensions()->update(['enabled' => 'true']);

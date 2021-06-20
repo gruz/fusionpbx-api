@@ -40,7 +40,7 @@ class DomainSignupHashHasEmailExistsRule implements Rule
             return false;
         }
 
-        $model = new \Api\PostponedAction\Models\PostponedAction;
+        $model = new \App\Models\PostponedAction;
 
         $count = $model
             ->where('hash', $hash )

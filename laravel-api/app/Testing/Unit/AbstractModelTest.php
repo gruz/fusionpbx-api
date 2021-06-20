@@ -2,7 +2,7 @@
 
 namespace App\Testing\Unit;
 
-use Api\User\Models\User;
+use App\Models\User;
 use Arr;
 use Cache;
 use App\Testing\TestCase;

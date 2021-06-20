@@ -2,7 +2,7 @@
 
 namespace Api\User\Repositories;
 
-use Api\User\Models\Contact;
+use App\Models\Contact;
 use App\Database\Eloquent\AbstractModel;
 use App\Database\Eloquent\AbstractRepository;
 

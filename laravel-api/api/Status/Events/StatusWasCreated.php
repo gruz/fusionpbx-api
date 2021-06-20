@@ -3,7 +3,7 @@
 namespace Api\Status\Events;
 
 use App\Events\Event;
-use Api\Status\Models\Status;
+use App\Models\Status;
 
 class StatusWasCreated extends Event
 {

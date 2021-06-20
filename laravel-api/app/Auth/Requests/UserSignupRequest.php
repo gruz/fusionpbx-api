@@ -2,8 +2,8 @@
 
 namespace App\Auth\Requests;
 
-use Api\User\Models\User;
-use Api\Domain\Models\Domain;
+use App\Models\User;
+use App\Models\Domain;
 use Illuminate\Validation\Rule;
 use App\Rules\UsernameRule;
 use Illuminate\Foundation\Http\FormRequest;

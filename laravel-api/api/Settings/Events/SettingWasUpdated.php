@@ -3,7 +3,7 @@
 namespace Api\Settings\Events;
 
 use App\Events\Event;
-use Api\SettingsModelsxtension;
+use App\Models\Setting;
 
 class SettingWasUpdated extends Event
 {

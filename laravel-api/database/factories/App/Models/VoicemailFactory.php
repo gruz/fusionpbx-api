@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories\Api\Voicemail\Models;
+namespace Database\Factories\App\Models;
 
-use Api\Voicemail\Models\Voicemail;
+use App\Models\Voicemail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 

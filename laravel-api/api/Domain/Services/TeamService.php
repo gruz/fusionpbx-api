@@ -139,7 +139,7 @@ class TeamService extends AbstractService
      * require_once app('fpath') . "/core/upgrade/upgrade_domains.php";
      * But it checks permissions which we don't need when creating a team. So I copy only needed part from the file above
      *
-     * @param   Api\Domain\Models\Domain  $domain
+     * @param   App\Models\Domain  $domain
      *
      * @return   void
      */

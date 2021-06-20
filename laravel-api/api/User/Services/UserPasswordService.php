@@ -91,7 +91,7 @@ class UserPasswordService
      * should get user by domain and contact.
      *
      * @param $data Contains user email and domain name to which user belongs
-     * @return null|\Api\User\Models\User
+     * @return null|\App\Models\User
      * @throws InvalidCredentialsException|UserDisabledException
      */
     public function getUserCredentials($data)
@@ -128,7 +128,7 @@ class UserPasswordService
      * Method to get user by email (user_email attribute).
      *
      * @param $email User email
-     * @return null|\Api\User\Models\User
+     * @return null|\App\Models\User
      */
     public function getUserByEmail($email)
     {

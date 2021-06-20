@@ -2,12 +2,12 @@
 
 namespace Api\User\Testing\Feature;
 
-use Api\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Arr;
-use Api\Domain\Models\Domain;
+use App\Models\Domain;
 use App\Testing\TestCase;
 use App\Testing\UserTrait;
-use Api\Settings\Models\DefaultSetting;
+use App\Models\DefaultSetting;
 use Api\Extension\Services\ExtensionService;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\ResetPassword;

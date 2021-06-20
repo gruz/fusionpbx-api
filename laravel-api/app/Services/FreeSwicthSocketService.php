@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Arr;
-use Api\Settings\Models\Setting;
+use App\Models\Setting;
 
 class FreeSwicthSocketService
 {

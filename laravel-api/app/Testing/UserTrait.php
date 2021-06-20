@@ -2,12 +2,12 @@
 
 namespace App\Testing;
 
-use Api\User\Models\User;
-use Api\User\Models\Group;
+use App\Models\User;
+use App\Models\Group;
 use Illuminate\Support\Arr;
-use Api\User\Models\Contact;
-use Api\Extension\Models\Extension;
-use Api\Voicemail\Models\Voicemail;
+use App\Models\Contact;
+use App\Models\Extension;
+use App\Models\Voicemail;
 
 trait UserTrait
 {
