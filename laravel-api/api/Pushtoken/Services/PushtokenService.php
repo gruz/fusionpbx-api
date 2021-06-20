@@ -8,7 +8,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 
-use Api\Pushtoken\Events\PushtokenWasCreated;
+use App\Events\PushtokenWasCreated;
 
 use Api\Pushtoken\Repositories\PushtokenRepository;
 

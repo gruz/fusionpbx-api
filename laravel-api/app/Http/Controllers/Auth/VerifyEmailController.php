@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Auth\Events\Verified;
 use App\Http\Controllers\Controller;
-use Api\User\Events\UserWasActivated;
+use App\Events\UserWasActivated;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 

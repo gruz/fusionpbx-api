@@ -6,9 +6,9 @@ use Exception;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Events\Dispatcher;
 use App\Exceptions\GroupNotFoundException;
-use Api\User\Events\GroupWasCreated;
-use Api\User\Events\GroupWasDeleted;
-use Api\User\Events\GroupWasUpdated;
+use App\Events\GroupWasCreated;
+use App\Events\GroupWasDeleted;
+use App\Events\GroupWasUpdated;
 use Api\User\Repositories\GroupRepository;
 
 class GroupService

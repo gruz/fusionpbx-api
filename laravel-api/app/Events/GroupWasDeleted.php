@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\User\Events;
+namespace App\Events;
 
 use App\Events\Event;
 use App\Models\Group;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Api\User\Events;
+namespace App\Events;
 
 use App\Events\Event;
 use App\Models\User;
 
-class UserWasUpdated extends Event
+class UserWasDeleted extends Event
 {
     public $user;
 

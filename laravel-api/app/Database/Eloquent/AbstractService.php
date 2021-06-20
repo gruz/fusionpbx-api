@@ -48,7 +48,7 @@ abstract class AbstractService
     protected function getEventClassName($action)
     {
         // \Api\Settings\Services\SettingService
-        // \Api\Settings\Events\SettingWasCreated
+        // \App\Events\SettingWasCreated
         $className = $this->getBaseClassName('Events', 'Was' . $action);
 
         return $className;

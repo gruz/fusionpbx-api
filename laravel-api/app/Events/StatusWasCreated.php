@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Status\Events;
+namespace App\Events;
 
 use App\Events\Event;
 use App\Models\Status;

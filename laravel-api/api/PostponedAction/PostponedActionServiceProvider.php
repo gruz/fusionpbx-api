@@ -2,7 +2,7 @@
 
 namespace Api\PostponedAction;
 
-use Api\PostponedAction\Events\PostponedActionWasCreated;
+use App\Events\PostponedActionWasCreated;
 use Api\PostponedAction\Listeners\SendPostponedActionActivationLinkListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

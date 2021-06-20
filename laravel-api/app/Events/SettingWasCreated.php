@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Settings\Events;
+namespace App\Events;
 
 use App\Events\Event;
 use App\Database\Eloquent\AbstractModel;

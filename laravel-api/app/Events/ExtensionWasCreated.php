@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Extension\Events;
+namespace App\Events;
 
 use App\Events\Event;
 use App\Models\Extension;

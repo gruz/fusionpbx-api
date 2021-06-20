@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Api\Domain\Services\TeamService;
 use App\Models\PostponedAction;
-use Api\PostponedAction\Events\PostponedActionWasCreated;
+use App\Events\PostponedActionWasCreated;
 
 /**
  * Store request to a table to execute later on another action like mail confirmation

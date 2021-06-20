@@ -3,7 +3,7 @@
 namespace Api\Extension;
 
 
-use Api\Extension\Events\ExtensionWasCreated;
+use App\Events\ExtensionWasCreated;
 use App\Listeners\ClearFusionPBXCache;
 use App\Providers\EventServiceProvider;
 

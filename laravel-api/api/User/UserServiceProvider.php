@@ -2,13 +2,13 @@
 
 namespace Api\User;
 
-use Api\User\Events\UserWasCreated;
-use Api\User\Events\UserWasDeleted;
-use Api\User\Events\UserWasUpdated;
-use Api\User\Events\GroupWasCreated;
-use Api\User\Events\GroupWasDeleted;
-use Api\User\Events\GroupWasUpdated;
-use Api\User\Events\UserWasActivated;
+use App\Events\UserWasCreated;
+use App\Events\UserWasDeleted;
+use App\Events\UserWasUpdated;
+use App\Events\GroupWasCreated;
+use App\Events\GroupWasDeleted;
+use App\Events\GroupWasUpdated;
+use App\Events\UserWasActivated;
 use Api\User\Listeners\UserWasCreatedListener;
 use Api\User\Listeners\UserWasActivatedListener;
 use Api\User\Listeners\UserWasActivatedCGRTListener;

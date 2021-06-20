@@ -7,7 +7,7 @@ use App\Models\Group;
 use Illuminate\Support\Arr;
 use App\Models\Extension;
 use Illuminate\Support\Facades\Auth;
-use Api\User\Events\UserWasActivated;
+use App\Events\UserWasActivated;
 use Api\User\Services\ContactService;
 use Api\Domain\Services\DomainService;
 use Api\User\Repositories\UserRepository;

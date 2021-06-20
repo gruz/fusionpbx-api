@@ -1,11 +1,12 @@
 <?php
 
-namespace Api\Extension\Events;
+namespace App\Events;
 
 use App\Events\Event;
-use Api\ExtensionModelsxtension;
+use App\Models\Extension;
 
-class ExtensionWasDeleted extends Event
+
+class ExtensionWasUpdated extends Event
 {
     public $extension;
 
