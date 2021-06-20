@@ -6,7 +6,7 @@ use Api\User\Models\User;
 use Api\Voicemail\Models\Voicemail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 

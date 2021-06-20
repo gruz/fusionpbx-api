@@ -4,7 +4,7 @@ namespace Api\Extension\Services;
 
 use Api\Extension\Repositories\ExtensionRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Infrastructure\Database\Eloquent\AbstractService;
+use App\Database\Eloquent\AbstractService;
 
 class ExtensionService extends AbstractService
 {

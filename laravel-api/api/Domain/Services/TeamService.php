@@ -15,7 +15,7 @@ use Api\Domain\Services\DomainSettingService;
 use Api\User\Exceptions\InvalidGroupException;
 use Api\Domain\Exceptions\DomainExistsException;
 use Api\Dialplan\Repositories\DialplanRepository;
-use Infrastructure\Database\Eloquent\AbstractService;
+use App\Database\Eloquent\AbstractService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class TeamService extends AbstractService

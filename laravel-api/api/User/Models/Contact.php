@@ -3,7 +3,7 @@ namespace Api\User\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 use Api\User\Models\ContactEmail as ContactEmail;
 /**
  * @OA\Schema()

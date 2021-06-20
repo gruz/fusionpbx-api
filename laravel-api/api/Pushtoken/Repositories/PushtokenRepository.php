@@ -2,7 +2,7 @@
 
 namespace Api\Pushtoken\Repositories;
 
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 
 class PushtokenRepository extends AbstractRepository

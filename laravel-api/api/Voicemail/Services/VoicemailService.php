@@ -2,7 +2,7 @@
 
 namespace Api\Voicemail\Services;
 
-use Infrastructure\Database\Eloquent\AbstractService;
+use App\Database\Eloquent\AbstractService;
 
 class VoicemailService extends AbstractService
 {

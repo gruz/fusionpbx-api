@@ -39,7 +39,7 @@ trait UserTrait
     {
         $extensions = Arr::get($userData, 'extensions', []);
         /**
-         * @var \Infrastructure\Database\Eloquent\AbstractModel
+         * @var \App\Database\Eloquent\AbstractModel
          */
         $model = new $modelClass();
         $table = $model->getTable();

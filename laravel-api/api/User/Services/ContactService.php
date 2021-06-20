@@ -2,7 +2,7 @@
 
 namespace Api\User\Services;
 
-use Infrastructure\Database\Eloquent\AbstractService;
+use App\Database\Eloquent\AbstractService;
 
 class ContactService extends AbstractService
 {

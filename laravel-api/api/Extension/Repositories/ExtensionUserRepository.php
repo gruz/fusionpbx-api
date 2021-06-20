@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Repositories;
 
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 class ExtensionUserRepository extends AbstractRepository
 {

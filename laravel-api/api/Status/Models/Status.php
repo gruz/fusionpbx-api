@@ -2,7 +2,7 @@
 
 namespace Api\Status\Models;
 
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 class Status extends AbstractModel
 {

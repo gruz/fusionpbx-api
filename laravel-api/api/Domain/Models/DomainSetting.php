@@ -2,7 +2,7 @@
 
 namespace Api\Domain\Models;
 
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 /**
  * @OA\Schema(

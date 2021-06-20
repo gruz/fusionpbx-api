@@ -2,7 +2,7 @@
 
 namespace Api\Voicemail\Models;
 
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 
 /**

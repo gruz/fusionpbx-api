@@ -2,7 +2,7 @@
 
 namespace Api\Domain\Repositories;
 
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 class DomainRepository extends AbstractRepository
 {

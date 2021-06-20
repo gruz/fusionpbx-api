@@ -4,7 +4,7 @@ namespace Api\User\Models;
 
 use Api\User\Models\User;
 use Api\User\Models\GroupPermission;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 class Group extends AbstractModel
 {

@@ -2,7 +2,7 @@
 
 namespace Api\Domain\Services;
 
-use Infrastructure\Database\Eloquent\AbstractService;
+use App\Database\Eloquent\AbstractService;
 
 class DomainService extends AbstractService
 {

@@ -3,7 +3,7 @@
 namespace Api\Settings\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 class DefaultSetting extends AbstractModel
 {

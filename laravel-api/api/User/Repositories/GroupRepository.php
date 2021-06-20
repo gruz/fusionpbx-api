@@ -3,7 +3,7 @@
 namespace Api\User\Repositories;
 
 use Illuminate\Database\Query\Builder;
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 class GroupRepository extends AbstractRepository
 {

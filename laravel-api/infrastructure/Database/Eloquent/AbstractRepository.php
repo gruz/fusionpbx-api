@@ -1,12 +1,12 @@
 <?php
 
-namespace Infrastructure\Database\Eloquent;
+namespace App\Database\Eloquent;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Optimus\Genie\Repository as BaseRepository;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 abstract class AbstractRepository extends BaseRepository
 {

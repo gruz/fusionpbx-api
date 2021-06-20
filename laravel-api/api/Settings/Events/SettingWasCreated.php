@@ -3,7 +3,7 @@
 namespace Api\Settings\Events;
 
 use App\Events\Event;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 class SettingWasCreated extends Event
 {

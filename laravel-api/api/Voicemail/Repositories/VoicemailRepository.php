@@ -2,7 +2,7 @@
 
 namespace Api\Voicemail\Repositories;
 
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 class VoicemailRepository extends AbstractRepository
 {

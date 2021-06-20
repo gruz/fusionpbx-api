@@ -2,7 +2,7 @@
 
 namespace Api\User\Models;
 
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 class UserGroup extends AbstractModel
 {

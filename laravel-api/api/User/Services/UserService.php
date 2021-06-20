@@ -19,7 +19,7 @@ use Api\Domain\Repositories\DomainRepository;
 use App\Traits\OneToManyRelationCRUD;
 use Api\User\Repositories\ContactEmailRepository;
 use Api\Extension\Repositories\ExtensionRepository;
-use Infrastructure\Database\Eloquent\AbstractService;
+use App\Database\Eloquent\AbstractService;
 
 class UserService extends AbstractService
 {

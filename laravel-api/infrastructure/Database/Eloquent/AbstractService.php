@@ -1,13 +1,13 @@
 <?php
 
-namespace Infrastructure\Database\Eloquent;
+namespace App\Database\Eloquent;
 
 use Exception;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
 use Api\User\Exceptions\UserNotFoundException;
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 abstract class AbstractService
 {

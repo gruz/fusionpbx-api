@@ -2,7 +2,7 @@
 
 namespace Api\Settings\Repositories;
 
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 class SettingRepository extends AbstractRepository
 {

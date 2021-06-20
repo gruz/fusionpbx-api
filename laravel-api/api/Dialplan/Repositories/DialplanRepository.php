@@ -3,7 +3,7 @@
 namespace Api\Dialplan\Repositories;
 
 use Api\Dialplan\Exceptions\CouldNotInjectDialplanException;
-use Infrastructure\Database\Eloquent\AbstractRepository;
+use App\Database\Eloquent\AbstractRepository;
 
 class DialplanRepository extends AbstractRepository
 {

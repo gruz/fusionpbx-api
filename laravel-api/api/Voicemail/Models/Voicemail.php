@@ -2,7 +2,7 @@
 namespace Api\Voicemail\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Infrastructure\Database\Eloquent\AbstractModel;
+use App\Database\Eloquent\AbstractModel;
 
 /**
  * @OA\Schema()
