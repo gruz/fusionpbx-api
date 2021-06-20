@@ -208,10 +208,6 @@ class UserService extends AbstractService
         // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
         // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
 
-        // if (!Str::isUuid($hash)) {
-        //     throw new ActivationHashWrongException();
-        // }
-
         $this->database->beginTransaction();
 
         try {
