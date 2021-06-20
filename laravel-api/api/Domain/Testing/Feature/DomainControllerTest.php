@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 use App\Models\PostponedAction;
 use Illuminate\Notifications\AnonymousNotifiable;
-use Api\Domain\Notifications\DomainSignupNotification;
-use Api\Domain\Notifications\DomainActivateActivatorNotification;
-use Api\Domain\Notifications\DomainActivateMainAdminNotification;
-use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
+use App\Notifications\DomainSignupNotification;
+use App\Notifications\DomainActivateActivatorNotification;
+use App\Notifications\DomainActivateMainAdminNotification;
+use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 use App\Testing\UserTrait;
 class DomainControllerTest extends TestCase
 {

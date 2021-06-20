@@ -33,8 +33,8 @@ abstract class AbstractService
 
     protected function getRepository()
     {
-        // \Api\Settings\Services\SettingService
-        // \Api\Settings\Repositories\SettingRepository
+        // \App\Services\SettingService
+        // \App\Repositories\SettingRepository
         $className = $this->getBaseClassName('Repositories', 'Repository');
 
         if (class_exists($className)) {
@@ -47,8 +47,6 @@ abstract class AbstractService
 
     protected function getEventClassName($action)
     {
-        // \Api\Settings\Services\SettingService
-        // \App\Events\SettingWasCreated
         $className = $this->getBaseClassName('Events', 'Was' . $action);
 
         return $className;
@@ -56,7 +54,7 @@ abstract class AbstractService
 
     protected function throwNotFoundException()
     {
-        // \Api\Settings\Services\SettingService
+        // \App\Services\SettingService
         // \App\Exceptions\DomainNotFoundException
         $className = $this->getBaseClassName('Exceptions', 'NotFoundException');
 

@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use Illuminate\Support\Facades\Notification;
-use App\Notification\CGRTFailedNotification;
+use App\Notifications\CGRTFailedNotification;
 
 
 class CGRTFailedListener

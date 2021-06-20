@@ -3,11 +3,11 @@
 namespace App\Api\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Api\User\Services\UserSettingService;
-use Api\Domain\Services\DomainSettingService;
-use Api\Settings\Services\DefaultSettingService;
-use Api\Domain\Services\DomainService;
-use Api\User\Services\UserService;
+use App\Services\UserSettingService;
+use App\Services\DomainSettingService;
+use App\Services\DefaultSettingService;
+use App\Services\DomainService;
+use App\Services\UserService;
 use Arr;
 use Illuminate\Support\Facades\App;
 use Str;

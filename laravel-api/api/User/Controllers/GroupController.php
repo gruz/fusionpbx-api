@@ -4,8 +4,8 @@ namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controller;
-use Api\User\Requests\CreateGroupRequest;
-use Api\User\Services\GroupService;
+use App\Requests\CreateGroupRequest;
+use App\Services\GroupService;
 
 class GroupController extends Controller
 {

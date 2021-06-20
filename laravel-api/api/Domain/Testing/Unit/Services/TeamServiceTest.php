@@ -1,8 +1,8 @@
 <?php
 
-namespace Api\Domain\Testing\Unit\Services;
+namespace App\Services;
 
-use Api\Domain\Services\TeamService;
+use App\Services\TeamService;
 use App\Services\TestRequestFactoryService;
 use App\Testing\TestCase;
 

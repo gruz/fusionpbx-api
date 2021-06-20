@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Domain\Testing\Requests;
+namespace App\Requests;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

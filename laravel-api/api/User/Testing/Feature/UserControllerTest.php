@@ -8,11 +8,11 @@ use App\Models\Domain;
 use App\Testing\TestCase;
 use App\Testing\UserTrait;
 use App\Models\DefaultSetting;
-use Api\Extension\Services\ExtensionService;
+use App\Services\ExtensionService;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\ResetPassword;
-use Api\User\Notifications\UserWasActivatedSelfNotification;
-use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
+use App\Notifications\UserWasActivatedSelfNotification;
+use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 
 class UserControllerTest extends TestCase
 {

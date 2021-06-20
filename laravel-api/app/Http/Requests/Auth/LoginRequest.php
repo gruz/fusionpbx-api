@@ -3,10 +3,10 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Support\Str;
-use Api\User\Services\UserService;
+use App\Services\UserService;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
-use Api\Domain\Services\DomainService;
+use App\Services\DomainService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;

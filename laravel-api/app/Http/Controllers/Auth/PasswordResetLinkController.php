@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Api\User\Services\UserService;
+use App\Services\UserService;
 use App\Http\Controllers\Controller;
-use Api\Domain\Services\DomainService;
+use App\Services\DomainService;
 use Illuminate\Support\Facades\Password;
 use App\Http\Requests\Auth\UserForgotPasswordRequestWeb;
 

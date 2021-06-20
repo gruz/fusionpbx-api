@@ -4,8 +4,8 @@ namespace App\Auth;
 
 use Illuminate\Foundation\Application;
 use App\Auth\Exceptions\InvalidCredentialsException;
-use Api\User\Repositories\UserRepository;
-use Api\Domain\Repositories\DomainRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\DomainRepository;
 use App\Exceptions\UserDisabledException;
 use Illuminate\Events\Dispatcher;
 

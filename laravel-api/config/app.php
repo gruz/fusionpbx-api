@@ -208,7 +208,6 @@ return [
          * API Service Providers
          */
         Api\Domain\TeamServiceProvider::class,
-        Api\User\UserServiceProvider::class,
         Api\Domain\DomainServiceProvider::class,
         Api\PostponedAction\PostponedActionServiceProvider::class,
         Api\Extension\ExtensionServiceProvider::class,
@@ -252,7 +251,7 @@ return [
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
         // 'Notification' => Illuminate\Support\Facades\Notification::class,
-        'Notification' => \App\Notification\Notification::class,
+        'Notification' => \App\Notifications\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,

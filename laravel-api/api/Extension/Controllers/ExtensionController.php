@@ -3,9 +3,9 @@
 namespace Api\Extension\Controllers;
 
 use App\Http\Controller;
-use Api\Extension\Requests\CreateExtensionRequest;
-use Api\Extension\Requests\UpdateExtensionRequest;
-use Api\Extension\Services\ExtensionService;
+use App\Requests\CreateExtensionRequest;
+use App\Requests\UpdateExtensionRequest;
+use App\Services\ExtensionService;
 
 /**
  * @OA\Schema()

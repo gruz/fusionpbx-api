@@ -4,7 +4,7 @@ namespace Api\User\Password;
 
 use Str;
 use InvalidArgumentException;
-use Api\User\Repositories\DatabaseTokenRepository;
+use App\Repositories\DatabaseTokenRepository;
 use Api\User\Password\PasswordBroker as PasswordBroker;
 use Illuminate\Auth\Passwords\PasswordBrokerManager as OriginalPasswordBrokerManager;
 

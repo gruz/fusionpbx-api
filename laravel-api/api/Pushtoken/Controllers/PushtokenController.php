@@ -3,8 +3,8 @@
 namespace Api\Pushtoken\Controllers;
 
 use App\Http\Controller;
-use Api\Pushtoken\Requests\CreatePushtokenRequest;
-use Api\Pushtoken\Services\PushtokenService;
+use App\Requests\CreatePushtokenRequest;
+use App\Services\PushtokenService;
 
 class PushtokenController extends Controller
 {

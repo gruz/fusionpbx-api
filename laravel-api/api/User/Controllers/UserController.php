@@ -3,14 +3,14 @@
 namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
-use Api\User\Services\UserService;
+use App\Services\UserService;
 use App\Http\Controller;
-use Api\User\Requests\CreateUserRequest;
-use Api\User\Requests\UserGroupsRequest;
-use Api\User\Requests\UserSignupRequestApi;
-use Api\User\Requests\UserActivateRequest;
-use Api\User\Services\UserPasswordService;
-use Api\User\Requests\UserForgotPasswordRequestApi;
+use App\Requests\CreateUserRequest;
+use App\Requests\UserGroupsRequest;
+use App\Requests\UserSignupRequestApi;
+use App\Requests\UserActivateRequest;
+use App\Services\UserPasswordService;
+use App\Requests\UserForgotPasswordRequestApi;
 
 /**
  * @OA\Schema()
@@ -251,34 +251,6 @@ class UserController extends Controller
     {
         return $this->response($this->userService->delete($userId));
     }
-
-    public function addGroups($userId, UserGroupsRequest $request)
-    {
-        $groups = $request->get('groups', []);
-
-        return $this->response($this->userService->addGroups($userId, $groups));
-    }
-
-    public function setGroups($userId, UserGroupsRequest $request)
-    {
-        $groups = $request->get('groups', []);
-
-        return $this->response($this->userService->setGroups($userId, $groups));
-    }
-
-    public function removeGroups($userId, UserGroupsRequest $request)
-    {
-        $groups = $request->get('groups', []);
-
-        return $this->response($this->userService->removeGroups($userId, $groups));
-    }
-
-    // ~ public function create(CreateUserRequest $request)
-    // ~ {
-    // ~ $data = $request->get('user', []);
-
-    // ~ return $this->response($this->userService->create($data), 201);
-    // ~ }
 
     /**
      *

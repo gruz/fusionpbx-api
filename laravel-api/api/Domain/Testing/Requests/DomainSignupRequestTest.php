@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Domain\Testing\Requests;
+namespace App\Requests;
 
 use Faker\Factory;
 use Illuminate\Support\Arr;

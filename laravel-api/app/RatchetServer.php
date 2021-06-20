@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 
-use Api\Status\Services\StatusService;
-use Api\User\Services\UserService;
+use App\Services\StatusService;
+use App\Services\UserService;
 
 
 class RatchetServer extends RatchetServerBase

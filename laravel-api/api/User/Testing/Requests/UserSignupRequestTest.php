@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\User\Testing\Requests;
+namespace App\Requests;
 
 use App\Models\Domain;
 use App\Models\Extension;

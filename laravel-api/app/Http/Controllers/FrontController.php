@@ -12,10 +12,10 @@ use App\Models\Domain;
 use App\Models\Setting;
 use App\Models\Extension;
 use App\Models\Voicemail;
-use Api\Domain\Services\DomainService;
+use App\Services\DomainService;
 use Illuminate\Support\Facades\Notification;
 use App\Services\FreeSwicthHookService;
-use Api\Extension\Repositories\ExtensionRepository;
+use App\Repositories\ExtensionRepository;
 use App\Models\UserSetting;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Routing\Controller as BaseController;
@@ -75,7 +75,7 @@ class FrontController extends BaseController
 
         // Route::get('/test-mail', function (){
             $user = User::where('username', 'A05lyson.dietrich.howe.com')->first();
-            $n = new \Api\User\Notifications\UserWasActivatedSelfNotification($user);
+            $n = new \App\Notifications\UserWasActivatedSelfNotification($user);
             return $n->toMail($user);
             dd($user, $n->toMail($user));
             Notification::route('mail', 'some@s')->notify(new UserWasActivatedSelfNotification());
@@ -142,7 +142,7 @@ class FrontController extends BaseController
         $user = \App\Models\User::
             // where('user_uuid', '<>', '')
             skip(1)->first();
-        $notification = new \Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification($user);
+        $notification = new \App\Notifications\UserWasCreatedSendVeirfyLinkNotification($user);
         \Illuminate\Support\Facades\Notification::send($user, $notification);
         return 'Sent';
 

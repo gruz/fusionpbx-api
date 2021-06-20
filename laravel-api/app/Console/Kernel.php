@@ -5,16 +5,16 @@ namespace App\Console;
 use ReflectionClass;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Api\User\Console\AddUserCommand;
+use App\Console\Commands\SendPushCommand;
 use Symfony\Component\Finder\Finder;
+use App\Console\Commands\MakeExceptionCommand;
+use App\Console\Commands\AddUserCommand;
+use App\Console\Commands\BackUpDatabaseCommand;
+use App\Console\Commands\RestoreDatabaseCommand;
+use App\Console\Commands\MakeTestDatabaseCommand;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\SendPush;
-use Illuminate\Console\Application as Artisan;
-use App\Console\Commands\MakeException;
-use App\Console\Commands\BackUpDatabase;
-use App\Console\Commands\RestoreDatabase;
-use App\Console\Commands\MakeTestDatabase;
 use App\SwaggerProcessors\LoadConstantsHelper;
+use Illuminate\Console\Application as Artisan;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -26,11 +26,11 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         AddUserCommand::class,
-        MakeException::class,
-        SendPush::class,
-        BackUpDatabase::class,
-        RestoreDatabase::class,
-        MakeTestDatabase::class,
+        MakeExceptionCommand::class,
+        SendPushCommand::class,
+        BackUpDatabaseCommand::class,
+        RestoreDatabaseCommand::class,
+        MakeTestDatabaseCommand::class,
     ];
 
     /**

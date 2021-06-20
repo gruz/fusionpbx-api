@@ -3,9 +3,9 @@
 namespace Api\Domain\Controllers;
 
 use App\Http\Controller;
-use Api\Domain\Requests\DomainSignupRequest;
-use Api\PostponedAction\Services\PostponedActionService;
-use Api\Domain\Requests\DomainActivateRequest;
+use App\Requests\DomainSignupRequest;
+use App\Services\PostponedActionService;
+use App\Requests\DomainActivateRequest;
 
 /**
  * @OA\Schema()

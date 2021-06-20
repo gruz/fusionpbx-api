@@ -4,8 +4,8 @@ namespace Api\Status\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controller;
-use Api\Status\Requests\SetStatusRequest;
-use Api\Status\Services\StatusService;
+use App\Requests\SetStatusRequest;
+use App\Services\StatusService;
 
 class StatusController extends Controller
 {
