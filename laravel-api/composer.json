@@ -16,6 +16,7 @@
         "laravel-lang/lang": "~7.0",
         "laravel/framework": "^8.33",
         "laravel/passport": "^10.1",
+        "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.6",
         "mews/captcha": "^3.2",
         "optimus/api-consumer": "^0.4.0",
