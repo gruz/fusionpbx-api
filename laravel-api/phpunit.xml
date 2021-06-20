@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="infrastructure/Testing/bootstrap.php"
+         bootstrap="app/Testing/bootstrap.php"
          colors="true" 
          backupGlobals="false"
          backupStaticAttributes="false"
@@ -19,14 +19,14 @@
         <testsuite name="Web">
             <directory>./web/</directory>
         </testsuite>
-        <testsuite name="Infrastructure">
-            <directory>./infrastructure/</directory>
+        <testsuite name="App">
+            <directory>./app/</directory>
         </testsuite>
     </testsuites>
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">./api</directory>
-            <directory suffix=".php">./infrastructure</directory>
+            <directory suffix=".php">./app</directory>
         </include>
     </coverage>
     <php>

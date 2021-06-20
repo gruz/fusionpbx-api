@@ -29,14 +29,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Infrastructure\\": "infrastructure/",
+            "App\\": "app/",
             "Api\\": "api/",
             "Web\\": "web/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "infrastructure/Helpers/helpers.php",
+            "app/Helpers/helpers.php",
             "api/User/Helpers/user_helpers.php"
         ]
     },
