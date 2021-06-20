@@ -33,11 +33,6 @@ return [
                 /*
                  * Absolute paths to directory containing the swagger annotations are stored.
                 */
-                // 'annotations' => [
-                //     base_path('infrastructure'),
-                //     base_path('api'),
-                //     base_path('web'),
-                // ],
                 'annotations' => get_composer_json_namespaces(),
 
             ],

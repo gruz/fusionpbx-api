@@ -493,7 +493,7 @@
                     "Default"
                 ],
                 "description": "Get application name and version",
-                "operationId": "Infrastructure_Api_Controllers_DefaultApiController::index",
+                "operationId": "App_Api_Controllers_DefaultApiController::index",
                 "responses": {
                     "200": {
                         "description": "Application name and version",
