@@ -2,7 +2,7 @@
 
 namespace Web\User\Testing\Requests;
 
-use Infrastructure\Testing\UserTrait;
+use App\Testing\UserTrait;
 use Api\User\Testing\Feature\UserControllerTest;
 
 class UserResetPasswordRequestTest extends UserControllerTest

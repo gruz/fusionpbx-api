@@ -3,7 +3,7 @@
 namespace Api\User\Requests;
 
 use App\Traits\ApiRequestTrait;
-use Infrastructure\Auth\Requests\UserSignupRequest;
+use App\Auth\Requests\UserSignupRequest;
 
 class UserSignupRequestApi extends UserSignupRequest
 {

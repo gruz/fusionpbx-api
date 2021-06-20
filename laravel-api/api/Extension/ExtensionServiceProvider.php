@@ -4,8 +4,8 @@ namespace Api\Extension;
 
 
 use Api\Extension\Events\ExtensionWasCreated;
-use Infrastructure\Listeners\ClearFusionPBXCache;
-use Infrastructure\Providers\EventServiceProvider;
+use App\Listeners\ClearFusionPBXCache;
+use App\Providers\EventServiceProvider;
 
 class ExtensionServiceProvider extends EventServiceProvider
 {

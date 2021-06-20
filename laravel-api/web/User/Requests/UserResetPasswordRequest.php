@@ -3,7 +3,7 @@
 namespace Web\User\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Infrastructure\Rules\ResetPasswordTokenValidRule;
+use App\Rules\ResetPasswordTokenValidRule;
 
 class UserResetPasswordRequest extends FormRequest
 {

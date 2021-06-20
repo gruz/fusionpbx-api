@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use App\Database\Eloquent\AbstractModel;
-use Infrastructure\Auth\Notifications\ResetPassword;
+use App\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -333,9 +333,9 @@ class User extends AbstractModel implements
         }
 
         /**
-         * @var \Infrastructure\Services\CGRTService
+         * @var \App\Services\CGRTService
          */
-        $client = app(\Infrastructure\Services\CGRTService::class);
+        $client = app(\App\Services\CGRTService::class);
         $account_code = $this->getAccountCodeAttribute();
 
         $balance = $client->getBalance($account_code);
@@ -349,9 +349,9 @@ class User extends AbstractModel implements
         }
 
         /**
-         * @var \Infrastructure\Services\CGRTService
+         * @var \App\Services\CGRTService
          */
-        $client = app(\Infrastructure\Services\CGRTService::class);
+        $client = app(\App\Services\CGRTService::class);
         $account_code = $this->getAccountCodeAttribute();
 
         $currency_code = optional($client->getClient($account_code))->currency_code;

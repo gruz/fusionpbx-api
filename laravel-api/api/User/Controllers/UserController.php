@@ -4,7 +4,7 @@ namespace Api\User\Controllers;
 
 use Illuminate\Http\Request;
 use Api\User\Services\UserService;
-use Infrastructure\Http\Controller;
+use App\Http\Controller;
 use Api\User\Requests\CreateUserRequest;
 use Api\User\Requests\UserGroupsRequest;
 use Api\User\Requests\UserSignupRequestApi;

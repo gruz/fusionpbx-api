@@ -2,7 +2,7 @@
 
 namespace Api\User\Services;
 
-use Infrastructure\Auth\Exceptions\InvalidCredentialsException;
+use App\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
 use Api\Domain\Repositories\DomainRepository;
 use Illuminate\Support\Facades\Password;

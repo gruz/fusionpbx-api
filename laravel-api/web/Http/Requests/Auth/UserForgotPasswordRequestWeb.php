@@ -3,7 +3,7 @@
 namespace Web\Http\Requests\Auth;
 
 use Api\Domain\Services\DomainService;
-use Infrastructure\Auth\Requests\UserForgotPasswordRequest;
+use App\Auth\Requests\UserForgotPasswordRequest;
 
 class UserForgotPasswordRequestWeb extends UserForgotPasswordRequest
 {

@@ -3,7 +3,7 @@
 namespace Web\Http\Controllers\Auth;
 
 use Web\Http\Controllers\Controller;
-use Infrastructure\Providers\RouteServiceProvider;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;

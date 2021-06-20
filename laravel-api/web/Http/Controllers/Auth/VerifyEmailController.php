@@ -5,7 +5,7 @@ namespace Web\Http\Controllers\Auth;
 use Illuminate\Auth\Events\Verified;
 use Web\Http\Controllers\Controller;
 use Api\User\Events\UserWasActivated;
-use Infrastructure\Providers\RouteServiceProvider;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 class VerifyEmailController extends Controller

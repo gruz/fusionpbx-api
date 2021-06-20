@@ -197,12 +197,12 @@ return [
         /*
          * Application Service Providers...
          */
-        Infrastructure\Providers\AppServiceProvider::class,
-        Infrastructure\Providers\AuthServiceProvider::class,
-        // Infrastructure\Providers\BroadcastServiceProvider::class,
-        Infrastructure\Providers\EventServiceProvider::class,
-        Infrastructure\Providers\RouteServiceProvider::class,
-        Infrastructure\Providers\HelperServiceProvider::class,
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+        App\Providers\HelperServiceProvider::class,
 
         /**
          * API Service Providers
@@ -252,7 +252,7 @@ return [
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
         // 'Notification' => Illuminate\Support\Facades\Notification::class,
-        'Notification' => \Infrastructure\Notification\Notification::class,
+        'Notification' => \App\Notification\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,

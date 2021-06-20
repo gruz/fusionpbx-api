@@ -2,7 +2,7 @@
 
 namespace Web\User\Testing\Requests;
 
-use Infrastructure\Testing\TestCase;
+use App\Testing\TestCase;
 
 class UserUpdatePasswordRequestTest extends TestCase
 {

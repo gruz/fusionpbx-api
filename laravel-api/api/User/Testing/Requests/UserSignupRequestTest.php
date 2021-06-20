@@ -4,8 +4,8 @@ namespace Api\User\Testing\Requests;
 
 use Api\Domain\Models\Domain;
 use Api\Extension\Models\Extension;
-use Infrastructure\Testing\TestCase;
-use Infrastructure\Testing\UserTrait;
+use App\Testing\TestCase;
+use App\Testing\UserTrait;
 
 class UserSignupRequestTest extends TestCase
 {

@@ -3,8 +3,8 @@
 namespace Api\Domain\Testing\Unit\Services;
 
 use Api\Domain\Services\TeamService;
-use Infrastructure\Services\TestRequestFactoryService;
-use Infrastructure\Testing\TestCase;
+use App\Services\TestRequestFactoryService;
+use App\Testing\TestCase;
 
 class TeamServiceTest extends TestCase
 {

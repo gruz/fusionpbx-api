@@ -4,9 +4,9 @@ namespace Api\User\Testing\Requests;
 
 use Api\User\Models\User;
 use Api\Domain\Models\Domain;
-use Infrastructure\Testing\TestCase;
-use Infrastructure\Testing\UserTrait;
-use Infrastructure\Testing\DomainTrait;
+use App\Testing\TestCase;
+use App\Testing\UserTrait;
+use App\Testing\DomainTrait;
 
 class UserForgotPasswordRequestTest extends TestCase
 {

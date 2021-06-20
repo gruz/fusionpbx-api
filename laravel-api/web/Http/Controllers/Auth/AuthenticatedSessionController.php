@@ -8,7 +8,7 @@ use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
 use Web\Http\Controllers\Controller;
 use Web\Http\Requests\Auth\LoginRequest;
-use Infrastructure\Providers\RouteServiceProvider;
+use App\Providers\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
 {

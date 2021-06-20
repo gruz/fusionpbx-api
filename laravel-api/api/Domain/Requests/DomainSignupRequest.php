@@ -3,13 +3,13 @@
 namespace Api\Domain\Requests;
 
 use Illuminate\Validation\Rule;
-use Infrastructure\Rules\HostnameRule;
-use Infrastructure\Rules\UsernameRule;
+use App\Rules\HostnameRule;
+use App\Rules\UsernameRule;
 use Api\Settings\Models\DefaultSetting;
 use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Infrastructure\Services\ValidationRulesService;
-use Infrastructure\Rules\ArrayAtLeastOneAcceptedRule;
+use App\Services\ValidationRulesService;
+use App\Rules\ArrayAtLeastOneAcceptedRule;
 
 class DomainSignupRequest extends FormRequest
 {

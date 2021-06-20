@@ -2,7 +2,7 @@
 
 namespace Api\Pushtoken\Controllers;
 
-use Infrastructure\Http\Controller;
+use App\Http\Controller;
 use Api\Pushtoken\Requests\CreatePushtokenRequest;
 use Api\Pushtoken\Services\PushtokenService;
 

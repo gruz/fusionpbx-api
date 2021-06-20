@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Web\Http\Controllers\LocalizationController;
-use Infrastructure\Http\Controllers\FrontController;
+use App\Http\Controllers\FrontController;
 use Web\Http\Controllers\Auth\NewPasswordController;
 use Web\Http\Controllers\Auth\VerifyEmailController;
 use Web\Http\Controllers\Auth\RegisteredUserController;
@@ -77,7 +77,7 @@ Route::middleware(['web'])->group(function () {
 
     Route::get('/logout', function () {
         if (Auth::user()) {
-            return redirect(\Infrastructure\Providers\RouteServiceProvider::HOME);
+            return redirect(\App\Providers\RouteServiceProvider::HOME);
         } else {
             return redirect('/');
         }

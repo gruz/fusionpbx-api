@@ -7,7 +7,7 @@ use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
 use Web\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
-use Infrastructure\Providers\RouteServiceProvider;
+use App\Providers\RouteServiceProvider;
 use Web\Http\Requests\Auth\UserSignupRequestWeb;
 
 class RegisteredUserController extends Controller

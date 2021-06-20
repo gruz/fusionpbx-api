@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Controllers;
 
-use Infrastructure\Http\Controller;
+use App\Http\Controller;
 use Api\Extension\Requests\CreateExtensionRequest;
 use Api\Extension\Requests\UpdateExtensionRequest;
 use Api\Extension\Services\ExtensionService;

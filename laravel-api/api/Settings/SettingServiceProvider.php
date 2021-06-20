@@ -2,7 +2,7 @@
 
 namespace Api\Settings;
 
-use Infrastructure\Providers\EventServiceProvider;
+use App\Providers\EventServiceProvider;
 
 class SettingServiceProvider extends EventServiceProvider
 {

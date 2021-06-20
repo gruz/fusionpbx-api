@@ -8,7 +8,7 @@ use Api\User\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Api\Domain\Models\Domain;
-use Infrastructure\Testing\TestCase;
+use App\Testing\TestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 use Api\PostponedAction\Models\PostponedAction;
@@ -17,7 +17,7 @@ use Api\Domain\Notifications\DomainSignupNotification;
 use Api\Domain\Notifications\DomainActivateActivatorNotification;
 use Api\Domain\Notifications\DomainActivateMainAdminNotification;
 use Api\User\Notifications\UserWasCreatedSendVeirfyLinkNotification;
-use Infrastructure\Testing\UserTrait;
+use App\Testing\UserTrait;
 class DomainControllerTest extends TestCase
 {
     use UserTrait;

@@ -2,7 +2,7 @@
 
 use Optimus\Heimdal\Formatters;
 use Symfony\Component\HttpKernel\Exception as SymfonyException;
-use Infrastructure\Exceptions\Formatters\UnprocessableEntityHttpExceptionFormatter;
+use App\Exceptions\Formatters\UnprocessableEntityHttpExceptionFormatter;
 
 return [
     'add_cors_headers' => false,

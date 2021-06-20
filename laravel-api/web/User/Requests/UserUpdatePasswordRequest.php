@@ -3,7 +3,7 @@
 namespace Web\User\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Infrastructure\Api\Rules\FusionPBXPasswordRequirements;
+use App\Api\Rules\FusionPBXPasswordRequirements;
 
 class UserUpdatePasswordRequest extends FormRequest
 {

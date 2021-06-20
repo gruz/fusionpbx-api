@@ -4,7 +4,7 @@ namespace Web\Http\Requests\Auth;
 
 use Api\Domain\Services\DomainService;
 use Api\Extension\Services\ExtensionService;
-use Infrastructure\Auth\Requests\UserSignupRequest;
+use App\Auth\Requests\UserSignupRequest;
 
 class UserSignupRequestWeb extends UserSignupRequest
 {

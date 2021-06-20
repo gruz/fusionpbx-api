@@ -4,8 +4,8 @@ namespace Api\Domain\Requests;
 
 use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Infrastructure\Rules\DomainSignupHashExpiredRule;
-use Infrastructure\Rules\DomainSignupHashHasEmailExistsRule;
+use App\Rules\DomainSignupHashExpiredRule;
+use App\Rules\DomainSignupHashHasEmailExistsRule;
 
 class DomainActivateRequest extends FormRequest
 {

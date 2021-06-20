@@ -11,7 +11,7 @@ use Api\PostponedAction\Events\PostponedActionWasCreated;
 /**
  * Store request to a table to execute later on another action like mail confirmation
  *
- * @package Infrastructure\Services
+ * @package App\Services
  */
 class PostponedActionService
 {

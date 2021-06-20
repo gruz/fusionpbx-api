@@ -5,9 +5,9 @@ namespace Api\Domain\Testing\Requests;
 use Faker\Factory;
 use Illuminate\Support\Arr;
 use Api\Domain\Models\Domain;
-use Infrastructure\Testing\TestCase;
-use Infrastructure\Testing\TestRequestTrait;
-use Infrastructure\Services\TestRequestFactoryService;
+use App\Testing\TestCase;
+use App\Testing\TestRequestTrait;
+use App\Services\TestRequestFactoryService;
 
 class DomainSignupRequestTest extends TestCase
 {

@@ -4,8 +4,8 @@ namespace Api\Domain\Testing\Requests;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Infrastructure\Testing\TestCase;
-use Infrastructure\Testing\TestRequestTrait;
+use App\Testing\TestCase;
+use App\Testing\TestRequestTrait;
 use Api\PostponedAction\Models\PostponedAction;
 use Carbon\Carbon;
 
