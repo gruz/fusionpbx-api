@@ -2,7 +2,7 @@
 
 namespace Api\Pushtoken\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\Pushtoken\Models\Pushtoken;
 
 class PushtokenWasCreated extends Event

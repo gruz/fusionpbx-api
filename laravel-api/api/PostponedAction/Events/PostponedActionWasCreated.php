@@ -2,7 +2,7 @@
 
 namespace Api\PostponedAction\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\PostponedAction\Models\PostponedAction;
 use Illuminate\Support\Collection;
 

@@ -2,7 +2,7 @@
 
 namespace Api\Settings\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\SettingsModelsxtension;
 
 class SettingWasUpdated extends Event

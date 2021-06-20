@@ -3,7 +3,7 @@
 namespace Infrastructure\Providers;
 
 use Illuminate\Auth\Events\Registered;
-use Infrastructure\Events\CGRTFailedEvent;
+use App\Events\CGRTFailedEvent;
 use Infrastructure\Listeners\CGRTFailedListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;

@@ -2,7 +2,7 @@
 
 namespace Api\Domain\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\Domain\Models\Domain;
 
 class DomainWasCreated extends Event

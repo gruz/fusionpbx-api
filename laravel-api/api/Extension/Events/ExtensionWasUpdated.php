@@ -2,7 +2,7 @@
 
 namespace Api\Extension\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\Extension\Models\Extension;
 
 

@@ -2,7 +2,7 @@
 
 namespace Api\Status\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\Status\Models\Status;
 
 class StatusWasCreated extends Event

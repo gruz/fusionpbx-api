@@ -4,7 +4,7 @@ namespace Infrastructure\Services;
 
 use GuzzleHttp\Client;
 use Api\User\Models\User;
-use Infrastructure\Events\CGRTFailedEvent;
+use App\Events\CGRTFailedEvent;
 
 /**
  * ^api/ ^ login/ [name='login']

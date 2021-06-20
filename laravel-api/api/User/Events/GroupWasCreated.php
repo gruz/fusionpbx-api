@@ -2,7 +2,7 @@
 
 namespace Api\User\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 use Api\User\Models\Group;
 
 class GroupWasCreated extends Event

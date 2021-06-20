@@ -1,8 +1,8 @@
 <?php
 
-namespace Infrastructure\Events;
+namespace App\Events;
 
-use Infrastructure\Events\Event;
+use App\Events\Event;
 
 class CGRTFailedEvent extends Event
 {
