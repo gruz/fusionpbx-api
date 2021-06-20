@@ -140,7 +140,7 @@ class UserController extends Controller
             required=true,
             @ OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
-                examples={
+                example={
                     "Create a user": {},
                     "Create a user basic example": {
                         "summary" : "`TODO example`",
@@ -181,7 +181,7 @@ class UserController extends Controller
             required=true,
             @ OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
-                examples={
+                example={
                     "Create a user": {},
                     "Create a user basic example": {
                         "summary" : "`TODO example`",
@@ -295,7 +295,7 @@ class UserController extends Controller
             required=true,
             @OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
-                examples={
+                example={
                     "Create a user": {}
                 }
             ),
@@ -330,7 +330,7 @@ class UserController extends Controller
             required=true,
             @OA\JsonContent(
                 ref="#/components/schemas/UserForgotPasswordSchema",
-                examples={
+                example={
                     "Request email with link basic example": {
                         "summary": "Request email with link basic example",
                         "value": {
@@ -346,7 +346,7 @@ class UserController extends Controller
             description="Password resent link response",
             @OA\JsonContent(
                 ref="#/components/schemas/UserCreateSchema",
-                examples={
+                example={
                     "Password resent link basic example": {
                         "username": "user_Destany.Windler",
                         "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
@@ -362,6 +362,12 @@ class UserController extends Controller
                 @OA\Property(
                     property="errors",
                     type="array",
+                    example={{
+                        "status": "422",
+                        "code": 0,
+                        "title": "Validation error",
+                        "detail": "The user email is required."
+                    }},
                     @OA\Items(
                         @OA\Property(
                           property="status",

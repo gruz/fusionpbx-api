@@ -377,32 +377,7 @@ class SchemaQueryParameter
             return;
         }
 
-        $responses = [];
-
-        foreach ($examples as $description => $value ) {
-            $code = 200;
-            $resp = new Examples([
-                'summary' => $description,
-                'value' => $value
-            ]);
-            // $resp->response = $code;
-            // $resp->description = $description;
-            // $content = new MediaType([]);
-            // $content->mediaType = 'application/json';
-            // $content->examples = [];
-
-            // $content->examples[] = [
-            //     'summary' => $description,
-            //     'value' => $value,
-            // ];
-            // $resp->content = [$content];
-
-            $responses[] = $resp;
-        }
-
-        
-        // dd($examples, $responses);
-        $examples = array_merge($responses, $requestExamples);
+        $examples = array_merge($examples, $requestExamples);
 
 
         $path->$method->requestBody->_unmerged[0]->examples = $examples;
