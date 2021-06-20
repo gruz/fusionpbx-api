@@ -2,7 +2,7 @@
 
 namespace Infrastructure\Exceptions\Socket;
 
-use Infrastructure\Traits\BaseException;
+use App\Traits\BaseException;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 

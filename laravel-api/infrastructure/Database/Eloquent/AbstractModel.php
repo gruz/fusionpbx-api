@@ -5,7 +5,7 @@ namespace Infrastructure\Database\Eloquent;
 use Illuminate\Support\Str;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Index;
-use Infrastructure\Traits\Uuids;
+use App\Traits\Uuids;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Infrastructure\Services\FreeSwicthHookService;

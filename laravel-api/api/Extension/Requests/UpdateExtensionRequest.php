@@ -3,7 +3,7 @@
 namespace Api\Extension\Requests;
 
 use Api\Extension\Models\Extension;
-use Infrastructure\Traits\ApiRequestTrait;
+use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateExtensionRequest extends FormRequest

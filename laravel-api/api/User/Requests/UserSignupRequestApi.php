@@ -2,7 +2,7 @@
 
 namespace Api\User\Requests;
 
-use Infrastructure\Traits\ApiRequestTrait;
+use App\Traits\ApiRequestTrait;
 use Infrastructure\Auth\Requests\UserSignupRequest;
 
 class UserSignupRequestApi extends UserSignupRequest

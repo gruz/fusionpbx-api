@@ -1,5 +1,5 @@
 <?php
-namespace Infrastructure\Traits;
+namespace App\Traits;
 
 use Ratchet\ConnectionInterface;
 

@@ -16,7 +16,7 @@ use Api\Extension\Services\ExtensionService;
 use Api\User\Repositories\ContactRepository;
 use Api\Voicemail\Services\VoicemailService;
 use Api\Domain\Repositories\DomainRepository;
-use Infrastructure\Traits\OneToManyRelationCRUD;
+use App\Traits\OneToManyRelationCRUD;
 use Api\User\Repositories\ContactEmailRepository;
 use Api\Extension\Repositories\ExtensionRepository;
 use Infrastructure\Database\Eloquent\AbstractService;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Traits;
+namespace App\Traits;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

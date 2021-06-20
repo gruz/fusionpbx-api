@@ -2,7 +2,7 @@
 
 namespace Api\User\Requests;
 
-use Infrastructure\Traits\ApiRequestTrait;
+use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserActivateRequest extends FormRequest

@@ -2,7 +2,7 @@
 
 namespace Infrastructure\Auth\Requests;
 
-use Infrastructure\Traits\ApiRequestTrait;
+use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
