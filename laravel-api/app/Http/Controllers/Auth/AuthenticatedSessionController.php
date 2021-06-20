@@ -1,13 +1,13 @@
 <?php
 
-namespace Web\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use Api\Domain\Models\Domain;
 use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
-use Web\Http\Controllers\Controller;
-use Web\Http\Requests\Auth\LoginRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
@@ -26,7 +26,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      *
-     * @param  \Web\Http\Requests\Auth\LoginRequest  $request
+     * @param  \App\Http\Requests\Auth\LoginRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(LoginRequest $request)

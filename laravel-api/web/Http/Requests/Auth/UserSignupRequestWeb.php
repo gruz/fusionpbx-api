@@ -1,6 +1,6 @@
 <?php
 
-namespace Web\Http\Requests\Auth;
+namespace App\Http\Requests\Auth;
 
 use Api\Domain\Services\DomainService;
 use Api\Extension\Services\ExtensionService;

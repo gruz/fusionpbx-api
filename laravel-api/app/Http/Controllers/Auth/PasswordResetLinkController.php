@@ -1,12 +1,12 @@
 <?php
 
-namespace Web\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use Api\User\Services\UserService;
-use Web\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Password;
-use Web\Http\Requests\Auth\UserForgotPasswordRequestWeb;
+use App\Http\Requests\Auth\UserForgotPasswordRequestWeb;
 
 class PasswordResetLinkController extends Controller
 {

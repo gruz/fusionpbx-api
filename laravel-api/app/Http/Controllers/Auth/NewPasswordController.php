@@ -1,10 +1,10 @@
 <?php
 
-namespace Web\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use Api\Domain\Services\DomainService;
 use Illuminate\Http\Request;
-use Web\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;

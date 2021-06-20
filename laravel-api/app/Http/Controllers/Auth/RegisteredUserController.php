@@ -1,14 +1,14 @@
 <?php
 
-namespace Web\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use Api\User\Models\User;
 use Api\Domain\Services\DomainService;
 use Illuminate\Support\Facades\Auth;
-use Web\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Providers\RouteServiceProvider;
-use Web\Http\Requests\Auth\UserSignupRequestWeb;
+use App\Http\Requests\Auth\UserSignupRequestWeb;
 
 class RegisteredUserController extends Controller
 {

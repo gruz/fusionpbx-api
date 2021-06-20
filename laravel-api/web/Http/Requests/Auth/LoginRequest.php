@@ -1,6 +1,6 @@
 <?php
 
-namespace Web\Http\Requests\Auth;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Support\Str;
 use Api\User\Services\UserService;
