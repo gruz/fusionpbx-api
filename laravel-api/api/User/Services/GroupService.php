@@ -5,7 +5,7 @@ namespace Api\User\Services;
 use Exception;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Events\Dispatcher;
-use Api\User\Exceptions\GroupNotFoundException;
+use App\Exceptions\GroupNotFoundException;
 use Api\User\Events\GroupWasCreated;
 use Api\User\Events\GroupWasDeleted;
 use Api\User\Events\GroupWasUpdated;

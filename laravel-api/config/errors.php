@@ -1,131 +1,102 @@
 <?php
 return [
-
     /*
     |—————————————————————————————————————
     | Default Errors
     |—————————————————————————————————————
     */
-      
-    'App\Auth\Exceptions\InvalidCredentialsException' => [
-        'message' => 'Invalid credentials', 
-        'code' => '1000', 
+
+    \App\Auth\Exceptions\InvalidCredentialsException::class => [
+        'message' => 'Invalid credentials',
+        'code' => '1000',
     ],
-    'Api\Extension\Exceptions\ExtensionNotFoundException' => [
-        'message' => 'Extension not found', 
-        'code' => '1001', 
+    \App\Exceptions\UserNotFoundException::class => [
+        'message' => 'User not found',
+        'code' => '1003',
     ],
-    'Api\Extension\Exceptions\InvalidExtensionException' => [
-        'message' => 'The Extension with ID :extensionId is not an Extension', 
-        'code' => '1002', 
+    \App\Exceptions\DomainExistsException::class => [
+        'message' => 'Domain already exists',
+        'code' => '1005',
     ],
-    'Api\User\Exceptions\UserNotFoundException' => [
-        'message' => 'User not found', 
-        'code' => '1003', 
+    \App\Exceptions\GroupNotFoundException::class => [
+        'message' => 'Group not found',
+        'code' => '1006',
     ],
-    'Api\Extension\Exceptions\ExtensionExistsException' => [
-        'message' => 'Extension :extension for domain :domain_name already exists', 
-        'code' => '1004', 
+    \App\Exceptions\InvalidGroupException::class => [
+        'message' => 'The group with ID :groupId is not a group',
+        'code' => '1007',
     ],
-    'Api\Domain\Exceptions\DomainExistsException' => [
-        'message' => 'Domain already exists', 
-        'code' => '1005', 
+    \App\Exceptions\DomainNotFoundException::class => [
+        'message' => 'Domain not found',
+        'code' => '1009',
     ],
-    'Api\User\Exceptions\GroupNotFoundException' => [
-        'message' => 'Group not found', 
-        'code' => '1006', 
+    \App\Exceptions\UserDisabledException::class => [
+        'message' => 'User disabled',
+        'code' => '1013',
     ],
-    'Api\User\Exceptions\InvalidGroupException' => [
-        'message' => 'The group with ID :groupId is not a group', 
-        'code' => '1007', 
+    \App\Exceptions\WrongPushtokenDataException::class => [
+        'message' => 'Wrong Pushtoken input data',
+        'code' => '1016',
     ],
-    'Api\Domain\Exceptions\DomainNotFoundException' => [
-        'message' => 'Domain not found', 
-        'code' => '1009', 
+    \App\Exceptions\InvalidPushtokenTypeException::class => [
+        'message' => 'Invalid push token type. Must be <b>production</b> or <b>sandbox</b>',
+        'code' => '1017',
     ],
-    'Api\User\Exceptions\UserExistsException' => [
-        'message' => 'User already exists', 
-        'code' => '1010', 
+    \App\Exceptions\InvalidPushtokenClassException::class => [
+        'message' => 'Invalid push token class. Must be <b>voip</b> or <b>text</b>',
+        'code' => '1018',
     ],
-    'Api\User\Exceptions\EmailExistsException' => [
-        'message' => 'Email already exists', 
-        'code' => '1011', 
+    \App\Exceptions\WrongDestinationException::class => [
+        'message' => 'Bad destination to call :desitnation',
+        'code' => '1019',
     ],
-    \Api\Extension\Exceptions\InvalidExtensionUserException::class => [
-        'message' => 'The extension with ID :extension_userId is not an extension', 
-        'code' => '1012', 
+    \App\Exceptions\CouldNotInjectDialplanException::class => [
+        'message' => 'Could not symlink laravel-api dialplan to FusionPBX folder structure',
+        'code' => '1020',
     ],
-    'Api\User\Exceptions\UserDisabledException' => [
-        'message' => 'User disabled', 
-        'code' => '1013', 
+    \App\Exceptions\InvalidStatusOSException::class => [
+        'message' => 'Invalid OS type passed: :os',
+        'code' => '1021',
     ],
-    'Api\User\Exceptions\ActivationHashWrongException' => [
-        'message' => 'Wrong activation hash', 
-        'code' => '1015', 
+    \App\Exceptions\InvalidStatusException::class => [
+        'message' => 'Invalid status type passed: `:status` . Available statuses: `:available_statuses`',
+        'code' => '1022',
     ],
-    'Api\Pushtoken\Exceptions\WrongPushtokenDataException' => [
-        'message' => 'Wrong Pushtoken input data', 
-        'code' => '1016', 
+    \App\Exceptions\InvalidServiceListException::class => [
+        'message' => 'Invalid services list',
+        'code' => '1023',
     ],
-    'Api\Pushtoken\Exceptions\InvalidPushtokenTypeException' => [
-        'message' => 'Invalid push token type. Must be <b>production</b> or <b>sandbox</b>', 
-        'code' => '1017', 
+    \App\Exceptions\Socket\InvalidJSONInput::class => [
+        'message' => 'Invalid JSON data',
+        'code' => '1024',
     ],
-    'Api\Pushtoken\Exceptions\InvalidPushtokenClassException' => [
-        'message' => 'Invalid push token class. Must be <b>voip</b> or <b>text</b>', 
-        'code' => '1018', 
+    \App\Exceptions\Socket\NoCommadException::class => [
+        'message' => 'Missing command',
+        'code' => '1025',
     ],
-    'Api\User\Exceptions\WrongDestinationException' => [
-        'message' => 'Bad destination to call :desitnation', 
-        'code' => '1019', 
+    \App\Exceptions\Socket\TooManyConnectionAttempts::class => [
+        'message' => 'Too many connection attempts',
+        'code' => '1026',
     ],
-    'Api\Dialplan\Exceptions\CouldNotInjectDialplanException' => [
-        'message' => 'Could not symlink laravel-api dialplan to FusionPBX folder structure', 
-        'code' => '1020', 
+    \App\Exceptions\Socket\TooManyConnections::class => [
+        'message' => 'Too many connections',
+        'code' => '1027',
     ],
-    'Api\Status\Exceptions\InvalidStatusOSException' => [
-        'message' => 'Invalid OS type passed: :os', 
-        'code' => '1021', 
+    \App\Exceptions\Socket\TooManyMessages::class => [
+        'message' => 'Too many messages',
+        'code' => '1028',
     ],
-    'Api\Status\Exceptions\InvalidStatusException' => [
-        'message' => 'Invalid status type passed: `:status` . Available statuses: `:available_statuses`', 
-        'code' => '1022', 
+    \App\Exceptions\Socket\NeedToLoginFirst::class => [
+        'message' => 'Please, login first',
+        'code' => '1029',
     ],
-    'Api\Status\Exceptions\InvalidServiceListException' => [
-        'message' => 'Invalid services list', 
-        'code' => '1023', 
+    \App\Exceptions\StatusNotFoundException::class => [
+        'message' => 'User status record not found',
+        'code' => '1030',
     ],
-    'App\Exceptions\Socket\InvalidJSONInput' => [
-        'message' => 'Invalid JSON data', 
-        'code' => '1024', 
-    ],
-    'App\Exceptions\Socket\NoCommadException' => [
-        'message' => 'Missing command', 
-        'code' => '1025', 
-    ],
-    'App\Exceptions\Socket\TooManyConnectionAttempts' => [
-        'message' => 'Too many connection attempts', 
-        'code' => '1026', 
-    ],
-    'App\Exceptions\Socket\TooManyConnections' => [
-        'message' => 'Too many connections', 
-        'code' => '1027', 
-    ],
-    'App\Exceptions\Socket\TooManyMessages' => [
-        'message' => 'Too many messages', 
-        'code' => '1028', 
-    ],
-    'App\Exceptions\Socket\NeedToLoginFirst' => [
-        'message' => 'Please, login first', 
-        'code' => '1029', 
-    ],
-    'Api\Status\Exceptions\StatusNotFoundException' => [
-        'message' => 'User status record not found', 
-        'code' => '1030', 
-    ],
-    'Api\Status\Exceptions\WrongStatusDataException' => [
-        'message' => 'Wrong status data', 
-        'code' => '1031', 
+    \App\Exceptions\WrongStatusDataException::class => [
+        'message' => 'Wrong status data',
+        'code' => '1031',
     ],
     \App\Exceptions\MissingDomainUuidException::class => [
         'message' => 'Missing domain UUID',

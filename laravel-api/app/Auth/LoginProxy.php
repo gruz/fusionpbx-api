@@ -6,7 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Auth\Exceptions\InvalidCredentialsException;
 use Api\User\Repositories\UserRepository;
 use Api\Domain\Repositories\DomainRepository;
-use Api\User\Exceptions\UserDisabledException;
+use App\Exceptions\UserDisabledException;
 use Illuminate\Events\Dispatcher;
 
 class LoginProxy

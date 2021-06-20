@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use App\Traits\BaseException;
 
-class InvalidUserException extends HttpException
+class CouldNotInjectDialplanException extends HttpException
 {
   use BaseException;
 }

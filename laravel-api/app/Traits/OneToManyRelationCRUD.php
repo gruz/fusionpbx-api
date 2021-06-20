@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Exceptions\InvalidGroupException;
+use App\Exceptions\UserNotFoundException;
 use Illuminate\Database\Eloquent\Collection;
 
 

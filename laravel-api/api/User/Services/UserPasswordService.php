@@ -8,9 +8,9 @@ use Api\Domain\Repositories\DomainRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
-use Api\User\Exceptions\UserDisabledException;
+use App\Exceptions\UserDisabledException;
 use Api\User\Services\UserService;
-use Api\Domain\Exceptions\DomainNotFoundException;
+use App\Exceptions\DomainNotFoundException;
 
 class UserPasswordService
 {

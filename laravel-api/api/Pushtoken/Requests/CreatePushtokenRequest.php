@@ -6,9 +6,9 @@ use Illuminate\Support\Arr;
 use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Api\Pushtoken\Exceptions\WrongPushtokenDataException;
-use Api\Pushtoken\Exceptions\InvalidPushtokenTypeException;
-use Api\Pushtoken\Exceptions\InvalidPushtokenClassException;
+use App\Exceptions\WrongPushtokenDataException;
+use App\Exceptions\InvalidPushtokenTypeException;
+use App\Exceptions\InvalidPushtokenClassException;
 
 class CreatePushtokenRequest extends FormRequest
 {

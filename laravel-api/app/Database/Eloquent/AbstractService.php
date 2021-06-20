@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
-use Api\User\Exceptions\UserNotFoundException;
+use App\Exceptions\UserNotFoundException;
 use App\Database\Eloquent\AbstractRepository;
 
 abstract class AbstractService
@@ -57,7 +57,7 @@ abstract class AbstractService
     protected function throwNotFoundException()
     {
         // \Api\Settings\Services\SettingService
-        // \Api\Domain\Exceptions\DomainNotFoundException
+        // \App\Exceptions\DomainNotFoundException
         $className = $this->getBaseClassName('Exceptions', 'NotFoundException');
 
         throw new $className;

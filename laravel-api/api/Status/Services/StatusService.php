@@ -10,7 +10,7 @@ use Illuminate\Events\Dispatcher;
 
 use Api\Status\Repositories\StatusRepository;
 
-use Api\Status\Exceptions\StatusNotFoundException;
+use App\Exceptions\StatusNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;

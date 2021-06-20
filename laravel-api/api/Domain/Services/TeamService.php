@@ -9,13 +9,13 @@ use Api\User\Events\UserWasDeleted;
 use Api\User\Events\UserWasUpdated;
 use Api\Domain\Events\TeamWasCreated;
 use Api\Domain\Services\DomainService;
+use App\Exceptions\DomainExistsException;
+use App\Database\Eloquent\AbstractService;
 use Illuminate\Database\Eloquent\Collection;
 use Api\Domain\Repositories\DomainRepository;
 use Api\Domain\Services\DomainSettingService;
-use Api\User\Exceptions\InvalidGroupException;
-use Api\Domain\Exceptions\DomainExistsException;
+use App\Exceptions\InvalidGroupException;
 use Api\Dialplan\Repositories\DialplanRepository;
-use App\Database\Eloquent\AbstractService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class TeamService extends AbstractService
