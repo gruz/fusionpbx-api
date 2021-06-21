@@ -3,13 +3,12 @@
 namespace App\Providers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
-use Optimus\Api\System\RouteServiceProvider as ServiceProvider;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -29,7 +28,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string|null
      */
-    // protected $namespace = 'App\\Http\\Controllers';
+    protected $namespace = 'App\\Http\\Controllers';
 
     /**
      * Bootstrap any application services.
@@ -41,43 +40,21 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
-        parent::boot();
-    }
+        $this->routes(function () {
+            Route::prefix('api')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->booted(function () {
-            $this->setRootControllerNamespace();
-
-            if ($this->routesAreCached()) {
-                $this->loadCachedRoutes();
-            } else {
-                $this->loadRoutes();
-
-                $this->app->booted(function () {
-                    $this->app['router']->getRoutes()->refreshNameLookups();
-                    $this->app['router']->getRoutes()->refreshActionLookups();
-                });
-            }
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/web.php'));
         });
-    }
-
-    /**
-     * Define the routes for the application.
-     *
-     * @param  \Illuminate\Routing\Router  $router
-     * @return void
-     */
-    public function map(Router $router)
-    {
-        parent::map($router);
 
         $this->registerRoutesFromGeneratedJson();
+
+        parent::boot();
+
     }
 
     private function registerRoutesFromGeneratedJson() {

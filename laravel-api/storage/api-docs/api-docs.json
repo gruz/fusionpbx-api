@@ -8,6 +8,48 @@
         "version": "0.0.1"
     },
     "paths": {
+        "/api": {
+            "get": {
+                "tags": [
+                    "Default"
+                ],
+                "description": "Get application name and version",
+                "operationId": "App_Http_Controllers_Api_DefaultController::index",
+                "responses": {
+                    "200": {
+                        "description": "Application name and version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "title": {
+                                            "description": "APP_NAME variable",
+                                            "type": "string"
+                                        },
+                                        "version": {
+                                            "description": "Git tag version",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "examples": {
+                                    "Asdsads": {
+                                        "summary": "App info",
+                                        "value": {
+                                            "title": "FusionPBX API",
+                                            "version": "0.0.8-62-g192d97b"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "x-route-$middlewares": "api"
+            }
+        },
         "/domain/signup": {
             "post": {
                 "tags": [
@@ -15,7 +57,7 @@
                 ],
                 "summary": "Create a domain",
                 "description": "# General notes\n\nWhen creating a domain you must provide at least one admin user (`is_admin` option in `users->user` object ).\n\nAll admins will be emailed to confirm domain creation.\n\n# Domain settings\n\nYou can override default domain settings\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings)\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nCheck examples as well.",
-                "operationId": "Api_Domain_Controllers_DomainController::signup",
+                "operationId": "App_Http_Controllers_Api_DomainController::signup",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
@@ -45,7 +87,7 @@
                 ],
                 "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
                 "description": "Whom to send activation link is determined by configuration [`TODO` Implement this logic ]: \nMain domain admin user\nA email determined by laravel configuration\nThe users mentioned as admin users when creating domain signup (passed with the signup request)\nAll FPBX users which have permission to create domain\nAll above\n\nDepending on configuration,",
-                "operationId": "Api_Domain_Controllers_DomainController::activate",
+                "operationId": "App_Http_Controllers_Api_DomainController::activate",
                 "parameters": [
                     {
                         "name": "hash",
@@ -75,7 +117,7 @@
                 ],
                 "summary": "Get all extensions in domain",
                 "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
-                "operationId": "Api_Extension_Controllers_ExtensionController::getAll",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::getAll",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -116,7 +158,7 @@
                     "Extension"
                 ],
                 "summary": "Get extension by ID",
-                "operationId": "Api_Extension_Controllers_ExtensionController::getById",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::getById",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -161,7 +203,7 @@
                 ],
                 "summary": "Extension create",
                 "description": "Creates an extension and attaches it to a user (optionally)",
-                "operationId": "Api_Extension_Controllers_ExtensionController::create",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::create",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -244,7 +286,7 @@
                     "Extension"
                 ],
                 "summary": "Updates an extension",
-                "operationId": "Api_Extension_Controllers_ExtensionController::update",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::update",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -292,7 +334,7 @@
                     "Extension"
                 ],
                 "summary": "Delets an extension",
-                "operationId": "Api_Extension_Controllers_ExtensionController::delete",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::delete",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -324,7 +366,7 @@
                     "User"
                 ],
                 "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
-                "operationId": "Api_User_Controllers_UserController::activate",
+                "operationId": "App_Http_Controllers_Api_UserController::activate",
                 "parameters": [
                     {
                         "name": "hash",
@@ -356,7 +398,7 @@
                 ],
                 "summary": "User signup",
                 "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
-                "operationId": "Api_User_Controllers_UserController::signup",
+                "operationId": "App_Http_Controllers_Api_UserController::signup",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -396,7 +438,7 @@
                     "User"
                 ],
                 "summary": "User forgot password - request email link to reset password",
-                "operationId": "Api_User_Controllers_UserController::forgotPassword",
+                "operationId": "App_Http_Controllers_Api_UserController::forgotPassword",
                 "requestBody": {
                     "description": "User information to reset his password",
                     "required": true,
@@ -486,289 +528,13 @@
                 },
                 "x-route-$path": "fpbx.user.forgot-password"
             }
-        },
-        "/api": {
-            "get": {
-                "tags": [
-                    "Default"
-                ],
-                "description": "Get application name and version",
-                "operationId": "App_Api_Controllers_DefaultApiController::index",
-                "responses": {
-                    "200": {
-                        "description": "Application name and version",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "title": {
-                                            "description": "APP_NAME variable",
-                                            "type": "string"
-                                        },
-                                        "version": {
-                                            "description": "Git tag version",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                },
-                                "examples": {
-                                    "Asdsads": {
-                                        "summary": "App info",
-                                        "value": {
-                                            "title": "FusionPBX API",
-                                            "version": "0.0.8-62-g192d97b"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [],
-                "x-route-$middlewares": "api"
-            }
         }
     },
     "components": {
         "schemas": {
             "DomainController": {},
-            "DomainSchema": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/Domain"
-                    },
-                    {
-                        "properties": {
-                            "settings": {
-                                "type": "array",
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/DomainSetting"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
-            "DomainCreateSchema": {
-                "allOf": [
-                    {
-                        "properties": {
-                            "is_subdomain": {
-                                "description": "Determines is the current domain should be a top level domain or a subdomain\n                        of the mothership domain",
-                                "type": "boolean",
-                                "default": "false"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "$ref": "#/components/schemas/DomainSchema"
-                    },
-                    {
-                        "properties": {
-                            "users": {
-                                "type": "array",
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "properties": {
-                                                "is_admin": {
-                                                    "description": "At least one user must be an admin when creating a new domain",
-                                                    "type": "boolean",
-                                                    "default": "false"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/UserCreateSchema"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
             "ExtensionController": {},
-            "ExtensionCreateSchema": {
-                "allOf": [
-                    {
-                        "properties": {
-                            "reseller_reference_code": {
-                                "description": "Reseller reference code`TODO properly save on user creation`",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "$ref": "#/components/schemas/Extension"
-                    }
-                ]
-            },
-            "ExtensionWithRelatedUsersSchema": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/Extension"
-                    },
-                    {
-                        "properties": {
-                            "users": {
-                                "type": "array",
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/User"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
             "UserController": {},
-            "user_includes": {
-                "type": "array",
-                "items": {
-                    "type": "string",
-                    "enum": [
-                        "groups",
-                        "status",
-                        "domain",
-                        "permissions",
-                        "emails",
-                        "extensions"
-                    ]
-                }
-            },
-            "UserCreateSchema": {
-                "allOf": [
-                    {
-                        "properties": {
-                            "reseller_reference_code": {
-                                "description": "Reseller reference code`TODO properly save on user creation`",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
-                    }
-                ]
-            },
-            "UserWithRelatedItemsSchema": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    {
-                        "properties": {
-                            "contacts": {
-                                "type": "array",
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/Contact"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "extensions": {
-                                "type": "array",
-                                "items": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/Extension"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/Voicemail"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
-            "UserUpdatePasswordSchema": {
-                "allOf": [
-                    {
-                        "properties": {
-                            "token": {
-                                "description": "Unique token to enable user to reset password",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "password": {
-                                "description": "New user password to set",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "password_confiramtion": {
-                                "description": "Confirmation of new user password to set",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "user_email": {
-                                "description": "User email",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
-            "UserForgotPasswordSchema": {
-                "allOf": [
-                    {
-                        "properties": {
-                            "user_email": {
-                                "description": "User email",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    {
-                        "properties": {
-                            "domain_name": {
-                                "description": "Name of a domain to which user belongs",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
             "Contact": {
                 "properties": {
                     "contact_uuid": {
@@ -1346,6 +1112,240 @@
                         "readOnly": true
                     }
                 }
+            },
+            "DomainSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Domain"
+                    },
+                    {
+                        "properties": {
+                            "settings": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/DomainSetting"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "DomainCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "is_subdomain": {
+                                "description": "Determines is the current domain should be a top level domain or a subdomain\n                        of the mothership domain",
+                                "type": "boolean",
+                                "default": "false"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DomainSchema"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "is_admin": {
+                                                    "description": "At least one user must be an admin when creating a new domain",
+                                                    "type": "boolean",
+                                                    "default": "false"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/UserCreateSchema"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "ExtensionCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    }
+                ]
+            },
+            "ExtensionWithRelatedUsersSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "user_includes": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "groups",
+                        "status",
+                        "domain",
+                        "permissions",
+                        "emails",
+                        "extensions"
+                    ]
+                }
+            },
+            "UserCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                    }
+                ]
+            },
+            "UserWithRelatedItemsSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    {
+                        "properties": {
+                            "contacts": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "extensions": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Extension"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Voicemail"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserUpdatePasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "token": {
+                                "description": "Unique token to enable user to reset password",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "password": {
+                                "description": "New user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "password_confiramtion": {
+                                "description": "Confirmation of new user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserForgotPasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "domain_name": {
+                                "description": "Name of a domain to which user belongs",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
             }
         },
         "parameters": {

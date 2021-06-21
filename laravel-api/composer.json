@@ -30,13 +30,11 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Api\\": "api/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/helpers.php",
-            "api/User/Helpers/user_helpers.php"
+            "app/Helpers/helpers.php"
         ]
     },
     "scripts": {

@@ -31,6 +31,7 @@ class SchemaQueryParameter
     // const MODEL_ADD_INCLUDES = 'model-add-includes';
     const ROUTE_PATH = 'route-$path';
     const ROUTE_MIDDLEWARES = 'route-$middlewares';
+    const API_CONTROLLERS_PREFIX = 'App\\Http\\Controllers\\Api';
 
     public function __invoke(Analysis $analysis)
     {
@@ -264,7 +265,7 @@ class SchemaQueryParameter
 
     private function getPathPrefix(AbstractAnnotation $annotation)
     {
-        $prefix = strpos($annotation->_context->__get('namespace'), 'Api\\') === 0 ? 'api' : '';
+        $prefix = $annotation->_context->__get('namespace') === self::API_CONTROLLERS_PREFIX ? 'api' : '';
         return $prefix;
     }
 
@@ -276,7 +277,7 @@ class SchemaQueryParameter
             return $middlewares;
         }
 
-        $isApi = strpos($annotation->_context->__get('namespace'), 'Api\\') === 0;
+        $isApi = $annotation->_context->__get('namespace') === self::API_CONTROLLERS_PREFIX;
 
         if ($isApi) {
             $auth = false;

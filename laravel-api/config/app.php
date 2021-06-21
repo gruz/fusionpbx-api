@@ -207,12 +207,7 @@ return [
         /**
          * API Service Providers
          */
-        Api\Domain\TeamServiceProvider::class,
-        Api\Domain\DomainServiceProvider::class,
-        Api\PostponedAction\PostponedActionServiceProvider::class,
-        Api\Extension\ExtensionServiceProvider::class,
-        Api\User\PasswordResetServiceProvider::class,
-
+        App\Providers\PasswordResetServiceProvider::class,
     ],
 
     /*
