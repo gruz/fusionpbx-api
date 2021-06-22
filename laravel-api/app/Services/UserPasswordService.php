@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Auth\Exceptions\InvalidCredentialsException;
+use App\Exceptions\InvalidCredentialsException;
 use App\Repositories\UserRepository;
 use App\Repositories\DomainRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Exceptions\UserDisabledException;
-use App\Services\UserService;
+use App\Services\Fpbx\UserService;
 use App\Exceptions\DomainNotFoundException;
 
 class UserPasswordService

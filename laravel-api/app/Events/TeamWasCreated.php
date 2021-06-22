@@ -3,7 +3,7 @@
 namespace App\Events;
 
 use App\Events\Event;
-use App\Database\Eloquent\AbstractModel;
+use App\Models\AbstractModel;
 
 class TeamWasCreated extends Event
 {

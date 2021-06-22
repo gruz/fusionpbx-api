@@ -3,7 +3,7 @@
 namespace App\Requests;
 
 use App\Traits\ApiRequestTrait;
-use App\Auth\Requests\UserForgotPasswordRequest;
+use App\Requests\UserForgotPasswordRequest;
 
 class UserForgotPasswordRequestApi extends UserForgotPasswordRequest
 {

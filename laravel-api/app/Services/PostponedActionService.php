@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\Services\TeamService;
+use App\Services\Fpbx\TeamService;
 use App\Models\PostponedAction;
 use App\Events\PostponedActionWasCreated;
 

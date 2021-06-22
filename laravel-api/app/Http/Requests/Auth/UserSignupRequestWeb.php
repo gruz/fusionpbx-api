@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Services\DomainService;
-use App\Services\ExtensionService;
-use App\Auth\Requests\UserSignupRequest;
+use App\Services\Fpbx\DomainService;
+use App\Services\Fpbx\ExtensionService;
+use App\Requests\UserSignupRequest;
 
 class UserSignupRequestWeb extends UserSignupRequest
 {

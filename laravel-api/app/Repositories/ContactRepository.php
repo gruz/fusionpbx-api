@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Contact;
-use App\Database\Eloquent\AbstractModel;
-use App\Database\Eloquent\AbstractRepository;
+use App\Models\AbstractModel;
+use App\Repositories\AbstractRepository;
 
 class ContactRepository extends AbstractRepository
 {

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controller;
 use App\Requests\CreateExtensionRequest;
 use App\Requests\UpdateExtensionRequest;
-use App\Services\ExtensionService;
+use App\Services\Fpbx\ExtensionService;
 
 /**
  * @OA\Schema()

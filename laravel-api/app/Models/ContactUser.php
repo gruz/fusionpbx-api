@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Domain;
 use Illuminate\Notifications\Notifiable;
-use App\Database\Eloquent\AbstractModel;
+use App\Models\AbstractModel;
 
 class ContactUser extends AbstractModel
 {

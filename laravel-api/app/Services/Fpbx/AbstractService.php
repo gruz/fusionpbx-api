@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Database\Eloquent;
+namespace App\Services\Fpbx;
 
 use Exception;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
 use App\Exceptions\UserNotFoundException;
-use App\Database\Eloquent\AbstractRepository;
+use App\Repositories\AbstractRepository;
 
 abstract class AbstractService
 {
@@ -33,8 +33,6 @@ abstract class AbstractService
 
     protected function getRepository()
     {
-        // \App\Services\SettingService
-        // \App\Repositories\SettingRepository
         $className = $this->getBaseClassName('Repositories', 'Repository');
 
         if (class_exists($className)) {
@@ -54,8 +52,6 @@ abstract class AbstractService
 
     protected function throwNotFoundException()
     {
-        // \App\Services\SettingService
-        // \App\Exceptions\DomainNotFoundException
         $className = $this->getBaseClassName('Exceptions', 'NotFoundException');
 
         throw new $className;

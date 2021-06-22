@@ -80,21 +80,8 @@ Next manually copy database credentials from `/etc/fusionpbx/config.php` to `/va
 ```
 sudo -u www-data php artisan key:generate
 sudo -u www-data php artisan migrate
-sudo -u www-data php artisan passport:install
 ```
-
-The latest command will generate key pairs.
-
-Copy-paste the generated secrets and IDs into your .env file like this
-```
-PERSONAL_CLIENT_ID=1
-PERSONAL_CLIENT_SECRET=mR7k7ITv4f7DJqkwtfEOythkUAsy4GJ622hPkxe6
-PASSWORD_CLIENT_ID=2
-PASSWORD_CLIENT_SECRET=FJWQRS3PQj6atM6fz5f6AtDboo59toGplcuUYrKL
-```
-
 Change `MOTHERSHIP_DOMAIN` domain in .env to your domain.
-
 
 ## Add nginx virtual host
 

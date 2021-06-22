@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
-use App\Database\Eloquent\AbstractModel;
+use App\Models\AbstractModel;
 
 class Setting extends AbstractModel
 {

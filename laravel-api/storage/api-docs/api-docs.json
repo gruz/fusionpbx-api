@@ -8,7 +8,7 @@
         "version": "0.0.1"
     },
     "paths": {
-        "/api": {
+        "/": {
             "get": {
                 "tags": [
                     "Default"
@@ -47,7 +47,7 @@
                     }
                 },
                 "security": [],
-                "x-route-$middlewares": "api"
+                "x-route-$middlewares": "api,auth:sanctum"
             }
         },
         "/domain/signup": {

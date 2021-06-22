@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Services\UserService;
+use App\Services\Fpbx\UserService;
 use App\Http\Controller;
 use App\Requests\CreateUserRequest;
 use App\Requests\UserSignupRequestApi;

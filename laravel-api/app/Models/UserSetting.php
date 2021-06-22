@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Database\Eloquent\AbstractModel;
+use App\Models\AbstractModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**

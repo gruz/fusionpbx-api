@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Fpbx;
 
 use Exception;
 use App\Models\Group;
@@ -8,17 +8,7 @@ use Illuminate\Support\Arr;
 use App\Models\Extension;
 use Illuminate\Support\Facades\Auth;
 use App\Events\UserWasActivated;
-use App\Services\ContactService;
-use App\Services\DomainService;
 use App\Repositories\UserRepository;
-use App\Repositories\GroupRepository;
-use App\Services\ExtensionService;
-use App\Repositories\ContactRepository;
-use App\Services\VoicemailService;
-use App\Repositories\DomainRepository;
-use App\Repositories\ContactEmailRepository;
-use App\Repositories\ExtensionRepository;
-use App\Database\Eloquent\AbstractService;
 
 class UserService extends AbstractService
 {

@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Services;
-
-use App\Database\Eloquent\AbstractService;
+namespace App\Services\Fpbx;
 
 class DomainService extends AbstractService
 {

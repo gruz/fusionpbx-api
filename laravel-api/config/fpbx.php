@@ -4,7 +4,16 @@ return [
     'debug' => [
         'swaggerProcessor' => false,
     ],
+
+    /**
+     * If set, then any API request demands the token to be passed.
+     * This can be useful if you have a web-admin panel which utilizes the API and want to block any world requests to the API
+     * except the ones from the web-admin.
+     * No value means the protection is disabled
+     * @example `curl -k --request GET 'https://192.168.0.160:444/api' --header 'X-apitoken: 98eb1ab2cd1b260165b34d128cb1c957'`
+     */
     'api_token' => env('API_TOKEN', null),
+
     /**
      * If enabled, then users or domains must provide a reseller code to be registered.
      * For now we add available reseller codes to `v_default_settings`
@@ -15,10 +24,21 @@ return [
      * ```
      */
     'resellerCode' => [
+        /**
+         * Whether a reseller code is a must to be registered
+         */
         'required' => true,
+        /**
+         * Whether to look for a reseller code passed by the user in v_default_settings table
+         */
         'checkInDefaultSettings' => true,
+        /**
+         * If CGRT enabled, check if there is a reseller code passed by the user matches any account_code in CGRT.
+         * In this case only users recommended by other users can register.
+         */
         'checkInCGRT' => true,
     ],
+
     'default' => [
         'contact' => [
             'contact_type' => 'customer',

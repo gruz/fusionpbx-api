@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth\Notifications;
+namespace App\Notifications;
 
 use Illuminate\Support\Facades\Lang;
 

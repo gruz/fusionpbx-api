@@ -6,7 +6,7 @@ return [
     |—————————————————————————————————————
     */
 
-    \App\Auth\Exceptions\InvalidCredentialsException::class => [
+    \App\Exceptions\InvalidCredentialsException::class => [
         'message' => 'Invalid credentials',
         'code' => '1000',
     ],

@@ -3,11 +3,11 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use App\Services\UserSettingService;
-use App\Services\DomainSettingService;
-use App\Services\DefaultSettingService;
-use App\Services\DomainService;
-use App\Services\UserService;
+use App\Services\Fpbx\UserSettingService;
+use App\Services\Fpbx\DomainSettingService;
+use App\Services\Fpbx\DefaultSettingService;
+use App\Services\Fpbx\DomainService;
+use App\Services\Fpbx\UserService;
 use Arr;
 use Illuminate\Support\Facades\App;
 use Str;

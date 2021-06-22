@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\DefaultSetting;
-use App\Database\Eloquent\AbstractRepository;
+use App\Repositories\AbstractRepository;
 
 class DefaultSettingRepository extends AbstractRepository
 {

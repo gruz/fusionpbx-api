@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Services\DomainService;
-use App\Auth\Requests\UserForgotPasswordRequest;
+use App\Services\Fpbx\DomainService;
+use App\Requests\UserForgotPasswordRequest;
 
 class UserForgotPasswordRequestWeb extends UserForgotPasswordRequest
 {

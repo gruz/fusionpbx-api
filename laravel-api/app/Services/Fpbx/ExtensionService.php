@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Fpbx;
 
 use App\Repositories\ExtensionRepository;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use App\Database\Eloquent\AbstractService;
 
 class ExtensionService extends AbstractService
 {

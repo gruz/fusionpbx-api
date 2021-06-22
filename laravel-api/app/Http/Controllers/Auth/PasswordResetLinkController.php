@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Services\UserService;
+use App\Services\Fpbx\UserService;
 use App\Http\Controllers\Controller;
-use App\Services\DomainService;
+use App\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Password;
 use App\Http\Requests\Auth\UserForgotPasswordRequestWeb;
 

@@ -12,7 +12,7 @@ use App\Models\Domain;
 use App\Models\Setting;
 use App\Models\Extension;
 use App\Models\Voicemail;
-use App\Services\DomainService;
+use App\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Notification;
 use App\Services\FreeSwicthHookService;
 use App\Repositories\ExtensionRepository;

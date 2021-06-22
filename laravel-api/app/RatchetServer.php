@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 
-use App\Services\StatusService;
-use App\Services\UserService;
+use App\Services\Fpbx\StatusService;
+use App\Services\Fpbx\UserService;
 
 
 class RatchetServer extends RatchetServerBase
@@ -227,7 +227,7 @@ class RatchetServer extends RatchetServerBase
 
             if (empty($responseData->user_uuid))
             {
-              throw new \App\Auth\Exceptions\InvalidCredentialsException();
+              throw new \App\Exceptions\InvalidCredentialsException();
               return;
             }
 
@@ -258,7 +258,7 @@ class RatchetServer extends RatchetServerBase
 
             if (!empty($controllerResult->status) && $controllerResult->status == 'error')
             {
-              throw new \App\Auth\Exceptions\InvalidCredentialsException();
+              throw new \App\Exceptions\InvalidCredentialsException();
               return;
             }
 

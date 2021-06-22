@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Database\Eloquent;
+namespace App\Models;
 
 use Illuminate\Support\Str;
 use Doctrine\DBAL\Exception;

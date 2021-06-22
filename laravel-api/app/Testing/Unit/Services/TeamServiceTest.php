@@ -2,7 +2,7 @@
 
 namespace App\Testing\Unit\Services;
 
-use App\Services\TeamService;
+use App\Services\Fpbx\TeamService;
 use App\Services\TestRequestFactoryService;
 use App\Testing\TestCase;
 

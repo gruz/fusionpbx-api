@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
-use App\Database\Eloquent\AbstractModel;
+use App\Models\AbstractModel;
 
 class DialplanDetails extends AbstractModel
 {

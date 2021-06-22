@@ -3,10 +3,10 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Support\Str;
-use App\Services\UserService;
+use App\Services\Fpbx\UserService;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
-use App\Services\DomainService;
+use App\Services\Fpbx\DomainService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;

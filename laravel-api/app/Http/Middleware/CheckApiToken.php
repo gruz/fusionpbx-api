@@ -16,6 +16,9 @@ class CheckApiToken
      */
     public function handle($request, Closure $next)
     {
+        if (empty(config('fpbx.api_token'))) {
+            return $next($request);
+        }
         $token = $request->header('x-apitoken');
 
         if (!$token) {

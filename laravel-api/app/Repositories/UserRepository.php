@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use App\Database\Eloquent\AbstractRepository;
+use App\Repositories\AbstractRepository;
 
 class UserRepository extends AbstractRepository
 {

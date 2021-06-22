@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controller;
 use App\Requests\CreateGroupRequest;
-use App\Services\GroupService;
+use App\Services\Fpbx\GroupService;
 
 class GroupController extends Controller
 {

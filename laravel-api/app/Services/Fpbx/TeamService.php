@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Fpbx;
 
 use Exception;
 use Illuminate\Support\Arr;
-use App\Services\UserService;
 use App\Events\TeamWasCreated;
-use App\Services\DomainService;
 use App\Exceptions\DomainExistsException;
-use App\Database\Eloquent\AbstractService;
 use App\Repositories\DomainRepository;
-use App\Services\DomainSettingService;
 use App\Repositories\DialplanRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 

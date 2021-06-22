@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth\Requests;
+namespace App\Requests;
 
 use App\Models\User;
 use App\Models\Domain;

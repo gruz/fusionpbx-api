@@ -8,7 +8,7 @@ use App\Models\Domain;
 use App\Testing\TestCase;
 use App\Testing\UserTrait;
 use App\Models\DefaultSetting;
-use App\Services\ExtensionService;
+use App\Services\Fpbx\ExtensionService;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use App\Notifications\UserWasActivatedSelfNotification;

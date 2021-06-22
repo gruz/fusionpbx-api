@@ -48,8 +48,8 @@ class DefaultController extends BaseController
      * @OA\Get(
      *  tags={"Default"},
      *  description="Get application name and version",
-     *  x={"route-$middlewares"="api"},
-     *  path="/api",
+     *  x={"route-$middlewares"="api,auth:sanctum"},
+     *  path="/",
      *  security={},
      *      @OA\Response(
      *      description="Application name and version",

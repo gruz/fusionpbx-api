@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Repositories\DomainRepository;
 use Illuminate\Support\Str;
 use App\Models\Extension;
-use App\Database\Eloquent\AbstractRepository;
+use App\Repositories\AbstractRepository;
 
 class ExtensionRepository extends AbstractRepository
 {
