@@ -2,9 +2,7 @@
 
 namespace App\Events;
 
-use App\Events\Event;
-
-class CGRTFailedEvent extends Event
+class CGRTFailedEvent extends AbstractEvent
 {
     public $request;
 

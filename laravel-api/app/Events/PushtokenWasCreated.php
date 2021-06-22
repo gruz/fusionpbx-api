@@ -2,10 +2,9 @@
 
 namespace App\Events;
 
-use App\Events\Event;
 use App\Models\Pushtoken;
 
-class PushtokenWasCreated extends Event
+class PushtokenWasCreated extends AbstractEvent
 {
     public $item;
 

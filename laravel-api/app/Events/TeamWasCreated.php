@@ -2,10 +2,9 @@
 
 namespace App\Events;
 
-use App\Events\Event;
 use App\Models\AbstractModel;
 
-class TeamWasCreated extends Event
+class TeamWasCreated extends AbstractEvent
 {
     public $model;
     public $users;

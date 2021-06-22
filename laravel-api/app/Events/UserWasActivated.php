@@ -2,10 +2,9 @@
 
 namespace App\Events;
 
-use App\Events\Event;
 use App\Models\User;
 
-class UserWasActivated extends Event
+class UserWasActivated extends AbstractEvent
 {
     public $user;
 

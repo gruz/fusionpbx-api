@@ -2,11 +2,10 @@
 
 namespace App\Events;
 
-use App\Events\Event;
 use App\Models\PostponedAction;
 use Illuminate\Support\Collection;
 
-class PostponedActionWasCreated extends Event
+class PostponedActionWasCreated extends AbstractEvent
 {
     public $users;
     public $model;
