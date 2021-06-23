@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Testing;
-
-use Illuminate\Support\Facades\Artisan;
+namespace Tests\Traits;
 
 trait TestRequestTrait
 {
@@ -25,6 +23,9 @@ trait TestRequestTrait
         $className = explode('\\',$className);
         $className = array_diff($className, ['Testing']);
         $className = implode('\\', $className);
+        echo '<pre> Line: ' . __LINE__ . ' | ' . __FILE__ . PHP_EOL;
+        print_r($className);
+        echo PHP_EOL . '</pre>' . PHP_EOL;
 
         $this->rules = (new $className())->rules();
 

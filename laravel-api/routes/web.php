@@ -19,7 +19,7 @@ $router->get('/docs/redoc', function(){
      return view('documenation.index');
  });
 
-return;
+// return;
 
 Route::get('/', function () {
     return view('welcome');

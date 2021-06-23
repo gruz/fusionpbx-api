@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Testing\Feature;
+namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Support\Arr;
 use App\Models\Domain;
-use App\Testing\TestCase;
-use App\Testing\UserTrait;
+use Tests\TestCase;
+use Tests\Traits;
 use App\Models\DefaultSetting;
 use App\Services\Fpbx\ExtensionService;
 use Illuminate\Support\Facades\Notification;

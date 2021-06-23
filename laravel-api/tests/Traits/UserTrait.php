@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Testing;
+namespace Tests\Traits;
 
 use App\Models\User;
 use App\Models\Group;

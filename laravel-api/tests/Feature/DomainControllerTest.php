@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Testing\Feature;
+namespace Tests\Feature;
 
 use stdClass;
 use Faker\Factory;
@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Models\Domain;
-use App\Testing\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 use App\Models\PostponedAction;
@@ -17,7 +17,7 @@ use App\Notifications\DomainSignupNotification;
 use App\Notifications\DomainActivateActivatorNotification;
 use App\Notifications\DomainActivateMainAdminNotification;
 use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
-use App\Testing\UserTrait;
+use Tests\Traits;
 class DomainControllerTest extends TestCase
 {
     use UserTrait;

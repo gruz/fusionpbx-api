@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Testing\Unit\Services;
+namespace Tests\Unit\Services;
 
 use App\Services\Fpbx\TeamService;
 use App\Services\TestRequestFactoryService;
-use App\Testing\TestCase;
+use Tests\TestCase;
 
 class TeamServiceTest extends TestCase
 {

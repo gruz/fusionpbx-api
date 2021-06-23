@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Testing\Requests;
+namespace Tests\Requests;
 
+use Tests\TestCase;
 use App\Models\User;
+use Tests\Traits;
 use App\Models\Domain;
-use App\Testing\TestCase;
-use App\Testing\UserTrait;
-use App\Testing\DomainTrait;
+use Tests\Traits\DomainTrait;
 
 class UserForgotPasswordRequestTest extends TestCase
 {
     use DomainTrait;
     use UserTrait;
+
     public function testFailsIfDomainNotExists()
     {
         list($response, $email) = $this->simulateDomainSignupAndActivate();

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Testing;
+namespace Tests\Traits;
 
 use App\Models\Domain;
 
 trait DomainTrait
 {
-    private function prepareNonExistingDomain() {
+    private function prepareNonExistingDomain()
+    {
         $nonExistingDomain = $this->faker->domainName;
         while (true) {
             $domain = Domain::where('domain_name', $nonExistingDomain)->first();
@@ -18,6 +19,5 @@ trait DomainTrait
         }
 
         return $nonExistingDomain;
-
     }
 }

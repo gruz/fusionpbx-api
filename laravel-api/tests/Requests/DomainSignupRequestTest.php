@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Testing\Requests;
+namespace Tests\Requests;
 
 use Faker\Factory;
 use Illuminate\Support\Arr;
 use App\Models\Domain;
-use App\Testing\TestCase;
-use App\Testing\TestRequestTrait;
+use Tests\TestCase;
 use App\Services\TestRequestFactoryService;
 
 class DomainSignupRequestTest extends TestCase
@@ -61,9 +60,6 @@ class DomainSignupRequestTest extends TestCase
     //     ]);
     // }
 
-
-
-    // use TestRequestTrait;
 
     public function validationProvider()
     {

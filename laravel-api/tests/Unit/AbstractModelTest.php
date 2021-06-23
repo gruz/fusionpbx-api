@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Testing\Unit;
+namespace Tests\Unit;
 
 use App\Models\User;
 use Arr;
 use Cache;
-use App\Testing\TestCase;
+use Tests\TestCase;
 
 class AbstractModelTest extends TestCase
 {

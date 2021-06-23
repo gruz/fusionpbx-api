@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Testing\Requests;
+namespace Tests\Requests;
 
 use App\Models\Domain;
 use App\Models\Extension;
-use App\Testing\TestCase;
-use App\Testing\UserTrait;
+use Tests\TestCase;
+use Tests\Traits;
 
 class UserSignupRequestTest extends TestCase
 {

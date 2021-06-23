@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
-use App\Testing\TestCase;
+use Tests\TestCase;
 
 class DefaultApiControllerTest extends TestCase
 {

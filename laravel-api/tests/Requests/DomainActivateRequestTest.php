@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Testing\Requests;
+namespace Tests\Requests;
 
+use Carbon\Carbon;
+use Tests\TestCase;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\Testing\TestCase;
-use App\Testing\TestRequestTrait;
 use App\Models\PostponedAction;
-use Carbon\Carbon;
+use Tests\Traits\TestRequestTrait;
 
 class DomainActivateRequestTest extends TestCase
 {

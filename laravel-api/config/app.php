@@ -185,9 +185,6 @@ return [
         /*
          * Package Service Providers...
          */
-
-        // Optimus\Api\System\TranslationServiceProvider::class,
-        Optimus\Api\System\ViewServiceProvider::class,
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
         Optimus\Heimdal\Provider\LaravelServiceProvider::class,
         Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,

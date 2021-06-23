@@ -3,11 +3,12 @@
 namespace App\Services\Fpbx;
 
 use Exception;
+use App\Models\AbstractModel;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
+use App\Repositories\AbstractRepository;
 use Illuminate\Database\DatabaseManager;
 use App\Exceptions\UserNotFoundException;
-use App\Repositories\AbstractRepository;
 
 abstract class AbstractService
 {
@@ -59,17 +60,12 @@ abstract class AbstractService
 
     private function getBaseClassName($replace, $suffix)
     {
-        $className = substr(get_class($this), 0, -1 * strlen('Service'));
-        $className = explode('\\', $className);
-        $className = array_diff($className, ['Services']);
-        $lastName  = array_pop($className);
-        $className[] = $replace;
-        $className[] = $lastName . $suffix;
-        $className = implode('\\', $className);
+        preg_match('/.*\\\\(.*)Service$/', get_class($this), $matches);
+        $entity = $matches[1];
+        $className = 'App\\' . $replace . '\\' . $entity . $suffix;
 
         return $className;
     }
-
 
     protected function getRequestedUser($userId, array $options = [])
     {

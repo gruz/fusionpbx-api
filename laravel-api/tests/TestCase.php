@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Testing;
+namespace Tests;
 
 use Storage;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\Arr;
+use Tests\CreatesApplication;
 use App\Models\DefaultSetting;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Notification;
 use App\Models\PostponedAction;
+use Illuminate\Support\Facades\Artisan;
 use App\Services\TestRequestFactoryService;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
