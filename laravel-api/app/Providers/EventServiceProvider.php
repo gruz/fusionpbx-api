@@ -50,14 +50,4 @@ class EventServiceProvider extends ServiceProvider
             UserWasActivatedCGRTListener::class,
         ],
     ];
-
-    /**
-     * Register any events for your application.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        parent::boot();
-    }
 }

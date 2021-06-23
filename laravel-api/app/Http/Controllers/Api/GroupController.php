@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controller;
-use App\Requests\CreateGroupRequest;
 use App\Services\Fpbx\GroupService;
+use App\Requests\CreateGroupRequest;
 
-class GroupController extends Controller
+class GroupController extends AbstractBrunoController
 {
     private $groupService;
 

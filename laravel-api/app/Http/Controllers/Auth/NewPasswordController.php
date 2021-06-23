@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Services\Fpbx\DomainService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Hash;
+use App\Services\ValidationRulesService;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
-use App\Services\ValidationRulesService;
+use App\Http\Controllers\AbstractController;
 
-class NewPasswordController extends Controller
+class NewPasswordController extends AbstractController
 {
     /**
      * Display the password reset view.

@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controller;
+use App\Services\Fpbx\ExtensionService;
 use App\Requests\CreateExtensionRequest;
 use App\Requests\UpdateExtensionRequest;
-use App\Services\Fpbx\ExtensionService;
 
 /**
  * @OA\Schema()
  */
-class ExtensionController extends Controller
+class ExtensionController extends AbstractBrunoController
 {
     private $extensionService;
 

@@ -4,9 +4,9 @@ namespace App\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use App\Traits\BaseException;
+use App\Traits\BaseExceptionTrait;
 
 class GroupNotFoundException extends NotFoundHttpException
 {
-  use BaseException;
+  use BaseExceptionTrait;
 }

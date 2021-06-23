@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Services\Fpbx\UserService;
-use App\Http\Controller;
 use App\Requests\CreateUserRequest;
-use App\Requests\UserSignupRequestApi;
 use App\Requests\UserActivateRequest;
 use App\Services\UserPasswordService;
+use App\Requests\UserSignupRequestApi;
 use App\Requests\UserForgotPasswordRequestApi;
 
 /**
  * @OA\Schema()
  */
-class UserController extends Controller
+class UserControlle extends AbstractBrunoController
 {
     /**
      * @var UserService

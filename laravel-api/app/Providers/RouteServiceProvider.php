@@ -54,10 +54,10 @@ class RouteServiceProvider extends ServiceProvider
         $this->registerRoutesFromGeneratedJson();
 
         parent::boot();
-
     }
 
-    private function registerRoutesFromGeneratedJson() {
+    private function registerRoutesFromGeneratedJson()
+    {
         $filePath = 'swagger/routes.json';
         if (!Storage::exists($filePath)) {
             Artisan::call('l5-swagger:generate');
@@ -105,22 +105,20 @@ class RouteServiceProvider extends ServiceProvider
             $route = substr($route, 1);
         }
 
+        /**
+         * @var \Route[]
+         */
         static $routes = null;
 
         if (empty($routes)) {
             $routes = \Route::getRoutes()->getRoutes();
         }
 
-        foreach ($routes as
-        /** @var \Route $r */
-        $r) {
+        foreach ($routes as $r) {
             $paths[$r->uri] = $r->methods;
         }
-        // dd($route, $method, $paths);
-        foreach ($routes as
-        /** @var \Route $r */
-        $r) {
 
+        foreach ($routes as $r) {
             if ($r->uri === $route && in_array($method, $r->methods)) {
                 return true;
             }

@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use App\Models\Domain;
+use App\Requests\LoginRequest;
 use App\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
+use App\Http\Controllers\AbstractController;
 
-class AuthenticatedSessionController extends Controller
+class AuthenticatedSessionController extends AbstractController
 {
     /**
      * Display the login view.
@@ -26,7 +25,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
+     * @param  \App\Requests\LoginRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(LoginRequest $request)

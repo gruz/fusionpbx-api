@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controller;
 use App\Requests\DomainSignupRequest;
-use App\Services\PostponedActionService;
 use App\Requests\DomainActivateRequest;
+use App\Services\PostponedActionService;
 
 /**
  * @OA\Schema()
  */
-class DomainController extends Controller
+class DomainController extends AbstractBrunoController
 {
     /**
      * Create a domain

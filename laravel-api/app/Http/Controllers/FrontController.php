@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\User;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use App\Models\Domain;
@@ -16,12 +14,9 @@ use App\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Notification;
 use App\Services\FreeSwicthHookService;
 use App\Repositories\ExtensionRepository;
-use App\Models\UserSetting;
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use Illuminate\Routing\Controller as BaseController;
-use App\Services\CGRTService;
 
-class FrontController extends BaseController
+class FrontController extends AbstractController
 {
     public function refreshCaptcha(Request $request)
     {

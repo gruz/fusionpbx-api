@@ -5,7 +5,6 @@ namespace App\Services;
 use Exception;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Events\Dispatcher;
 
 use App\Events\PushtokenWasCreated;

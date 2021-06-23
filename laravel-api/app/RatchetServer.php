@@ -18,7 +18,7 @@ use App\Services\Fpbx\UserService;
 
 class RatchetServer extends RatchetServerBase
 {
-    use Traits\SocketJSONHelper;
+    use Traits\SocketJSONHelperTrait;
 
     /**
      * Clients.

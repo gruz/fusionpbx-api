@@ -4,9 +4,9 @@ namespace App\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-use App\Traits\BaseException;
+use App\Traits\BaseExceptionTrait;
 
 class CouldNotInjectDialplanException extends HttpException
 {
-  use BaseException;
+  use BaseExceptionTrait;
 }

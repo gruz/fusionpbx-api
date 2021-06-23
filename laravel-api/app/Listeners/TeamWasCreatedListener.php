@@ -58,9 +58,9 @@ class TeamWasCreatedListener
         //     }
 
         //     if ($event->user->user_uuid !== $admin->user_uuid) {
-        //         \Mail::to($emails)->send(new UserNew($event->user));
+        //         \Mail::to($emails)->send(new UserNewMail($event->user));
         //     } else {
-        //         \Mail::to($emails)->send(new DomainNew($event->user));
+        //         \Mail::to($emails)->send(new DomainNewMail($event->user));
         //     }
         // }
     }

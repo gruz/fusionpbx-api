@@ -4,9 +4,9 @@ namespace DummyNamespace;
 
 use Symfony\Component\HttpKernel\Exception\DummyBaseClass;
 
-use App\Traits\BaseException;
+use App\Traits\BaseExceptionTrait;
 
 class DummyClass extends DummyBaseClass
 {
-  use BaseException;
+  use BaseExceptionTrait;
 }

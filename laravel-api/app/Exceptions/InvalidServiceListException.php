@@ -4,9 +4,9 @@ namespace App\Exceptions;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-use App\Traits\BaseException;
+use App\Traits\BaseExceptionTrait;
 
 class InvalidServiceListException extends UnprocessableEntityHttpException
 {
-  use BaseException;
+  use BaseExceptionTrait;
 }

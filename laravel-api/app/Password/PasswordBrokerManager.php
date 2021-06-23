@@ -5,7 +5,7 @@ namespace App\Password;
 use Str;
 use InvalidArgumentException;
 use App\Repositories\DatabaseTokenRepository;
-use App\Password\PasswordBroker as PasswordBroker;
+use App\Password\PasswordBroker;
 use Illuminate\Auth\Passwords\PasswordBrokerManager as OriginalPasswordBrokerManager;
 
 class PasswordBrokerManager extends OriginalPasswordBrokerManager

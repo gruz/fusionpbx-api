@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Support\Str;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Index;
-use App\Traits\Uuids;
+use App\Traits\UuidsTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Services\FreeSwicthHookService;
@@ -15,7 +15,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 
 abstract class AbstractModel extends BaseModel
 {
-    use Uuids;
+    use UuidsTrait;
     use \Awobaz\Compoships\Compoships;
 
     public static $staticAppends;

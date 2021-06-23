@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Requests;
 
 use App\Services\Fpbx\DomainService;
 use App\Services\Fpbx\ExtensionService;

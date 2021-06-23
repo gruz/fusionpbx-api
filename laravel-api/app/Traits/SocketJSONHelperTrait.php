@@ -5,7 +5,7 @@ use Ratchet\ConnectionInterface;
 
 use Carbon\Carbon;
 
-trait SocketJSONHelper
+trait SocketJSONHelperTrait
 {
 
     /**

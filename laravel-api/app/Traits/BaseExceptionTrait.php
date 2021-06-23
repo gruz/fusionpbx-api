@@ -1,7 +1,7 @@
 <?php
 namespace App\Traits;
 
-trait BaseException
+trait BaseExceptionTrait
 {
     public function __construct($message = null, \Exception $previous = null, $code = null)
     {

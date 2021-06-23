@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controller;
 use App\Requests\SetStatusRequest;
 use App\Services\Fpbx\StatusService;
 
-class StatusController extends Controller
+class StatusController extends AbstractBrunoController
 {
     private $controllerService;
 

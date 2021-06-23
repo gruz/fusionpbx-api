@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 /**
  * @TODO Probably remove
  */
-class ResetPasswordLink extends Mailable
+class ResetPasswordLinkMail extends Mailable
 {
     use Queueable, SerializesModels;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Requests;
 
 use Illuminate\Support\Str;
 use App\Services\Fpbx\UserService;

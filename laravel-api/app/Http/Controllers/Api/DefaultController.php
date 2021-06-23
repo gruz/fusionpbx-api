@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controller as BaseController;
 use App\Version;
 use OpenApi\Annotations as OA;
 
@@ -42,7 +41,7 @@ use OpenApi\Annotations as OA;
  * )
  */
 
-class DefaultController extends BaseController
+class DefaultController extends AbstractBrunoController
 {
     /**
      * @OA\Get(

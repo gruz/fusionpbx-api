@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Auth\Events\Verified;
-use App\Http\Controllers\Controller;
 use App\Events\UserWasActivated;
+use Illuminate\Auth\Events\Verified;
 use App\Providers\RouteServiceProvider;
+use App\Http\Controllers\AbstractController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
-class VerifyEmailController extends Controller
+class VerifyEmailController extends AbstractController
 {
     /**
      * Mark the authenticated user's email address as verified.

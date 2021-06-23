@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controller;
-use App\Requests\CreatePushtokenRequest;
 use App\Services\PushtokenService;
+use App\Requests\CreatePushtokenRequest;
 
-class PushtokenController extends Controller
+class PushtokenController extends AbstractBrunoController
 {
     private $controllerService;
 
