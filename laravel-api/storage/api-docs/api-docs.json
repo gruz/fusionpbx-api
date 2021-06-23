@@ -366,7 +366,7 @@
                     "User"
                 ],
                 "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
-                "operationId": "App_Http_Controllers_Api_UserControlle::activate",
+                "operationId": "App_Http_Controllers_Api_UserController::activate",
                 "parameters": [
                     {
                         "name": "hash",
@@ -398,7 +398,7 @@
                 ],
                 "summary": "User signup",
                 "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
-                "operationId": "App_Http_Controllers_Api_UserControlle::signup",
+                "operationId": "App_Http_Controllers_Api_UserController::signup",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -438,7 +438,7 @@
                     "User"
                 ],
                 "summary": "User forgot password - request email link to reset password",
-                "operationId": "App_Http_Controllers_Api_UserControlle::forgotPassword",
+                "operationId": "App_Http_Controllers_Api_UserController::forgotPassword",
                 "requestBody": {
                     "description": "User information to reset his password",
                     "required": true,
@@ -534,7 +534,7 @@
         "schemas": {
             "DomainController": {},
             "ExtensionController": {},
-            "UserControlle": {},
+            "UserController": {},
             "Contact": {
                 "properties": {
                     "contact_uuid": {

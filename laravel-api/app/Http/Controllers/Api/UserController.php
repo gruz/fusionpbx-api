@@ -13,7 +13,7 @@ use App\Requests\UserForgotPasswordRequestApi;
 /**
  * @OA\Schema()
  */
-class UserControlle extends AbstractBrunoController
+class UserController extends AbstractBrunoController
 {
     /**
      * @var UserService

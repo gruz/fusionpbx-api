@@ -7,7 +7,6 @@ use App\Models\Domain;
 use App\Models\Status;
 use App\Models\ContactUser;
 use App\Models\UserSetting;
-// use Laravel\Passport\HasApiTokens;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Extension;
 use App\Models\GroupPermission;
@@ -270,21 +269,6 @@ class User extends AbstractModel implements
     public function isAgent()
     {
         return $this->groups();
-    }
-
-    public function findForPassport(array $data)
-    {
-        $user = $this->where($data)->first();
-        return $user;
-    }
-
-    public function validateForPassportPasswordGrant($password)
-    {
-        if (md5($this->salt . $password) == $this->password) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     // /**

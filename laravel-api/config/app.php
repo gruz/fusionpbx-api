@@ -186,7 +186,6 @@ return [
          * Package Service Providers...
          */
 
-        Laravel\Passport\PassportServiceProvider::class,
         // Optimus\Api\System\TranslationServiceProvider::class,
         Optimus\Api\System\ViewServiceProvider::class,
         Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,

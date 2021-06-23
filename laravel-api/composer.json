@@ -15,7 +15,6 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel-lang/lang": "~7.0",
         "laravel/framework": "^8.33",
-        "laravel/passport": "^10.1",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.6",
         "mews/captcha": "^3.2",

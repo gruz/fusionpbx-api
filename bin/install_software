@@ -116,8 +116,6 @@ sed -i "s/MOTHERSHIP_DOMAIN=.*/MOTHERSHIP_DOMAIN=\""${VB_IP}"\"/" .env
 sudo -u www-data ../bin/update_env_db_credentials.php $LARAVEL_FOLDER
 sudo -u www-data php artisan key:generate
 sudo -u www-data php artisan migrate
-sudo -u www-data php artisan passport:install >> tmp.txt;
-sudo -u www-data ../bin/update_env_secret_keys.php $LARAVEL_FOLDER
 
 echo "[optional] ## Get and upload apple VOIP push certificate";
 echo "This is needed to send push notifications to wakeup Apple devices.";
