@@ -21,15 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 $router = app(Router::class);   
 
-$router->get('/extensions', [\App\Http\Controllers\Api\ExtensionController::class,'getAll']);
-$router->get('/extension/{id}', [\App\Http\Controllers\Api\ExtensionController::class,'getById']);
-$router->post('/extension', [\App\Http\Controllers\Api\ExtensionController::class,'create']);
-$router->put('/extension/{id}', [\App\Http\Controllers\Api\ExtensionController::class,'update']);
-$router->delete('/extension/{id}', [\App\Http\Controllers\Api\ExtensionController::class,'delete']);
-
-$router->post('/pushtoken', [\App\Http\Controllers\Api\PushtokenController::class, 'create']);
-
-$router->post('/status', [ \App\Http\Controllers\Api\StatusController::class,  'setStatus']);
+// $router->post('/pushtoken', [\App\Http\Controllers\Api\PushtokenController::class, 'create']);
+// $router->post('/status', [ \App\Http\Controllers\Api\StatusController::class,  'setStatus']);
 
 // protected
 // Route::middleware(['auth:api'])->group(function () use ($router) {

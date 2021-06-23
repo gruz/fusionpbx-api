@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+$router->get('/test', [ \App\Http\Controllers\FrontController::class, 'test' ]);
+
+$router->get('/docs/redoc', function(){
+     return view('documenation.index');
+ });
+
+return;
+
 Route::get('/', function () {
     return view('welcome');
 });
