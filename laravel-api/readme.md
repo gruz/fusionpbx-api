@@ -1,3 +1,12 @@
+- Install fusionpbx
+- Enable ssh access
+- Run install script
+  - Copy hook file
+  - Enable postgres access
+- Edit .env file with db and hook credentials
+- Run laradock bin/start dev
+
+
 > Development is moving forward a little bin in `dev` branch
 
 > The project is abandoned. I'd like to continue it, but there is no financial motivation. And I don't use it for my pesonal needs as well. I'd be happy to find a paid work to continue the project development. Alas, I cannot do it for free, because ~~I'm greedy~~ I need money to live. 

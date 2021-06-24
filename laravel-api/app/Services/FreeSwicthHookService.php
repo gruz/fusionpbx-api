@@ -2,10 +2,14 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\FPBXFailedNotification;
+
 class FreeSwicthHookService
 {
     public function reload()
     {
+        $output = null;
         try {
             $cmd = config('fpbx.hook_command');
             exec($cmd, $output);
@@ -18,7 +22,12 @@ class FreeSwicthHookService
                 }
             }
         } catch (\Exception $th) {
-            // throw $th;
+            $mainAdminEmail = config('app.contact_email');
+
+            Notification::route('mail', $mainAdminEmail)
+                ->notify(new FPBXFailedNotification($th->getMessage(), $cmd, $output));
+    
+            \Log::error($th->getMessage(), [ 'commands' => $cmd, 'output' => $output]);
         }
         return $output;
     }

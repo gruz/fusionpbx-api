@@ -1,3 +1,6 @@
 [submodule "fusionpbx"]
 	path = fusionpbx
 	url = https://github.com/fusionpbx/fusionpbx.git
+[submodule "laravel-api/laradock-fusionpbx"]
+	path = laravel-api/laradock-fusionpbx
+	url = https://github.com/Laradock/laradock.git
