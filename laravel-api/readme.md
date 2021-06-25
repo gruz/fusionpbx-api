@@ -1,10 +1,10 @@
 - Install fusionpbx
 - Enable ssh access
 - Run install script
-  - Copy hook file
+  - Copy hook file to fusionpbx with hash replacement
   - Enable postgres access
 - Edit .env file with db and hook credentials
-- Run laradock bin/start dev
+- Jsut start php artisan serve OR run laradock with xdebug enabled  bin/start dev
 
 
 > Development is moving forward a little bin in `dev` branch

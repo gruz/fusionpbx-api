@@ -29,8 +29,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/refresh-captcha', [FrontController::class, 'refreshCaptcha']);
-Route::get('lang/{locale}', [LocalizationController::class, 'lang'])->name('lang');
+Route::get('/refresh-captcha', [\App\Http\Controllers\FrontController::class, 'refreshCaptcha']);
+Route::get('lang/{locale}', [\App\Http\Controllers\LocalizationController::class, 'lang'])->name('lang');
 
 
 require __DIR__.'/auth.php';

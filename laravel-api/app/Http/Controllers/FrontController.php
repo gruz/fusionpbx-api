@@ -29,6 +29,9 @@ class FrontController extends AbstractController
         if (!config('app.debug')) {
             return;
         }
+        // $s = new FreeSwicthHookService;
+        // $response = $s->reload();
+        // dd($response);
         // $user = User::where('user_uuid', '39583b9c-91aa-46aa-bcc3-5871ce1ad927')->first();
         // dd($user->getCGRTBalanceAttribute());
         // $account_code = 'aaa';

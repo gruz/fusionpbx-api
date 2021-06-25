@@ -2,7 +2,7 @@
 
 // Please define access hash to use in ulr like
 // your-fpbx-server.com/fpbx_hook.php?hash=MYHASH
-define('HASH', null);
+define('HASH', '464ab3451cf0ccdeda1f0b61300639498b6ebca06e3e8da6d6974b5540a634de');
 
 class fpbx_hook
 {

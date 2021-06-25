@@ -216,7 +216,6 @@
                                     {
                                         "properties": {
                                             "users": {
-                                                "description": "Extension create\n\nCreates an extension and attaches it to a user (optionally)",
                                                 "type": "array",
                                                 "items": {
                                                     "allOf": [
@@ -483,27 +482,22 @@
                                 "schema": {
                                     "properties": {
                                         "errors": {
-                                            "description": "User forgot password - request email link to reset password",
                                             "type": "array",
                                             "items": {
                                                 "properties": {
                                                     "status": {
-                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "string",
                                                         "example": "422"
                                                     },
                                                     "code": {
-                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "number",
                                                         "example": 0
                                                     },
                                                     "title": {
-                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "string",
                                                         "example": "Validation error"
                                                     },
                                                     "detail": {
-                                                        "description": "User forgot password - request email link to reset password",
                                                         "type": "string",
                                                         "example": "The user email is required."
                                                     }
@@ -616,8 +610,8 @@
                         "example": "Created via api at 2017-05-17 14:30:10"
                     },
                     "domain_parent_uuid": {
-                        "description": "Parent domain id",
-                        "nullable": true
+                        "nullable": true,
+                        "description": "Parent domain id"
                     },
                     "domain_uuid": {
                         "type": "string",
