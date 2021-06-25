@@ -1,0 +1,5 @@
+#!/bin/bash
+# Get logs
+# Usage: bin/log
+. bin/helpers/common.sh
+docker-compose  logs -f

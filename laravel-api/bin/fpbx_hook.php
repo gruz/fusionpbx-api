@@ -1,5 +1,9 @@
 <?php
 
+// Please define access hash to use in ulr like
+// your-fpbx-server.com/fpbx_hook.php?hash=MYHASH
+define('HASH', null);
+
 class fpbx_hook
 {
     private $settings;
@@ -104,7 +108,17 @@ class fpbx_hook
     }
 }
 
-$fusionpbx_path = empty($argv[1]) ? '/var/www/fusionpbx' : $argv[1];
+if (php_sapi_name() === 'cli') {
+    $fusionpbx_path = empty($argv[1]) ? '/var/www/fusionpbx' : $argv[1];
+} else {
+    if (!defined('HASH') || empty(HASH)) {
+        die('Please define access hash');
+    }
+    if (empty($_GET['hash']) || $_GET['hash'] !== HASH) {
+        die('Access denied');
+    }
+    $fusionpbx_path = empty($_GET['path']) ? '/var/www/fusionpbx' : $_GET['path'];
+}
 
 $socket = new fpbx_hook($fusionpbx_path);
 $response = $socket->clearCache();
