@@ -1,5 +1,0 @@
-#!/bin/bash
-git pull
-php composer install
-php artisan migrate
-php artisan cache:clear

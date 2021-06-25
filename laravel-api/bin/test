@@ -1,4 +1,0 @@
-#!/bin/bash
-HOST_IP=$(echo $SSH_CLIENT | awk '{ print $1}')
-php -d xdebug.remote_host=$HOST_IP -d xdebug.profiler_enable=on artisan test $@
-
