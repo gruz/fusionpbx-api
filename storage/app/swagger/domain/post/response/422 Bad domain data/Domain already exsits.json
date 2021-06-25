@@ -1,0 +1,10 @@
+{
+    "errors": [
+        {
+            "status": "422",
+            "code": 0,
+            "title": "Validation error",
+            "detail": "The domain name has already been taken."
+        }
+    ]
+}

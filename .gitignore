@@ -1,3 +1,14 @@
-docker/laravel-docker/db_data
-.idea/
 .vscode/settings.json
+/vendor
+/node_modules
+/public/storage
+Homestead.yaml
+Homestead.json
+.env
+.DS_Store
+/storage/*.key
+/resources/certs/*
+.phpunit.result.cache
+/public/hot
+.env.backup
+.phpunit.result.cache

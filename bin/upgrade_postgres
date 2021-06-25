@@ -1,6 +1,0 @@
-#!/bin/bash
-sudo pg_dropcluster 13 main --stop
-sudo pg_upgradecluster 11 main
-sudo pg_dropcluster 11 main
-sudo apt-get purge postgresql-11 postgresql-client-11
-systemctl restart postgresql

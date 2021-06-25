@@ -1,8 +1,9 @@
 #!/bin/bash
-# Go to laravel folder and call this command like: ../bin/swagger
+# Run swagger autobuild on file change
 # You must have `inotify` installed. The command is nice when you edit
 # swagger comments much and want to monitor if not errors happen
-while inotifywait -r --exclude '(./storage|\.phpunit.result.cache|folder1\/ingnorefile1)' \
-        -e modify -e create -e moved_to .;
-    do DB_HOST="192.168.0.160" php artisan l5-swagger:generate;
-done
+# set -o xtrace
+
+. bin/helpers/common.sh
+
+docker-compose exec --user=laradock workspace bin/helpers/inotify-swagger-run

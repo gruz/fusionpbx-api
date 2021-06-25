@@ -1,0 +1,1415 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "FusionPBX API",
+        "contact": {
+            "email": "vongruz@protonmail.com"
+        },
+        "version": "0.0.1"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "Default"
+                ],
+                "description": "Get application name and version",
+                "operationId": "App_Http_Controllers_Api_DefaultController::index",
+                "responses": {
+                    "200": {
+                        "description": "Application name and version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "title": {
+                                            "description": "APP_NAME variable",
+                                            "type": "string"
+                                        },
+                                        "version": {
+                                            "description": "Git tag version",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "examples": {
+                                    "Asdsads": {
+                                        "summary": "App info",
+                                        "value": {
+                                            "title": "FusionPBX API",
+                                            "version": "0.0.8-62-g192d97b"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "x-route-$middlewares": "api,auth:sanctum"
+            }
+        },
+        "/domain/signup": {
+            "post": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Create a domain",
+                "description": "# General notes\n\nWhen creating a domain you must provide at least one admin user (`is_admin` option in `users->user` object ).\n\nAll admins will be emailed to confirm domain creation.\n\n# Domain settings\n\nYou can override default domain settings\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings)\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nCheck examples as well.",
+                "operationId": "App_Http_Controllers_Api_DomainController::signup",
+                "requestBody": {
+                    "description": "Domain information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/DomainCreateSchema"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    }
+                },
+                "x-route-$path": "fpbx.domain.signup"
+            }
+        },
+        "/domain/activate/{hash}/{email}": {
+            "get": {
+                "tags": [
+                    "Domain"
+                ],
+                "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
+                "description": "Whom to send activation link is determined by configuration [`TODO` Implement this logic ]: \nMain domain admin user\nA email determined by laravel configuration\nThe users mentioned as admin users when creating domain signup (passed with the signup request)\nAll FPBX users which have permission to create domain\nAll above\n\nDepending on configuration,",
+                "operationId": "App_Http_Controllers_Api_DomainController::activate",
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "soma@insomnia.com"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/extensions": {
+            "get": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Get all extensions in domain",
+                "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::getAll",
+                "parameters": [
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "users"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ExtensionWithRelatedUsersSchema"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{extension_uuid}": {
+            "get": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Get extension by ID",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::getById",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    },
+                    {
+                        "name": "includes[]",
+                        "in": "query",
+                        "description": "Relations to be attached",
+                        "allowReserved": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "users"
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExtensionWithRelatedUsersSchema"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/extension": {
+            "post": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Extension create",
+                "description": "Creates an extension and attaches it to a user (optionally)",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::create",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Extension"
+                                    },
+                                    {
+                                        "properties": {
+                                            "users": {
+                                                "type": "array",
+                                                "items": {
+                                                    "allOf": [
+                                                        {
+                                                            "properties": {
+                                                                "user_uuid": {
+                                                                    "description": "User id's to attach extension to. If not passed, then extension is attached to the current user",
+                                                                    "type": "string",
+                                                                    "format": "uuid"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            },
+                            "example": {
+                                "Create an exnetsion": [],
+                                "Create an exnetsion basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Extension created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Extension"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not created domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "Missing admin user",
+                                        "No password for email"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/extension/{extension_uuid}": {
+            "put": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Updates an extension",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::update",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExtensionCreateSchema"
+                            },
+                            "example": {
+                                "Create a user": [],
+                                "Create a user basic example": {
+                                    "summary": "`TODO example`",
+                                    "value": {
+                                        "code": 403,
+                                        "message": "登录失败",
+                                        "data": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ...",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Extension"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Extension"
+                ],
+                "summary": "Delets an extension",
+                "operationId": "App_Http_Controllers_Api_ExtensionController::delete",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/extension_uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ...",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "messages": [
+                                        "`TODO` Describe response"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                }
+            }
+        },
+        "/user/activate/{hash}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
+                "operationId": "App_Http_Controllers_Api_UserController::activate",
+                "parameters": [
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "User activation link",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TODO Stub` Success ..."
+                    },
+                    "400": {
+                        "description": "`TODO Stub` Could not ..."
+                    }
+                },
+                "x-route-$path": "fpbx.user.activate"
+            }
+        },
+        "/user/signup": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User signup",
+                "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
+                "operationId": "App_Http_Controllers_Api_UserController::signup",
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateSchema"
+                            },
+                            "example": {
+                                "Create a user": []
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Domain created response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/DomainCreateSchema"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-route-$path": "fpbx.user.signup"
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User forgot password - request email link to reset password",
+                "operationId": "App_Http_Controllers_Api_UserController::forgotPassword",
+                "requestBody": {
+                    "description": "User information to reset his password",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserForgotPasswordSchema"
+                            },
+                            "example": {
+                                "Request email with link basic example": {
+                                    "summary": "Request email with link basic example",
+                                    "value": {
+                                        "user_email": "your_user@email.com",
+                                        "domain_name": "jimmie.biz"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password resent link response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserCreateSchema"
+                                },
+                                "example": {
+                                    "Password resent link basic example": {
+                                        "username": "user_Destany.Windler",
+                                        "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error - empty email",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "422"
+                                                    },
+                                                    "code": {
+                                                        "type": "number",
+                                                        "example": 0
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Validation error"
+                                                    },
+                                                    "detail": {
+                                                        "type": "string",
+                                                        "example": "The user email is required."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "example": [
+                                                {
+                                                    "status": "422",
+                                                    "code": 0,
+                                                    "title": "Validation error",
+                                                    "detail": "The user email is required."
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-route-$path": "fpbx.user.forgot-password"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "DomainController": {},
+            "ExtensionController": {},
+            "UserController": {},
+            "Contact": {
+                "properties": {
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "contact_parent_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "contact_type": {
+                        "type": "string"
+                    },
+                    "contact_organization": {
+                        "type": "string"
+                    },
+                    "contact_name_prefix": {
+                        "type": "string"
+                    },
+                    "contact_name_given": {
+                        "type": "string"
+                    },
+                    "contact_name_middle": {
+                        "type": "string"
+                    },
+                    "contact_name_family": {
+                        "type": "string"
+                    },
+                    "contact_name_suffix": {
+                        "type": "string"
+                    },
+                    "contact_nickname": {
+                        "type": "string"
+                    },
+                    "contact_title": {
+                        "type": "string"
+                    },
+                    "contact_role": {
+                        "type": "string"
+                    },
+                    "contact_category": {
+                        "type": "string"
+                    },
+                    "contact_url": {
+                        "type": "string"
+                    },
+                    "contact_time_zone": {
+                        "type": "string"
+                    },
+                    "contact_note": {
+                        "type": "string"
+                    },
+                    "last_mod_date": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "last_mod_user": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "Domain": {
+                "properties": {
+                    "domain_name": {
+                        "description": "Domain name",
+                        "type": "string",
+                        "format": "hostname"
+                    },
+                    "domain_description": {
+                        "description": "Domain desctiption. Automatically generated upon domain creation if nothing passed",
+                        "type": "string",
+                        "example": "Created via api at 2017-05-17 14:30:10"
+                    },
+                    "domain_parent_uuid": {
+                        "nullable": true,
+                        "description": "Parent domain id"
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_enabled": {
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "type": "object"
+            },
+            "DomainSetting": {
+                "description": "Use your DB client to see available `domain_setting_category` and `domain_setting_subcategory` references.\n\n ```\nSELECT x.* FROM public.v_default_settings x\n    WHERE default_setting_category in ('domain' , 'email')\n    ORDER BY default_setting_category\n```",
+                "properties": {
+                    "domain_setting_category": {
+                        "description": "Domain settings category",
+                        "type": "string",
+                        "enum": [
+                            "domain",
+                            "email"
+                        ],
+                        "example": "domain"
+                    },
+                    "domain_setting_subcategory": {
+                        "description": "Domain settings sub category",
+                        "type": "string",
+                        "oneOf": [
+                            {
+                                "enum": [
+                                    "dial_string",
+                                    "template",
+                                    "menu",
+                                    "language",
+                                    "time_zone",
+                                    "cidr",
+                                    "country",
+                                    "bridge",
+                                    "time_format",
+                                    "paging"
+                                ],
+                                "example": "language"
+                            },
+                            {
+                                "enum": [
+                                    "smtp_auth",
+                                    "method",
+                                    "smtp_port",
+                                    "smtp_from",
+                                    "smtp_from_name",
+                                    "smtp_hostname",
+                                    "smtp_host",
+                                    "smtp_username",
+                                    "smtp_password",
+                                    "smtp_secure",
+                                    "smtp_validate_certificate"
+                                ],
+                                "example": "smtp_from_name"
+                            }
+                        ]
+                    },
+                    "domain_setting_name": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "enum": [
+                            "text",
+                            "name",
+                            "uuid",
+                            "code",
+                            "name",
+                            "array",
+                            "code",
+                            "text",
+                            "text",
+                            "numeric"
+                        ],
+                        "example": "code"
+                    },
+                    "domain_setting_value": {
+                        "description": "Setting field type",
+                        "type": "string",
+                        "example": "uk-ua"
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_setting_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "app_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_setting_order": {
+                        "type": "number"
+                    },
+                    "domain_setting_enabled": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "domain_setting_description": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Extension": {
+                "properties": {
+                    "extension_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "extension": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "accountcode": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_name": {
+                        "type": "string"
+                    },
+                    "effective_caller_id_number": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_name": {
+                        "type": "string"
+                    },
+                    "outbound_caller_id_number": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_name": {
+                        "type": "string"
+                    },
+                    "emergency_caller_id_number": {
+                        "type": "string"
+                    },
+                    "directory_first_name": {
+                        "type": "string"
+                    },
+                    "directory_last_name": {
+                        "type": "string"
+                    },
+                    "directory_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "directory_exten_visible": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "limit_max": {
+                        "type": "string",
+                        "default": 5
+                    },
+                    "limit_destination": {
+                        "type": "string",
+                        "default": "error/user_busy"
+                    },
+                    "missed_call_app": {
+                        "type": "string"
+                    },
+                    "missed_call_data": {
+                        "type": "string"
+                    },
+                    "user_context": {
+                        "type": "string"
+                    },
+                    "toll_allow": {
+                        "type": "string"
+                    },
+                    "call_timeout": {
+                        "type": "number",
+                        "default": 30
+                    },
+                    "call_group": {
+                        "type": "string"
+                    },
+                    "call_screen_enabled": {
+                        "type": "string",
+                        "default": "false"
+                    },
+                    "user_record": {
+                        "type": "string"
+                    },
+                    "hold_music": {
+                        "type": "string",
+                        "default": "local_stream://default"
+                    },
+                    "auth_acl": {
+                        "type": "string"
+                    },
+                    "cidr": {
+                        "type": "string"
+                    },
+                    "sip_force_contact": {
+                        "type": "string"
+                    },
+                    "nibble_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_force_expires": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "mwi_account": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "sip_bypass_media": {
+                        "type": "string"
+                    },
+                    "unique_id": {
+                        "type": "number",
+                        "default": null
+                    },
+                    "dial_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_user": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "dial_domain": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "do_not_disturb": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_all_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_busy_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_no_answer_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_destination": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "forward_user_not_registered_enabled": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "follow_me_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "forward_caller_id_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "default": null
+                    },
+                    "follow_me_enabled": {
+                        "type": "string"
+                    },
+                    "follow_me_destinations": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "string",
+                        "default": "true"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "absolute_codec_string": {
+                        "type": "string",
+                        "default": null
+                    },
+                    "force_ping": {
+                        "type": "string"
+                    },
+                    "max_registrations": {
+                        "type": "string"
+                    }
+                }
+            },
+            "User": {
+                "properties": {
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "user_email": {
+                        "type": "string",
+                        "writeOnly": true
+                    },
+                    "contact_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "api_key": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "user_enabled": {
+                        "type": "string"
+                    },
+                    "add_user": {
+                        "type": "string"
+                    },
+                    "add_date": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserSetting": {
+                "properties": {
+                    "user_setting_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "user_setting_category": {
+                        "type": "string"
+                    },
+                    "user_setting_subcategory": {
+                        "type": "string"
+                    },
+                    "user_setting_name": {
+                        "type": "string"
+                    },
+                    "user_setting_value": {
+                        "type": "string"
+                    },
+                    "user_setting_order": {
+                        "type": "number"
+                    },
+                    "user_setting_enabled": {
+                        "type": "boolean"
+                    },
+                    "user_setting_description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Voicemail": {
+                "properties": {
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_id": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_password": {
+                        "type": "string"
+                    },
+                    "greeting_id": {
+                        "type": "number"
+                    },
+                    "voicemail_alternate_greet_id": {
+                        "type": "number"
+                    },
+                    "voicemail_mail_to": {
+                        "type": "string"
+                    },
+                    "voicemail_sms_to": {
+                        "type": "string"
+                    },
+                    "voicemail_transcription_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_attach_file": {
+                        "type": "string"
+                    },
+                    "voicemail_file": {
+                        "type": "string"
+                    },
+                    "voicemail_local_after_email": {
+                        "type": "string"
+                    },
+                    "voicemail_enabled": {
+                        "type": "string"
+                    },
+                    "voicemail_description": {
+                        "type": "string"
+                    },
+                    "voicemail_name_base64": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_tutorial": {
+                        "type": "string"
+                    }
+                }
+            },
+            "VoicemailOption": {
+                "properties": {
+                    "voicemail_option_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "domain_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "voicemail_option_digits": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_action": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_param": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "voicemail_option_order": {
+                        "type": "number",
+                        "readOnly": true
+                    },
+                    "voicemail_option_description": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "DomainSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Domain"
+                    },
+                    {
+                        "properties": {
+                            "settings": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/DomainSetting"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "DomainCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "is_subdomain": {
+                                "description": "Determines is the current domain should be a top level domain or a subdomain\n                        of the mothership domain",
+                                "type": "boolean",
+                                "default": "false"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/DomainSchema"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "is_admin": {
+                                                    "description": "At least one user must be an admin when creating a new domain",
+                                                    "type": "boolean",
+                                                    "default": "false"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/UserCreateSchema"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "ExtensionCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    }
+                ]
+            },
+            "ExtensionWithRelatedUsersSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Extension"
+                    },
+                    {
+                        "properties": {
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "user_includes": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        "groups",
+                        "status",
+                        "domain",
+                        "permissions",
+                        "emails",
+                        "extensions"
+                    ]
+                }
+            },
+            "UserCreateSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "reseller_reference_code": {
+                                "description": "Reseller reference code`TODO properly save on user creation`",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "$ref": "#/components/schemas/UserWithRelatedItemsSchema"
+                    }
+                ]
+            },
+            "UserWithRelatedItemsSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    {
+                        "properties": {
+                            "contacts": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "extensions": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Extension"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/Voicemail"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserUpdatePasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "token": {
+                                "description": "Unique token to enable user to reset password",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "password": {
+                                "description": "New user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "password_confiramtion": {
+                                "description": "Confirmation of new user password to set",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserForgotPasswordSchema": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "user_email": {
+                                "description": "User email",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "domain_name": {
+                                "description": "Name of a domain to which user belongs",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            }
+        },
+        "parameters": {
+            "domain_uuid": {
+                "name": "domain_uuid",
+                "in": "path",
+                "description": "Domain UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            },
+            "extension_uuid": {
+                "name": "extension_uuid",
+                "in": "path",
+                "description": "Extension UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            },
+            "user_uuid": {
+                "name": "user_uuid",
+                "in": "path",
+                "description": "User UUID",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "541f8e60-5ae0-11eb-bb80-b31e63f668c8"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer_auth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Default"
+        },
+        {
+            "name": "Domain",
+            "description": "Manage domains"
+        },
+        {
+            "name": "User",
+            "description": "Manage users"
+        },
+        {
+            "name": "Extension",
+            "description": "Manage extensions"
+        }
+    ]
+}

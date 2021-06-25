@@ -1,0 +1,8 @@
+<context name="{v_context}">
+  <extension name="push_notification" number="[api-created]" continue="true" app_uuid="d3840a79-e9cf-41db-bedc-638cba2be508">
+    <condition field="${user_exists}" expression="true">
+      <action application="set" data="result=${system php /var/www/laravel-api/artisan task:push '${destination_number}@${domain_name}'}"/>
+      <action application="sleep" data="2000"/>
+    </condition>
+  </extension>
+</context>

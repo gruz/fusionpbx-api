@@ -1,0 +1,44 @@
+#!/bin/bash
+# Builds and runs project docker containes
+# Usage: bin/startdev
+# Usage: bin/startdev es
+set -o xtrace
+
+. bin/helpers/common_start.sh
+
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+if [ $1 == 'dev' ]
+    then
+        echo -e "Starting ${YELLOW}WITH${NC} xdebug"
+        # Prepare xdebug
+        sed -i "s/WORKSPACE_INSTALL_XDEBUG=false/WORKSPACE_INSTALL_XDEBUG=true/g" .env
+        sed -i "s/PHP_FPM_INSTALL_XDEBUG=false/PHP_FPM_INSTALL_XDEBUG=true/g" .env
+        sed -i "s/xdebug.remote_connect_back=0/xdebug.remote_connect_back=1/" php-fpm/xdebug.ini
+        sed -i "s/# Final Touch/# Final Touch\nRUN apt update; apt install -y inotify-tools/" workspace/Dockerfile
+    else
+        echo -e "Starting ${RED}without${NC} xdebug"
+        # XDEBUG=false;
+fi
+
+sed -i "s/PHP_VERSION=.*/PHP_VERSION=7.4/g" .env
+# sed -i "s/PHP_VERSION=.*/PHP_VERSION=8.0/g" .env
+
+# sed -i "s/WORKSPACE_INSTALL_PYTHON=false/WORKSPACE_INSTALL_PYTHON=true/g" .env
+# sed -i "s/WORKSPACE_INSTALL_IMAGEMAGICK=false/WORKSPACE_INSTALL_IMAGEMAGICK=true/g" .env
+# sed -i "s/PHP_FPM_INSTALL_MEMCACHED=false/PHP_FPM_INSTALL_MEMCACHED=true/g" .env
+# sed -i "s/INSTALL_SWOOLE=false/INSTALL_SWOOLE=true/g" .env
+
+
+# sed -i "s/apt\-get install \-y libmagickwand/apt\-get update \&\& apt\-get install \-y libmagickwand/g" workspace/Dockerfile
+# sed -i "s/RUN if \[ \${INSTALL_IMAGEMAGICK} = true \]; then/RUN if \[ \${INSTALL_IMAGEMAGICK} = true \]; then apt update \&\&/g" workspace/Dockerfile
+
+# sed -i "s/apt\-get \-y install python python\-pip/apt\-get update \&\&  apt\-get \-y install python python\-pip/g" workspace/Dockerfile
+# sed -i "s/RUN apt\-get clean/RUN apt-get install -y php7\.4\-memcached \&\& apt\-get clean /g" workspace/Dockerfile
+
+docker-compose build nginx php-fpm workspace redis mailhog
+docker-compose up -d nginx redis mailhog
+
+git reset --hard HEAD

@@ -1,0 +1,7 @@
+#!/bin/bash
+# Laravel artisan command
+# Usage: bin/artisan
+. bin/helpers/common.sh
+
+docker-compose exec --user=laradock workspace php -d xdebug.remote_host=172.18.0.1 artisan $@
+    # php -d xdebug.remote_connect_back=off artisan $@

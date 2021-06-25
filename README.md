@@ -1,13 +1,11 @@
 - [Fusionpbx API](#fusionpbx-api)
-  - [Server installation](#server-installation)
-  - [Development environment setup (Virtual Box)](#development-environment-setup-virtual-box)
-    - [Clone project to locahost](#clone-project-to-locahost)
-    - [Install Virtual Box software and create a Debian virtual machine](#install-virtual-box-software-and-create-a-debian-virtual-machine)
-    - [Run installation script](#run-installation-script)
-    - [Login into debian](#login-into-debian)
-    - [Install FusionPBX and API](#install-fusionpbx-and-api)
-    - [Update mail settings](#update-mail-settings)
-  - [Docker setup (please help)](#docker-setup-please-help)
+  - [Installation](#installation)
+    - [Prepare FusionPBX installation](#prepare-fusionpbx-installation)
+      - [Allow remote connection to postgres DB](#allow-remote-connection-to-postgres-db)
+      - [Enable remote `reload XML` and `flush cache` for FusionPBX](#enable-remote-reload-xml-and-flush-cache-for-fusionpbx)
+        - [Run by SSH from Laravel API server](#run-by-ssh-from-laravel-api-server)
+        - [Run as a CURL request protected by hash](#run-as-a-curl-request-protected-by-hash)
+    - [Install laravel API](#install-laravel-api)
   - [Documenation](#documenation)
   - [Testing](#testing)
     - [Prepare test database](#prepare-test-database)
@@ -19,105 +17,201 @@
 
 > It's a very early development stage for a FusionPBX API using Laravel.
 
-## Server installation
+## Installation
+
+### Prepare FusionPBX installation
+
+It's assumed you have a running FusionPBX server.
+
+The Laravel API needs to connect to FusionPBX postgres DB and run a hook (see below) to reload XML and flush cache remotely.
+
+If you place the Laravel API server for FusionPBX as a second virtual host at the same server,
+then you can connect to DB and run the hook (see below) directly at the server.
+
+If you decide to place the Laravel API at another server, you must do the following:
+
+* Allow remote connection to postgres DB
+* Enable remote `reload XML` and `flush cache` for FusionPBX
+
+#### Allow remote connection to postgres DB
+
+Login into FusionPBX server and unblock your IP in Postgres settings and Firewall.
+
+A shortcut to do this
 
 ```bash
-git clone https://github.com/gruz/fusionpbx-api.git /var/www/fusionpbx-api
-chown -R www-data:www-data /var/www/fusionpbx-api
-cd /var/www/fusionpbx-api
-bin/init_server
+ssh root@192.168.0.160 'bash -s' < bin/allow_pg  192.168.0.101
 ```
 
-## Development environment setup (Virtual Box)
+where `192.168.0.160` if your FusionPBX server and `192.168.0.101` is your Laravel API server IP
 
-VirualBox from my local machine available shared: https://mega.nz/folder/02RjQQRD#GMtjv0UXGh2kytUSPfJFmA
+#### Enable remote `reload XML` and `flush cache` for FusionPBX
 
-### Clone project to locahost
+The hook is just a PHP file found in [bin/fpbx_hook.php](bin/fpbx_hook.php)
 
-Get project files and init submodules (fusionpbx code is neede for api development as well)
+You must place it at the FusionPBX server then you have 2 options:
+
+* Run by SSH from Laravel API server
+* Run as a CURL request protected by hash
+
+The command setup here will be needed for Laravel API configuration.
+
+##### Run by SSH from Laravel API server
+
+Let's assume you place the hook into `/var/www/hook/fpbx_hook.php` at 
+your FusionPBX server. And you have FusionPBX placed in `/var/www/fusionpbx`.
+
+Setup passwordless ssh access to be able to run from your Laravel API server a command like
+
+```bash
+ssh -t root@192.168.0.160 sudo -u www-data php /var/www/hook/fpbx_hook.php /var/www/fusionpbx
+```
+
+where `192.168.0.160` is your FusionPBX server.
+
+The response should be like this:
+
+```bash
++OK cache flushed
++OK [Success]
+
+Connection to 192.168.0.160 closed.
+```
+
+If it works, don't forget to add the following line to your laravel .env file:
+
+```
+FPBX_HOOK='ssh -t root@192.168.0.160 sudo -u www-data php /var/www/hook/fpbx_hook.php /var/www/fusionpbx'
+```
+
+##### Run as a CURL request protected by hash
+
+The idea is to provide an URL to run the hook. Something like 
+`https://192.168.0.160:445/fpbx_hook.php?hash=464ab3451cf0ccdeda1f0b61300639498b6ebca06e3e8da6d6974b5540a634de`
+
+
+For example you place the hook file in `/var/www/hook/fpbx_hook.php` at you FusionPBX server.
+
+Edit it and change the hash at the top of the file to something unique to protect the url.
+
+Add nging config like this `/etc/nginx/sites-available/hook`
+
+```
+server {
+        listen 445;
+        server_name fpbx_hook;
+        ssl                     on;
+        ssl_certificate         /etc/ssl/certs/nginx.crt;
+        ssl_certificate_key     /etc/ssl/private/nginx.key;
+        ssl_protocols           TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers             HIGH:!ADH:!MD5:!aNULL;
+
+        #letsencrypt
+        location /.well-known/acme-challenge {
+                root /var/www/letsencrypt;
+        }
+
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+
+        client_max_body_size 80M;
+        client_body_buffer_size 128k;
+
+        location / {
+                root /var/www/fpbx-hook;
+                index index.php;
+                try_files $uri $uri/ /index.php?$query_string;
+        }
+
+
+        location ~ \.php$ {
+                fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+                #fastcgi_pass 127.0.0.1:9000;
+                fastcgi_index index.php;
+                include fastcgi_params;
+                fastcgi_param   SCRIPT_FILENAME /var/www/fpbx-hook$fastcgi_script_name;
+        }
+
+        # Disable viewing .htaccess & .htpassword & .db
+        location ~ .htaccess {
+                deny all;
+        }
+        location ~ .htpassword {
+                deny all;
+        }
+        location ~^.+.(db)$ {
+                deny all;
+        }
+}
+```
+
+Create a symlink to enable the config and restart nginx and fpm
+
+```bash
+ln -s /etc/nginx/sites-available/hook /etc/nginx/sites-enabled/hook
+PHP_VERSION=$(php --version | head -1 | awk '{print $2}' | cut -d. -f 1-2)
+/etc/init.d/php${PHP_VERSION}-fpm restart
+/etc/init.d/nginx restart
+```
+
+So if you open the link above with the correct hash it should show something like
+
+```
++OK cache flushed +OK [Success] 
+```
+
+If it works, don't forget to add the following line to your laravel .env file:
+
+```
+FPBX_HOOK='curl -k GET https://192.168.0.160:445/fpbx_hook.php?hash=464ab3451cf0ccdeda1f0b61300639498b6ebca06e3e8da6d6974b5540a634de'
+```
+
+### Install laravel API
 
 ```bash
 git clone git@github.com:gruz/fusionpbx-api.git
 cd fusionpbx-api
-bin/init_local
+cp .env-example .env
 ```
 
-### Install Virtual Box software and create a Debian virtual machine
+Update .env file with you data.
 
-* Install [Virtual Box](https://www.virtualbox.org/). Don't forget to add yourself to `vboxusers` group and reboot after install.
-* Download a Debian iso file and mount in using virtual box. I used amd 64 https://www.debian.org/distrib/netinst#smallcd
-* Create a new virtual machine using `Debian`. Select startup disk your mounted iso. ![](docs/select_iso.png)
-* Proceed with the install. I choose root password, user name and password as `fusionpbx` for development purposes. Select only needed software, no need to install DE. So disable `Debian desktop environment`, do not enable `web-server` (we don't need apache) and enable `ssh server` ![](docs/select_software.png) Don't forget to set boot device at the final installation step. ![](docs/select_boot_loader.png)
-* Set network adapter to `Bridged apdapter` ![](docs/select_network.png). You may need to reboot VM to apply new network connection. Thus the VM will be treated as a regular computer in your local network.
-* Insert guest additions ISO using `VB -> Devices` menu
-* Create a shared folder pointing to your localhost project folder with remote path `/var/www/fusionpbx-api`. Ignore possible "Not installed guest additions" message for now. ![](docs/mount_api_folder.png)
 
-### Run installation script
-From your host computer being in project folder copy script file to VB like this
+Next if you want to start regular laravel server:
 
 ```bash
-scp bin/init_vb fusionpbx@192.168.0.160:/tmp
+composer install
+php artisan serve
 ```
 
-### Login into debian
-
-In-VirtualBox terminal doesn't allow to use copy/paste. So it's preferable to ssh into the VM from the host machine to use convinient terminal.
-But first we need to know the VM IP.
-
-There are two ways. Either just hover VM window icon to get the IP
-![](docs/get_ip.png)
-or login into debian inside VM and run `hostname -I`.
-In my case it's `192.168.0.160`
-![](docs/hostname-I.png)
-
-> Note! Debian doesn't allow by default to login via `ssh` as `root`
-> so we must login as a regular user and the switch to root
-
-Next open termianl at your host machine and `ssh fusionpbx@192.168.0.160`
-where `fusionpbx` is my VM user and `192.168.0.160` is the IP of the VM.
-When logged in use `su` to switch to root user.
-
-### Install FusionPBX and API
-
-Login like `ssh fusionpbx@192.168.0.160`
-
-Switch to root using `su` command.
-
-Run the init script. It will reboot the VM when done.
+Of if you want to start a docker with xdebug, mailhog
 
 ```bash
-/tmp/init_vb
+git submodule update --init --recursive
+bin/start dev
+bin/composer install
 ```
 
-After reboot again login into VB and switch to root `ssh fusionpbx@192.168.0.160`, `su`
+To login into docker you can use
 
-If everything is ok, then command `ls -la /var/www/fusionpbx-api` should laravel api project folder, cloned from git (where folders `bin`, `fusionpbx`, `laravel-api`, `docs` are)
+* bin/login
+* bin/login_root
 
-```bash
-cd /var/www/fusionpbx-api
-bin/init_vb_software
-```
+To run composer and artisan without docker login
 
-When done you should be able to see fusionpbx site at `https://192.168.0.160` and API message at `https://192.168.0.160:444`
+* bin/composer
+* bin/artisan
 
-### Update mail settings
-
-Update `.env` file with your mail settings
-
-## Docker setup (please help)
-
-I didn't manage to create a docker for developemnt after many tries.
-
-So if you wish to help, then offer a docker setup for the project.
-
-Requirements I see:
-
-* Both FusionPBD and this API code can be examined with xdebug
-* SIP phone can register at the server
 
 ## Documenation
 
-Check this repository wiki
+API Swagger documentation should be available under as json file [api-docs.json](storage/api-docs/api-docs.json)
+
+Or try it in online [swagger editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/gruz/fusionpbx-api/master/storage/api-docs/api-docs.json)
+
+When running the project the docs are available under:
+* yourdomain.com/docs/api
+* 
 
 ## Testing
 
