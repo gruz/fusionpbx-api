@@ -194,6 +194,7 @@ class CGRTService
 
         $cgrt_username = $user->username;
         $cgrt_username = \Str::substr($user->username . '_' . $tenant, 0, 29);
+        $cgrt_username = str_replace(' ', '_', $cgrt_username);
 
         $data = array_merge(config('fpbx.cgrt.default.client_add'), [
             "tenant" => $tenant,
