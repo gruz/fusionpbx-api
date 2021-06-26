@@ -2,10 +2,11 @@
 
 namespace Tests\Unit;
 
-use App\Models\User;
 use Arr;
 use Cache;
 use Tests\TestCase;
+use App\Models\User;
+
 
 class AbstractModelTest extends TestCase
 {

@@ -13,7 +13,7 @@ class DefaultApiControllerTest extends TestCase
      */
     public function testIndex_Success()
     {
-        $response = $this->get('/');
+        $response = $this->get('/api');
         // $response->dumpHeaders();
 
         // $response->dumpSession();

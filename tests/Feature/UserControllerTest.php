@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Support\Arr;
-use App\Models\Domain;
 use Tests\TestCase;
-use Tests\Traits;
+use App\Models\User;
+use App\Models\Domain;
+use Illuminate\Support\Arr;
+use Tests\Traits\UserTrait;
 use App\Models\DefaultSetting;
 use App\Services\Fpbx\ExtensionService;
 use Illuminate\Support\Facades\Notification;

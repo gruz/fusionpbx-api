@@ -4,7 +4,7 @@ namespace Tests\Requests;
 
 use Tests\TestCase;
 use App\Models\User;
-use Tests\Traits;
+use Tests\Traits\UserTrait;
 use App\Models\Domain;
 use Tests\Traits\DomainTrait;
 

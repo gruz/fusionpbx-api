@@ -4,20 +4,21 @@ namespace Tests\Feature;
 
 use stdClass;
 use Faker\Factory;
+use Tests\TestCase;
 use App\Models\User;
+use App\Models\Domain;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\Models\Domain;
-use Tests\TestCase;
+use Tests\Traits\UserTrait;
+use App\Models\PostponedAction;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
-use App\Models\PostponedAction;
-use Illuminate\Notifications\AnonymousNotifiable;
 use App\Notifications\DomainSignupNotification;
+use Illuminate\Notifications\AnonymousNotifiable;
 use App\Notifications\DomainActivateActivatorNotification;
 use App\Notifications\DomainActivateMainAdminNotification;
 use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
-use Tests\Traits;
+
 class DomainControllerTest extends TestCase
 {
     use UserTrait;

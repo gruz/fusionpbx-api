@@ -5,7 +5,7 @@ namespace Tests\Requests;
 use App\Models\Domain;
 use App\Models\Extension;
 use Tests\TestCase;
-use Tests\Traits;
+use Tests\Traits\UserTrait;
 
 class UserSignupRequestTest extends TestCase
 {

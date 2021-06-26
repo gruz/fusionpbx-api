@@ -47,7 +47,7 @@ class DefaultController extends AbstractBrunoController
      * @OA\Get(
      *  tags={"Default"},
      *  description="Get application name and version",
-     *  x={"route-$middlewares"="api,auth:sanctum"},
+     *  x={"route-$middlewares"="api"},
      *  path="/",
      *  security={},
      *      @OA\Response(

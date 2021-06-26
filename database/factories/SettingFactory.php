@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories\App\Models;
+namespace Database\Factories;
 
 use App\Models\Setting;
 use Illuminate\Database\Eloquent\Factories\Factory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories\App\Models;
+namespace Database\Factories;
 
 use Illuminate\Support\Arr;
 use App\Models\Contact;

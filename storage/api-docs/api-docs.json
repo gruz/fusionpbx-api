@@ -47,7 +47,7 @@
                     }
                 },
                 "security": [],
-                "x-route-$middlewares": "api,auth:sanctum"
+                "x-route-$middlewares": "api"
             }
         },
         "/domain/signup": {
