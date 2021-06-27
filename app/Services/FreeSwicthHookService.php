@@ -26,9 +26,10 @@ class FreeSwicthHookService
 
             Notification::route('mail', $mainAdminEmail)
                 ->notify(new FPBXFailedNotification($th->getMessage(), $cmd, $output));
-    
+
             \Log::error($th->getMessage(), [ 'commands' => $cmd, 'output' => $output]);
         }
+
         return $output;
     }
 }

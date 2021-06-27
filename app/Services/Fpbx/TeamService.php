@@ -80,7 +80,7 @@ class TeamService extends AbstractService
                 throw new DomainExistsException();
             }
 
-            $this->dialplanRepository->createDefaultDialplanRules();
+            // $this->dialplanRepository->createDefaultDialplanRules();
             $domainModel = $this->domainService->create($data, ['forceFillable' => ['domain_enabled']]);
 
             $settingsData = Arr::get($data, 'settings', []);

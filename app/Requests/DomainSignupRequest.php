@@ -6,6 +6,7 @@ use Illuminate\Validation\Rule;
 use App\Rules\HostnameRule;
 use App\Rules\UsernameRule;
 use App\Models\DefaultSetting;
+use App\Models\Domain;
 use App\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Services\ValidationRulesService;
@@ -32,7 +33,7 @@ class DomainSignupRequest extends FormRequest
         $rules = [
             'domain_name' => [
                 'required',
-                'unique:Api\\Domain\\Models\\Domain,domain_name'
+                'unique:'. Domain::class . ',domain_name'
             ],
             'users' => 'required|array',
             // 'is_subdomain' => 'required',

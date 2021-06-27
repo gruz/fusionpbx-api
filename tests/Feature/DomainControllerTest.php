@@ -80,7 +80,7 @@ class DomainControllerTest extends TestCase
         $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash . 'aa', 'email' => $email]));
         $response->assertStatus(422);
         $response->assertJsonPath('errors.0.title', __('Validation error'));
-        $response->assertJsonPath('errors.0.detail', __('validation.uuid'));
+        $response->assertJsonPath('errors.0.detail', __('validation.uuid', ['attribute' => 'hash']));
 
         // Not hash exists in the table
         $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => Str::uuid()->toString(), 'email' => $email]));
@@ -113,6 +113,7 @@ class DomainControllerTest extends TestCase
 
     public function testActivateSuccessDomainEnabledOrDisabledByDefaultDependingOnConfig()
     {
+        // $a = 'a';
         foreach ([false, true] as $hasDomainEnabledAttribute) {
             foreach ([false, true] as $key => $domain_enabled_after_activation) {
                 config(['fpbx.domain.enabled' => $domain_enabled_after_activation]);
@@ -132,7 +133,6 @@ class DomainControllerTest extends TestCase
 
                 $domain_name = Arr::get($model->request, 'domain_name');
                 $email = Arr::get($model->request, 'users.0.user_email');
-
 
                 $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash, 'email' => $email]));
                 $response->assertStatus(201);
@@ -183,8 +183,8 @@ class DomainControllerTest extends TestCase
             $this->checkUserWithRelatedDataCreated($domain, $userData);
         }
 
-        $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';
-        $this->assertDirectoryExists($dialplan_dest_folder);
+        // $dialplan_dest_folder = config('app.fpath_document_root') . '/opt-laravel-api';
+        // $this->assertDirectoryExists($dialplan_dest_folder);
 
         // If users created
         $users = User::where(['domain_uuid' => $domain->domain_uuid]);

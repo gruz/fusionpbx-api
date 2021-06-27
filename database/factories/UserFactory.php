@@ -28,7 +28,7 @@ class UserFactory extends Factory
             // "reseller_reference_code" => "IS_TEST_CODE",
             "username" => $email,
             "user_email" => $email,
-            "password" => $this->faker->password,
+            "password" => $this->faker->password() . '0aA',
             "domain_name" => $this->faker->domainName,
         ];
 

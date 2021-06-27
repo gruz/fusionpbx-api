@@ -163,7 +163,7 @@ So if you open the link above with the correct hash it should show something lik
 If it works, don't forget to add the following line to your laravel .env file:
 
 ```
-FPBX_HOOK='curl -k GET https://192.168.0.160:445/fpbx_hook.php?hash=464ab3451cf0ccdeda1f0b61300639498b6ebca06e3e8da6d6974b5540a634de'
+FPBX_HOOK='curl -k https://192.168.0.160:445/fpbx_hook.php?hash=464ab3451cf0ccdeda1f0b61300639498b6ebca06e3e8da6d6974b5540a634de'
 ```
 
 ### Install laravel API

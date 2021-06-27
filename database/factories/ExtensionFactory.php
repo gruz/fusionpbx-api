@@ -40,7 +40,7 @@ class ExtensionFactory extends Factory
         $return = [
             "extension" => $extension,
             // "number_alias" => "string",
-            "password" => $this->faker->password(),
+            "password" => $this->faker->password() . '0aA',
             "accountcode" => $this->faker->numerify('account-####'),
             "effective_caller_id_name" => $this->faker->name,
             "effective_caller_id_number" => $this->faker->numberBetween(100, 200),
