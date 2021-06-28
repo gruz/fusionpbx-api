@@ -113,6 +113,12 @@ abstract class AbstractService
 
     public function create($data, $options = [])
     {
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+
         $this->database->beginTransaction();
 
         try {
@@ -127,12 +133,21 @@ abstract class AbstractService
 
         $this->database->commit();
 
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
+
         return $model;
     }
 
     public function createMany($data, $options = [])
     {
-        $this->database->beginTransaction();
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
 
         $models = [];
 
@@ -153,11 +168,22 @@ abstract class AbstractService
 
         $this->database->commit();
 
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
+
         return $models;
     }
 
     public function update($id, array $data, $options = [])
     {
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+
         $model = $this->getById($id);
 
         $this->database->beginTransaction();
@@ -174,11 +200,22 @@ abstract class AbstractService
 
         $this->database->commit();
 
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
+
         return $model;
     }
 
     public function delete($id, $options = [])
     {
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+
         $model = $this->getById($id);
 
         $this->database->beginTransaction();
@@ -194,10 +231,21 @@ abstract class AbstractService
         }
 
         $this->database->commit();
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
     }
 
     public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName, $options = [])
     {
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+
         $this->database->beginTransaction();
 
         try {
@@ -209,6 +257,11 @@ abstract class AbstractService
         }
 
         $this->database->commit();
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
     }
 
     public function getByAttributes(array $attributes, $options = [])
@@ -237,7 +290,20 @@ abstract class AbstractService
     }
 
     public function setRelation(AbstractModel $parent, AbstractModel $child, $options = []) {
-        return $this->repository->setRelation($parent, $child, $options);
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+
+        $result = $this->repository->setRelation($parent, $child, $options);
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
+
+        return $result;
     }
 
 

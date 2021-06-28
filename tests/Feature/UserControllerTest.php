@@ -20,7 +20,7 @@ class UserControllerTest extends TestCase
 
     public function testUserSignupSuccess($resellerCodeRequired = false)
     {
-        config(['fpbx.resellerCodeRequired' => $resellerCodeRequired]);
+        config(['fpbx.resellerCode.required' => $resellerCodeRequired]);
 
         $data = $this->testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
         list($response, $email) = $this->simulateDomainSignupAndActivate();
@@ -33,12 +33,12 @@ class UserControllerTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
-        $extension = app(ExtensionService::class)->getNewExtension($this->domain_uuid);
+        $extension = app(ExtensionService::class)->getNewExtension($domain_uuid);
 
         $data['extensions'] = [[
             'extension' => $extension, // Setting any non-exisiting number
-            'password' => 'somePass',
-            "voicemail_password" => "956"
+            'password' => 'somePass1',
+            "voicemail_password" => "9561"
         ]];
 
         if ($resellerCodeRequired) {

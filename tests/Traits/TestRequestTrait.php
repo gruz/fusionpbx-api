@@ -17,12 +17,10 @@ trait TestRequestTrait
 
         $this->validator = app()->get('validator');
 
-        // $className = trim(get_class($this), 'Test');
         $className = get_class($this);
-        $className = substr(get_class($this), 0, -4);
-        $className = explode('\\',$className);
-        $className = array_diff($className, ['Testing']);
-        $className = implode('\\', $className);
+        preg_match('/.*\\(.*)Test$/', $className, $matches);
+        $className = '\\App\\Requests\\' . $matches[1];
+
         echo '<pre> Line: ' . __LINE__ . ' | ' . __FILE__ . PHP_EOL;
         print_r($className);
         echo PHP_EOL . '</pre>' . PHP_EOL;

@@ -3,7 +3,9 @@
 namespace App\Listeners;
 
 use Illuminate\Support\Arr;
+use App\Notifications\Notification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 
 
 class UserWasCreatedListener
@@ -16,8 +18,8 @@ class UserWasCreatedListener
             $excludeNotificationEmails = Arr::get($event->options, 'excludeNotification', []);
             if (!in_array($event->user->user_email, $excludeNotificationEmails)) {
                 $event->user->sendEmailVerificationNotification();
-                // $notification = new UserWasCreatedSendVeirfyLinkNotification($event->user);
-                // Notification::send($event->user, $notification);
+                $notification = new UserWasCreatedSendVeirfyLinkNotification($event->user);
+                Notification::send($event->user, $notification);
             }
         }
     }

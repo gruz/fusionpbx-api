@@ -92,7 +92,7 @@ class UserSignupRequestTest extends TestCase
 
     public function testFailBadResellerCode()
     {
-        config(['fpbx.resellerCodeRequired' => true]);
+        config(['fpbx.resellerCode.required' => true]);
         $data = $this->testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
         list($response, $email) = $this->simulateDomainSignupAndActivate();
         $domain_name = $response->json('domain_name');

@@ -58,8 +58,11 @@ trait UserTrait
             }
             switch ($table) {
                 case 'v_voicemails':
-                    # code...
                     $this->assertNotEmpty($where['voicemail_password']);
+                    break;
+                case 'v_extensions':
+                    $this->assertNotEmpty($where['password']);
+                    unset($where['enabled']);
                     break;
                 default:
                     $this->assertNotEmpty($where['password']);

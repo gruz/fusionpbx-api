@@ -12,7 +12,7 @@ use App\Models\Extension;
 use App\Models\Voicemail;
 use App\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Notification;
-use App\Services\FreeSwicthHookService;
+use App\Services\FreeSwitchHookService;
 use App\Repositories\ExtensionRepository;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
@@ -29,7 +29,7 @@ class FrontController extends AbstractController
         if (!config('app.debug')) {
             return;
         }
-        // $s = new FreeSwicthHookService;
+        // $s = new FreeSwitchHookService;
         // $response = $s->reload();
         // dd($response);
         // $user = User::where('user_uuid', '39583b9c-91aa-46aa-bcc3-5871ce1ad927')->first();
@@ -97,7 +97,7 @@ class FrontController extends AbstractController
 
         dd(config('domain_enabled_field_type'));
 
-        $s = new FreeSwicthHookService;
+        $s = new FreeSwitchHookService;
         $response = $s->reload();
         dd($response);
 

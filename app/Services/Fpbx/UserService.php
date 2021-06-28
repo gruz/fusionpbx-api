@@ -60,6 +60,12 @@ class UserService extends AbstractService
 
     public function createMany($data, $options = [])
     {
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+
         $this->database->beginTransaction();
 
         $models = [];
@@ -77,6 +83,11 @@ class UserService extends AbstractService
 
         $this->database->commit();
 
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
+
         return $models;
     }
 
@@ -84,6 +95,12 @@ class UserService extends AbstractService
     public function create($data, $options = [])
     {
         $data = $this->prepareData($data);
+
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
 
         $this->database->beginTransaction();
 
@@ -153,6 +170,11 @@ class UserService extends AbstractService
         }
 
         $this->database->commit();
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
 
         return $userModel;
     }

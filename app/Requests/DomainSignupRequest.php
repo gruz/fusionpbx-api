@@ -51,7 +51,7 @@ class DomainSignupRequest extends FormRequest
             'users' => new ArrayAtLeastOneAcceptedRule('is_admin'),
         ];
 
-        $resellerCodeRequired = config('fpbx.resellerCodeRequired');
+        $resellerCodeRequired = config('fpbx.resellerCode.required');
         if ($resellerCodeRequired) {
             $resellecrCodeCheck = [
                 Rule::exists(DefaultSetting::class, 'default_setting_value')

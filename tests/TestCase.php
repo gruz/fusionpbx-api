@@ -35,6 +35,8 @@ abstract class TestCase extends BaseTestCase
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
 
         $this->faker = Factory::create(Factory::DEFAULT_LOCALE);
+
+        config(['fpbx.cgrt.enabled' => false]);
     }
 
     protected function refreshDB()
@@ -60,7 +62,7 @@ abstract class TestCase extends BaseTestCase
             $request = $testRequestFactoryService->makeDomainSignupRequest(['noCache' => $forceNewRequestGeneration]);
         }
 
-        if (config('fpbx.resellerCodeRequired')) {
+        if (config('fpbx.resellerCode.required')) {
             $reseller_code = $this->createResellerCode();
             $request['reseller_reference_code'] = $reseller_code;
         }

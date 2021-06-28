@@ -5,10 +5,13 @@ namespace App\Services;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\FPBXFailedNotification;
 
-class FreeSwicthHookService
+class FreeSwitchHookService
 {
     public function reload()
     {
+        if (\App::runningUnitTests()) {
+            return null;
+        }
         $output = null;
         try {
             $cmd = config('fpbx.hook_command');

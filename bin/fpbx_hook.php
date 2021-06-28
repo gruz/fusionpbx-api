@@ -10,6 +10,8 @@ class fpbx_hook
 
     public function __construct($fusion_path)
     {
+        $_SESSION['domains'] = false;
+        $_SESSION["previous_domain_uuid"] = null;
         $file = $this->settings = new stdClass;
 
         $files = [

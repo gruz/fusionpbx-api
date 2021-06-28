@@ -31,7 +31,7 @@ class DomainSignupRequestTest extends TestCase
     {
         $data = $this->testRequestFactoryService->makeDomainSignupRequest();
 
-        config(['fpbx.resellerCodeRequired' => true]);
+        config(['fpbx.resellerCode.required' => true]);
 
         $response = $this->json('post', route('fpbx.domain.signup', $data));
         $response->assertStatus(422);

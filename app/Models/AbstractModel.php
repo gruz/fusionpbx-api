@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Index;
 use App\Traits\UuidsTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use App\Services\FreeSwicthHookService;
+use App\Services\FreeSwitchHookService;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use App\Exceptions\MissingDomainUuidException;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -297,8 +297,9 @@ abstract class AbstractModel extends BaseModel
         });
 
         static::saved(function (AbstractModel $model) {
-            $s = new FreeSwicthHookService;
-            $reponse = $s->reload();
+            if (!config('disable_fpbx_refresh')) {
+                $s = app(FreeSwitchHookService::class)->reload();
+            }
         });
     }
 }

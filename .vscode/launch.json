@@ -10,7 +10,8 @@
             "request": "launch",
             "port": 9000,
             "pathMappings": {
-                "/var/www": "${workspaceFolder}"
+                "/var/www": "${workspaceFolder}",
+                "/var/www/fusionpbx-api": "${workspaceFolder}",
             },
             "log": true,
             "ignore": [

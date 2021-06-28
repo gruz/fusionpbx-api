@@ -69,6 +69,12 @@ class TeamService extends AbstractService
     {
         $data = $this->prepareData($data);
 
+        $refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+
         $this->database->beginTransaction();
 
         try {
@@ -112,7 +118,7 @@ class TeamService extends AbstractService
             ]);
 
             $this->dispatcher->dispatch(new TeamWasCreated($domainModel, $usersModel, $activatorUserData));
-            // dd('done'); 
+            // dd('done');
         } catch (Exception $e) {
             $this->database->rollBack();
 
@@ -121,8 +127,11 @@ class TeamService extends AbstractService
 
         $this->database->commit();
 
+        if (!$refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\App\Services\FreeSwitchHookService::class)->reload();
+        }
 
         return $domainModel;
     }
-
 }
