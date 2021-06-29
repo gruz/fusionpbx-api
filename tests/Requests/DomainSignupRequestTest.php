@@ -35,7 +35,7 @@ class DomainSignupRequestTest extends TestCase
 
         $response = $this->json('post', route('fpbx.domain.signup', $data));
         $response->assertStatus(422);
-        $response->assertJsonFragment(["detail" => "The reseller reference code is required."]);
+        $response->assertJsonFragment(["detail" => "The reseller reference code field is required."]);
 
         $data['reseller_reference_code'] = uniqid();
         $response = $this->json('post', route('fpbx.domain.signup', $data));

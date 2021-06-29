@@ -18,15 +18,14 @@ trait TestRequestTrait
         $this->validator = app()->get('validator');
 
         $className = get_class($this);
-        preg_match('/.*\\(.*)Test$/', $className, $matches);
+        preg_match('/.*\\\\(.*)Test$/', $className, $matches);
         $className = '\\App\\Requests\\' . $matches[1];
 
-        echo '<pre> Line: ' . __LINE__ . ' | ' . __FILE__ . PHP_EOL;
-        print_r($className);
-        echo PHP_EOL . '</pre>' . PHP_EOL;
+        // echo '<pre> Line: ' . __LINE__ . ' | ' . __FILE__ . PHP_EOL;
+        // print_r($className);
+        // echo PHP_EOL . '</pre>' . PHP_EOL;
 
         $this->rules = (new $className())->rules();
-
     }
 
     /**

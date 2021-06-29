@@ -2,14 +2,23 @@
 
 namespace Tests\Requests;
 
+use Tests\TestCase;
 use App\Models\Domain;
 use App\Models\Extension;
-use Tests\TestCase;
 use Tests\Traits\UserTrait;
+use App\Services\Fpbx\ExtensionService;
 
 class UserSignupRequestTest extends TestCase
 {
     use UserTrait;
+
+    private function getWorkingPassword() {
+        return 'SomePassword12';
+    }
+
+    private function getWorkingVoicemailPassword() {
+        return '1234';
+    }
 
     public function testFailWhenUserExistsInADomain()
     {
@@ -21,8 +30,8 @@ class UserSignupRequestTest extends TestCase
         $extension = Extension::max('extension');
         $data['extensions'] = [[
             'extension' => ++$extension, // Setting any non-exisiting number
-            'password' => 'somePass',
-            "voicemail_password" => "956"
+            'password' => $this->getWorkingPassword(),
+            "voicemail_password" => $this->getWorkingVoicemailPassword()
         ]];
 
         $response = $this->json('post', route('fpbx.user.signup', $data));
@@ -50,8 +59,8 @@ class UserSignupRequestTest extends TestCase
 
         $data['extensions'] = [[
             'extension' => $extensions[0], // Setting an exisiting number
-            'password' => 'somePass',
-            "voicemail_password" => "956"
+            'password' => $this->getWorkingPassword(),
+            "voicemail_password" => $this->getWorkingVoicemailPassword()
         ]];
 
         $response = $this->json('post', route('fpbx.user.signup', $data));
@@ -73,12 +82,12 @@ class UserSignupRequestTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $response->json('domain_name');
 
-        $extension = app(ExtensionService::class)->getNewExtension($this->domain_uuid);
+        $extension = app(ExtensionService::class)->getNewExtension($domain_uuid);
 
         $data['extensions'] = [[
             'extension' => $extension, // Setting any non-exisiting number
-            'password' => 'somePass',
-            "voicemail_password" => "956"
+            'password' => $this->getWorkingPassword(),
+            "voicemail_password" => $this->getWorkingVoicemailPassword()
         ]];
 
         $response = $this->json('post', route('fpbx.user.signup', $data));
@@ -104,17 +113,17 @@ class UserSignupRequestTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
-        $extension = app(ExtensionService::class)->getNewExtension($this->domain_uuid);
+        $extension = app(ExtensionService::class)->getNewExtension($domain_uuid);
 
         $data['extensions'] = [[
             'extension' => $extension, // Setting any non-exisiting number
-            'password' => 'somePass',
-            "voicemail_password" => "956"
+            'password' => $this->getWorkingPassword(),
+            "voicemail_password" => $this->getWorkingVoicemailPassword()
         ]];
 
         $response = $this->json('post', route('fpbx.user.signup', $data));
         $response->assertStatus(422);
-        $response->assertJsonFragment(["detail" => "The reseller reference code is required."]);
+        $response->assertJsonFragment(["detail" => "The reseller reference code field is required."]);
 
         $data['reseller_reference_code'] = uniqid();
 
