@@ -37,6 +37,7 @@ abstract class TestCase extends BaseTestCase
         $this->faker = Factory::create(Factory::DEFAULT_LOCALE);
 
         config(['fpbx.cgrt.enabled' => false]);
+        config(['fpbx.resellerCode.required' => false]);
     }
 
     protected function refreshDB()

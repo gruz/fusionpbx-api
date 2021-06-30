@@ -31,9 +31,10 @@ class TestRequestFactoryService
 
         $settings = Setting::factory(2)->make()->toArray();
 
+        $adminIsPresent = Arr::get($params, 'adminIsPresent', true);
         $users = $this->makeUserSignupRequest([
             'numberOfUsers' => 3,
-            'adminIsPresent' => true,
+            'adminIsPresent' => $adminIsPresent,
         ]);
 
         $model = Domain::factory()->make([

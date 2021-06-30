@@ -33,9 +33,9 @@ class DomainSignupRequest extends FormRequest
         $rules = [
             'domain_name' => [
                 'required',
-                'unique:'. Domain::class . ',domain_name'
+                'unique:'. Domain::class . ',domain_name',
+                new HostnameRule()
             ],
-            'users' => 'required|array',
             // 'is_subdomain' => 'required',
             // 'users.*.username' => 'required|distinct|alpha_dash',
             'users.*.username' => [
@@ -48,7 +48,10 @@ class DomainSignupRequest extends FormRequest
             'users.*.extensions.*.extension' => $this->validationRulesService->getExtensionRules(),
             'users.*.extensions.*.password' => $this->validationRulesService->getPasswordRules('extension'),
             'users.*.extensions.*.voicemail_password' => $this->validationRulesService->getPasswordRules('voicemail'),
-            'users' => new ArrayAtLeastOneAcceptedRule('is_admin'),
+            'users' => [ 
+                'required',
+                'array',
+                new ArrayAtLeastOneAcceptedRule('is_admin')],
         ];
 
         $resellerCodeRequired = config('fpbx.resellerCode.required');
@@ -61,10 +64,6 @@ class DomainSignupRequest extends FormRequest
 
             $rules['reseller_reference_code'] = array_merge(['required'], $resellecrCodeCheck);
             $rules['users.*.reseller_reference_code'] = $resellecrCodeCheck;
-        }
-
-        if (!$this->request->get('is_subdomain')) {
-            $rules['domain_name'][] = new HostnameRule();
         }
 
         return $rules;
