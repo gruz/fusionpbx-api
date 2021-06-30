@@ -76,7 +76,6 @@ class DomainActivateRequestTest extends TestCase
         $response->assertJson([
             "errors" => [
                 ["detail" => "Domain activation link expired"],
-                ["detail" => "Activation link for your email not found"]
             ]
         ]);
     }

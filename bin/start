@@ -1,8 +1,8 @@
 #!/bin/bash
 # Builds and runs project docker containes
-# Usage: bin/startdev
-# Usage: bin/startdev es
-set -o xtrace
+# Usage: bin/start dev
+# Usage: bin/start dev -pg=13
+# set -o xtrace
 
 . bin/helpers/common_start.sh
 
@@ -10,17 +10,40 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-if [ $1 == 'dev' ]
-    then
-        echo -e "Starting ${YELLOW}WITH${NC} xdebug"
-        # Prepare xdebug
-        sed -i "s/WORKSPACE_INSTALL_XDEBUG=false/WORKSPACE_INSTALL_XDEBUG=true/g" .env
-        sed -i "s/PHP_FPM_INSTALL_XDEBUG=false/PHP_FPM_INSTALL_XDEBUG=true/g" .env
-        sed -i "s/xdebug.remote_connect_back=0/xdebug.remote_connect_back=1/" php-fpm/xdebug.ini
-        sed -i "s/# Final Touch/# Final Touch\nRUN apt update; apt install -y inotify-tools/" workspace/Dockerfile
-    else
-        echo -e "Starting ${RED}without${NC} xdebug"
-        # XDEBUG=false;
+IS_DEV=false
+PG_VERSION=false
+
+for i in "$@"; do
+  case $i in
+    -d|dev)
+      IS_DEV=true
+      shift # past argument=value
+      ;;
+    -pg=*|--postgres=*)
+      PG_VERSION="${i#*=}"
+      shift # past argument=value
+      ;;
+  esac
+done
+
+if [ $IS_DEV = true ]
+then
+    echo -e "Starting ${YELLOW}WITH${NC} xdebug"
+    # Prepare xdebug
+    sed -i "s/WORKSPACE_INSTALL_XDEBUG=false/WORKSPACE_INSTALL_XDEBUG=true/g" .env
+    sed -i "s/PHP_FPM_INSTALL_XDEBUG=false/PHP_FPM_INSTALL_XDEBUG=true/g" .env
+    sed -i "s/WORKSPACE_INSTALL_PG_CLIENT=.*/WORKSPACE_INSTALL_PG_CLIENT=true/g" .env
+    sed -i "s/xdebug.remote_connect_back=0/xdebug.remote_connect_back=1/" php-fpm/xdebug.ini
+    sed -i "s/# Final Touch/# Final Touch\nRUN apt update; apt install -y inotify-tools/" workspace/Dockerfile
+else
+    echo -e "Starting ${RED}without${NC} xdebug"
+    # XDEBUG=false;
+fi
+
+if [ $PG_VERSION != false ]
+then
+    echo -e "Setting PG version to ${YELLOW}${PG_VERSION}${NC}"
+    sed -i "s/postgresql-client-.* /postgresql-client-"${PG_VERSION}" /" workspace/Dockerfile
 fi
 
 sed -i "s/PHP_VERSION=.*/PHP_VERSION=7.4/g" .env
