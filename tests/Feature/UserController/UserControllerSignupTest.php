@@ -8,7 +8,6 @@ use App\Models\Domain;
 use Illuminate\Support\Arr;
 use Tests\Traits\UserTrait;
 use App\Models\DefaultSetting;
-use App\Services\Fpbx\ExtensionService;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\UserWasActivatedSelfNotification;
 use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
@@ -32,7 +31,7 @@ class UserControllerSignupTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
-        $extension = app(ExtensionService::class)->getNewExtension($domain_uuid);
+        $extension = $this->extensionService->getNewExtension($domain_uuid);
 
         $data['extensions'] = [[
             'extension' => $extension, // Setting any non-exisiting number
@@ -56,6 +55,9 @@ class UserControllerSignupTest extends TestCase
         }
 
         $response = $this->json('post', route('fpbx.user.signup', $data));
+        if ($response->getStatusCode() !== 201) {
+            dump('error: ', $response->getStatusCode(), $response->getContent());
+        }
         $response->assertStatus(201);
 
         /**

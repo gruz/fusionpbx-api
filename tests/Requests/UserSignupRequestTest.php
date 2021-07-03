@@ -6,7 +6,6 @@ use Tests\TestCase;
 use App\Models\Domain;
 use App\Models\Extension;
 use Tests\Traits\UserTrait;
-use App\Services\Fpbx\ExtensionService;
 
 class UserSignupRequestTest extends TestCase
 {
@@ -82,7 +81,7 @@ class UserSignupRequestTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $response->json('domain_name');
 
-        $extension = app(ExtensionService::class)->getNewExtension($domain_uuid);
+        $extension = $this->extensionService->getNewExtension($domain_uuid);
 
         $data['extensions'] = [[
             'extension' => $extension, // Setting any non-exisiting number
@@ -113,7 +112,7 @@ class UserSignupRequestTest extends TestCase
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
-        $extension = app(ExtensionService::class)->getNewExtension($domain_uuid);
+        $extension = $this->extensionService->getNewExtension($domain_uuid);
 
         $data['extensions'] = [[
             'extension' => $extension, // Setting any non-exisiting number

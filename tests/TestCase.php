@@ -10,6 +10,7 @@ use Tests\CreatesApplication;
 use App\Models\DefaultSetting;
 use App\Models\PostponedAction;
 use App\Services\TestHelperService;
+use App\Services\Fpbx\ExtensionService;
 use Illuminate\Support\Facades\Artisan;
 use App\Services\TestRequestFactoryService;
 use Illuminate\Support\Facades\Notification;
@@ -25,6 +26,16 @@ abstract class TestCase extends BaseTestCase
     public $testRequestFactoryService;
 
     /**
+     * @var TestHelperService
+     */
+    protected $testHelperService;
+
+    /**
+     * @var ExtensionService
+     */
+    protected $extensionService;
+
+    /**
      * @var Generator
      */
     public $faker;
@@ -37,6 +48,7 @@ abstract class TestCase extends BaseTestCase
         $this->testHelperService = app(TestHelperService::class);
 
         $this->faker = Factory::create(Factory::DEFAULT_LOCALE);
+        $this->extensionService = app(ExtensionService::class);
 
         config(['fpbx.cgrt.enabled' => false]);
         config(['fpbx.resellerCode.required' => false]);

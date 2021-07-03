@@ -37,6 +37,9 @@ class UserSignupRequestWeb extends UserSignupRequest
             return;
         }
 
+        /**
+         * @var ExtensionService
+         */
         $extension = app(ExtensionService::class)->getNewExtension($this->domain_uuid);
 
         $s = \Arr::random(['!', '@', '#', '$', '%', '^', '&', '*']);

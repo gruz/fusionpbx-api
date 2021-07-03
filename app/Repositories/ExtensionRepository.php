@@ -22,19 +22,11 @@ class ExtensionRepository extends AbstractRepository
             ->sort()
             ->toArray();
 
-            while( in_array( ($extension = rand(config('fpbx.extension.min'),config('fpbx.extension.max'))), $extensions ) );
+        do {
+            $extension = rand(config('fpbx.extension.min'),config('fpbx.extension.max'));
+        } while( in_array( $extension, $extensions ) );
 
         return $extension;
-
-        // for ($i = config('fpbx.extension.min'); $i <= config('fpbx.extension.max'); $i++) {
-        //     if (!in_array($i, $extensions)) {
-        //         $extension = $i;
-        //         break;
-        //     }
-        // }
-        // // \Log::debug($extension, $extensions);
-
-        // return $extension;
     }
 
     public function setUsers(Extension $extension, array $addUsers, array $removeUsers = [])
