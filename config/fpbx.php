@@ -44,6 +44,7 @@ return [
             'contact_type' => 'customer',
         ],
         'domain' => [
+            'enabled' => env('FPBX_DOMAIN_ENABLED', true), // If domain is enabled by default after activation
             'mothership_domain' => env('MOTHERSHIP_DOMAIN', 'localhost'),
             'new_is_subdomain' => env('NEW_IS_SUBDOMAIN', false),
             'activation_expire' => '1 day',
@@ -63,18 +64,17 @@ return [
             ],
         ],
     ],
+    'domain' => [
+        'description' => env('FPBX_DOMAIN_DESCRIPTION', 'Created via api at ' . date('Y-m-d H:i:s', time())),
+        // Allow select domain in interface via a select list
+        'allow_select' => false,
+    ],
     'user' => [
         'include_username_in_reset_password_email' => env('FPBX_USER_INCLUDE_USERNAME_IN_RESET_PASSWORD_EMAIL', false),
     ],
-    'domain' => [
-        'enabled' => env('FPBX_DOMAIN_ENABLED', true), // If domain is enabled by default after activation
-        'description' => env('FPBX_DOMAIN_DESCRIPTION', 'Created via api at ' . date('Y-m-d H:i:s', time())),
-        'allow_select' => false,
-    ],
-
     'extension' => [
-        'min' => 10000000,
-        'max' => 99999999,
+        'min' => 100000,
+        'max' => 999999,
     ],
 
     /**

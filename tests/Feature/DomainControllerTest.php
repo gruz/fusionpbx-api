@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use stdClass;
-use Faker\Factory;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Domain;
@@ -113,15 +112,15 @@ class DomainControllerTest extends TestCase
 
     public function testActivateSuccessDomainEnabledOrDisabledByDefaultDependingOnConfig()
     {
-        foreach ([false, true] as $hasDomainEnabledAttribute) {
+        foreach ([false, true] as $requestHasDomainEnabledAttribute) {
             foreach ([false, true] as $key => $domain_enabled_after_activation) {
-                config(['fpbx.domain.enabled' => $domain_enabled_after_activation]);
-                $this->simulateDomainSignup(true);
+                config(['fpbx.default.domain.enabled' => $domain_enabled_after_activation]);
+                $data = $this->simulateDomainSignup(true);
 
                 /** @var PostponedAction */
                 $model = PostponedAction::last();
 
-                if ($hasDomainEnabledAttribute) {
+                if ($requestHasDomainEnabledAttribute) {
                     $model->setAttribute('request->domain_enabled', $domain_enabled_after_activation);
                 } else {
                     $json = $model->request;
@@ -136,7 +135,6 @@ class DomainControllerTest extends TestCase
                 $response = $this->json('get', route('fpbx.get.domain.activate', ['hash' => $model->hash, 'email' => $email]));
                 $response->assertStatus(201);
 
-
                 $this->assertDatabaseHas('v_domains', ['domain_name' => $domain_name, 'domain_enabled' => $domain_enabled_after_activation]);
             }
         }
@@ -150,11 +148,10 @@ class DomainControllerTest extends TestCase
         $requestFiles = Storage::files('swagger/domain/post/request/');
         foreach ($requestFiles as $jsonFile) {
             $data = json_decode(Storage::get($jsonFile), true);
-            $faker = Factory::create(Factory::DEFAULT_LOCALE);
-            $data['domain_name'] = $faker->domainName;
+            $data['domain_name'] = $this->faker->domainName;
             $this->testDomainActivateSuccess($data);
         }
-        $this->assertEquals(1,1); // Just to suppress test notice on no asserts
+        $this->assertEquals(1, 1); // Just to suppress test notice on no asserts
     }
 
     public function testDomainActivateSuccess($data = [])

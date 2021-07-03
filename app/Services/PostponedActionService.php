@@ -45,11 +45,12 @@ class PostponedActionService
 
         $data = $model->request;
 
-        $domainModel =  $this->teamService->create($data, $email);
+        $domainModel = $this->teamService->create($data, $email);
 
 
         if (!empty($domainModel)) {
-            PostponedAction::where('request->domain_name', $domainModel->getAttribute('domain_name'))->delete();
+            $model->delete();
+            // PostponedAction::where('request->domain_name', $domainModel->getAttribute('domain_name'))->delete();
         }
 
         return $domainModel;

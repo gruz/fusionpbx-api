@@ -50,10 +50,10 @@ class TeamService extends AbstractService
             $data['domain_name'] = $data['domain_name'] . '.' . config('fpbx.default.domain.mothership_domain');
         }
 
-        if (!config('fpbx.domain.enabled')) {
+        if (!config('fpbx.default.domain.enabled')) {
             $data['domain_enabled'] = false;
         } else {
-            $data['domain_enabled'] = Arr::get($data, 'domain_enabled', config('fpbx.domain.enabled'));
+            $data['domain_enabled'] = Arr::get($data, 'domain_enabled', config('fpbx.default.domain.enabled'));
         }
 
         if (config('domain_enabled_field_type') === 'text') {

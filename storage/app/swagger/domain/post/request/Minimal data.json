@@ -4,12 +4,12 @@
         {
             "is_admin": true,
             "username": "alyson.dietrich@howe.com",
-            "password": "7A%XQ>*k2?XPSYL1K4",
+            "password": ".VonManStein143",
             "user_email": "alyson.dietrich@howe.com",
             "extensions": [
                 {
-                    "extension": 169,
-                    "password": "somePass",
+                    "extension": 123169,
+                    "password": "somePass02",
                     "voicemail_password": "956"
                 }
             ]

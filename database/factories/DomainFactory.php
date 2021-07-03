@@ -22,8 +22,14 @@ class DomainFactory extends Factory
      */
     public function definition()
     {
+        do {
+            $domain_name = $this->faker->domainName;
+        } while (
+            Domain::where('domain_name', $domain_name)->count() > 0
+        );
+
         return [
-            'domain_name' => $this->faker->domainName,
+            'domain_name' => $domain_name,
             'domain_enabled' => true,
             'domain_description' => 'Created via Factory during tests',
         ];

@@ -32,10 +32,6 @@ class DomainSignupHashHasEmailExistsRule implements Rule
     {
         $hash = $this->field;
 
-        if (app()->runningUnitTests()) {
-            $hash = Arr::get($GLOBALS, 'test_signup_hash');
-        }
-
         if (!Str::isUuid($hash)) {
             return false;
         }

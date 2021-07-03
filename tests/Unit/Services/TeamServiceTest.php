@@ -56,7 +56,7 @@ class TeamServiceTest extends TestCase
 
         $data = $this->testRequestFactoryService->makeDomainSignupRequest();
 
-        config(['fpbx.domain.enabled' => true]);
+        config(['fpbx.default.domain.enabled' => true]);
 
         $data['domain_enabled'] = true;
         $this->assertEquals(true, $this->teamService->prepareData($data)['domain_enabled']);
@@ -64,7 +64,7 @@ class TeamServiceTest extends TestCase
         $data['domain_enabled'] = false;
         $this->assertEquals(false, $this->teamService->prepareData($data)['domain_enabled']);
 
-        config(['fpbx.domain.enabled' => false]);
+        config(['fpbx.default.domain.enabled' => false]);
 
         $data['domain_enabled'] = true;
         $this->assertEquals(false, $this->teamService->prepareData($data)['domain_enabled']);
