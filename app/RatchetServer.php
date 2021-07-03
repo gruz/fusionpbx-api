@@ -227,7 +227,7 @@ class RatchetServer extends RatchetServerBase
 
             if (empty($responseData->user_uuid))
             {
-              throw new \App\Exceptions\InvalidCredentialsException();
+              throw new \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException('Basic');
               return;
             }
 
@@ -258,7 +258,7 @@ class RatchetServer extends RatchetServerBase
 
             if (!empty($controllerResult->status) && $controllerResult->status == 'error')
             {
-              throw new \App\Exceptions\InvalidCredentialsException();
+              throw new \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException('Basic');
               return;
             }
 

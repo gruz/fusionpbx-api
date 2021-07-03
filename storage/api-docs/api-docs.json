@@ -7,6 +7,11 @@
         },
         "version": "0.0.1"
     },
+    "servers": [
+        {
+            "url": "http://localhost/api"
+        }
+    ],
     "paths": {
         "/": {
             "get": {
@@ -442,7 +447,7 @@
                 "x-route-$path": "fpbx.user.signup"
             }
         },
-        "/forgot-password": {
+        "/user/forgot-password": {
             "post": {
                 "tags": [
                     "User"
@@ -532,6 +537,74 @@
                     }
                 },
                 "x-route-$path": "fpbx.user.forgot-password"
+            }
+        },
+        "/user/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User login",
+                "description": "Login user and return access token",
+                "operationId": "App_Http_Controllers_Api_UserController::login",
+                "requestBody": {
+                    "description": "User information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {},
+                            "example": {
+                                "domain_name": "192.168.0.160",
+                                "username": "admin",
+                                "password": "admin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successfull",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "access_token": "18|o7yAzJLTcRFECUUrBERn44ITisQTGDDJUY1KHdJ0"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Bad domain",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "errors": [
+                                        {
+                                            "status": "422",
+                                            "code": 422,
+                                            "title": "Validation error",
+                                            "detail": "The selected domain name is invalid."
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials.",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "error",
+                                    "code": 401,
+                                    "message": "Invalid credentials."
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },

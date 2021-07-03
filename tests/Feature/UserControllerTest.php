@@ -8,9 +8,10 @@ use App\Models\Domain;
 use Illuminate\Support\Arr;
 use Tests\Traits\UserTrait;
 use App\Models\DefaultSetting;
+use App\Notifications\ResetPassword;
+use App\Services\UserPasswordService;
 use App\Services\Fpbx\ExtensionService;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\ResetPassword;
 use App\Notifications\UserWasActivatedSelfNotification;
 use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 
@@ -22,7 +23,6 @@ class UserControllerTest extends TestCase
     {
         config(['fpbx.resellerCode.required' => $resellerCodeRequired]);
 
-        $data = $this->testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
         list($response, $email) = $this->simulateDomainSignupAndActivate();
         $domain_name = $response->json('domain_name');
         $domainModel = Domain::where('domain_name', $domain_name)->first();
@@ -30,6 +30,7 @@ class UserControllerTest extends TestCase
 
         $nonExistingEmail = $this->prepareNonExistingEmailInDomain($domain_uuid);
 
+        $data = $this->testRequestFactoryService->makeUserSignupRequest(['noCache' => true]);
         $data['user_email'] = $nonExistingEmail;
         $data['domain_name'] = $domain_name;
 
@@ -59,6 +60,9 @@ class UserControllerTest extends TestCase
         $response = $this->json('post', route('fpbx.user.signup', $data));
         $response->assertStatus(201);
 
+        /**
+         * @var User
+         */
         $user = User::where(['domain_uuid' => $domain_uuid, 'user_email' => $data['user_email']])->first();
         Notification::assertSentTo($user, UserWasCreatedSendVeirfyLinkNotification::class);
 
@@ -149,8 +153,47 @@ class UserControllerTest extends TestCase
                 $token = $notification->token;
 
                 return true;
-            });
+            }
+        );
 
         return [$data, $response, $token];
+    }
+
+    public function testUserLogin()
+    {
+        $user = $this->testUserActivateSuccess();
+
+        // Successfull login {
+        /**
+         * @var UserPasswordService
+         */
+        $userPasswordService = app(UserPasswordService::class);
+        $password = '.PanzerWagen14';
+        $userPasswordService->userSetPassword($user, $password);
+
+        $data = [
+            'domain_name' => $user->domain_name,
+            'username' => $user->username,
+            'password' => $password,
+        ];
+        $response = $this->json('post', route('fpbx.post.user.login'), $data);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['access_token']);
+        // Successfull login }
+
+        // Bad password {
+        $data2 = $data;
+        $data2['password'] = $this->faker->password();
+        $response = $this->json('post', route('fpbx.post.user.login'), $data2);
+        $response->assertStatus(401);
+        $response->assertJsonFragment(["message" => "Invalid credentials."]);
+
+        $data2 = $data;
+        $data2['username'] = $this->faker->userName;
+        $response = $this->json('post', route('fpbx.post.user.login'), $data2);
+        $response->assertStatus(401);
+        $response->assertJsonFragment(["message" => "Invalid credentials."]);
+        // Bad password }
     }
 }

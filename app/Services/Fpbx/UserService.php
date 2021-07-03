@@ -222,6 +222,11 @@ class UserService extends AbstractService
         return $this->userRepository->getUserByEmailAndDomain($user_email, $domain_name);
     }
 
+    public function getUserByUsernameAndDomain($username, $domain_name)
+    {
+        return $this->userRepository->getUserByUsernameAndDomain($username, $domain_name);
+    }
+
     private function addRelations($userModel, $data, $type, $service)
     {
 

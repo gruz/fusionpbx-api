@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  *     email="vongruz@protonmail.com"
  *   )
  * )
+ *   @OA\Server(url=APP_URL)
  */
 
 /**

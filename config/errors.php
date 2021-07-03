@@ -6,10 +6,6 @@ return [
     |—————————————————————————————————————
     */
 
-    \App\Exceptions\InvalidCredentialsException::class => [
-        'message' => 'Invalid credentials',
-        'code' => '1000',
-    ],
     \App\Exceptions\UserNotFoundException::class => [
         'message' => 'User not found',
         'code' => '1003',

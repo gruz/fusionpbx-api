@@ -74,10 +74,8 @@ class UserRepository extends AbstractRepository
         return $model;
     }
 
-
     public function getUserByEmailAndDomain($user_email, $domain_name)
     {
-        \DB::enableQueryLog();
         /**
          * @var User
          */

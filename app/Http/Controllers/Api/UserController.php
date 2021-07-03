@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Requests\UserLoginRequest;
 use App\Services\Fpbx\UserService;
 use App\Requests\CreateUserRequest;
+use Illuminate\Support\Facades\Hash;
 use App\Requests\UserActivateRequest;
 use App\Services\UserPasswordService;
 use App\Requests\UserSignupRequestApi;
 use App\Requests\UserForgotPasswordRequestApi;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * @OA\Schema()
@@ -293,7 +296,7 @@ class UserController extends AbstractBrunoController
      *
     @OA\Post(
         tags={"User"},
-        path="/forgot-password",
+        path="/user/forgot-password",
         x={"route-$path"="fpbx.user.forgot-password"},
         @OA\RequestBody(
             description="User information to reset his password",
@@ -370,5 +373,79 @@ class UserController extends AbstractBrunoController
         $data = $request->only('user_email', 'domain_name');
 
         return $this->response($userPasswordService->generateResetToken($data));
+    }
+
+    /**
+     *
+     * User login
+     *
+     * Login user and return access token
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user/login",
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                example={
+                    "domain_name" : "192.168.0.160",
+                    "username" : "admin",
+                    "password" : "admin"
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="Login successfull",
+            @OA\JsonContent(
+                example={
+                    "access_token": "18|o7yAzJLTcRFECUUrBERn44ITisQTGDDJUY1KHdJ0"
+                }
+            ),
+        ),
+        @OA\Response(
+            response=422,
+            description="Bad domain",
+            @OA\JsonContent(
+                example={
+                    "errors": {
+                        {
+                            "status": "422",
+                            "code": 422,
+                            "title": "Validation error",
+                            "detail": "The selected domain name is invalid."
+                        }
+                    }
+                }
+            ),
+        ),
+        @OA\Response(
+            response=401,
+            description="Invalid credentials.",
+            @OA\JsonContent(
+                example={
+                    "status": "error",
+                    "code": 401,
+                    "message": "Invalid credentials.",
+                }
+            ),
+        ),
+    )
+     */
+    public function login(UserLoginRequest $request, UserService $userService)
+    {
+        $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw new UnauthorizedHttpException('Basic', __('Invalid credentials.'), null, 401);
+            // throw ValidationException::withMessages([
+            //     'username' => ['The provided credentials are incorrect.'],
+            // ]);
+        }
+
+        $token = $user->createToken($request->username)->plainTextToken;
+
+        return $this->response(['access_token' => $token]);
     }
 }

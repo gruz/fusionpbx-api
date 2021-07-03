@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use App\Requests\LoginRequest;
+use App\Requests\LoginRequestWeb;
 use App\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
@@ -25,10 +25,10 @@ class AuthenticatedSessionController extends AbstractController
     /**
      * Handle an incoming authentication request.
      *
-     * @param  \App\Requests\LoginRequest  $request
+     * @param  \App\Requests\LoginRequestWeb  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(LoginRequest $request)
+    public function store(LoginRequestWeb $request)
     {
         $request->authenticate();
 

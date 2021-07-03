@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
-use App\Exceptions\InvalidCredentialsException;
+use App\Models\User;
+use App\Services\Fpbx\UserService;
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
 use App\Repositories\DomainRepository;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
 use App\Exceptions\UserDisabledException;
-use App\Services\Fpbx\UserService;
+use Illuminate\Auth\Events\PasswordReset;
 use App\Exceptions\DomainNotFoundException;
+use Illuminate\Contracts\Auth\PasswordBroker;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class UserPasswordService
 {
@@ -24,11 +26,13 @@ class UserPasswordService
     public function __construct(
         UserRepository $userRepository,
         DomainRepository $domainRepository,
-        UserService $userService
+        UserService $userService,
+        PasswordBroker $passwordBroker
     ) {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
         $this->userService = $userService;
+        $this->passwordBroker = $passwordBroker;
     }
 
     /**
@@ -39,7 +43,7 @@ class UserPasswordService
      *                  User email for which password needs to be reset.
      *                  Domain name to which user belongs.
      * @return array|mixed
-     * @throws InvalidCredentialsException|UserDisabledException
+     * @throws UnauthorizedHttpException|UserDisabledException
      */
     public function generateResetToken($data)
     {
@@ -54,35 +58,30 @@ class UserPasswordService
 
     /**
      * Method to reset user password based on user credentials.
-     *
-     * @param $data Data from request
-     * @return array|mixed
-     * @throws InvalidCredentialsException|UserDisabledException
      */
-    public function resetPassword($data)
+    public function resetPassword($domain_name, $username, $password, $token)
     {
-        $userCredentials = array_merge($this->getUserCredentials($data)->toArray(), $data);
+        $data = compact('domain_name', 'username', 'password', 'token');
+
+        // Here we will attempt to reset the user's password. If it is successful we
+        // will update the password on an actual user model and persist it to the
+        // database. Otherwise we will parse the error and return the response.
         $status = Password::reset(
-            $userCredentials,
-            function ($user, $password) {
-                $data = \encrypt_password_with_salt($password);
-                $user->salt = $data['salt'];
-                $user->fill(['password' => $data['password']]);
-                $user->save();
-                $user->setRememberToken(Str::random(60));
+            $data,
+            function ($user) use ($password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    // 'remember_token' => Str::random(60),
+                ])->save();
+
                 event(new PasswordReset($user));
             }
         );
 
-        if ($status !== Password::PASSWORD_RESET) {
-            return null;
-        }
-
+        // If the password was successfully reset, we will redirect the user back to
+        // the application's home authenticated view. If there is an error we can
+        // redirect them back to where they came from with their error message.
         return $status;
-
-        // return [
-        //     'success' => 'Password has been successfully reset',
-        // ];
     }
 
     /**
@@ -92,7 +91,7 @@ class UserPasswordService
      *
      * @param $data Contains user email and domain name to which user belongs
      * @return null|\App\Models\User
-     * @throws InvalidCredentialsException|UserDisabledException
+     * @throws UnauthorizedHttpException|UserDisabledException
      */
     public function getUserCredentials($data)
     {
@@ -121,7 +120,8 @@ class UserPasswordService
             return $user;
         }
 
-        throw new InvalidCredentialsException(__('User doesn\'t exists'));
+
+        throw new UnauthorizedHttpException('Basic', __('User doesn\'t exists'));
     }
 
     /**
@@ -138,5 +138,21 @@ class UserPasswordService
             ->first();
 
         return $user;
+    }
+
+    public function userSetPassword(User $user, $password)
+    {
+        $data = [
+            'domain_uuid' => $user->getAttribute('domain_uuid'),
+            'user_email' => $user->user_email,
+        ];
+
+        $status = $this->passwordBroker->sendResetLink($data, function($user, $token) {
+            $this->ttoken = $token;
+        });
+
+        $status = $this->resetPassword($user->domain_name, $user->username, $password, $this->ttoken);
+
+        return $status;
     }
 }
