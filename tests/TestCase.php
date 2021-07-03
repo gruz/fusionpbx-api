@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Tests\CreatesApplication;
 use App\Models\DefaultSetting;
 use App\Models\PostponedAction;
+use App\Services\TestHelperService;
 use Illuminate\Support\Facades\Artisan;
 use App\Services\TestRequestFactoryService;
 use Illuminate\Support\Facades\Notification;
@@ -33,6 +34,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->testRequestFactoryService = app(TestRequestFactoryService::class);
+        $this->testHelperService = app(TestHelperService::class);
 
         $this->faker = Factory::create(Factory::DEFAULT_LOCALE);
 

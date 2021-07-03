@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Domain;
+use App\Services\TestHelperService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -22,11 +23,7 @@ class DomainFactory extends Factory
      */
     public function definition()
     {
-        do {
-            $domain_name = $this->faker->domainName;
-        } while (
-            Domain::where('domain_name', $domain_name)->count() > 0
-        );
+        $domain_name = app(TestHelperService::class)->getUniqueDomain();
 
         return [
             'domain_name' => $domain_name,

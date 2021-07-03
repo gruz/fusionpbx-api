@@ -145,10 +145,12 @@ class DomainControllerTest extends TestCase
      */
     public function testDomainActivateSuccessMany()
     {
+
         $requestFiles = Storage::files('swagger/domain/post/request/');
         foreach ($requestFiles as $jsonFile) {
+            $domain_name = $this->testHelperService->getUniqueDomain();
             $data = json_decode(Storage::get($jsonFile), true);
-            $data['domain_name'] = $this->faker->domainName;
+            $data['domain_name'] = $domain_name;
             $this->testDomainActivateSuccess($data);
         }
         $this->assertEquals(1, 1); // Just to suppress test notice on no asserts

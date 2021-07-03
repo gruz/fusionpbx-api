@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\UserController;
 
 use Tests\TestCase;
 use App\Models\User;
@@ -8,14 +8,12 @@ use App\Models\Domain;
 use Illuminate\Support\Arr;
 use Tests\Traits\UserTrait;
 use App\Models\DefaultSetting;
-use App\Notifications\ResetPassword;
-use App\Services\UserPasswordService;
 use App\Services\Fpbx\ExtensionService;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\UserWasActivatedSelfNotification;
 use App\Notifications\UserWasCreatedSendVeirfyLinkNotification;
 
-class UserControllerTest extends TestCase
+class UserControllerSignupTest extends TestCase
 {
     use UserTrait;
 
@@ -124,76 +122,5 @@ class UserControllerTest extends TestCase
         // $domainModel = $userModel->domain;
         // $domainModel->domain_enabled = false;
         // $domainModel->save();
-    }
-
-    public function test_ForgotPassword_Success()
-    {
-        $userModel = $this->testUserActivateSuccess();
-        $data = [
-            'domain_name' => $userModel->domain->getAttribute('domain_name'),
-            'user_email' => $userModel->user_email,
-        ];
-
-        $response = $this->json('post', route('fpbx.user.forgot-password'), $data);
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            "username" => $userModel->username,
-            'domain_uuid' => $userModel->getAttribute('domain_uuid'),
-        ]);
-
-        // Notification::assertSentTo($userModel, ResetPassword::class);
-
-        $token = '';
-
-        Notification::assertSentTo(
-            $userModel,
-            ResetPassword::class,
-            function ($notification, $channels) use (&$token) {
-                $token = $notification->token;
-
-                return true;
-            }
-        );
-
-        return [$data, $response, $token];
-    }
-
-    public function testUserLogin()
-    {
-        $user = $this->testUserActivateSuccess();
-
-        // Successfull login {
-        /**
-         * @var UserPasswordService
-         */
-        $userPasswordService = app(UserPasswordService::class);
-        $password = '.PanzerWagen14';
-        $userPasswordService->userSetPassword($user, $password);
-
-        $data = [
-            'domain_name' => $user->domain_name,
-            'username' => $user->username,
-            'password' => $password,
-        ];
-        $response = $this->json('post', route('fpbx.post.user.login'), $data);
-
-        $response->assertStatus(200);
-        $response->assertJsonStructure(['access_token']);
-        // Successfull login }
-
-        // Bad password {
-        $data2 = $data;
-        $data2['password'] = $this->faker->password();
-        $response = $this->json('post', route('fpbx.post.user.login'), $data2);
-        $response->assertStatus(401);
-        $response->assertJsonFragment(["message" => "Invalid credentials."]);
-
-        $data2 = $data;
-        $data2['username'] = $this->faker->userName;
-        $response = $this->json('post', route('fpbx.post.user.login'), $data2);
-        $response->assertStatus(401);
-        $response->assertJsonFragment(["message" => "Invalid credentials."]);
-        // Bad password }
     }
 }

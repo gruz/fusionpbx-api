@@ -4,9 +4,7 @@ namespace Tests\Requests;
 
 use Tests\TestCase;
 use App\Models\Domain;
-use App\Models\Extension;
 use Tests\Traits\UserTrait;
-use App\Services\Fpbx\ExtensionService;
 
 class UserLoginRequestTest extends TestCase
 {
@@ -34,10 +32,11 @@ class UserLoginRequestTest extends TestCase
             ]
         ]);
 
+        $domain_name = $this->testHelperService->getUniqueDomain();
         $data = [
             'username' => $data['username'],
             'password' => $this->faker->password(),
-            "domain_name" => $this->faker->domainName,
+            "domain_name" => $domain_name,
         ];
 
         $response = $this->json('post', route('fpbx.post.user.login'), $data);

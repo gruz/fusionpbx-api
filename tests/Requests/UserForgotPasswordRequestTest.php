@@ -4,20 +4,19 @@ namespace Tests\Requests;
 
 use Tests\TestCase;
 use App\Models\User;
-use Tests\Traits\UserTrait;
 use App\Models\Domain;
-use Tests\Traits\DomainTrait;
+use Tests\Traits\UserTrait;
 
 class UserForgotPasswordRequestTest extends TestCase
 {
-    use DomainTrait;
     use UserTrait;
 
     public function testFailsIfDomainNotExists()
     {
         list($response, $email) = $this->simulateDomainSignupAndActivate();
         $data['user_email'] = $email;
-        $data['domain_name'] = $this->prepareNonExistingDomain();
+        $domain_name = $this->testHelperService->getUniqueDomain();
+        $data['domain_name'] = $domain_name;
 
         $response = $this->json('post', route('fpbx.user.forgot-password'), $data);
 
@@ -92,7 +91,7 @@ class UserForgotPasswordRequestTest extends TestCase
 
     public function testFailWhenUserAndDomainNotExists()
     {
-        $nonExistingDomain = $this->prepareNonExistingDomain();
+        $nonExistingDomain = $this->testHelperService->getUniqueDomain();
 
         $nonExistingEmail = $this->faker->email;
         while (true) {
