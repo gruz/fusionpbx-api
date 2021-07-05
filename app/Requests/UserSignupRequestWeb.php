@@ -46,6 +46,7 @@ class UserSignupRequestWeb extends UserSignupRequest
         $extension_password = str_shuffle(\Str::random(8) . rand(0,9) . $s);
 
         $this->merge([
+            'username' => $this->user_email,
             'domain_name' => $this->domain_name,
             'extensions' => [
                 [
@@ -63,8 +64,6 @@ class UserSignupRequestWeb extends UserSignupRequest
     public function rules()
     {
         $rules = parent::rules();
-
-        unset($rules['username']);
 
         $rules['voicemail_password'] = $rules['extensions.*.voicemail_password'];
 

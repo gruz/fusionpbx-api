@@ -34,9 +34,6 @@ class RegisteredUserController extends AbstractController
     public function store(UserSignupRequestWeb $request)
     {
         $validated = $request->validated();
-        $validated['username'] = $request->get('user_email');
-        // dd($validated, $request->get('extensions'));
-        // $domain_name = Domain::where('domain_uuid', $validated['domain_uuid'])
 
         $request = \Illuminate\Support\Facades\Request::create(route('fpbx.user.signup'), 'POST');
         \Request::replace($validated);
