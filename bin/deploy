@@ -2,5 +2,5 @@
 git reset --hard HEAD
 git pull
 composer install
-php artisan migrate
+yes | php artisan migrate
 php artisan cache:clear
