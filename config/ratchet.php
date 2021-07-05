@@ -11,8 +11,8 @@ return [
     |
     */
 
-    'class'           => \Askedio\LaravelRatchet\PusherExample::class,
-    'class'           => App\RatchetServer::class,
+    // 'class'           => \Askedio\LaravelRatchet\PusherExample::class,
+    'class'           => \App\RatchetServer::class,
     'host'            => '0.0.0.0',
     'port'            => '8080',
     'connectionLimit' => false,
