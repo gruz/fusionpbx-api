@@ -1,6 +1,6 @@
 #!/bin/bash
 git reset --hard HEAD
 git pull
-php composer install
+composer install
 php artisan migrate
 php artisan cache:clear
