@@ -12,14 +12,15 @@ class UserWasCreatedListener
 {
     public function handle($event)
     {
+        $a = 1;
         // Send veirification links to users
         if ($event->user instanceof MustVerifyEmail && ! $event->user->hasVerifiedEmail()) {
 
             $excludeNotificationEmails = Arr::get($event->options, 'excludeNotification', []);
             if (!in_array($event->user->user_email, $excludeNotificationEmails)) {
                 $event->user->sendEmailVerificationNotification();
-                $notification = new UserWasCreatedSendVeirfyLinkNotification($event->user);
-                Notification::send($event->user, $notification);
+                // $notification = new UserWasCreatedSendVeirfyLinkNotification($event->user);
+                // Notification::send($event->user, $notification);
             }
         }
     }
