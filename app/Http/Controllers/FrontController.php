@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Arr;
-use App\Models\Contact;
-use Illuminate\Http\Request;
 use App\Models\Domain;
+use App\Models\Contact;
 use App\Models\Setting;
 use App\Models\Extension;
 use App\Models\Voicemail;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
+use App\Requests\UserLoginRequest;
+use App\Services\Fpbx\UserService;
 use App\Services\Fpbx\DomainService;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Hash;
+use App\Requests\LoginRequestWebProv;
 use App\Services\FreeSwitchHookService;
 use App\Repositories\ExtensionRepository;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Database\Eloquent\Factories\Sequence;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class FrontController extends AbstractController
 {
@@ -23,6 +28,61 @@ class FrontController extends AbstractController
         $type = $request->get('type', '');
         return response()->json(['captcha' => captcha_img($type)]);
     }
+
+    public function getProvisioning(LoginRequestWebProv $request, UserService $userService)
+    {
+        /**
+         * @var User
+         */
+        $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw new UnauthorizedHttpException('Basic', __('Invalid credentials.'), null, 401);
+            // throw ValidationException::withMessages([
+            //     'username' => ['The provided credentials are incorrect.'],
+            // ]);
+        }
+
+        $extension = $user->extensions()->where('enabled', 'true')->first();
+        $xml='
+        <account>
+        <!-- exposed credentials
+         need to be included to populate fields in Edit Account screen
+        -->
+        <cloud_username>' . $user->username. '</cloud_username>
+        <cloud_password>' . $request->get('password') . ' </cloud_password>
+
+        <!-- SIP credentials -->
+        <username>' . $extension->extension . '</username>
+        <password>' . $extension->password . '</password>
+
+        <!-- you can replace 0 with a period in seconds
+        to enable periodic autoprovisioning checks -->
+        <extProvInterval>0</extProvInterval>
+
+        <!-- other per-user config parameters can follow
+        e.g. auth username, display name, codecs etc...
+        -->
+      </account>
+        ';
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml'
+        ]);
+
+
+        // return response()->json(
+        //     ['captcha' => captcha_img($type)]
+        // );
+
+
+        // dd($extension);
+
+        // $token = $user->createToken($request->username)->plainTextToken;
+
+        // return $this->response(['access_token' => $token]);
+    }
+
 
     public function test(Request $request)
     {

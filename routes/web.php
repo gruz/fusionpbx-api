@@ -31,6 +31,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/refresh-captcha', [\App\Http\Controllers\FrontController::class, 'refreshCaptcha']);
 Route::get('lang/{locale}', [\App\Http\Controllers\LocalizationController::class, 'lang'])->name('lang');
+Route::get('/prov', [\App\Http\Controllers\FrontController::class, 'getProvisioning']);
 
 
 require __DIR__.'/auth.php';
