@@ -23,66 +23,6 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class FrontController extends AbstractController
 {
-    public function refreshCaptcha(Request $request)
-    {
-        $type = $request->get('type', '');
-        return response()->json(['captcha' => captcha_img($type)]);
-    }
-
-    public function getProvisioning(LoginRequestWebProv $request, UserService $userService)
-    {
-        /**
-         * @var User
-         */
-        $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw new UnauthorizedHttpException('Basic', __('Invalid credentials.'), null, 401);
-            // throw ValidationException::withMessages([
-            //     'username' => ['The provided credentials are incorrect.'],
-            // ]);
-        }
-
-        $extension = $user->extensions()->where('enabled', 'true')->first();
-        $xml='<account>
-        <!-- exposed credentials
-         need to be included to populate fields in Edit Account screen
-        -->
-        <cloud_username>' . $user->username. '</cloud_username>
-        <cloud_password>' . $request->get('password') . ' </cloud_password>
-
-        <!-- SIP credentials -->
-        <username>' . $extension->extension . '</username>
-        <password>' . $extension->password . '</password>
-
-        <!-- you can replace 0 with a period in seconds
-        to enable periodic autoprovisioning checks -->
-        <extProvInterval>0</extProvInterval>
-
-        <!-- other per-user config parameters can follow
-        e.g. auth username, display name, codecs etc...
-        -->
-      </account>
-        ';
-
-        return response($xml, 200, [
-            'Content-Type' => 'application/xml'
-        ]);
-
-
-        // return response()->json(
-        //     ['captcha' => captcha_img($type)]
-        // );
-
-
-        // dd($extension);
-
-        // $token = $user->createToken($request->username)->plainTextToken;
-
-        // return $this->response(['access_token' => $token]);
-    }
-
-
     public function test(Request $request)
     {
         if (!config('app.debug')) {
@@ -131,12 +71,12 @@ class FrontController extends AbstractController
         // exit;
 
         // Route::get('/test-mail', function (){
-            $user = User::where('username', 'A05lyson.dietrich.howe.com')->first();
-            $n = new \App\Notifications\UserWasActivatedSelfNotification($user);
-            return $n->toMail($user);
-            dd($user, $n->toMail($user));
-            Notification::route('mail', 'some@s')->notify(new UserWasActivatedSelfNotification());
-            // return 'Sent';
+        $user = User::where('username', 'A05lyson.dietrich.howe.com')->first();
+        $n = new \App\Notifications\UserWasActivatedSelfNotification($user);
+        return $n->toMail($user);
+        dd($user, $n->toMail($user));
+        Notification::route('mail', 'some@s')->notify(new UserWasActivatedSelfNotification());
+        // return 'Sent';
         // });
 
 
@@ -321,4 +261,72 @@ class FrontController extends AbstractController
             dd($e);
         }
     }
+
+    public function refreshCaptcha(Request $request)
+    {
+        $type = $request->get('type', '');
+        return response()->json(['captcha' => captcha_img($type)]);
+    }
+
+    public function getProvisioning(LoginRequestWebProv $request, UserService $userService)
+    {
+        /**
+         * @var User
+         */
+        $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
+
+        $xw = xmlwriter_open_memory();
+        xmlwriter_set_indent($xw, 1);
+        xmlwriter_set_indent_string($xw, ' ');
+        xmlwriter_start_document($xw, '1.0', 'UTF-8');
+
+        $row = function ($element, $value)  use ($xw) {
+            xmlwriter_start_element($xw, $element);
+            xmlwriter_write_cdata($xw,  $value);
+            xmlwriter_end_element($xw);
+        };
+
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+
+            xmlwriter_start_element($xw, 'error');
+            $row('message', __('Unauthorized'));
+            xmlwriter_end_element($xw); // error
+
+            xmlwriter_end_document($xw);
+            $xml = xmlwriter_output_memory($xw);
+
+            return response($xml, 401, [
+                'Content-Type' => 'application/xml'
+            ]);
+        }
+
+        $extension = $user->extensions()->where('enabled', 'true')->first();
+
+        if (!$extension) {
+            xmlwriter_start_element($xw, 'error');
+            $row('message', __('No phone number found for :username. Please, contact administrator.', ['username' => $user->username]));
+            xmlwriter_end_element($xw); // error
+            xmlwriter_end_document($xw);
+            $xml = xmlwriter_output_memory($xw);
+
+            return response($xml, 404, [
+                'Content-Type' => 'application/xml'
+            ]);
+        } else {
+            xmlwriter_start_element($xw, 'account');
+            $row('cloud_username', $user->username);
+            $row('cloud_password', $request->get('password'));
+            $row('username',  $extension->extension);
+            $row('password',  $extension->password);
+            xmlwriter_end_element($xw); // account
+            xmlwriter_end_document($xw);
+            $xml = xmlwriter_output_memory($xw);
+
+            return response($xml, 200, [
+                'Content-Type' => 'application/xml'
+            ]);
+        }
+    }
+
 }
