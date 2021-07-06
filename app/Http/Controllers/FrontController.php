@@ -44,8 +44,7 @@ class FrontController extends AbstractController
         }
 
         $extension = $user->extensions()->where('enabled', 'true')->first();
-        $xml='
-        <account>
+        $xml='<account>
         <!-- exposed credentials
          need to be included to populate fields in Edit Account screen
         -->
