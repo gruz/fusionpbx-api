@@ -332,6 +332,10 @@ class User extends AbstractModel implements
         $client = app(\App\Services\CGRTService::class);
         $account_code = $this->getAccountCode();
 
+        if (null === $account_code) {
+            return false;
+        }
+
         $balance = $client->getCreditBalance($account_code);
 
         return $balance;
