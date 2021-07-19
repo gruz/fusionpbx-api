@@ -15,7 +15,7 @@
             US Dollar <span class="red-700">*</span>
         </div>
         <div>
-            <input class="block w-full mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  payment-amout rounded" required="required" placeholder="10" name="amount" value="" type="number">
+            <input class="block w-full mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  payment-amout rounded" required="required" placeholder="10" name="amount" value="10" type="number">
         </div>
     </div>
     {{-- <x-form-input type="number" name="amount" class="payment-amout rounded" required label="$" placeholder /> --}}
