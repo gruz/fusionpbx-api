@@ -31,7 +31,7 @@
     </div>
     <div id="card-errors" role="alert"></div>
     <div class="form-group mt-3">
-        <x-form-submit class="btn btn-primary pay" >
+        <x-form-submit class="btn btn-primary pay disabled:opacity-50" >
             Purchase
         </x-form-submit>
     </div>
