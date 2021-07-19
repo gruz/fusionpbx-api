@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\StripeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-$router->get('/test', [ \App\Http\Controllers\FrontController::class, 'test' ]);
+$router->get('/test', [\App\Http\Controllers\FrontController::class, 'test']);
 
-$router->get('/docs/redoc', function(){
-     return view('documenation.index');
- });
+$router->get('/docs/redoc', function () {
+    return view('documenation.index');
+});
 
 // return;
 
@@ -26,7 +27,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    /**
+     * @var User
+     */
+    $user = auth()->user();
+    $intent = $user->createSetupIntent();
+
+    return view('dashboard', compact('intent'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/refresh-captcha', [\App\Http\Controllers\FrontController::class, 'refreshCaptcha']);
@@ -34,4 +41,16 @@ Route::get('lang/{locale}', [\App\Http\Controllers\LocalizationController::class
 Route::get('/prov', [\App\Http\Controllers\FrontController::class, 'getProvisioning']);
 
 
-require __DIR__.'/auth.php';
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+*/
+Route::get('/stripe-payment', [StripeController::class, 'handleGet']);
+Route::post('/stripe-payment', [StripeController::class, 'handlePost'])->name('stripe.payment');
+
+// Route::get('/pay', [StripeController::class, 'show']);
+Route::post('/pay', [StripeController::class, 'payAmount'])->name('pay.amount');
+
+require __DIR__ . '/auth.php';

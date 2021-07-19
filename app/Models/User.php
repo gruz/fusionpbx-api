@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\Contact;
 use App\Models\Domain;
 use App\Models\Status;
+use App\Models\Contact;
+use App\Models\Extension;
 use App\Models\ContactUser;
 use App\Models\UserSetting;
-use Laravel\Sanctum\HasApiTokens;
-use App\Models\Extension;
+use App\Models\AbstractModel;
+use App\Models\ExtensionUser;
+use Laravel\Cashier\Billable;
 use App\Models\GroupPermission;
+use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\ResetPassword;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
-use App\Models\ExtensionUser;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use App\Models\AbstractModel;
-use App\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -40,6 +41,7 @@ class User extends AbstractModel implements
     use HasApiTokens, Notifiable;
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
     use HasFactory;
+    use Billable;
     // ~ use HasCustomRelations;
 
     public $timestamps = true;
@@ -91,7 +93,11 @@ class User extends AbstractModel implements
      * @var array
      */
     protected $appends = [
-        'email'
+        'email',
+    ];
+
+    protected $with = [
+        'account_code'
     ];
 
     /**
@@ -301,15 +307,18 @@ class User extends AbstractModel implements
         return $this->domain()->first()->getAttribute('domain_name');
     }
 
-    /**
-     * Method to get user domain name to which he relates.
-     */
-    public function getAccountCodeAttribute()
+    public function account_code() {
+        return $this->hasOne(UserSetting::class, 'user_uuid', 'user_uuid')->where(
+            [
+                ["user_setting_category", "payment"],
+                ["user_setting_subcategory", "account_code"],
+            ]
+        );
+    }
+
+    public function getAccountCode()
     {
-        return optional($this->user_settings()->where([
-            ["user_setting_category", "payment"],
-            ["user_setting_subcategory", "account_code"],
-        ])->first())->user_setting_value;
+        return $this->account_code->user_setting_value;
     }
 
     public function getCGRTBalanceAttribute() {
@@ -321,13 +330,29 @@ class User extends AbstractModel implements
          * @var \App\Services\CGRTService
          */
         $client = app(\App\Services\CGRTService::class);
-        $account_code = $this->getAccountCodeAttribute();
+        $account_code = $this->getAccountCode();
 
-        $balance = $client->getBalance($account_code);
+        $balance = $client->getCreditBalance($account_code);
 
         return $balance;
-
     }
+
+    public function addCGRTBalance($amount, $description = null) {
+        if (!config('fpbx.cgrt.enabled')) {
+            return null;
+        }
+
+        /**
+         * @var \App\Services\CGRTService
+         */
+        $client = app(\App\Services\CGRTService::class);
+        $account_code = $this->getAccountCode();
+
+        $balance = $client->addCreditBalance($account_code, $amount, $description);
+
+        return $balance;
+    }
+
     public function getCGRTCurrencyAttribute() {
         if (!config('fpbx.cgrt.enabled')) {
             return null;
@@ -337,7 +362,7 @@ class User extends AbstractModel implements
          * @var \App\Services\CGRTService
          */
         $client = app(\App\Services\CGRTService::class);
-        $account_code = $this->getAccountCodeAttribute();
+        $account_code = $this->getAccountCode();
 
         $currency_code = optional($client->getClient($account_code))->currency_code;
 

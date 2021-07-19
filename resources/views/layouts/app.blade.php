@@ -15,6 +15,8 @@
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
+        @stack('styles')
+        @stack('scripts-top')
     </head>
     <body class="font-sans antialiased dark">
         <div class="min-h-screen bg-gray-200">
@@ -32,5 +34,6 @@
                 {{ $slot }}
             </main>
         </div>
+        @stack('scripts-bottom')
     </body>
 </html>

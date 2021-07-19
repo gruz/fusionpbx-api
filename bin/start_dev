@@ -1,0 +1,2 @@
+#!/bin/bash
+bin/start dev -pg=13

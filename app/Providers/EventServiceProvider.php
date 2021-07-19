@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Events\TeamWasCreated;
 use App\Events\UserWasCreated;
 use App\Events\CGRTFailedEvent;
+use App\Events\PaymentReceivedEvent;
 use App\Events\UserWasActivated;
 use App\Listeners\CGRTFailedListener;
 use Illuminate\Auth\Events\Registered;
 use App\Events\PostponedActionWasCreated;
+use App\Listeners\PaymentReceivedListener;
 use App\Listeners\TeamWasCreatedListener;
 use App\Listeners\UserWasCreatedListener;
 use App\Listeners\UserWasActivatedListener;
@@ -49,5 +51,8 @@ class EventServiceProvider extends ServiceProvider
             UserWasActivatedListener::class,
             UserWasActivatedCGRTListener::class,
         ],
+        PaymentReceivedEvent::class => [
+            PaymentReceivedListener::class,
+        ]
     ];
 }

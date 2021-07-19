@@ -233,5 +233,7 @@
     "Voice account (Login)" : "Голосовой аккаунт (Логин)",
     "Account reference code" : "Реферальный код вашего акаунта",
     "Login to [web portal](:url) to get the password" : "Войдите в [веб-интерфейс](:url), чтобы узнать пароль",
-    "Balance" : "Баланс"
+    "Balance" : "Баланс",
+    "Replenish the balance"  : "Пополнить баланс",
+    "Card holder name" : "Имя на карте"
 }

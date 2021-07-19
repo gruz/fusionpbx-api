@@ -230,5 +230,7 @@
     "Voice account (Login)" : "Голосовий обліковий запис (Логін)",
     "Account reference code" : "Реферальний код облікового запису",
     "Login to [web portal](:url) to get the password" : "Увійдіть у [веб-додаток](:url) для отримання пароля",
-    "Balance" : "Баланс"
+    "Balance" : "Баланс",
+    "Replenish the balance"  : "Поповнити баланс",
+    "Card holder name" : "Ім'я на картці"
 }

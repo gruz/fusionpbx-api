@@ -13,6 +13,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel-lang/lang": "~7.0",
+        "laravel/cashier": "^13.4",
         "laravel/framework": "^8.33",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.6",

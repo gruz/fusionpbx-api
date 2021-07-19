@@ -1,7 +1,7 @@
 <div class="@if($type === 'hidden') hidden @else mt-4 @endif">
     <label class="block">
         <x-form-label :label="$label" />
-        {{ $attributes->get('required') ? '*' : '' }}
+        {{ $attributes->get('required') ? '<span class="required">*</span>' : '' }}
 
         <input {!! $attributes->merge([
             'class' => 'block w-full ' . ($label ? 'mt-1' : '') . ' ' . $fieldClass

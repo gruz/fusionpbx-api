@@ -308,7 +308,7 @@ class CGRTService
         return $responseJson;
     }
 
-    public function getBalance($account_code)
+    public function getCreditBalance($account_code)
     {
         $data = [
             "client_account_code" => $account_code,
@@ -321,6 +321,25 @@ class CGRTService
         }
 
         $balance = optional(\Arr::get($responseJson, '0', new \stdClass))->credit_balance;
+
+        return $balance;
+    }
+
+    public function addCreditBalance($account_code, $amount, $description = '')
+    {
+        $data = [
+            "client_account_code" => $account_code,
+            'value' => $amount,
+            'description' => $description
+        ];
+
+        $responseJson = $this->request('users/add_credit_balance', $data);
+
+        if (!$responseJson) {
+            return $responseJson;
+        }
+
+        $balance = optional(\Arr::get($responseJson, '0'))->balance;
 
         return $balance;
     }
