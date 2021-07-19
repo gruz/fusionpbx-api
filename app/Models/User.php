@@ -318,7 +318,7 @@ class User extends AbstractModel implements
 
     public function getAccountCode()
     {
-        return $this->account_code->user_setting_value;
+        return optional($this->account_code)->user_setting_value;
     }
 
     public function getCGRTBalanceAttribute() {
