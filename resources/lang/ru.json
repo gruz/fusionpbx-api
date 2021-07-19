@@ -235,5 +235,6 @@
     "Login to [web portal](:url) to get the password" : "Войдите в [веб-интерфейс](:url), чтобы узнать пароль",
     "Balance" : "Баланс",
     "Replenish the balance"  : "Пополнить баланс",
-    "Card holder name" : "Имя на карте"
+    "Card holder name" : "Имя на карте",
+    "Could not process payment" : "Не удалось провести оплату"
 }

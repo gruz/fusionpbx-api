@@ -51,9 +51,9 @@ class CGRTAddCreditBalanceFailedNotification extends Notification implements Sho
             ->subject(__('Alert! CGRT Add credit balance error '))
             ->greeting(__('Payment successfully recieved but CGRT balance could not be updated'))
             ->line(__('Username') . ': ')
-            ->line($this->user->username)
+            ->line($this->user ? $this->user->username : __('User not found'))
             ->line(__('Domain') . ': ')
-            ->line($this->user->domain_name)
+            ->line($this->user ? $this->user->domain_name : __('Domain not found'))
             ->line(__('Payment info') . ': ')
             ->line(new HtmlString($payment_info))
             ;

@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+return;
 use Ratchet\ConnectionInterface;
 
 use Askedio\LaravelRatchet\RatchetServer as RatchetServerBase;
@@ -16,7 +16,8 @@ use App\Services\Fpbx\StatusService;
 use App\Services\Fpbx\UserService;
 
 
-class RatchetServer extends RatchetServerBase
+// class RatchetServer extends RatchetServerBase
+class RatchetServer
 {
     use Traits\SocketJSONHelperTrait;
 
@@ -33,9 +34,9 @@ class RatchetServer extends RatchetServerBase
     private $userService;
     private $auth;
 
-    public function __construct($console)
+    public function __const1ruct($console)
     {
-        parent::__construct($console);
+        // parent::__construct($console);
 
         $this->statusService = app(StatusService::class);
         $this->userService = app(userService::class);

@@ -142,7 +142,7 @@
                             <div class="grid grid-cols-2 bg-gray">
                                 <div>
                                     {{-- @include('layouts.stripe-payment') --}}
-                                    <x-stripe-card :intent="$intent" />
+                                    <x-stripe-card />
                                 </div>
                             </div>
                             <!-- Payment -->

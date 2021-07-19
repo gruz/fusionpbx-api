@@ -232,5 +232,6 @@
     "Login to [web portal](:url) to get the password" : "Увійдіть у [веб-додаток](:url) для отримання пароля",
     "Balance" : "Баланс",
     "Replenish the balance"  : "Поповнити баланс",
-    "Card holder name" : "Ім'я на картці"
+    "Card holder name" : "Ім'я на картці",
+    "Could not process payment" : "Не вдалось здійснити оплату"
 }

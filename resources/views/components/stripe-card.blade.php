@@ -1,10 +1,8 @@
-@props(['intent'])
-
 @if (session('message'))
-    <div class="alert alert-success" role="alert">{{ session('message') }}</div>
+    <div class="alert alert-success card-message" role="alert">{{ session('message') }}</div>
 @endif
 @if (session('error'))
-    <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+    <div class="alert alert-danger card-message" role="alert">{{ session('error') }}</div>
 @endif
 
 <x-form method="POST" :action="route('pay.amount')" class="card-form mt-3 mb-3 bg-gray-100 p-5 rounded">
@@ -15,7 +13,9 @@
             US Dollar <span class="red-700">*</span>
         </div>
         <div>
-            <input class="block w-full mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  payment-amout rounded" required="required" placeholder="10" name="amount" value="10" type="number">
+            <input
+                class="block w-full mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  payment-amout rounded"
+                required="required" placeholder="10" name="amount" value="10" type="number">
         </div>
     </div>
     {{-- <x-form-input type="number" name="amount" class="payment-amout rounded" required label="$" placeholder /> --}}
@@ -25,13 +25,13 @@
         <div class="flex-3">
         </div>
     </div> --}}
-    <x-form-input class="StripeElement mb-3" name="card_holder_name" placeholder="{{ __('Card holder name') }}"  />
+    <x-form-input class="StripeElement mb-3" name="card_holder_name" placeholder="{{ __('Card holder name') }}" />
     <div class="col-lg-4 col-md-6">
         <div id="card-element"></div>
     </div>
     <div id="card-errors" role="alert"></div>
     <div class="form-group mt-3">
-        <x-form-submit class="btn btn-primary pay disabled:opacity-50" >
+        <x-form-submit class="btn btn-primary pay disabled:opacity-50">
             Purchase
         </x-form-submit>
     </div>
@@ -101,6 +101,27 @@
             e.preventDefault();
             let buttonPay = document.querySelector('button.pay');
             buttonPay.disabled = true;
+            document.querySelector('#card-errors').innerHTML = '';
+            let cardMessage = document.querySelector('.card-message');
+            if (cardMessage) {
+                cardMessage.innerHTML = '';
+            }
+
+            let amount = cardForm.querySelector('input[name=amount]').value;
+
+            if (isNaN(amount) || amount <= 0) {
+                document.querySelector('#card-errors').innerHTML = 'Amount must be an integer number';
+                buttonPay.disabled = false;
+                return false;
+            }
+
+            // let amout = 10;
+
+            let url = '/stripe-intent/' + amount;
+            let resp = await fetch(url);
+            resp = await resp.json();
+            // console.log(resp, resp.intent);
+
             if (paymentMethod) {
                 return true
             }
@@ -110,8 +131,8 @@
                 cardHolderName = null;
             }
 
-            let result = await stripe.confirmCardSetup(
-                "{{ $intent->client_secret }}", {
+            let result = await stripe.confirmCardPayment(
+                resp.intent, {
                     payment_method: {
                         card: card,
                         billing_details: {
@@ -120,12 +141,21 @@
                     }
                 }
             );
+            // let result = await stripe.handleCardAction(
+            // let result = await stripe.createPaymentMethod(
+            //     'card', card, {
+            //         billing_details: { name: cardHolderName }
+            //     }
+            // );
+            // console.log(result);
 
             if (result.error) {
                 document.querySelector('#card-errors').innerHTML = result.error.message;
                 buttonPay.disabled = false;
             } else {
-                paymentMethod = result.setupIntent.payment_method
+                // paymentMethod = result.setupIntent.payment_method;
+                // paymentMethod = result.paymentMethod.id;
+                paymentMethod = result.paymentIntent.id;
                 document.querySelector('.payment-method').value = paymentMethod;
                 document.querySelector('.card-form').submit()
             }
