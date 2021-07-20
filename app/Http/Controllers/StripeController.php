@@ -64,6 +64,8 @@ class StripeController extends Controller
             return back()->with('error', $exception->getMessage());
         }
 
+        sleep(1);
+
         return back()->with('message', __('Balance updated successfully!'));
     }
 }
