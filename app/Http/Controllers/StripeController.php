@@ -19,6 +19,13 @@ class StripeController extends Controller
         $user->createOrGetStripeCustomer();
         // $intent = $user->createSetupIntent();
 
+        if ($sum < config('payment.stripe.min')) {
+            return response()->json([
+                'status' => false,
+                'message' => __('Minimum amount is :amount', [ 'amount' => config('payment.stripe.min')] ),
+            ]);
+        }
+
         $options = [
             'amount' => $sum * 100,
             'currency' => 'usd',
@@ -31,7 +38,10 @@ class StripeController extends Controller
 
         $intent = $user->stripe()->paymentIntents->create($options);
 
-        return response()->json(['intent' => $intent->client_secret]);
+        return response()->json([
+            'status' => true,
+            'intent' => $intent->client_secret
+        ]);
     }
 
     /**

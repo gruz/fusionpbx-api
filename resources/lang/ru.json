@@ -236,5 +236,7 @@
     "Balance" : "Баланс",
     "Replenish the balance"  : "Пополнить баланс",
     "Card holder name" : "Имя на карте",
-    "Could not process payment" : "Не удалось провести оплату"
+    "Could not process payment" : "Не удалось провести оплату",
+    "Amount must be an integer number" : "Сумма должна быть целым числом",
+    "Minimum amount is :amount" : "Мінімальна сума :amount"
 }

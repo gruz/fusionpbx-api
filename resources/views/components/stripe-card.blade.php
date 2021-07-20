@@ -10,12 +10,14 @@
 
     <div class="flex items-center">
         <div class="px-4">
-            US Dollar <span class="red-700">*</span>
+            {{ __('US Dollar') }} <span class="text-red-600">*</span>
+            <br/>
+            <small>{{ __('Minimum amount is :amount', [ 'amount' => config('payment.stripe.min')] ) }}</small>
         </div>
         <div>
             <input
                 class="block w-full mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  payment-amout rounded"
-                required="required" placeholder="10" name="amount" value="10" type="number">
+                required="required" placeholder="10" name="amount" value="10" type="number" min="5">
         </div>
     </div>
     {{-- <x-form-input type="number" name="amount" class="payment-amout rounded" required label="$" placeholder /> --}}
@@ -110,7 +112,7 @@
             let amount = cardForm.querySelector('input[name=amount]').value;
 
             if (isNaN(amount) || amount <= 0) {
-                document.querySelector('#card-errors').innerHTML = 'Amount must be an integer number';
+                document.querySelector('#card-errors').innerHTML = '{{ __('Amount must be an integer number') }}';
                 buttonPay.disabled = false;
                 return false;
             }
@@ -120,6 +122,11 @@
             let url = '/stripe-intent/' + amount;
             let resp = await fetch(url);
             resp = await resp.json();
+
+            if (!resp.status) {
+                document.querySelector('#card-errors').innerHTML = resp.message;
+                return false;
+            }
             // console.log(resp, resp.intent);
 
             if (paymentMethod) {
