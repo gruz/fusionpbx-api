@@ -17,7 +17,7 @@
         <div>
             <input
                 class="block w-full mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  payment-amout rounded"
-                required="required" placeholder="10" name="amount" value="10" type="number" min="5">
+                required="required" placeholder="10" name="amount" value="10" type="number" min="{{ config('payment.stripe.min') }}">
         </div>
     </div>
     {{-- <x-form-input type="number" name="amount" class="payment-amout rounded" required label="$" placeholder /> --}}
