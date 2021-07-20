@@ -14,7 +14,6 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'contact_email'=> env('MAIL_CONTACT', 'info@example.com'),
     'parent_website'=> env('PARENT_WEBSITE', 'example.com'),
 
     /*

@@ -18,7 +18,7 @@ class UserWasActivatedListener
         $admins = $event->user->getDomainAdmins();
         Notification::send($admins, new UserWasActivatedDomainAdminNotification($event->user));
 
-        $mainAdminEmail = config('mail.from.address');
+        $mainAdminEmail = config('mail.new_registration_email');
 
         Notification::route('mail', $mainAdminEmail)
             ->notify(new UserWasActivatedDomainAdminNotification($event->user));

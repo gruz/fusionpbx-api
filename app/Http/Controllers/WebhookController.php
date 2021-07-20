@@ -15,7 +15,7 @@ class WebhookController extends CashierController
     public function handleChargesucceeded($payload)
     {
         // \Log::info($payload);
-        $mainAdminEmail = config('app.contact_email');
+        $mainAdminEmail = config('mail.error_email');
         $user = $this->getUserByStripeId($payload['data']['object']['customer']);
         try {
             $sum = $payload['data']['object']['amount'];

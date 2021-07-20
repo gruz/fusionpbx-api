@@ -29,7 +29,7 @@
                 autocomplete="new-password" type="password" inputmode="numeric" />
             {{-- <x-form-input name="voicemail_password_confirmation" pattern="[0-9]+" :label="__('Confirm voicemail password')" required type="password"/> --}}
 
-            <?php $sublabel = __('Get it from your reseller or contact <a href="mailto::email">:email</a>',[ 'email' => config('app.contact_email') ] ); ?>
+            <?php $sublabel = __('Get it from your reseller or contact <a href="mailto::email">:email</a>',[ 'email' => config('mail.contact_email') ] ); ?>
             <x-form-input name="reseller_reference_code" :label="__('Reseller code') . '<br/><small>' . $sublabel . '</small>'" required />
 
             <div class="mt-10">

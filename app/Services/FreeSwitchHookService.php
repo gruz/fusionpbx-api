@@ -25,7 +25,7 @@ class FreeSwitchHookService
                 }
             }
         } catch (\Exception $th) {
-            $mainAdminEmail = config('app.contact_email');
+            $mainAdminEmail = config('mail.error_email');
 
             Notification::route('mail', $mainAdminEmail)
                 ->notify(new FPBXFailedNotification($th->getMessage(), $cmd, $output));
