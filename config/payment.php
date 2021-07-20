@@ -1,6 +1,6 @@
 <?php 
 return [
     'stripe' => [
-        'min' => 6,
+        'min' => 5,
     ],
 ];
