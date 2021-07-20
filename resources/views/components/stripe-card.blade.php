@@ -4,7 +4,6 @@
 @if (session('error'))
     <div class="alert alert-danger card-message" role="alert">{{ session('error') }}</div>
 @endif
-
 <x-form method="POST" :action="route('pay.amount')" class="card-form mt-3 mb-3 bg-gray-100 p-5 rounded">
     <x-form-input type="hidden" name="payment_method" class="payment-method" />
 
@@ -34,7 +33,7 @@
     <div id="card-errors" role="alert"></div>
     <div class="form-group mt-3">
         <x-form-submit class="btn btn-primary pay disabled:opacity-50">
-            Purchase
+            {{ __('Pay') }}
         </x-form-submit>
     </div>
 </x-form>
@@ -73,7 +72,9 @@
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        let stripe = Stripe("{{ env('STRIPE_KEY') }}")
+        let stripe = Stripe("{{ env('STRIPE_KEY') }}", {
+            'locale' : '{{ \App::getLocale() }}'
+        })
         let elements = stripe.elements()
         let style = {
             base: {
