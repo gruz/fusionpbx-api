@@ -8,16 +8,13 @@
     <x-form-input type="hidden" name="payment_method" class="payment-method" />
 
     <div class="flex items-center">
-        <div class="px-4">
-            <div class="flex justify-center">
-                <div>
+        <div class="px-4 flex-2 justify-right">
+            <div class="text-center">
                     {{ __('$') }}
-                </div>
-                <div class="text-red-600">*</div>
             </div>
             <small>{{ __('Minimum amount is :amount', [ 'amount' => config('payment.stripe.min')] ) }}</small>
         </div>
-        <div>
+        <div class="flex-1">
             <input
                 class="block w-full mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  payment-amout rounded"
                 required="required" placeholder="10" name="amount" value="10" type="number" min="{{ config('payment.stripe.min') }}">
