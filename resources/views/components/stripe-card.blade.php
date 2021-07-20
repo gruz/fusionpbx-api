@@ -1,16 +1,20 @@
 @if (session('message'))
-    <div class="alert alert-success card-message" role="alert">{{ session('message') }}</div>
+    <div class="card-message bg-green-500 rounded text-center text-white p-2" role="alert">{{ session('message') }}</div>
 @endif
 @if (session('error'))
-    <div class="alert alert-danger card-message" role="alert">{{ session('error') }}</div>
+    <div class="card-message bg-red-500 rounded text-center text-white p-2" role="alert">{{ session('error') }}</div>
 @endif
 <x-form method="POST" :action="route('pay.amount')" class="card-form mt-3 mb-3 bg-gray-100 p-5 rounded">
     <x-form-input type="hidden" name="payment_method" class="payment-method" />
 
     <div class="flex items-center">
         <div class="px-4">
-            {{ __('US Dollar') }} <span class="text-red-600">*</span>
-            <br/>
+            <div class="flex justify-center">
+                <div>
+                    {{ __('$') }}
+                </div>
+                <div class="text-red-600">*</div>
+            </div>
             <small>{{ __('Minimum amount is :amount', [ 'amount' => config('payment.stripe.min')] ) }}</small>
         </div>
         <div>
@@ -107,7 +111,8 @@
             document.querySelector('#card-errors').innerHTML = '';
             let cardMessage = document.querySelector('.card-message');
             if (cardMessage) {
-                cardMessage.innerHTML = '';
+                // cardMessage.innerHTML = '';
+                cardMessage.remove();
             }
 
             let amount = cardForm.querySelector('input[name=amount]').value;
