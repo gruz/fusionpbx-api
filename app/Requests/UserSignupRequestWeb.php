@@ -64,6 +64,7 @@ class UserSignupRequestWeb extends UserSignupRequest
     public function rules()
     {
         $rules = parent::rules();
+        unset($rules['username']);
 
         $rules['voicemail_password'] = $rules['extensions.*.voicemail_password'];
 
