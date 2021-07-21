@@ -113,14 +113,14 @@
                                         <div class="px-4 py-2">{{ $extension->effective_caller_id_number }}</div>
                                         <div class="px-4 py-2 font-semibold">{{ __('Effective caller name') }}</div>
                                         <div class="px-4 py-2">{{ $extension->effective_caller_id_name }}</div>
+                                        <div class="px-4 py-2 font-semibold">{{ __('SIP Login') }}</div>
+                                        <div class="px-4 py-2"><a class="bg-green-400 hover:bg-green-600 py-1 px-2 rounded text-white text-sm" href="csc:{{ $extension->extension }}{{ '@' . Auth::user()->domain->getAttribute('domain_name') }}:{{ $extension->password }}{{ '@' . $cloudID }}">{{ __('Start the app') }}</a></div>
                                     </div>
                                     <div class="grid grid-cols-2">
                                         <div class="px-4 py-2 font-semibold">{{ __('Voicemail password') }}</div>
                                         <div class="px-4 py-2">{{ $extension->voicemail->voicemail_password }}</div>
                                         <div class="px-4 py-2 font-semibold">{{ __('Enabled') }}</div>
                                         <div class="px-4 py-2">{{ $extension->enabled }}</div>
-                                        <div class="px-4 py-2 font-semibold">{{ __('SIP Login') }}</div>
-                                        <div class="px-4 py-2"><a href="csc:{{ $extension->extension }}{{ '@' . Auth::user()->domain->getAttribute('domain_name') }}:{{ $extension->password }}@*">Start the app</a></div>
                                     </div>
                                 </div>
                                 <div class="my-10"></div>

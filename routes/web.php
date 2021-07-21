@@ -35,7 +35,17 @@ Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook'])->nam
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $cloudID = optional(
+            \Auth::user()
+            ->domain
+            ->domain_settings
+            ->where('domain_setting_subcategory', 'acrobits_clo1ud_id')
+            ->first()
+        )->getAttribute('domain_setting_value');
+
+        $cloudID = $cloudID ? $cloudID : env('DEFAULT_ACROBITS_CLOUDID', '*');
+
+        return view('dashboard', compact('cloudID'));
     })->name('dashboard');
 
     Route::post('/pay', [StripeController::class, 'payAmount'])->name('pay.amount');
