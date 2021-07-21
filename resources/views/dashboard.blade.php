@@ -119,6 +119,8 @@
                                         <div class="px-4 py-2">{{ $extension->voicemail->voicemail_password }}</div>
                                         <div class="px-4 py-2 font-semibold">{{ __('Enabled') }}</div>
                                         <div class="px-4 py-2">{{ $extension->enabled }}</div>
+                                        <div class="px-4 py-2 font-semibold">{{ __('SIP Login') }}</div>
+                                        <div class="px-4 py-2"><a href="csc:{{ $extension->extension }}{{ '@' . Auth::user()->domain->getAttribute('domain_name') }}:{{ $extension->password }}@*">Start the app</a></div>
                                     </div>
                                 </div>
                                 <div class="my-10"></div>

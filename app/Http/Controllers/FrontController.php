@@ -271,9 +271,11 @@ class FrontController extends AbstractController
     public function getProvisioning(LoginRequestWebProv $request, UserService $userService)
     {
         /**
-         * @var User
+         * var User
          */
-        $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
+        // $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
+
+        $data = $request->validated();
 
         $xw = xmlwriter_open_memory();
         xmlwriter_set_indent($xw, 1);
@@ -286,47 +288,19 @@ class FrontController extends AbstractController
             xmlwriter_end_element($xw);
         };
 
+        xmlwriter_start_element($xw, 'account');
+        $row('username',  $data['username']);
+        $row('password',  $data['password']);
+        $row('host',  $data['domain_name']);
+        // $row('outboundProxy_enabled', 1);
+        // $row('outboundProxy_host', );
+        xmlwriter_end_element($xw); // account
+        xmlwriter_end_document($xw);
+        $xml = xmlwriter_output_memory($xw);
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-
-            xmlwriter_start_element($xw, 'error');
-            $row('message', __('Unauthorized'));
-            xmlwriter_end_element($xw); // error
-
-            xmlwriter_end_document($xw);
-            $xml = xmlwriter_output_memory($xw);
-
-            return response($xml, 401, [
-                'Content-Type' => 'application/xml'
-            ]);
-        }
-
-        $extension = $user->extensions()->where('enabled', 'true')->first();
-
-        if (!$extension) {
-            xmlwriter_start_element($xw, 'error');
-            $row('message', __('No phone number found for :username. Please, contact administrator.', ['username' => $user->username]));
-            xmlwriter_end_element($xw); // error
-            xmlwriter_end_document($xw);
-            $xml = xmlwriter_output_memory($xw);
-
-            return response($xml, 404, [
-                'Content-Type' => 'application/xml'
-            ]);
-        } else {
-            xmlwriter_start_element($xw, 'account');
-            $row('cloud_username', $user->username);
-            $row('cloud_password', $request->get('password'));
-            $row('username',  $extension->extension);
-            $row('password',  $extension->password);
-            xmlwriter_end_element($xw); // account
-            xmlwriter_end_document($xw);
-            $xml = xmlwriter_output_memory($xw);
-
-            return response($xml, 200, [
-                'Content-Type' => 'application/xml'
-            ]);
-        }
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml'
+        ]);
     }
 
 }
