@@ -40,4 +40,9 @@ class DomainService extends AbstractService
 
         return parent::getByAttributes($attributes, $options);
     }
+
+    public function getDomainByName($domain_name, $status = null)
+    {
+        return $this->getRepository()->getDomainByName($domain_name, $status);
+    }
 }

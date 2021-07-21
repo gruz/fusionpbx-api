@@ -33,7 +33,7 @@ class LoginRequestWeb extends FormRequest
 
         $this->domain_uuid = optional($domainModel)->domain_uuid;
 
-        $userModel = $this->userService->getByAttributes(['user_email' => $this->email, 'domain_uuid' => $this->domain_uuid])->first();
+        $userModel = $this->userService->getUserByEmailAndDomain($this->email, optional($domainModel)->getAttribute('domain_name'));
 
         $this->merge([
             'username' => optional($userModel)->username,
@@ -78,9 +78,8 @@ class LoginRequestWeb extends FormRequest
         $domain_name = $this->get('domain_name');
         if (empty($domain_name)) {
             $domainModel = $this->domainService->getSystemDomain();
-            // $domain_name = $domainModel->getAttribute('domain_name');
         } else {
-            $domainModel = $this->domainService->getByAttributes(['domain_name' => $domain_name, 'domain_enabled' => true], ['limit' => 1])->first();
+            $domainModel = $this->domainService->getDomainByName($domain_name, true);
         }
         $domain_uuid = optional($domainModel)->getAttribute('domain_uuid');
         // dd($domain_name, $domain_uuid);

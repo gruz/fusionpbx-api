@@ -40,7 +40,7 @@ class UserRepository extends AbstractRepository
         // $passwordData = \encrypt_password_with_salt($data['password']);
         // $data['password'] = $passwordData['password'];
         // $data['salt'] = $passwordData['salt'];
-        
+
         $data['password'] = Hash::make($data['password']);
 
         // ~ TODO Improve logic here, remove hardcoded
@@ -80,8 +80,10 @@ class UserRepository extends AbstractRepository
          * @var User
          */
         $userModel = $this->getModel()->whereHas('domain', function ($q) use ($user_email, $domain_name) {
-            $q->where('domain_name', '=', $domain_name);
-        })->where('user_email', $user_email)->first();
+            $q->whereRaw('LOWER(domain_name) = ?', [strtolower($domain_name)]);
+        })
+            ->whereRaw('LOWER(user_email) = ?', [strtolower($user_email)])
+            ->first();
 
         return $userModel;
     }
