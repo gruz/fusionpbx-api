@@ -182,7 +182,7 @@
     "[Web portal](:url) access" : "[Web portal](:url) access",
     "Use username **:username** to login into web-application" : "Use username **:username** to login into web-application",
     "My voice accounts" : "My voice accounts",
-    "Voice account (Login)" : "Voice account (Login)",
+    "Custom endpoint SIP login" : "Custom endpoint SIP login",
     "Account reference code" : "Account reference code",
     "Login to [web portal](:url) to get the password" : "Login to [web portal](:url) to get the password",
     "Balance" : "Balance",

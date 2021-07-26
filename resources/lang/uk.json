@@ -227,7 +227,7 @@
     "[Web portal](:url) access" : "Вхід до [веб-додатка](:url)",
     "Use username **:username** to login into web-application" : "Псевдо для логіна у веб-додаток:  **:username**",
     "My voice accounts" : "Голосові облікові записи",
-    "Voice account (Login)" : "Голосовий обліковий запис (Логін)",
+    "Custom endpoint SIP login" : "Голосовий обліковий запис (Логін)",
     "Account reference code" : "Реферальний код облікового запису",
     "Login to [web portal](:url) to get the password" : "Увійдіть у [веб-додаток](:url) для отримання пароля",
     "Balance" : "Баланс",
@@ -236,5 +236,6 @@
     "Could not process payment" : "Не вдалось здійснити оплату",
     "Amount must be an integer number" : "Сума має бути цілим числом",
     "Minimum amount is :amount" : "Мінімальна сума :amount",
-    "Pay" : "Оплатити"
+    "Pay" : "Оплатити",
+    "Quick login" : "Запустити застосунок"
 }

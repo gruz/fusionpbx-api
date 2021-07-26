@@ -103,9 +103,12 @@
                             @foreach (Auth::user()->extensions as $extension)
                                 <div class="grid md:grid-cols-2 text-sm">
                                     <div class="grid grid-cols-2">
-                                        <div class="px-4 py-2 font-semibold">{{ __('Voice account (Login)') }}</div>
+                                        <div class="px-4 py-2 font-semibold">{{ __('Quick login') }}</div>
+                                        <div class="px-4 py-2"><a class="bg-green-400 hover:bg-green-600 py-1 px-2 rounded text-white text-sm" href="csc:{{ $extension->extension }}{{ '@' . Auth::user()->domain->getAttribute('domain_name') }}:{{ $extension->password }}{{ '@' . $cloudID }}">{{ __('Start the app') }}</a></div>
+
+                                        <div class="px-4 py-2 font-semibold">{{ __('Custom endpoint SIP login') }}</div>
                                         <div class="px-4 py-2">{{ $extension->extension }}</div>
-                                        <div class="px-4 py-2 font-semibold">{{ __('Password') }}</div>
+                                        <div class="px-4 py-2 font-semibold">{{ __('Custom endpoint SIP password') }}</div>
                                         <div class="px-4 py-2">{{ $extension->password }}</div>
                                     </div>
                                     <div class="grid grid-cols-2">
@@ -113,8 +116,6 @@
                                         <div class="px-4 py-2">{{ $extension->effective_caller_id_number }}</div>
                                         <div class="px-4 py-2 font-semibold">{{ __('Effective caller name') }}</div>
                                         <div class="px-4 py-2">{{ $extension->effective_caller_id_name }}</div>
-                                        <div class="px-4 py-2 font-semibold">{{ __('SIP Login') }}</div>
-                                        <div class="px-4 py-2"><a class="bg-green-400 hover:bg-green-600 py-1 px-2 rounded text-white text-sm" href="csc:{{ $extension->extension }}{{ '@' . Auth::user()->domain->getAttribute('domain_name') }}:{{ $extension->password }}{{ '@' . $cloudID }}">{{ __('Start the app') }}</a></div>
                                     </div>
                                     <div class="grid grid-cols-2">
                                         <div class="px-4 py-2 font-semibold">{{ __('Voicemail password') }}</div>
@@ -141,7 +142,7 @@
                                 </span>
                                 <span class="tracking-wide">{{ __('Replenish the balance') }}</span>
                             </div>
-                            <div class="grid grid-cols-2 bg-gray">
+                            <div class="grid md:grid-cols-2 bg-gray">
                                 <div>
                                     {{-- @include('layouts.stripe-payment') --}}
                                     <x-stripe-card />

@@ -230,7 +230,7 @@
     "[Web portal](:url) access" : "Данные для входа в [веб-интерфейс](:url)",
     "Use username **:username** to login into web-application" : "Имя пользователя для логина в веб-интерфейс: **:username**",
     "My voice accounts" : "Голосовые аккаунты",
-    "Voice account (Login)" : "Голосовой аккаунт (Логин)",
+    "Custom endpoint SIP login" : "Голосовой аккаунт (Логин)",
     "Account reference code" : "Реферальный код вашего акаунта",
     "Login to [web portal](:url) to get the password" : "Войдите в [веб-интерфейс](:url), чтобы узнать пароль",
     "Balance" : "Баланс",
@@ -239,5 +239,6 @@
     "Could not process payment" : "Не удалось провести оплату",
     "Amount must be an integer number" : "Сумма должна быть целым числом",
     "Minimum amount is :amount" : "Минимальная сумма :amount",
-    "Pay" : "Оплатить"
+    "Pay" : "Оплатить",
+    "Quick login" : "Запустить приложение"
 }
