@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             \Auth::user()
             ->domain
             ->domain_settings
-            ->where('domain_setting_subcategory', 'acrobits_clo1ud_id')
+            ->where('domain_setting_subcategory', 'acrobits_cloud_id')
             ->first()
         )->getAttribute('domain_setting_value');
 
