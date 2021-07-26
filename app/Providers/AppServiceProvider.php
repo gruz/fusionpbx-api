@@ -37,5 +37,7 @@ class AppServiceProvider extends ServiceProvider
         View::share('fieldClass', 'rounded border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 ');
         View::share('langs', ['en', 'es', 'uk', 'ru']);
         config(['domain_enabled_field_type' => app(\App\Models\Domain::class)->getTableColumnsInfo(true)['domain_enabled']->getType()->getName()]);
+
+        config(['app.url' => request()->getSchemeAndHttpHost()]);
     }
 }
