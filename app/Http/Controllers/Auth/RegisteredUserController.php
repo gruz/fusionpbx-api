@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use App\Services\Fpbx\DomainService;
+use Gruz\FPBX\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Requests\UserSignupRequestWeb;
+use App\Http\Requests\UserSignupRequestWeb;
 use App\Providers\RouteServiceProvider;
 use App\Http\Controllers\AbstractController;
 

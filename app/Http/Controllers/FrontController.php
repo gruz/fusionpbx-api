@@ -3,23 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Domain;
-use App\Models\Contact;
-use App\Models\Setting;
-use App\Models\Extension;
-use App\Models\Voicemail;
+use Gruz\FPBX\Models\Domain;
+use Gruz\FPBX\Models\Contact;
+use Gruz\FPBX\Models\Setting;
+use Gruz\FPBX\Models\Extension;
+use Gruz\FPBX\Models\Voicemail;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
-use App\Requests\UserLoginRequest;
-use App\Services\Fpbx\UserService;
-use App\Services\Fpbx\DomainService;
-use Illuminate\Support\Facades\Hash;
-use App\Requests\LoginRequestWebProv;
+use Gruz\FPBX\Services\Fpbx\UserService;
+use Gruz\FPBX\Services\Fpbx\DomainService;
+use App\Http\Requests\LoginRequestWebProv;
 use App\Services\FreeSwitchHookService;
 use App\Repositories\ExtensionRepository;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class FrontController extends AbstractController
 {
@@ -144,7 +141,7 @@ class FrontController extends AbstractController
         return 'Sent';
 
         \DB::enableQueryLog();
-        $model = new \App\Models\PostponedAction;
+        $model = new \Gruz\FPBX\Models\PostponedAction;
         // $model = $model->first();
         // $model = $model->where('request->users', '@>', 'alyson.dietrich@howe.com')
         $model = $model->whereJsonContains('request->users', [
@@ -168,7 +165,7 @@ class FrontController extends AbstractController
 
         $model->save();
 
-        // $model2 = \App\Models\PostponedAction::where('request->domain_name', 'aaa.com')->firstOrFail();
+        // $model2 = \Gruz\FPBX\Models\PostponedAction::where('request->domain_name', 'aaa.com')->firstOrFail();
         dd($model);
 
         $expireDate = $model->created_at->add();
@@ -243,7 +240,7 @@ class FrontController extends AbstractController
 
 
         \DB::enableQueryLog(); // Enable query log
-        $items = \App\Models\Extension::with('extension_users.permissions')
+        $items = \Gruz\FPBX\Models\Extension::with('extension_users.permissions')
             ->where('extension_uuid', '63045580-4ce3-11eb-b21b-47744eb6524b')
             ->get()
             ->toArray();

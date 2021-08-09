@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Services\Fpbx\UserService;
-use App\Services\Fpbx\DomainService;
+use Gruz\FPBX\Services\Fpbx\UserService;
+use Gruz\FPBX\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\AbstractController;
-use App\Requests\UserForgotPasswordRequestWeb;
+use App\Http\Requests\UserForgotPasswordRequestWeb;
 
 class PasswordResetLinkController extends AbstractController
 {

@@ -2,7 +2,7 @@
 
 return [
 
-        /*
+    /*
     |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
@@ -14,7 +14,6 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'parent_website'=> env('PARENT_WEBSITE', 'example.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -126,24 +125,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Logging Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the log settings for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
-    |
-    | Available Settings: "single", "daily", "syslog", "errorlog"
-    |
-    */
-
-    // FusionPBX path
-    'fpath_document_root' => env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx'),
-    'fpath_project' => env('FUSIONPBX_PROJECT_PATH', ''),
-    'fpath_full' => env('FUSIONPBX_DOCUMENT_ROOT', '/var/www/fusionpbx') . '/' . env('FUSIONPBX_PROJECT_PATH', ''),
-
-    /*
-    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
@@ -184,10 +165,6 @@ return [
         /*
          * Package Service Providers...
          */
-        Optimus\ApiConsumer\Provider\LaravelServiceProvider::class,
-        Optimus\Heimdal\Provider\LaravelServiceProvider::class,
-        // Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class,
-        Mews\Captcha\CaptchaServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -197,12 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\HelperServiceProvider::class,
 
-        /**
-         * API Service Providers
-         */
-        App\Providers\PasswordResetServiceProvider::class,
     ],
 
     /*
@@ -240,12 +212,11 @@ return [
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
-        // 'Notification' => Illuminate\Support\Facades\Notification::class,
-        'Notification' => \App\Notifications\Notification::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
-        'Redis' => Illuminate\Support\Facades\Redis::class,
+        // 'Redis' => Illuminate\Support\Facades\Redis::class,
         'Request' => Illuminate\Support\Facades\Request::class,
         'Response' => Illuminate\Support\Facades\Response::class,
         'Route' => Illuminate\Support\Facades\Route::class,
@@ -257,6 +228,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Captcha' => Mews\Captcha\Facades\Captcha::class,
     ],
+
 ];

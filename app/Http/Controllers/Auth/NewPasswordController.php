@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use App\Services\Fpbx\DomainService;
+use Gruz\FPBX\Services\Fpbx\DomainService;
 use Illuminate\Support\Facades\Hash;
-use App\Services\ValidationRulesService;
+use Gruz\FPBX\Services\ValidationRulesService;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Controllers\AbstractController;

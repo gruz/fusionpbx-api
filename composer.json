@@ -7,22 +7,15 @@
     "require": {
         "php": ">=7.3.0",
         "awobaz/compoships": "^2.1",
-        "darkaonline/l5-swagger": "dev-master",
-        "doctrine/annotations": "^1.12",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
+        "gruz/fpbx": "dev-master",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel-lang/lang": "~7.0",
         "laravel/cashier": "^13.4",
         "laravel/framework": "^8.33",
-        "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.6",
         "mews/captcha": "^3.2",
-        "optimus/api-consumer": "^0.4.0",
-        "optimus/architect": "^2.0",
-        "optimus/bruno": "^6.0",
-        "optimus/genie": "^3.3",
-        "optimus/heimdal": "^3.0",
         "protonemedia/laravel-form-components": "^2.5"
     },
     "autoload": {
@@ -30,10 +23,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        },
-        "files": [
-            "app/Helpers/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -68,13 +58,14 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "repositories": [{
-        "type": "vcs",
-        "url": "git@github.com:gruz/L5-Swagger.git"
-    }],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./pkg"
+        }
+    ],
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "kint-php/kint": "^3.3",
         "nunomaduro/collision": "^5.3",
         "filp/whoops": "^2.11",
         "beyondcode/laravel-dump-server": "^1.7",

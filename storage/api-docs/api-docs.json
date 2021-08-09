@@ -10,6 +10,9 @@
     "servers": [
         {
             "url": "http://localhost/api"
+        },
+        {
+            "url": "vendor/gruz/pkg/src"
         }
     ],
     "paths": {
@@ -19,7 +22,7 @@
                     "Default"
                 ],
                 "description": "Get application name and version",
-                "operationId": "App_Http_Controllers_Api_DefaultController::index",
+                "operationId": "Gruz_FPBX_Http_Controllers_DefaultController::index",
                 "responses": {
                     "200": {
                         "description": "Application name and version",
@@ -62,7 +65,7 @@
                 ],
                 "summary": "Create a domain",
                 "description": "# General notes\n\nWhen creating a domain you must provide at least one admin user (`is_admin` option in `users->user` object ).\n\nAll admins will be emailed to confirm domain creation.\n\n# Domain settings\n\nYou can override default domain settings\n\nSee [Default Settings](https://docs.fusionpbx.com/en/latest/advanced/default_settings.html#default-settings)\nand [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)\nto understand how override works.\n\nCheck examples as well.",
-                "operationId": "App_Http_Controllers_Api_DomainController::signup",
+                "operationId": "Gruz_FPBX_Http_Controllers_DomainController::signup",
                 "requestBody": {
                     "description": "Domain information",
                     "required": true,
@@ -93,7 +96,7 @@
                 ],
                 "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
                 "description": "Whom to send activation link is determined by configuration [`TODO` Implement this logic ]: \nMain domain admin user\nA email determined by laravel configuration\nThe users mentioned as admin users when creating domain signup (passed with the signup request)\nAll FPBX users which have permission to create domain\nAll above\n\nDepending on configuration,",
-                "operationId": "App_Http_Controllers_Api_DomainController::activate",
+                "operationId": "Gruz_FPBX_Http_Controllers_DomainController::activate",
                 "parameters": [
                     {
                         "name": "hash",
@@ -133,7 +136,7 @@
                 ],
                 "summary": "Get all extensions in domain",
                 "description": "`TODO`, describe in docs and return only some fields available for other users,\nadd parameters in query to select contact info, extension",
-                "operationId": "App_Http_Controllers_Api_ExtensionController::getAll",
+                "operationId": "Gruz_FPBX_Http_Controllers_ExtensionController::getAll",
                 "parameters": [
                     {
                         "name": "includes[]",
@@ -174,7 +177,7 @@
                     "Extension"
                 ],
                 "summary": "Get extension by ID",
-                "operationId": "App_Http_Controllers_Api_ExtensionController::getById",
+                "operationId": "Gruz_FPBX_Http_Controllers_ExtensionController::getById",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -219,7 +222,7 @@
                 ],
                 "summary": "Extension create",
                 "description": "Creates an extension and attaches it to a user (optionally)",
-                "operationId": "App_Http_Controllers_Api_ExtensionController::create",
+                "operationId": "Gruz_FPBX_Http_Controllers_ExtensionController::create",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -301,7 +304,7 @@
                     "Extension"
                 ],
                 "summary": "Updates an extension",
-                "operationId": "App_Http_Controllers_Api_ExtensionController::update",
+                "operationId": "Gruz_FPBX_Http_Controllers_ExtensionController::update",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -349,7 +352,7 @@
                     "Extension"
                 ],
                 "summary": "Delets an extension",
-                "operationId": "App_Http_Controllers_Api_ExtensionController::delete",
+                "operationId": "Gruz_FPBX_Http_Controllers_ExtensionController::delete",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/extension_uuid"
@@ -381,7 +384,7 @@
                     "User"
                 ],
                 "summary": "Activate user by email link. In cases it's and admin user, activate domain as well",
-                "operationId": "App_Http_Controllers_Api_UserController::activate",
+                "operationId": "Gruz_FPBX_Http_Controllers_UserController::activate",
                 "parameters": [
                     {
                         "name": "hash",
@@ -413,7 +416,7 @@
                 ],
                 "summary": "User signup",
                 "description": "Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.",
-                "operationId": "App_Http_Controllers_Api_UserController::signup",
+                "operationId": "Gruz_FPBX_Http_Controllers_UserController::signup",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -453,7 +456,7 @@
                     "User"
                 ],
                 "summary": "User forgot password - request email link to reset password",
-                "operationId": "App_Http_Controllers_Api_UserController::forgotPassword",
+                "operationId": "Gruz_FPBX_Http_Controllers_UserController::forgotPassword",
                 "requestBody": {
                     "description": "User information to reset his password",
                     "required": true,
@@ -546,7 +549,7 @@
                 ],
                 "summary": "User login",
                 "description": "Login user and return access token",
-                "operationId": "App_Http_Controllers_Api_UserController::login",
+                "operationId": "Gruz_FPBX_Http_Controllers_UserController::login",
                 "requestBody": {
                     "description": "User information",
                     "required": true,
@@ -1051,6 +1054,20 @@
                     },
                     "add_date": {
                         "type": "string"
+                    },
+                    "stripe_id": {
+                        "type": "string"
+                    },
+                    "pm_type": {
+                        "type": "string"
+                    },
+                    "pm_last_four": {
+                        "type": "string"
+                    },
+                    "trial_ends_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2021-03-27 02:32:26"
                     }
                 }
             },
@@ -1484,5 +1501,8 @@
             "name": "Extension",
             "description": "Manage extensions"
         }
+    ],
+    "security": [
+        []
     ]
 }

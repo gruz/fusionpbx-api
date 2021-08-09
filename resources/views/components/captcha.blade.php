@@ -1,4 +1,4 @@
-@if(config('fpbx.captcha_enabled'))
+@if(config('captcha.enabled'))
 <div class="mt-4 p-4 border rounded shadow">
     <?php $captcha_type = 'flat2'; ?>
     <div class="captcha">

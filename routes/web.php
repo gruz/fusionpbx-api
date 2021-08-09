@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FrontController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\WebhookController;
 
@@ -15,21 +16,15 @@ use App\Http\Controllers\WebhookController;
 |
 */
 
-Route::get('/test', [\App\Http\Controllers\FrontController::class, 'test']);
-
-Route::get('/docs/redoc', function () {
-    return view('documenation.index');
-});
-
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/refresh-captcha', [\App\Http\Controllers\FrontController::class, 'refreshCaptcha']);
-Route::get('lang/{locale}', [\App\Http\Controllers\LocalizationController::class, 'lang'])->name('lang');
-Route::get('/prov', [\App\Http\Controllers\FrontController::class, 'getProvisioning']);
+Route::get('/test', [FrontController::class, 'test']);
+Route::get('/refresh-captcha', [FrontController::class, 'refreshCaptcha']);
+Route::get('/prov', [FrontController::class, 'getProvisioning']);
 
+Route::get('lang/{locale}', [\App\Http\Controllers\LocalizationController::class, 'lang'])->name('lang');
 
 Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
 
@@ -53,4 +48,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

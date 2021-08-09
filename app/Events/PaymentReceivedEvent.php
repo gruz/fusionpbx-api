@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\User;
+use Gruz\FPBX\Events\AbstractEvent;
 
 class PaymentReceivedEvent extends AbstractEvent
 {
