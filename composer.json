@@ -32,7 +32,11 @@
                 "Gruz\\FPBX\\Providers\\FPBXPasswordResetServiceProvider",
                 "Gruz\\FPBX\\Providers\\FPBXRouteServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-pkg": "pkg"
         }
+
     },
     "require": {
         "laravel/sanctum": "^2.11",
