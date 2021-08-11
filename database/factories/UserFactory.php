@@ -1,10 +1,11 @@
 <?php
 
-namespace Database\Factories;
+namespace Gruz\FPBX\Database\Factories;
 
-use App\Models\User;
+use Gruz\FPBX\Models\User;
+use Gruz\FPBX\Services\TestHelperService;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+
 
 class UserFactory extends Factory
 {
@@ -22,26 +23,18 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+        $email = $this->faker->email;
+        $domain_name = app(TestHelperService::class)->getUniqueDomain();
+        $return = [
+            "is_admin" => false,
+            // "reseller_reference_code" => "IS_TEST_CODE",
+            "username" => $email,
+            "user_email" => $email,
+            "password" => $this->faker->password() . '0aA',
+            "domain_name" => $domain_name,
         ];
-    }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    public function unverified()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
-        });
+        return $return;
+
     }
 }
