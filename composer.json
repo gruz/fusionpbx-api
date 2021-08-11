@@ -1,5 +1,5 @@
 {
-    "name": "gruz/fusionpbx-api",
+    "name": "gruz/fpbx",
     "description": "A Laravel based FusionPBX API",
     "type": "library",
     "license": "MIT",
@@ -18,11 +18,6 @@
             "Gruz\\FPBX\\Database\\Factories\\": "database/factories"
         }
     },
-    "require-dev": {
-        "orchestra/testbench": "^6.19",
-        "phpunit/phpunit": "^9.5",
-        "kint-php/kint": "^3.3"
-    },
     "extra": {
         "laravel": {
             "providers": [
@@ -32,11 +27,7 @@
                 "Gruz\\FPBX\\Providers\\FPBXPasswordResetServiceProvider",
                 "Gruz\\FPBX\\Providers\\FPBXRouteServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-pkg": "pkg"
         }
-
     },
     "require": {
         "laravel/sanctum": "^2.11",
@@ -47,5 +38,10 @@
         "optimus/genie": "^3.3",
         "optimus/heimdal": "^3.0",
         "darkaonline/l5-swagger": "^8.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.19",
+        "phpunit/phpunit": "^9.5",
+        "kint-php/kint": "^3.3"
     }
 }
