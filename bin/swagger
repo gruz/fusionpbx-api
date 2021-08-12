@@ -1,9 +1,0 @@
-#!/bin/bash
-# Run swagger autobuild on file change
-# You must have `inotify` installed. The command is nice when you edit
-# swagger comments much and want to monitor if not errors happen
-# set -o xtrace
-
-. bin/helpers/common.sh
-
-docker-compose exec --user=laradock workspace bin/helpers/inotify-swagger-run

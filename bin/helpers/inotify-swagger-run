@@ -1,6 +1,0 @@
-#!/bin/bash
-
-while inotifywait -r --exclude '(./storage|\.phpunit.result.cache|\.git|folder1\/ingnorefile1)' \
-        -e modify -e create -e moved_to .;
-    do php artisan l5-swagger:generate;
-done

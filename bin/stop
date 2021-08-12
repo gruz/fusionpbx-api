@@ -1,7 +1,0 @@
-#!/bin/bash
-# Stops docker containers
-# Usage: bin/stop
-. bin/helpers/common.sh;
-
-docker-compose down --remove-orphans
-cd ..;
