@@ -1,5 +1,5 @@
 {
-    "name": "stub/stub",
+    "name": "gruz/fusionpbx-api",
     "description": "Stub for file autodiscover",
     "type": "project",
     "autoload": {
