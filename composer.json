@@ -1,5 +1,5 @@
 {
-    "name": "gruz/fpbx",
+    "name": "gruz/fusionpbx-api",
     "description": "A Laravel based FusionPBX API",
     "type": "library",
     "license": "MIT",
