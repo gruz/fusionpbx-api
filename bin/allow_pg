@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# HOST_IP=$(echo $SSH_CLIENT | awk '{ print $1}')
+# read -p "Enter UP to allow [$HOST_IP]: " HOST_IP
+# HOST_IP=${HOST_IP:-$1}
+HOST_IP=$1
+echo 'Laravel API server IP '$HOST_IP;
+PG_VERSION=$(psql -V | awk '{print $3}' | sed 's/\.\(.*\)//')
+echo 'Postgres version '$PG_VERSION 
+
+sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/${PG_VERSION}/main/postgresql.conf
+echo 'Updated /etc/postgresql/'${PG_VERSION}'/main/postgresql.conf'
+
+printf "\nhost    all             all              "${HOST_IP}"/0        md5" >> /etc/postgresql/${PG_VERSION}/main/pg_hba.conf
+echo 'Updated /etc/postgresql/'${PG_VERSION}'/main/pg_hba.conf'
+
+sudo iptables -A INPUT -p tcp --dport 5432 --jump ACCEPT
+sudo /sbin/iptables-save > /etc/iptables/rules.v4
+echo 'Allowed port 5432 in firewall'
+
+/etc/init.d/postgresql restart
+echo 'Restarted postgres'

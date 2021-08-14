@@ -30,6 +30,7 @@
         }
     },
     "require": {
+        "awobaz/compoships": "^2.1",
         "laravel/sanctum": "^2.11",
         "doctrine/annotations": "^1.12",
         "optimus/api-consumer": "^0.4.0",
