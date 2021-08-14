@@ -10,7 +10,6 @@ use Gruz\FPBX\Models\ContactUser;
 use Gruz\FPBX\Models\UserSetting;
 use Gruz\FPBX\Models\AbstractModel;
 use Gruz\FPBX\Models\ExtensionUser;
-use Laravel\Cashier\Billable;
 use Gruz\FPBX\Models\GroupPermission;
 use Laravel\Sanctum\HasApiTokens;
 use Gruz\FPBX\Notifications\ResetPassword;
@@ -41,7 +40,6 @@ class User extends AbstractModel implements
     use HasApiTokens, Notifiable;
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
     use HasFactory;
-    use Billable;
     // ~ use HasCustomRelations;
 
     public $timestamps = true;
