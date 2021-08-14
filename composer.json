@@ -38,7 +38,8 @@
         "optimus/bruno": "^6.0",
         "optimus/genie": "^3.3",
         "optimus/heimdal": "^3.0",
-        "darkaonline/l5-swagger": "^8.0"
+        "darkaonline/l5-swagger": "^8.0",
+        "doctrine/dbal": "^3.1"
     },
     "require-dev": {
         "orchestra/testbench": "^6.19",
