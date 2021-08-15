@@ -69,7 +69,7 @@ class DefaultController extends AbstractBrunoController
     {
         return response()->json([
             'title'   => 'FusionPBX API',
-            'version' => Version::getGitTag()
+            'version' => Version::getPackageVersion()
         ]);
     }
 }
