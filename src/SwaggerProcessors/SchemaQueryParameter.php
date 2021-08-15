@@ -265,7 +265,8 @@ class SchemaQueryParameter
 
     private function getPathPrefix(AbstractAnnotation $annotation)
     {
-        $prefix = $annotation->_context->__get('namespace') === self::API_CONTROLLERS_PREFIX ? 'api' : '';
+        $prefix = $annotation->_context->__get('namespace') === self::API_CONTROLLERS_PREFIX ? 'api/' . config('fpbx.api_version') : '';
+
         return $prefix;
     }
 

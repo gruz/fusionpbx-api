@@ -29,8 +29,8 @@ return [
          */
         'constants' => [
             'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
-            'SW_VERSION' => env('SW_VERSION', \Gruz\FPBX\Helpers\Version::getGitTag()),
-            'APP_URL' => env('APP_URL', 'https://localhost') . '/api',
+            'SW_VERSION' => env('SW_VERSION', \Gruz\FPBX\Helpers\Version::getPackageVersion()),
+            'APP_URL' => env('APP_URL', 'https://localhost') . '/api/' . config('fpbx.api_version'),
             // 'APP_NAME' => env('APP_NAME'),
         ],
     ],
