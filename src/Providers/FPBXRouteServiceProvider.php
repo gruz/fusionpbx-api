@@ -52,6 +52,10 @@ class FPBXRouteServiceProvider extends ServiceProvider
         $swaggerRoutes = Storage::get($filePath);
         $swaggerRoutes = json_decode($swaggerRoutes);
 
+        if (empty($swaggerRoutes)) {
+            return;
+        }
+
         foreach ($swaggerRoutes as $route) {
             if ($this->checkRouteIsRegistered($route->path, $route->method)) {
                 continue;
