@@ -31,7 +31,7 @@ class SchemaQueryParameter
     // const MODEL_ADD_INCLUDES = 'model-add-includes';
     const ROUTE_PATH = 'route-$path';
     const ROUTE_MIDDLEWARES = 'route-$middlewares';
-    const API_CONTROLLERS_PREFIX = 'Gruz\FPBX\\Http\\Controllers\\Api';
+    const API_CONTROLLERS_PREFIX = 'Gruz\FPBX\\Http\\Controllers';
 
     public function __invoke(Analysis $analysis)
     {
@@ -315,7 +315,7 @@ class SchemaQueryParameter
 
         $path = $data['pathItem'];
         $method = $data['method'];
-        
+
         $responses = $path->$method->responses;
         if (UNDEFINED === $responses) {
             $responses = [];
@@ -372,7 +372,7 @@ class SchemaQueryParameter
         if (UNDEFINED === $path->$method->requestBody) {
             return;
         }
-        
+
         $examples = $path->$method->requestBody->_unmerged[0]->examples;
         if (UNDEFINED === $examples) {
             return;

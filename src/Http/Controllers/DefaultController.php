@@ -2,7 +2,7 @@
 
 namespace Gruz\FPBX\Http\Controllers;
 
-use Gruz\FPBX\Version;
+use \Gruz\FPBX\Helpers\Version;
 use OpenApi\Annotations as OA;
 
 /**
