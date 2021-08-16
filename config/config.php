@@ -28,7 +28,7 @@ return [
         /**
          * Whether a reseller code is a must to be registered
          */
-        'required' => true,
+        'required' => env('FPBX_RESELLER_CODE_REQUIRED', false),
         /**
          * Whether to look for a reseller code passed by the user in v_default_settings table
          */

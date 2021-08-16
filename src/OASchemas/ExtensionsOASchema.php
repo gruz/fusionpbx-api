@@ -14,10 +14,17 @@ namespace Gruz\FPBX\OASchemas;
         )
     ),
 
-    @OA\Schema(schema="ExtensionCreateSchema", allOf={
-        @OA\Schema(@OA\Property( property="reseller_reference_code", type="string", description="Reseller reference code`TODO properly save on user creation`" )),
-        @OA\Schema(ref="#/components/schemas/Extension"),
-    }),
+    @OA\Schema(schema="ExtensionCreateSchema",
+        allOf={
+            @OA\Schema(@OA\Property(
+                property="reseller_reference_code",
+                type="string",
+                description="Reseller reference code`TODO properly save on user creation`"
+            )),
+            @OA\Schema(ref="#/components/schemas/Extension"),
+        },
+        required={"extension", "password"}
+    ),
 
     @OA\Schema(schema="ExtensionWithRelatedUsersSchema", allOf={
         @OA\Schema(ref="#/components/schemas/Extension"),
