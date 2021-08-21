@@ -35,7 +35,7 @@
         "doctrine/annotations": "^1.12",
         "optimus/api-consumer": "^0.4.0",
         "optimus/architect": "^2.0",
-        "gruz/bruno": "^6.1",
+        "gruz/bruno": "^6.0",
         "optimus/genie": "^3.3",
         "optimus/heimdal": "^3.0",
         "darkaonline/l5-swagger": "^8.0",
