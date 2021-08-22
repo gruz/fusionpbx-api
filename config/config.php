@@ -74,8 +74,8 @@ return [
         'include_username_in_reset_password_email' => env('FPBX_USER_INCLUDE_USERNAME_IN_RESET_PASSWORD_EMAIL', false),
     ],
     'extension' => [
-        'min' => 100000,
-        'max' => 999999,
+        'min' => env('FPBX_EXTENSION_MIN', 1),
+        'max' => env('FPBX_EXTENSION_MAX', 999999),
     ],
 
     /**
