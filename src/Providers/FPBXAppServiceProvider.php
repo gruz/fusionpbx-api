@@ -28,12 +28,12 @@ class FPBXAppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register(\Optimus\ApiConsumer\Provider\LaravelServiceProvider::class);
+        $this->app->register(\Optimus\Heimdal\Provider\LaravelServiceProvider::class);
         $this->registerHelpers();
         $this->loadConfig();
         $this->registerCGRT();
 
-        $this->app->register(\Optimus\ApiConsumer\Provider\LaravelServiceProvider::class);
-        $this->app->register(\Optimus\Heimdal\Provider\LaravelServiceProvider::class);
         // $this->app->register(Askedio\LaravelRatchet\Providers\LaravelRatchetServiceProvider::class);
     }
 
