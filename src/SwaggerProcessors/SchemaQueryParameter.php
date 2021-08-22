@@ -13,12 +13,13 @@ use OpenApi\Annotations\Response;
 use OpenApi\Annotations\MediaType;
 use OpenApi\Annotations\Operation;
 use OpenApi\Annotations\Parameter;
+use Gruz\FPBX\Models\AbstractModel;
 use OpenApi\Annotations\Components;
 use OpenApi\Processors\OperationId;
+use Illuminate\Support\Facades\File;
 use OpenApi\Annotations\JsonContent;
 use OpenApi\Annotations\RequestBody;
 use Illuminate\Support\Facades\Storage;
-use Gruz\FPBX\Models\AbstractModel;
 use OpenApi\Annotations\AbstractAnnotation;
 
 /**
@@ -365,7 +366,11 @@ class SchemaQueryParameter
 
     private function attachRequestExamples($actionPath, $data)
     {
-        $requestExamples = $this->getRequestExamples($actionPath);
+        $requestExamples = $this->getRequestExamplesFromFiles($actionPath);
+
+        if (empty($requestExamples)) {
+            return;
+        }
 
         $path = $data['pathItem'];
         $method = $data['method'];
@@ -374,31 +379,41 @@ class SchemaQueryParameter
             return;
         }
 
-        $examples = $path->$method->requestBody->_unmerged[0]->examples;
-        if (UNDEFINED === $examples) {
-            return;
+        $examples = $path->$method->requestBody->content[0]->examples;
+        foreach ($requestExamples as $key => $value) {
+            $requestExamples[$key] = new Examples($value);
+        }
+
+        if (!is_array($examples)) {
+            $examples = [];
         }
 
         $examples = array_merge($examples, $requestExamples);
 
-
-        $path->$method->requestBody->_unmerged[0]->examples = $examples;
+        $path->$method->requestBody->content[0]->examples = $examples;
     }
 
-    private function getRequestExamples($actionPath)
+    private function getRequestExamplesFromFiles($actionPath)
     {
+        $examplesPath = __DIR__.'/../../resources/swagger/examples';
 
-        $directory = 'swagger/' . $actionPath . '/request';
+        $directory = realpath($examplesPath . '/' . $actionPath . '/request');
 
-        $requestFiles = Storage::files($directory);
+        // $requestFiles = Storage::files($directory);
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        $requestFiles = File::files($directory);
 
         $examples = [];
 
         foreach ($requestFiles as $fileName) {
-            $fileContents = Storage::get($fileName);
+            $fileContents = $fileName->getContents();
             $fileContents = json_decode($fileContents);
 
             $json = [
+                'example' => basename($fileName, '.json'),
                 'summary' => basename($fileName, '.json'),
                 'value' => $fileContents,
             ];

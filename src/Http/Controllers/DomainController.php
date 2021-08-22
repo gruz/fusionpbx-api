@@ -29,6 +29,10 @@ class DomainController extends AbstractBrunoController
      * to understand how override works.
      *
      * Check examples as well.
+     * To add exampes here inside OA\MediaType add
+     * @OA\Examples(example=200, summary="", value={"name":1}),
+     * @OA\Examples(example=300, summary="", value={"name":1}),
+     * @OA\Examples(example=400, summary="", value={"name":1})
      *
     @OA\Post(
         tags={"Domain"},
@@ -37,10 +41,13 @@ class DomainController extends AbstractBrunoController
         @OA\RequestBody(
             description="Domain information",
             required=true,
-            @OA\JsonContent(
-                allOf={
-                    @OA\Schema(ref="#/components/schemas/DomainCreateSchema"),
-                }
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Schema(
+                    allOf={
+                        @OA\Schema(ref="#/components/schemas/DomainCreateSchema")
+                    },
+                ),
             ),
         ),
         @OA\Response(response=200, description="`TODO Stub` Success ..."),
@@ -54,14 +61,14 @@ class DomainController extends AbstractBrunoController
     /**
      * Activate user by email link. In cases it's and admin user, activate domain as well
      *
-     * Whom to send activation link is determined by configuration [`TODO` Implement this logic ]: 
+     * Whom to send activation link is determined by configuration [`TODO` Implement this logic ]:
      * * Main domain admin user
      * * A email determined by laravel configuration
      * * The users mentioned as admin users when creating domain signup (passed with the signup request)
      * * All FPBX users which have permission to create domain
      * * All above
      *
-     * Depending on configuration, 
+     * Depending on configuration,
      *
     @OA\Get(
         tags={"Domain"},

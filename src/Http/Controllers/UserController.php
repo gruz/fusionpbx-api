@@ -266,12 +266,13 @@ class UserController extends AbstractBrunoController
         @OA\RequestBody(
             description="User information",
             required=true,
-            @OA\JsonContent(
-                ref="#/components/schemas/UserCreateSchema",
-                example={
-                    "Create a user": {}
-                }
-            ),
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Schema(ref="#/components/schemas/UserCreateSchema"),
+                @OA\Examples(example=200, summary="", value={"name":1}),
+                @OA\Examples(example=300, summary="", value={"name":1}),
+                @OA\Examples(example=400, summary="", value={"name":1})
+            )
         ),
         @OA\Response(
             response=200,
