@@ -29,10 +29,6 @@
             ]
         }
     },
-    "repositories": [{
-        "type": "git",
-        "url": "git@github.com:gruz/bruno.git"
-    }],
     "require": {
         "awobaz/compoships": "^2.1",
         "laravel/sanctum": "^2.11",
