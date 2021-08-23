@@ -211,21 +211,37 @@ class UserController extends AbstractBrunoController
      *
     @OA\Get(
         tags={"User"},
-        path="/user/activate/{hash}",
-        x={"route-$path"="fpbx.user.activate"},
+        path="/verify-email/{id}/{hash}",
+        x={"route-$path"="verification.verify"},
         @OA\Parameter(
-            name="hash",
+            name="id",
             in="path",
-            description="User activation link",
+            description="User uuid passed to the verification email",
             required=true,
             @OA\Schema(
                 type="string",
                 format="uuid",
-                example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
+                example="973add20-16b8-467d-ad02-42ffd1cc4aa4",
             )
         ),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @OA\Parameter(
+            name="hash",
+            in="path",
+            description="User activation hash from verification emails",
+            required=true,
+            @OA\Schema(
+                type="string",
+                example="65db8e98584c1d9a83b1b64371d157049f470d75",
+            )
+        ),
+        @OA\Response(
+            description="Application name and version",
+            response=200,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="200", summary="Success", value={"message":"User activated","user":{"user_uuid":"973add20-16b8-467d-ad02-42ffd1cc4aa4","domain_uuid":"8c292d13-0e70-4a08-8f50-eb8bb4348ae4","username":"marisa36@watsica.net","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-23 17:15:21.262935+0000","account_code":null}}),
+            )
+        ),
     )
      */
     public function activate(string $hash, UserActivateRequest $request)

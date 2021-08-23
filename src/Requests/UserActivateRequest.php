@@ -17,11 +17,13 @@ class UserActivateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'hash' => [
+            'id' => [
                 'required',
                 'uuid',
+            ],
+            'hash' => [
+                'required',
                 'exists:\Gruz\FPBX\Models\User,user_enabled',
-
             ],
         ];
 
@@ -32,6 +34,8 @@ class UserActivateRequest extends FormRequest
     {
         $data = parent::all($keys);
         $data['hash'] = $this->route('hash');
+        $data['id'] = $this->route('id');
+
         return $data;
     }
 }
