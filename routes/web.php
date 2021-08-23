@@ -1,9 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Gruz\FPBX\Http\Controllers\StripeController;
-use Gruz\FPBX\Http\Controllers\WebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +12,6 @@ use Gruz\FPBX\Http\Controllers\WebhookController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Auth::routes();
 Route::get('/docs/redoc', function () {
     return view('documenation.index');
 });
