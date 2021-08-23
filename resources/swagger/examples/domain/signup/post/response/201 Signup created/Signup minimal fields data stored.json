@@ -1,6 +1,7 @@
 {
     "request": {
-        "domain_name": "mertz13.com",
+        "domain_name": "mertz16.com",
+        "reseller_reference_code": "Code01",
         "users": [
             {
                 "is_admin": true,
@@ -9,14 +10,14 @@
                 "user_email": "alyson.dietrich@howe.com",
                 "extensions": [
                     {
-                        "extension": 169,
-                        "password": "somePass",
-                        "voicemail_password": "956"
+                        "extension": 100000,
+                        "password": ".Apantera1",
+                        "voicemail_password": "5956"
                     }
                 ]
             }
         ]
     },
-    "updated_at": "2021-03-28T15:45:33.000000Z",
-    "created_at": "2021-03-28T15:45:33.000000Z"
+    "updated_at": "2021-08-23T20:43:59.000000Z",
+    "created_at": "2021-08-23T20:43:59.000000Z"
 }

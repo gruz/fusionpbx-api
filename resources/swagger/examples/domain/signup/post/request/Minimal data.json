@@ -1,16 +1,17 @@
 {
-    "domain_name": "mertz13.com",
+    "domain_name": "mertz16.com",
+    "reseller_reference_code": "Code01",
     "users": [
         {
             "is_admin": true,
             "username": "alyson.dietrich@howe.com",
-            "password": ".VonManStein143",
+            "password": "7A%XQ>*k2?XPSYL1K4",
             "user_email": "alyson.dietrich@howe.com",
             "extensions": [
                 {
-                    "extension": 123169,
-                    "password": "somePass02",
-                    "voicemail_password": "956"
+                    "extension": 100000,
+                    "password": ".Apantera1",
+                    "voicemail_password": "5956"
                 }
             ]
         }
