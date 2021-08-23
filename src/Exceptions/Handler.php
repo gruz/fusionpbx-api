@@ -3,12 +3,12 @@
 namespace Gruz\FPBX\Exceptions;
 
 use Throwable;
+use Illuminate\Support\Facades\Route;
+use Optimus\Heimdal\ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Optimus\Heimdal\ExceptionHandler;
-use Route;
 use Illuminate\Foundation\Exceptions\Handler as LaravelExceptionHandler;
 
 class Handler extends ExceptionHandler
