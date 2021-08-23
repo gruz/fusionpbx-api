@@ -9,20 +9,6 @@ use Illuminate\Contracts\Validation\Rule;
 class CheckReferenceCodeRule implements Rule
 {
     /**
-     * @var CGRTService
-     */
-    private $cGRTService;
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->cGRTService = app(CGRTService::class);
-    }
-
-    /**
      * Determine if the validation rule passes.
      *
      * @param  string  $attribute
@@ -34,9 +20,9 @@ class CheckReferenceCodeRule implements Rule
         $isFound = false;
         if (config('fpbx.resellerCode.checkInDefaultSettings')) {
             $reference_codes = DefaultSetting::where([
-                [ 'default_setting_value' , $value],
-                [ 'default_setting_category', 'billing'],
-                [ 'default_setting_subcategory', 'reseller_code'],
+                ['default_setting_value', $value],
+                ['default_setting_category', 'billing'],
+                ['default_setting_subcategory', 'reseller_code'],
             ])->first();
 
             if ($reference_codes) {
@@ -49,7 +35,12 @@ class CheckReferenceCodeRule implements Rule
         }
 
         if (config('fpbx.cgrt.enabled') && config('fpbx.resellerCode.checkInCGRT')) {
-            $reference_codes = $this->cGRTService->getReferenceCodes();
+            /**
+             * @var CGRTService
+             */
+            $cGRTService = app(CGRTService::class);
+
+            $reference_codes = $cGRTService->getReferenceCodes();
             $isFound = in_array($value, $reference_codes);
         }
 
