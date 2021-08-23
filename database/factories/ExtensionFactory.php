@@ -94,7 +94,6 @@ class ExtensionFactory extends Factory
             "forward_user_not_registered_destination" => null,
             "forward_user_not_registered_enabled" => null,
             "follow_me_uuid" => null,
-            "forward_caller_id_uuid" => null,
             "follow_me_enabled" => "string",
             "follow_me_destinations" => "string",
             "enabled" => $this->faker->randomElement(["true", "false"]),

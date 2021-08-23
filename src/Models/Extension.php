@@ -45,7 +45,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
       'forward_user_not_registered_enabled' => null,
       'follow_me_uuid' => null,
       'enabled' => 'true',
-      'forward_caller_id_uuid' => null,
       'absolute_codec_string' => null,
     ];
 
@@ -104,7 +103,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
     //     'follow_me_uuid',
     //     'enabled',
     //     'description',
-    //     'forward_caller_id_uuid',
     //     'absolute_codec_string',
     //     'force_ping'
     // ];

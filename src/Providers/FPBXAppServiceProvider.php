@@ -18,7 +18,6 @@ use Gruz\FPBX\Http\Middleware\L5SwaggerLoadConstants;
 use Gruz\FPBX\Http\Middleware\LowercaseRequestParams;
 use Gruz\FPBX\Console\Commands\RestoreDatabaseCommand;
 use Gruz\FPBX\Console\Commands\MakeTestDatabaseCommand;
-use Gruz\FPBX\Exceptions\Handler;
 
 class FPBXAppServiceProvider extends ServiceProvider
 {
