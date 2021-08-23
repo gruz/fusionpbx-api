@@ -8,13 +8,6 @@ use Gruz\FPBX\Services\CGRTService;
 
 class UserWasActivatedCGRTListener
 {
-    private $cGRTService;
-
-    public function __construct(CGRTService $cGRTService)
-    {
-        $this->cGRTService = $cGRTService;
-    }
-
     public function handle($event)
     {
         if (!config('fpbx.cgrt.enabled')) {
@@ -22,11 +15,16 @@ class UserWasActivatedCGRTListener
         }
 
         /**
+         * @var CGRTService
+         */
+        $cGRTService = app(CGRTService::class);
+
+        /**
          * @var User
          */
         $user = $event->user;
 
-        $client_added = $this->cGRTService->addClient($user);
+        $client_added = $cGRTService->addClient($user);
 
         if ($client_added) {
             $account_code = $client_added->account_code;
@@ -49,8 +47,8 @@ class UserWasActivatedCGRTListener
             $user_setting->fill($data);
             $user_setting->save();
 
-            $this->cGRTService->addSIPAccount($user, $client_added);
-            $this->cGRTService->assignTariffPlan($client_added->tenant, $client_added->account_code);
+            $cGRTService->addSIPAccount($user, $client_added);
+            $cGRTService->assignTariffPlan($client_added->tenant, $client_added->account_code);
         }
 
     }
