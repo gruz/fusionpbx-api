@@ -33,9 +33,11 @@ class SchemaQueryParameter
     const ROUTE_PATH = 'route-$path';
     const ROUTE_MIDDLEWARES = 'route-$middlewares';
     const API_CONTROLLERS_PREFIX = 'Gruz\FPBX\\Http\\Controllers';
+    private $examplesPath;
 
     public function __invoke(Analysis $analysis)
     {
+        $this->examplesPath = __DIR__.'/../../resources/swagger/examples';
         $this->registerRoutes($analysis);
 
         /**
@@ -313,7 +315,11 @@ class SchemaQueryParameter
 
     private function attachRepsonseExamples($actionPath, $data)
     {
-        $responseExamples = $this->getResponseExamples($actionPath);
+        $responseExamples = $this->getResponseExamplesFromFiles($actionPath);
+
+        if (empty($responseExamples)) {
+            return;
+        }
 
         $path = $data['pathItem'];
         $method = $data['method'];
@@ -323,20 +329,28 @@ class SchemaQueryParameter
             $responses = [];
         }
         $responses = array_merge($responses, $responseExamples);
+        // return;
         $path->$method->responses = $responses;
+        // d($path->$method, $responseExamples);
     }
 
-    private function getResponseExamples($actionPath)
+    private function getResponseExamplesFromFiles($actionPath)
     {
-        $responsesFolder = 'swagger/' . $actionPath . '/response';
-        $responseDirectories = Storage::directories($responsesFolder);
+        $directory = realpath($this->examplesPath . '/' . $actionPath . '/response');
+
+        // $requestFiles = Storage::files($directory);
+        if (!is_dir($directory)) {
+            return [];
+        }
+
+        $responseDirectories = File::directories($directory);
 
         $responses = [];
 
         foreach ($responseDirectories as $directory) {
             $basename = basename($directory);
             list($code, $description) = explode(' ', $basename, 2);
-            $responseFiles = Storage::files($directory);
+            $responseFiles = File::files($directory);
             if (empty($responseFiles)) {
                 continue;
             }
@@ -349,12 +363,12 @@ class SchemaQueryParameter
             $content->examples = [];
 
             foreach ($responseFiles as $fileName) {
-                # code...
-                $json = Storage::get($fileName);
-                $content->examples[] = [
+                $json = $fileName->getContents();
+                $content->examples[] = new Examples([
+                    'example' => basename($fileName, '.json'),
                     'summary' => basename($fileName, '.json'),
                     'value' => json_decode($json),
-                ];
+                ]);
             }
             $resp->content = [$content];
 
@@ -395,9 +409,7 @@ class SchemaQueryParameter
 
     private function getRequestExamplesFromFiles($actionPath)
     {
-        $examplesPath = __DIR__.'/../../resources/swagger/examples';
-
-        $directory = realpath($examplesPath . '/' . $actionPath . '/request');
+        $directory = realpath($this->examplesPath . '/' . $actionPath . '/request');
 
         // $requestFiles = Storage::files($directory);
         if (!is_dir($directory)) {

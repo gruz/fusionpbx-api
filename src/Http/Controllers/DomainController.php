@@ -50,7 +50,6 @@ class DomainController extends AbstractBrunoController
                 ),
             ),
         ),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
     )
      */
     public function signup(DomainSignupRequest $request, PostponedActionService $postponedActionService)
@@ -93,8 +92,15 @@ class DomainController extends AbstractBrunoController
                 example="soma@insomnia.com",
             )
         ),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @OA\Response(
+            description="Application name and version",
+            response=200,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="200", summary="Success", value={"domain_name":"mertz11.com","domain_description":"Created via Factory during tests","domain_enabled":true,"domain_uuid":"37c8cce2-5b5c-4e62-9adf-379f76e42909","message":"messages.team created"}),
+            )
+        ),
+
     )
      */
     public function activate($hash, $email, DomainActivateRequest $request, PostponedActionService $postponedActionService)
