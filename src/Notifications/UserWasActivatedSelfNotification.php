@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Route;
 
 class UserWasActivatedSelfNotification extends Notification implements ShouldQueue
 {
@@ -64,10 +65,14 @@ class UserWasActivatedSelfNotification extends Notification implements ShouldQue
                 foreach ($extensions as $extension => $password) {
                     $mailMessage->line( ' * ' . __('Login') . ': **' . $extension . '** ');
                 }
-                $mailMessage->line( __('Login to [web portal](:url) to get the password', ['url' => route('login')]));
+                if (Route::has('login')) {
+                    $mailMessage->line( __('Login to [web portal](:url) to get the password', ['url' => route('login')]));
+                }
             }
 
-            $mailMessage->line( '# ' . __('[Web portal](:url) access', ['url' => route('login')]) . ': ');
+            if (Route::has('login')) {
+                $mailMessage->line( '# ' . __('[Web portal](:url) access', ['url' => route('login')]) . ': ');
+            }
             $mailMessage->line( ' * ' . __('Login') . ': **' . $this->model->username . '** ');
             $mailMessage->line( __('Use the password you have specified on registration'));
             // $mailMessage->line(__('Use username **:username** to login into web-application', ['username' => $this->model->username]));
