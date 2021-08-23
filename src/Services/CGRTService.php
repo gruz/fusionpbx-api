@@ -4,6 +4,7 @@ namespace Gruz\FPBX\Services;
 
 use GuzzleHttp\Client;
 use Gruz\FPBX\Models\User;
+use Illuminate\Support\Arr;
 use Gruz\FPBX\Events\CGRTFailedEvent;
 
 /**
@@ -320,7 +321,7 @@ class CGRTService
             return $responseJson;
         }
 
-        $balance = optional(\Arr::get($responseJson, '0', new \stdClass))->credit_balance;
+        $balance = optional(Arr::get($responseJson, '0', new \stdClass))->credit_balance;
 
         return $balance;
     }
@@ -339,7 +340,7 @@ class CGRTService
             return $responseJson;
         }
 
-        $balance = optional(\Arr::get($responseJson, '0'))->balance;
+        $balance = optional(Arr::get($responseJson, '0'))->balance;
 
         return $balance;
     }
