@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c2b8ffaac713cdfb23bfe5b3acca248f",
+    "content-hash": "403721128f8bd3901d928239e33f5f1f",
     "packages": [
         {
             "name": "awobaz/compoships",
@@ -1137,6 +1137,83 @@
             "time": "2020-04-13T13:17:36+00:00"
         },
         {
+            "name": "gruz/bruno",
+            "version": "6.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gruz/bruno.git",
+                "reference": "f530a929d93572fa70867ce6c1aa878a049a44c2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gruz/bruno/zipball/f530a929d93572fa70867ce6c1aa878a049a44c2",
+                "reference": "f530a929d93572fa70867ce6c1aa878a049a44c2",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "~6.0|~7.0|~8.0",
+                "optimus/architect": "~2.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "1.3.*",
+                "orchestra/testbench": "4.*",
+                "php-coveralls/php-coveralls": "2.2.*",
+                "phpunit/phpunit": "~8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Optimus\\Bruno\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "support": {
+                "source": "https://github.com/gruz/bruno/tree/6.0.1"
+            },
+            "time": "2021-08-21T19:37:28+00:00"
+        },
+        {
+            "name": "gruz/genie",
+            "version": "3.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gruz/genie.git",
+                "reference": "5625b624d3cf86fc9a07ff35227efb3be3695071"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gruz/genie/zipball/5625b624d3cf86fc9a07ff35227efb3be3695071",
+                "reference": "5625b624d3cf86fc9a07ff35227efb3be3695071",
+                "shasum": ""
+            },
+            "require": {
+                "gruz/bruno": "~3.0|~4.0|~5.0|~6.0",
+                "illuminate/database": ">=4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~4.7",
+                "satooshi/php-coveralls": "dev-master@dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Optimus\\Genie\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "support": {
+                "source": "https://github.com/gruz/genie/tree/3.3.4"
+            },
+            "time": "2021-08-21T20:06:38+00:00"
+        },
+        {
             "name": "laravel/framework",
             "version": "v8.54.0",
             "source": {
@@ -1367,6 +1444,64 @@
                 "source": "https://github.com/laravel/sanctum"
             },
             "time": "2021-06-15T15:56:21+00:00"
+        },
+        {
+            "name": "laravel/ui",
+            "version": "v3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/ui.git",
+                "reference": "07d725813350c695c779382cbd6dac0ab8665537"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/07d725813350c695c779382cbd6dac0ab8665537",
+                "reference": "07d725813350c695c779382cbd6dac0ab8665537",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^8.42",
+                "illuminate/filesystem": "^8.42",
+                "illuminate/support": "^8.42",
+                "illuminate/validation": "^8.42",
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Ui\\UiServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Ui\\": "src/",
+                    "Illuminate\\Foundation\\Auth\\": "auth-backend/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel UI utilities and presets.",
+            "keywords": [
+                "laravel",
+                "ui"
+            ],
+            "support": {
+                "source": "https://github.com/laravel/ui/tree/v3.3.0"
+            },
+            "time": "2021-05-25T16:45:33+00:00"
         },
         {
             "name": "league/commonmark",
@@ -2196,85 +2331,6 @@
                 "source": "https://github.com/esbenp/architect/tree/2.0.1"
             },
             "time": "2020-10-31T14:23:10+00:00"
-        },
-        {
-            "name": "optimus/bruno",
-            "version": "6.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/esbenp/bruno.git",
-                "reference": "ddb07e05e302e5a050e94b94af815f82f6df3246"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/esbenp/bruno/zipball/ddb07e05e302e5a050e94b94af815f82f6df3246",
-                "reference": "ddb07e05e302e5a050e94b94af815f82f6df3246",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "~6.0|~7.0|~8.0",
-                "optimus/architect": "~2.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "1.3.*",
-                "orchestra/testbench": "4.*",
-                "php-coveralls/php-coveralls": "2.2.*",
-                "phpunit/phpunit": "~8.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Optimus\\Bruno\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "support": {
-                "issues": "https://github.com/esbenp/bruno/issues",
-                "source": "https://github.com/esbenp/bruno/tree/6.0.0"
-            },
-            "time": "2020-10-31T12:13:20+00:00"
-        },
-        {
-            "name": "optimus/genie",
-            "version": "3.3.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/esbenp/genie.git",
-                "reference": "94f1001503c0c123c81ac0f3a636b1a3abe43d94"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/esbenp/genie/zipball/94f1001503c0c123c81ac0f3a636b1a3abe43d94",
-                "reference": "94f1001503c0c123c81ac0f3a636b1a3abe43d94",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": ">=4.0",
-                "optimus/bruno": "~3.0|~4.0|~5.0|~6.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "0.9.*",
-                "phpunit/phpunit": "~4.7",
-                "satooshi/php-coveralls": "dev-master@dev"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Optimus\\Genie\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "support": {
-                "issues": "https://github.com/esbenp/genie/issues",
-                "source": "https://github.com/esbenp/genie/tree/3.3.3"
-            },
-            "time": "2020-10-31T12:38:14+00:00"
         },
         {
             "name": "optimus/heimdal",
