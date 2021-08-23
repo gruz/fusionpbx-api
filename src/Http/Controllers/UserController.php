@@ -244,12 +244,13 @@ class UserController extends AbstractBrunoController
         ),
     )
      */
-    public function activate(string $hash, UserActivateRequest $request)
+    public function activate(string $id, string $hash, UserActivateRequest $request, UserService $userService)
     {
-        $response = $this->response($this->userService->activate($hash));
+        $response = $this->response($userService->activate($hash));
 
         return $response;
     }
+
 
     /**
      * Delete a domain `TODO descendant delete user with extenions, contacts, handle last domain admin delition`
