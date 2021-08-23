@@ -4,6 +4,7 @@ namespace Gruz\FPBX\Requests;
 
 use Gruz\FPBX\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Gruz\FPBX\Rules\DomainAlreadyEnabledRule;
 use Gruz\FPBX\Rules\DomainSignupHashExpiredRule;
 use Gruz\FPBX\Rules\DomainSignupHashHasEmailExistsRule;
 
@@ -27,6 +28,7 @@ class DomainActivateRequest extends FormRequest
                 'uuid',
                 'exists:\Gruz\FPBX\Models\PostponedAction',
                 new DomainSignupHashExpiredRule(),
+                new DomainAlreadyEnabledRule(),
             ],
             'email' => [
                 'required',
