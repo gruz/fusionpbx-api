@@ -2,7 +2,6 @@
 
 namespace Gruz\FPBX\Rules;
 
-use Illuminate\Support\Str;
 use Illuminate\Contracts\Validation\Rule;
 use Gruz\FPBX\Models\PostponedAction;
 
