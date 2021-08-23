@@ -10,11 +10,12 @@ class UserWasActivatedListener
 {
     public function handle($event)
     {
+        $notified = collect([]);
         if ($event->sendNotification) {
             \Gruz\FPBX\Notifications\Notification::send($event->user, new UserWasActivatedSelfNotification($event->user));
         }
 
-        $admins = $event->user->getDomainAdmins();
+        $admins = $event->user->getDomainAdmins()->where('user_email', '!=', $event->user->user_email);
         \Gruz\FPBX\Notifications\Notification::send($admins, new UserWasActivatedDomainAdminNotification($event->user));
 
         $mainAdminEmail = config('mail.new_registration_email');
