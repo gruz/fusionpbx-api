@@ -2,6 +2,7 @@
 
 namespace Gruz\FPBX\Notifications;
 
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\HtmlString;
 use Illuminate\Notifications\Notification;
@@ -43,9 +44,9 @@ class CGRTFailedNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $userData = \Str::markdown('```' . PHP_EOL . print_r($this->event->userData, true) . PHP_EOL . '```');
-        $request = \Str::markdown('```' . PHP_EOL . print_r($this->event->request, true) . PHP_EOL . '```');
-        $response = \Str::markdown('```' . PHP_EOL . print_r($this->event->response, true) . PHP_EOL . '```');
+        $userData = Str::markdown('```' . PHP_EOL . print_r($this->event->userData, true) . PHP_EOL . '```');
+        $request = Str::markdown('```' . PHP_EOL . print_r($this->event->request, true) . PHP_EOL . '```');
+        $response = Str::markdown('```' . PHP_EOL . print_r($this->event->response, true) . PHP_EOL . '```');
         return (new MailMessage)
             ->error()
             ->subject(__('Alert! CGRT Error '))
