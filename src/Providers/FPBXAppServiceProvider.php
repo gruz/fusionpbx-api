@@ -28,6 +28,7 @@ class FPBXAppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        \Laravel\Sanctum\Sanctum::ignoreMigrations();
         $this->app->register(\Optimus\ApiConsumer\Provider\LaravelServiceProvider::class);
         $this->app->register(\Optimus\Heimdal\Provider\LaravelServiceProvider::class);
         $this->app->bind(\App\Exceptions\Handler::class, \Gruz\FPBX\Exceptions\Handler::class);
