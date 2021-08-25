@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
                 break;
             }
 
-            $middleware = Route::getCurrentRoute()->middleware();
+            $middleware = $route->middleware();
 
             if ((is_array($middleware) && in_array("web", $middleware) || $middleware == "web")) {
                 break;
