@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
         while (true) {
             $route = Route::getCurrentRoute();
 
-            if ($route) {
+            if (!$route) {
                 break;
             }
 
