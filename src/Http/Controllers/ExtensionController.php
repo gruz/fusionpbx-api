@@ -63,7 +63,7 @@ class ExtensionController extends AbstractBrunoController
      *
     @OA\Get(
         tags={"Extension"},
-        path="/user/{extension_uuid}",
+        path="/extension/{extension_uuid}",
         @OA\Parameter(ref="#/components/parameters/extension_uuid"),
         @OA\Parameter(
             description="Relations to be attached",
