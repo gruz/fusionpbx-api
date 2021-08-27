@@ -104,6 +104,10 @@ class FPBXAppServiceProvider extends ServiceProvider
 
             $key = basename($file->getFilename(), '.php');
 
+            if ($key === "optimus.heimdal") {
+                $config->set($key . '.formatters', []);
+            }
+
             $mergeConfigArray = require $path. $file->getFilename();
             $newConfig = Arr::dot($mergeConfigArray);
 
