@@ -182,8 +182,8 @@ class UserService extends AbstractService
     public function getMe($options = [])
     {
         //return Auth::user();
-        $class = Extension::class;
-        $class::$staticMakeVisible = ['password'];
+        // $class = Extension::class;
+        // $class::$staticMakeVisible = ['password'];
         return $this->userRepository->getWhere('user_uuid', Auth::user()->user_uuid)->first();
     }
 
