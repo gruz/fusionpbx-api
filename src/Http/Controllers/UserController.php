@@ -29,6 +29,135 @@ class UserController extends AbstractBrunoController
         $this->userService = $userService;
     }
 
+
+    /**
+     *
+     * User signup
+     *
+     * Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user/signup",
+        x={"route-$path"="fpbx.user.signup"},
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Schema(ref="#/components/schemas/UserCreateSchema"),
+                @OA\Examples(example=200, summary="", value={"username":"alyson3.dietrich@howe.com","add_user":"admin","domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","add_date":"2021-08-25 07:21:12.125369+0000","user_enabled":"f6b78951340bd4813ea5a5a275e08d1220ad51c7","user_uuid":"a935de0c-539d-4443-8036-a8120aedda01","domain":{"domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","domain_parent_uuid":null,"domain_name":"mertz12.com","domain_enabled":true,"domain_description":"Created via Factory during tests"}}),
+                @OA\Examples(example=300, summary="", value={"name":1}),
+                @OA\Examples(example=400, summary="", value={"name":1})
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="User created response",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="200", summary="Success", value={"username":"alyson3.dietrich@howe.com","add_user":"admin","domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","add_date":"2021-08-25 07:21:12.125369+0000","user_enabled":"f6b78951340bd4813ea5a5a275e08d1220ad51c7","user_uuid":"a935de0c-539d-4443-8036-a8120aedda01","domain":{"domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","domain_parent_uuid":null,"domain_name":"mertz12.com","domain_enabled":true,"domain_description":"Created via Factory during tests"}}),
+            )
+        ),
+
+        @OA\Response(
+            description="Application name and version",
+            response=422,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="200", summary="User already exists", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The user email has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The username has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The extensions.0.extension has already been taken."}}}),
+            )
+        ),
+    )
+     */
+    public function signup(UserSignupRequestApi $request)
+    {
+        $data = $request->except('domain_uuid');
+
+        return $this->response($this->userService->create($data), 201);
+    }
+
+    /**
+     * Activate user by email link. In cases it's and admin user, activate domain as well
+     *
+    @OA\Get(
+        tags={"User"},
+        path="/verify-email/{id}/{hash}",
+        x={"route-$path"="verification.verify"},
+        @OA\Parameter(
+            name="id",
+            in="path",
+            description="User uuid passed to the verification email",
+            required=true,
+            @OA\Schema(
+                type="string",
+                format="uuid",
+                example="973add20-16b8-467d-ad02-42ffd1cc4aa4",
+            )
+        ),
+        @OA\Parameter(
+            name="hash",
+            in="path",
+            description="User activation hash from verification emails",
+            required=true,
+            @OA\Schema(
+                type="string",
+                example="65db8e98584c1d9a83b1b64371d157049f470d75",
+            )
+        ),
+        @OA\Response(
+            description="Application name and version",
+            response=200,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="200", summary="Success", value={"message":"User activated","user":{"user_uuid":"973add20-16b8-467d-ad02-42ffd1cc4aa4","domain_uuid":"8c292d13-0e70-4a08-8f50-eb8bb4348ae4","username":"marisa36@watsica.net","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-23 17:15:21.262935+0000","account_code":null}}),
+            )
+        ),
+    )
+     */
+    public function activate(string $id, string $hash, UserActivateRequest $request, UserService $userService)
+    {
+        $response = $this->response($userService->activate($hash));
+
+        return $response;
+    }
+
+
+    /**
+     * Gets currently logged in user info
+     *
+    @OA\Get(
+        tags={"User"},
+        path="/user",
+        security={{"bearer_auth": {}}},
+        x={"route-$path"="fpbx.user.own"},
+        @OA\Parameter(
+            description="Relations to be attached",
+            allowReserved=true,
+            name="includes[]",
+            in="query",
+            @OA\Schema(ref="#/components/schemas/user_includes")
+        ),
+        @OA\Response(
+            response=200,
+            description="`TODO Stub` Could not created domain",
+            @OA\JsonContent(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+        ),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+    )
+     */
+    public function getMe()
+    {
+        $resourceOptions = $this->parseResourceOptions();
+
+        $data = $this->userService->getMe($resourceOptions);
+        $parsedData = $this->parseData($data, $resourceOptions, null);
+
+        return $this->response($parsedData);
+    }
+
+
+
     /**
      * Get user list in domain
      *
@@ -97,38 +226,6 @@ class UserController extends AbstractBrunoController
 
         return $this->response($parsedData);
     }
-
-    /**
-     * Gets currently logged in user info
-     *
-    @ OA\Get(
-        tags={"User"},
-        path="/user",
-        @ OA\Parameter(
-            description="Relations to be attached",
-            allowReserved=true,
-            name="includes[]",
-            in="query",
-            @ OA\Schema(ref="#/components/schemas/user_includes")
-        ),
-        @ OA\Response(
-            response=200,
-            description="`TODO Stub` Could not created domain",
-            @ OA\JsonContent(ref="#/components/schemas/UserWithRelatedItemsSchema"),
-        ),
-        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
-    )
-     */
-    public function getMe()
-    {
-        $resourceOptions = $this->parseResourceOptions();
-
-        $data = $this->userService->getMe($resourceOptions);
-        $parsedData = $this->parseData($data, $resourceOptions, null);
-
-        return $this->response($parsedData);
-    }
-
 
     /**
      * Creates a user inside a domain by a user with permissions to create. It's not a signup!
@@ -206,50 +303,6 @@ class UserController extends AbstractBrunoController
         return $this->response($this->userService->update($userId, $data));
     }
 
-    /**
-     * Activate user by email link. In cases it's and admin user, activate domain as well
-     *
-    @OA\Get(
-        tags={"User"},
-        path="/verify-email/{id}/{hash}",
-        x={"route-$path"="verification.verify"},
-        @OA\Parameter(
-            name="id",
-            in="path",
-            description="User uuid passed to the verification email",
-            required=true,
-            @OA\Schema(
-                type="string",
-                format="uuid",
-                example="973add20-16b8-467d-ad02-42ffd1cc4aa4",
-            )
-        ),
-        @OA\Parameter(
-            name="hash",
-            in="path",
-            description="User activation hash from verification emails",
-            required=true,
-            @OA\Schema(
-                type="string",
-                example="65db8e98584c1d9a83b1b64371d157049f470d75",
-            )
-        ),
-        @OA\Response(
-            description="Application name and version",
-            response=200,
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Examples(example="200", summary="Success", value={"message":"User activated","user":{"user_uuid":"973add20-16b8-467d-ad02-42ffd1cc4aa4","domain_uuid":"8c292d13-0e70-4a08-8f50-eb8bb4348ae4","username":"marisa36@watsica.net","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-23 17:15:21.262935+0000","account_code":null}}),
-            )
-        ),
-    )
-     */
-    public function activate(string $id, string $hash, UserActivateRequest $request, UserService $userService)
-    {
-        $response = $this->response($userService->activate($hash));
-
-        return $response;
-    }
 
 
     /**
@@ -268,53 +321,6 @@ class UserController extends AbstractBrunoController
     public function delete($userId)
     {
         return $this->response($this->userService->delete($userId));
-    }
-
-    /**
-     *
-     * User signup
-     *
-     * Signup a user to domain. A user can have several extensions, several contacts and a bunch of settings.
-     *
-    @OA\Post(
-        tags={"User"},
-        path="/user/signup",
-        x={"route-$path"="fpbx.user.signup"},
-        @OA\RequestBody(
-            description="User information",
-            required=true,
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Schema(ref="#/components/schemas/UserCreateSchema"),
-                @OA\Examples(example=200, summary="", value={"username":"alyson3.dietrich@howe.com","add_user":"admin","domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","add_date":"2021-08-25 07:21:12.125369+0000","user_enabled":"f6b78951340bd4813ea5a5a275e08d1220ad51c7","user_uuid":"a935de0c-539d-4443-8036-a8120aedda01","domain":{"domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","domain_parent_uuid":null,"domain_name":"mertz12.com","domain_enabled":true,"domain_description":"Created via Factory during tests"}}),
-                @OA\Examples(example=300, summary="", value={"name":1}),
-                @OA\Examples(example=400, summary="", value={"name":1})
-            )
-        ),
-        @OA\Response(
-            response=200,
-            description="User created response",
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Examples(example="200", summary="Success", value={"username":"alyson3.dietrich@howe.com","add_user":"admin","domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","add_date":"2021-08-25 07:21:12.125369+0000","user_enabled":"f6b78951340bd4813ea5a5a275e08d1220ad51c7","user_uuid":"a935de0c-539d-4443-8036-a8120aedda01","domain":{"domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","domain_parent_uuid":null,"domain_name":"mertz12.com","domain_enabled":true,"domain_description":"Created via Factory during tests"}}),
-            )
-        ),
-
-        @OA\Response(
-            description="Application name and version",
-            response=422,
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Examples(example="200", summary="User already exists", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The user email has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The username has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The extensions.0.extension has already been taken."}}}),
-            )
-        ),
-    )
-     */
-    public function signup(UserSignupRequestApi $request)
-    {
-        $data = $request->except('domain_uuid');
-
-        return $this->response($this->userService->create($data), 201);
     }
 
     /**
