@@ -46,5 +46,16 @@
         "orchestra/testbench": "^6.19",
         "phpunit/phpunit": "^9.5",
         "kint-php/kint": "^3.3"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan l5-swagger:generate"
+        ],
+        "post-update-cmd": [
+            "@php artisan l5-swagger:generate"
+        ],
+        "post-root-package-install": [
+            "@php artisan l5-swagger:generate"
+        ]
     }
 }
