@@ -26,16 +26,16 @@ class FPBXRouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->routes(function () {
-            Route::prefix('api')
-                ->middleware('api')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/api.php'));
+        // $this->routes(function () {
+        //     Route::prefix('api')
+        //         ->middleware('api')
+        //         ->namespace($this->namespace)
+        //         ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));
-        });
+        //     Route::middleware('web')
+        //         ->namespace($this->namespace)
+        //         ->group(base_path('routes/web.php'));
+        // });
 
         $this->registerRoutesFromGeneratedJson();
 
@@ -57,7 +57,7 @@ class FPBXRouteServiceProvider extends ServiceProvider
         }
 
         foreach ($swaggerRoutes as $route) {
-            if ($this->checkRouteIsRegistered($route->path, $route->method)) {
+            if ($this->checkRouteIsRegistered($route->prefix . '/' . $route->path, $route->method)) {
                 continue;
             }
 
