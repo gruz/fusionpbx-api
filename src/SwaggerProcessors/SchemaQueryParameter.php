@@ -275,6 +275,9 @@ class SchemaQueryParameter
 
     private function getMiddlewares(AbstractAnnotation $annotation)
     {
+        // if ($annotation->path === '/user') {
+        //     d($annotation->path, $annotation->x);
+        // }
         if ($middlewares = Arr::get($annotation->x, self::ROUTE_MIDDLEWARES, [])) {
             $middlewares = explode(',', $middlewares);
             $middlewares = array_map('trim', $middlewares);
@@ -285,6 +288,7 @@ class SchemaQueryParameter
 
         if ($isApi) {
             $auth = false;
+
             if ($annotation->security !== UNDEFINED) {
                 foreach ($annotation->security as $security) {
                     if (array_key_exists('bearer_auth', $security)) {
@@ -294,7 +298,8 @@ class SchemaQueryParameter
                 }
             }
             if ($auth) {
-                $middlewares = ['auth:api'];
+                // $middlewares = ['auth:api'];
+                $middlewares = ['api', 'auth:sanctum'];
             } else {
                 $middlewares = ['api'];
             }

@@ -3,7 +3,7 @@
 namespace Gruz\FPBX\Http\Middleware;
 
 use Closure;
-use Response;
+use Illuminate\Support\Facades\Response;
 
 class CheckApiToken
 {

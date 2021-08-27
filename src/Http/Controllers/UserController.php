@@ -130,7 +130,10 @@ class UserController extends AbstractBrunoController
         tags={"User"},
         path="/user",
         security={{"bearer_auth": {}}},
-        x={"route-$path"="fpbx.user.own"},
+        x={
+            "route-$path"="fpbx.user.own",
+            "route-$middlewares"="api,auth:sanctum"
+        },
         @OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
