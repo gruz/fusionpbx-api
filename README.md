@@ -12,7 +12,6 @@
     - [Git hook for pre-push](#git-hook-for-pre-push)
     - [Working with xDebug at VirtualBox](#working-with-xdebug-at-virtualbox)
 
-
 # Fusionpbx API
 
 > It's a very early development stage for a FusionPBX API using Laravel.
