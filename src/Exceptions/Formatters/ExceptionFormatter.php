@@ -19,15 +19,20 @@ class ExceptionFormatter extends BaseFormatter
             $statusCode = 500;
         }
         $response->setStatusCode($statusCode);
-        $data = $this->formatData($response->getData(true), $e);
+        $data = $this->formatData($response, $e);
 
         $response->setData($data);
     }
 
-    protected function formatData($data, $e) {
+    protected function formatData($response, $e) {
+        $data = $response->getData(true);
+        $code = $e->getCode();
+        if (empty($code)) {
+            $code = $response->getStatusCode();
+        }
         if ($this->debug) {
             $data = array_merge($data, [
-                'code'   => $e->getCode(),
+                'code'   => $code,
                 'message'   => $e->getMessage(),
                 'line'   => $e->getLine(),
                 'file'   => $e->getFile(),
@@ -35,7 +40,7 @@ class ExceptionFormatter extends BaseFormatter
             ]);
         } else {
             $data = array_merge($data, [
-                'code'   => $e->getCode(),
+                'code'   => $code,
                 'message'   => $e->getMessage(),
             ]);
         }
