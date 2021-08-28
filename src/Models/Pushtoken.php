@@ -2,9 +2,9 @@
 
 namespace Gruz\FPBX\Models;
 
-use Gruz\FPBX\Models\AbstractModel;
+use Illuminate\Database\Eloquent\Model;
 
-class Pushtoken extends AbstractModel
+class Pushtoken extends Model
 {
     var $primaryKey = 'pushtoken_uuid';
 

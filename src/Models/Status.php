@@ -2,9 +2,9 @@
 
 namespace Gruz\FPBX\Models;
 
-use Gruz\FPBX\Models\AbstractModel;
+use Illuminate\Database\Eloquent\Model;
 
-class Status extends AbstractModel
+class Status extends Model
 {
     /**
      * The table associated with the model.
