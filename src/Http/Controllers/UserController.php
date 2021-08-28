@@ -82,19 +82,9 @@ class UserController extends AbstractBrunoController
      *
     @OA\Get(
         tags={"User"},
-        path="/verify-email/{id}/{hash}",
+        path="/verify-email/{user_uuid}/{hash}",
         x={"route-$path"="verification.verify"},
-        @OA\Parameter(
-            name="id",
-            in="path",
-            description="User uuid passed to the verification email",
-            required=true,
-            @OA\Schema(
-                type="string",
-                format="uuid",
-                example="973add20-16b8-467d-ad02-42ffd1cc4aa4",
-            )
-        ),
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
         @OA\Parameter(
             name="hash",
             in="path",
@@ -129,18 +119,12 @@ class UserController extends AbstractBrunoController
     @OA\Get(
         tags={"User"},
         path="/user",
-        security={{"bearer_auth": {}}},
+        security={{"bearer_auth": {}}}, @OA\Response(response=401, ref="#/components/responses/Unauthenticated"),
         x={
             "route-$path"="fpbx.user.own",
             "route-$middlewares"="api,auth:sanctum"
         },
-        @OA\Parameter(
-            description="Relations to be attached",
-            allowReserved=true,
-            name="includes[]",
-            in="query",
-            @OA\Schema(ref="#/components/schemas/user_includes")
-        ),
+        @OA\Parameter(ref="#/components/parameters/user_includes[]"),
         @OA\Response(
             response=200,
             description="Get current user data, possible with relations",
@@ -150,14 +134,6 @@ class UserController extends AbstractBrunoController
                 @OA\Examples(example="includes[]=extensions", summary="includes[]=extensions", value={"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-24 10:20:20.112414+0000","account_code":null,"extensions":{{"extension_uuid":"fb308456-d33e-42d7-bd1f-0fac86be2563","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","extension":"169","accountcode":"account-8364","effective_caller_id_name":"William Reichel","effective_caller_id_number":"141","outbound_caller_id_name":"Lelia Wolff","outbound_caller_id_number":"120","emergency_caller_id_name":"Dr. Darrel Tillman","emergency_caller_id_number":"180","directory_first_name":"Mr. Carmine Becker","directory_last_name":"Pollich","directory_visible":"false","directory_exten_visible":"true","max_registrations":null,"limit_max":"4","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz18.com","toll_allow":"international","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-tls-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"lwitting@yahoo.com","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"true","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"false","pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","extension_uuid":"fb308456-d33e-42d7-bd1f-0fac86be2563"}},{"extension_uuid":"972f20b2-b582-482d-aaff-832cfa1db323","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","extension":"156","accountcode":"account-4644","effective_caller_id_name":"Mr. Albin Shields","effective_caller_id_number":"149","outbound_caller_id_name":"Oda Muller I","outbound_caller_id_number":"112","emergency_caller_id_name":"Felipa Kilback","emergency_caller_id_number":"108","directory_first_name":"Lonie Olson","directory_last_name":"Yost","directory_visible":"true","directory_exten_visible":"true","max_registrations":null,"limit_max":"5","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz18.com","toll_allow":"domestic","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"xondricka@hammes.org","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"true","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"true","pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","extension_uuid":"972f20b2-b582-482d-aaff-832cfa1db323"}}}}),
                 @OA\Examples(example="includes[]=contacts", summary="includes[]=contacts", value={"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-24 10:20:20.112414+0000","account_code":null,"contacts":{{"contact_uuid":"c0302a33-f3eb-4c2a-9587-72846cfe7202","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","contact_parent_uuid":null,"contact_type":"customer","contact_organization":"Littel Inc","contact_name_prefix":"Prof.","contact_name_given":"Emilio","contact_name_middle":"A.","contact_name_family":"Frami","contact_name_suffix":"Jr.","contact_nickname":"muller.donnie","contact_title":"Ms.","contact_role":"Online Marketing Analyst","contact_category":"Contacts added via API","contact_url":"http:\/\/www.hermann.info\/molestias-minus-voluptas-harum-reiciendis","contact_time_zone":"America\/Los_Angeles","contact_note":"Quo veritatis magnam hic rerum culpa facilis sint explicabo. Voluptas et aut magni adipisci nulla et. Exercitationem optio reprehenderit voluptatem dolore excepturi et.","last_mod_date":null,"last_mod_user":null,"pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","contact_uuid":"c0302a33-f3eb-4c2a-9587-72846cfe7202"}},{"contact_uuid":"b118e705-8e19-4a06-b998-3fff11fdca6e","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","contact_parent_uuid":null,"contact_type":"supplier","contact_organization":"Kub PLC","contact_name_prefix":"Prof.","contact_name_given":"Patricia","contact_name_middle":"A.","contact_name_family":"Mohr","contact_name_suffix":"DVM","contact_nickname":"kautzer.cordie","contact_title":"Prof.","contact_role":"Administrative Services Manager","contact_category":"Contacts added via API","contact_url":"http:\/\/www.rogahn.com\/est-voluptate-ut-velit-aut-non-ut.html","contact_time_zone":"Africa\/Kinshasa","contact_note":"Quis placeat labore hic reiciendis omnis enim corporis. Fugit beatae repellendus amet commodi id odit sequi inventore. Praesentium est et harum et voluptatem. Sint maxime deserunt laboriosam harum.","last_mod_date":null,"last_mod_user":null,"pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","contact_uuid":"b118e705-8e19-4a06-b998-3fff11fdca6e"}}}}),
                 @OA\Examples(example="includes[]=contacts&includes[]=extensions", summary="includes[]=contacts&includes[]=extensions", value={"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-24 10:20:20.112414+0000","account_code":null,"contacts":{{"contact_uuid":"c0302a33-f3eb-4c2a-9587-72846cfe7202","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","contact_parent_uuid":null,"contact_type":"customer","contact_organization":"Littel Inc","contact_name_prefix":"Prof.","contact_name_given":"Emilio","contact_name_middle":"A.","contact_name_family":"Frami","contact_name_suffix":"Jr.","contact_nickname":"muller.donnie","contact_title":"Ms.","contact_role":"Online Marketing Analyst","contact_category":"Contacts added via API","contact_url":"http:\/\/www.hermann.info\/molestias-minus-voluptas-harum-reiciendis","contact_time_zone":"America\/Los_Angeles","contact_note":"Quo veritatis magnam hic rerum culpa facilis sint explicabo. Voluptas et aut magni adipisci nulla et. Exercitationem optio reprehenderit voluptatem dolore excepturi et.","last_mod_date":null,"last_mod_user":null,"pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","contact_uuid":"c0302a33-f3eb-4c2a-9587-72846cfe7202"}},{"contact_uuid":"b118e705-8e19-4a06-b998-3fff11fdca6e","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","contact_parent_uuid":null,"contact_type":"supplier","contact_organization":"Kub PLC","contact_name_prefix":"Prof.","contact_name_given":"Patricia","contact_name_middle":"A.","contact_name_family":"Mohr","contact_name_suffix":"DVM","contact_nickname":"kautzer.cordie","contact_title":"Prof.","contact_role":"Administrative Services Manager","contact_category":"Contacts added via API","contact_url":"http:\/\/www.rogahn.com\/est-voluptate-ut-velit-aut-non-ut.html","contact_time_zone":"Africa\/Kinshasa","contact_note":"Quis placeat labore hic reiciendis omnis enim corporis. Fugit beatae repellendus amet commodi id odit sequi inventore. Praesentium est et harum et voluptatem. Sint maxime deserunt laboriosam harum.","last_mod_date":null,"last_mod_user":null,"pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","contact_uuid":"b118e705-8e19-4a06-b998-3fff11fdca6e"}}},"extensions":{{"extension_uuid":"fb308456-d33e-42d7-bd1f-0fac86be2563","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","extension":"169","accountcode":"account-8364","effective_caller_id_name":"William Reichel","effective_caller_id_number":"141","outbound_caller_id_name":"Lelia Wolff","outbound_caller_id_number":"120","emergency_caller_id_name":"Dr. Darrel Tillman","emergency_caller_id_number":"180","directory_first_name":"Mr. Carmine Becker","directory_last_name":"Pollich","directory_visible":"false","directory_exten_visible":"true","max_registrations":null,"limit_max":"4","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz18.com","toll_allow":"international","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-tls-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"lwitting@yahoo.com","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"true","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"false","pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","extension_uuid":"fb308456-d33e-42d7-bd1f-0fac86be2563"}},{"extension_uuid":"972f20b2-b582-482d-aaff-832cfa1db323","domain_uuid":"3b89f95e-1576-4f0a-9f7b-40f572ff6eee","extension":"156","accountcode":"account-4644","effective_caller_id_name":"Mr. Albin Shields","effective_caller_id_number":"149","outbound_caller_id_name":"Oda Muller I","outbound_caller_id_number":"112","emergency_caller_id_name":"Felipa Kilback","emergency_caller_id_number":"108","directory_first_name":"Lonie Olson","directory_last_name":"Yost","directory_visible":"true","directory_exten_visible":"true","max_registrations":null,"limit_max":"5","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz18.com","toll_allow":"domestic","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"xondricka@hammes.org","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"true","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"true","pivot":{"user_uuid":"8bd760bd-0146-4c4f-ae41-916d3aa2ac90","extension_uuid":"972f20b2-b582-482d-aaff-832cfa1db323"}}}}),
-            )
-        ),
-        @OA\Response(
-            response=401,
-            description="Unauthenticated",
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Examples(example="Unauthenticated", summary="Unauthenticated", value={"errors":{{"status":401,"code":0,"message":"Unauthenticated."}}}),
             )
         ),
     )
@@ -178,19 +154,10 @@ class UserController extends AbstractBrunoController
     @OA\Get(
         tags={"User"},
         path="/users",
-        security={{"bearer_auth": {}}},
-        @OA\Parameter(
-            description="Relations to be attached",
-            allowReserved=true,
-            name="includes[]",
-            in="query",
-            @OA\Schema(
-                type="array",
-                @OA\Items(type="string",
-                    enum = { "groups", "status", "domain", "permissions", "emails", "extensions", "extensions.voicemail" },
-                )
-            )
-        ),
+        security={{"bearer_auth": {}}}, @OA\Response(response=401, ref="#/components/responses/Unauthenticated"),
+        @OA\Parameter(ref="#/components/parameters/user_includes[]"),
+        @OA\Parameter(ref="#/components/parameters/limit"),
+        @OA\Parameter(ref="#/components/parameters/page"),
         @OA\Response(
             response=200,
             description="Get users list in the current domain",
@@ -218,17 +185,36 @@ class UserController extends AbstractBrunoController
     @OA\Get(
         tags={"User"},
         path="/user/{user_uuid}",
-        security={{"bearer_auth": {}}},
+        security={{"bearer_auth": {}}}, @OA\Response(response=401, ref="#/components/responses/Unauthenticated"),
         @OA\Parameter(ref="#/components/parameters/user_uuid"),
-        @OA\Parameter(
-            description="Relations to be attached",
-            allowReserved=true,
-            name="includes[]",
-            in="query",
-            @OA\Schema(ref="#/components/schemas/user_includes")
+        @OA\Parameter(ref="#/components/parameters/user_includes[]"),
+        @OA\Response(
+            response=200,
+            description="Get users",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="/user/{user_uuid}", summary="Get users basic info /user/{user_uuid}", value={"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"15bc0fc2-1652-4e05-aca6-328937099361","add_user":"admin","add_date":"2021-08-23 20:23:52.800667+0000","account_code":null}),
+                @OA\Examples(example="/user/{user_uuid}?includes[]=extensions",
+                    summary="Get users with data /user/{user_uuid}?includes[]=extensions",
+                    value={"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"15bc0fc2-1652-4e05-aca6-328937099361","add_user":"admin","add_date":"2021-08-23 20:23:52.800667+0000","account_code":null,"extensions":{{"extension_uuid":"4b5710f0-a2c1-4d5d-8cfa-a7aa63688f94","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","extension":"169","accountcode":"account-8364","effective_caller_id_name":"William Reichel","effective_caller_id_number":"141","outbound_caller_id_name":"Lelia Wolff","outbound_caller_id_number":"120","emergency_caller_id_name":"Dr. Darrel Tillman","emergency_caller_id_number":"180","directory_first_name":"Mr. Carmine Becker","directory_last_name":"Pollich","directory_visible":"false","directory_exten_visible":"true","max_registrations":null,"limit_max":"4","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz14.com","toll_allow":"international","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-tls-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"lwitting@yahoo.com","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"false","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"false","pivot":{"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","extension_uuid":"4b5710f0-a2c1-4d5d-8cfa-a7aa63688f94"}},{"extension_uuid":"2223ef11-d69c-4388-8e80-1a632db39ebe","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","extension":"156","accountcode":"account-4644","effective_caller_id_name":"Mr. Albin Shields","effective_caller_id_number":"149","outbound_caller_id_name":"Oda Muller I","outbound_caller_id_number":"112","emergency_caller_id_name":"Felipa Kilback","emergency_caller_id_number":"108","directory_first_name":"Lonie Olson","directory_last_name":"Yost","directory_visible":"true","directory_exten_visible":"true","max_registrations":null,"limit_max":"5","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz14.com","toll_allow":"domestic","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"xondricka@hammes.org","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"false","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"true","pivot":{"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","extension_uuid":"2223ef11-d69c-4388-8e80-1a632db39ebe"}}}}),
+            )
         ),
-        @OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @OA\Response(
+            response=422,
+            description="Bad UUID",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="Bad UUID", summary="Bad UUID", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The user uuid must be a valid UUID."}}}),
+            )
+        ),
+        @OA\Response(
+            response=404,
+            description="No user found",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="No user found", summary="No user found", value={"status":"error","code":404,"message":"User not found"}),
+            )
+        ),
     )
      */
     public function getById(string $user_uuid, GetUserRequest $request)

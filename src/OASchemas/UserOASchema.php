@@ -15,11 +15,19 @@ namespace Gruz\FPBX\OASchemas;
         )
     ),
 
+    @OA\Parameter(
+        name="user_includes[]",
+        description="Relations to be attached",
+        allowReserved=true,
+        in="query",
+        @OA\Schema(ref="#/components/schemas/user_includes")
+    ),
+
     @OA\Schema(
         schema="user_includes",
         type="array",
         @OA\Items(type="string",
-            enum = { "groups", "status", "domain", "permissions", "emails","extensions", },
+            enum = { "groups", "status", "domain", "permissions", "emails", "extensions", "extension.voicemail", "pushtokens" },
         )
     ),
 
