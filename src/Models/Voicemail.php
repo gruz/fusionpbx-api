@@ -17,4 +17,8 @@ class Voicemail extends AbstractModel
         'voicemail_id',
         'voicemail_name_base64',
     ];
+
+    protected $hidden = [
+        'voicemail_password'
+    ];
 }
