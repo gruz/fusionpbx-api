@@ -11,6 +11,6 @@ return [
         SymfonyException\UnprocessableEntityHttpException::class => UnprocessableEntityHttpExceptionFormatter::class,
         SymfonyException\HttpException::class => Formatters\HttpExceptionFormatter::class,
         Illuminate\Auth\AuthenticationException::class => AuthenticationExceptionFormatter::class,
-        Throwable::class => Formatters\ExceptionFormatter::class,
+        Throwable::class => \Gruz\FPBX\Exceptions\Formatters\ExceptionFormatter::class,
     ],
 ];
