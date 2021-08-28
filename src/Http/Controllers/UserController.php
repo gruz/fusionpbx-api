@@ -2,6 +2,7 @@
 
 namespace Gruz\FPBX\Http\Controllers;
 
+use Gruz\FPBX\Models\User;
 use Illuminate\Http\Request;
 use Gruz\FPBX\Requests\UserLoginRequest;
 use Gruz\FPBX\Services\Fpbx\UserService;
@@ -172,42 +173,42 @@ class UserController extends AbstractBrunoController
         return $this->response($parsedData);
     }
 
-
-
     /**
      * Get user list in domain
      *
      * `TODO`, describe in docs and return only some fields available for other users,
      * add parameters in query to select contact info, extension
      *
-    @ OA\Get(
+    @OA\Get(
         tags={"User"},
         path="/users",
-        @ OA\Parameter(
+        security={{"bearer_auth": {}}},
+        @OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
             name="includes[]",
             in="query",
-            @ OA\Schema(
+            @OA\Schema(
                 type="array",
-                @ OA\Items(type="string",
+                @OA\Items(type="string",
                     enum = { "groups", "status", "domain", "permissions", "emails","extensions", },
                 )
             )
         ),
-        @ OA\Response(
+        @OA\Response(
             response=200,
             description="`TODO Stub` Could not created domain",
-            @ OA\JsonContent(type="array",
-                @ OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
+            @OA\JsonContent(type="array",
+                @OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
             ),
         ),
-        security={{"bearer_auth": {}}}
     )
      */
     public function getAll()
     {
         $resourceOptions = $this->parseResourceOptions();
+        // $class = Extension::class;
+        // $class::$staticMakeVisible = ['password'];
 
         $data = $this->userService->getAll($resourceOptions);
         $parsedData = $this->parseData($data, $resourceOptions, 'users');
@@ -218,19 +219,20 @@ class UserController extends AbstractBrunoController
     /**
      * Get user info by ID
      *
-    @ OA\Get(
+    @OA\Get(
         tags={"User"},
         path="/user/{user_uuid}",
-        @ OA\Parameter(ref="#/components/parameters/user_uuid"),
-        @ OA\Parameter(
+        security={{"bearer_auth": {}}},
+        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\Parameter(
             description="Relations to be attached",
             allowReserved=true,
             name="includes[]",
             in="query",
-            @ OA\Schema(ref="#/components/schemas/user_includes")
+            @OA\Schema(ref="#/components/schemas/user_includes")
         ),
-        @ OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @OA\Response(response=200, description="`TODO Stub` Success ..."),
+        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
     public function getById(string $userId)
@@ -242,6 +244,7 @@ class UserController extends AbstractBrunoController
 
         return $this->response($parsedData);
     }
+
 
     /**
      * Creates a user inside a domain by a user with permissions to create. It's not a signup!

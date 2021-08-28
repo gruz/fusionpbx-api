@@ -33,6 +33,7 @@ class FPBXAppServiceProvider extends ServiceProvider
         $this->app->register(\Optimus\Heimdal\Provider\LaravelServiceProvider::class);
         $this->app->bind(\App\Exceptions\Handler::class, \Gruz\FPBX\Exceptions\Handler::class);
         $this->app->bind(\App\Http\Middleware\Authenticate::class, \Gruz\FPBX\Http\Middleware\Authenticate::class);
+        $this->app->bind(\App\Models\User::class, \Gruz\FPBX\Models\User::class);
         $this->registerHelpers();
         $this->loadConfig();
         $this->registerCGRT();

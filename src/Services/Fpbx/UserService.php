@@ -5,7 +5,6 @@ namespace Gruz\FPBX\Services\Fpbx;
 use Exception;
 use Gruz\FPBX\Models\Group;
 use Illuminate\Support\Arr;
-use Gruz\FPBX\Models\Extension;
 use Illuminate\Support\Facades\Auth;
 use Gruz\FPBX\Events\UserWasActivated;
 use Gruz\FPBX\Repositories\UserRepository;
@@ -181,10 +180,9 @@ class UserService extends AbstractService
 
     public function getMe($options = [])
     {
-        //return Auth::user();
-        // $class = Extension::class;
-        // $class::$staticMakeVisible = ['password'];
-        return $this->userRepository->getWhere('user_uuid', Auth::user()->user_uuid)->first();
+        \Gruz\FPBX\Models\Extension::staticMakeVisible(['password']);
+        // \Gruz\FPBX\Models\Extension::staticSetVisible(['extension','password']);
+        return $this->userRepository->getById(Auth::user()->user_uuid);
     }
 
     public function activate($hash, $sendNotification = true)

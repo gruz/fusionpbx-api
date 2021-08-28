@@ -2,6 +2,7 @@
 
 namespace Gruz\FPBX\Models;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Index;
@@ -9,8 +10,8 @@ use Gruz\FPBX\Traits\UuidsTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Gruz\FPBX\Services\FreeSwitchHookService;
-use Illuminate\Database\Eloquent\Model as BaseModel;
 use Gruz\FPBX\Exceptions\MissingDomainUuidException;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 abstract class AbstractModel extends BaseModel
@@ -18,25 +19,123 @@ abstract class AbstractModel extends BaseModel
     use UuidsTrait;
     use \Awobaz\Compoships\Compoships;
 
-    public static $staticAppends;
-    public static $staticHidden;
+    // public static $staticAppends;
+    // public static $staticHidden;
     public static $staticMakeVisible;
-    public static $staticVisible;
+    public static $staticMakeHidden;
+    public static $staticSetHidden;
+    public static $staticSetVisible;
+    // public static $staticVisible;
+
+    private static function staticUpdateFieldsAttributes(&$attrName, $fields, $replace = false) {
+        $class = get_called_class();
+        if (!$replace) {
+            $fieldsOld = Arr::get($attrName, $class, []);
+            $fields = array_merge($fieldsOld, $fields);
+        }
+        $attrName[$class] = $fields;
+    }
+
+    /**
+     * The function is intended to be called statically to instruct model to overide visible fields
+     *
+     * E.g. before gettinga user with relations we instruct to show extension password
+     * ```
+     * \Gruz\FPBX\Models\Extension::staticMakeVisible(['password']);
+     * return $this->userRepository->getById(Auth::user()->user_uuid);
+     * ```
+     * @param array $fields
+     * @return void
+     */
+    public static function staticMakeVisible(array $fields)
+    {
+        self::staticUpdateFieldsAttributes(static::$staticMakeVisible, $fields);
+    }
+
+    /**
+     * The function is intended to be called statically to instruct model to overide visible fields
+     *
+     * E.g. before gettinga user with relations we instruct to hide accountcode
+     * ```
+     * \Gruz\FPBX\Models\Extension::staticMakeHidden(['accountcode']);
+     * return $this->userRepository->getById(Auth::user()->user_uuid);
+     * ```
+     * @param array $fields
+     * @return void
+     */
+    public static function staticMakeHidden(array $fields)
+    {
+        self::staticUpdateFieldsAttributes(static::$staticMakeHidden, $fields);
+    }
+
+    /**
+     * The function is intended to be called statically to instruct model to overide visible fields
+     *
+     * E.g. before gettinga user with relations we instruct to hide only accountcode and extention
+     * ```
+     * \Gruz\FPBX\Models\Extension::staticSetHidden(['accountcode', 'extension']);
+     * return $this->userRepository->getById(Auth::user()->user_uuid);
+     * ```
+     * @param array $fields
+     * @return void
+     */
+    public static function staticSetHidden(array $fields)
+    {
+        self::staticUpdateFieldsAttributes(static::$staticSetHidden, $fields);
+    }
+
+    /**
+     * The function is intended to be called statically to instruct model to overide visible fields
+     *
+     * E.g. before gettinga user with relations we instruct to show only extension and password fields
+     * ```
+     * \Gruz\FPBX\Models\Extension::staticSetVisible(['extension','password']);
+     * return $this->userRepository->getById(Auth::user()->user_uuid);
+     * ```
+     * @param array $fields
+     * @return void
+     */
+    public static function staticSetVisible(array $fields)
+    {
+        self::staticUpdateFieldsAttributes(static::$staticSetVisible, $fields);
+    }
 
     public function __construct(array $attributes = [])
     {
-        if (isset(self::$staticAppends)) {
-            $this->appends = self::$staticAppends;
+        $class = get_called_class();
+        if (isset(static::$staticMakeVisible)) {
+            $fields = Arr::get(static::$staticMakeVisible, $class, []);
+            if (!empty($fields)) {
+                $this->makeVisible($fields);
+            }
         }
-        if (isset(self::$staticHidden)) {
-            $this->hidden = self::$staticHidden;
+        if (isset(static::$staticMakeHidden)) {
+            $fields = Arr::get(static::$staticMakeHidden, $class, []);
+            if (!empty($fields)) {
+                $this->makeHidden($fields);
+            }
         }
-        if (isset(self::$staticMakeVisible)) {
-            $this->makeVisible(self::$staticMakeVisible);
+        if (isset(static::$staticSetHidden)) {
+            $fields = Arr::get(static::$staticSetHidden, $class, []);
+            if (is_array($fields)) {
+                $this->hidden = $fields;
+            }
         }
-        if (isset(self::$staticVisible)) {
-            $this->visible = self::$staticVisible;
+        if (isset(static::$staticSetVisible)) {
+            $fields = Arr::get(static::$staticSetVisible, $class, []);
+            if (is_array($fields)) {
+                $this->visible = $fields;
+            }
         }
+        // if (isset(static::$staticAppends)) {
+        //     $this->appends = static::$staticAppends;
+        // }
+        // if (isset(static::$staticHidden)) {
+        //     $this->hidden = static::$staticHidden;
+        // }
+        // if (isset(static::$staticVisible)) {
+        //     $this->visible = static::$staticVisible;
+        // }
 
         $className = get_class($this);
         $className = explode('\\', $className);
@@ -86,10 +185,10 @@ abstract class AbstractModel extends BaseModel
 
     public function __destruct()
     {
-        self::$staticAppends = null;
-        self::$staticHidden = null;
-        self::$staticVisible = null;
-        self::$staticMakeVisible = null;
+        static::$staticMakeVisible[get_called_class()] = null;
+        static::$staticMakeHidden[get_called_class()] = null;
+        static::$staticSetHidden[get_called_class()] = null;
+        static::$staticSetVisible[get_called_class()] = null;
     }
 
     // protected static $_columns_info = NULL;
@@ -120,7 +219,7 @@ abstract class AbstractModel extends BaseModel
                 if (!is_null($guardedProps) && !empty($guardedProps)) {
                     $result = array_diff($tableColumns, $guardedProps);
                     // dd($result);
-                } else if (!is_null($fillableProps) && !empty($fillableProps)){
+                } else if (!is_null($fillableProps) && !empty($fillableProps)) {
                     $result = array_intersect($tableColumns, $fillableProps);
                 } else {
                     $result = $tableColumns;
