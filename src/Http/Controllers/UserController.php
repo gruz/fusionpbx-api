@@ -2,12 +2,12 @@
 
 namespace Gruz\FPBX\Http\Controllers;
 
-use Gruz\FPBX\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Gruz\FPBX\Requests\GetUserRequest;
 use Gruz\FPBX\Requests\UserLoginRequest;
 use Gruz\FPBX\Services\Fpbx\UserService;
 use Gruz\FPBX\Requests\CreateUserRequest;
-use Illuminate\Support\Facades\Hash;
 use Gruz\FPBX\Requests\UserActivateRequest;
 use Gruz\FPBX\Services\UserPasswordService;
 use Gruz\FPBX\Requests\UserSignupRequestApi;
@@ -175,9 +175,6 @@ class UserController extends AbstractBrunoController
     /**
      * Get user list in domain
      *
-     * `TODO`, describe in docs and return only some fields available for other users,
-     * add parameters in query to select contact info, extension
-     *
     @OA\Get(
         tags={"User"},
         path="/users",
@@ -190,24 +187,24 @@ class UserController extends AbstractBrunoController
             @OA\Schema(
                 type="array",
                 @OA\Items(type="string",
-                    enum = { "groups", "status", "domain", "permissions", "emails","extensions", },
+                    enum = { "groups", "status", "domain", "permissions", "emails", "extensions", "extensions.voicemail" },
                 )
             )
         ),
         @OA\Response(
             response=200,
-            description="`TODO Stub` Could not created domain",
-            @OA\JsonContent(type="array",
-                @OA\Items(ref="#/components/schemas/UserWithRelatedItemsSchema"),
-            ),
+            description="Get users list in the current domain",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="/users?limit=2", summary="Get 2 users /users?limit=2", value={"users":{{"user_uuid":"d9eee3d2-73b6-41d2-aa8e-87aad28f3dbf","domain_uuid":"294036b0-2715-4877-b5f3-6833afbf71b5","username":"marisa36@watsica.net","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-23 17:13:40.449035+0000","account_code":null},{"user_uuid":"859e345e-b77e-4b90-968c-4b8749753319","domain_uuid":"0438502e-7dec-4db0-b82b-9ce7f1d3a66e","username":"admin","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":null,"add_date":null,"account_code":null}}}),
+                @OA\Examples(example="/users?includes[]=extensions&includes[]=extensions.voicemail&limit=2", summary="Get two users with extensions and voicemail /users?includes[]=extensions&includes[]=extensions.voicemail&limit=2", value={"users":{{"user_uuid":"d9eee3d2-73b6-41d2-aa8e-87aad28f3dbf","domain_uuid":"294036b0-2715-4877-b5f3-6833afbf71b5","username":"marisa36@watsica.net","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-23 17:13:40.449035+0000","account_code":null,"extensions":{{"extension_uuid":"9be803a0-5b6e-4f88-973e-a55df27e0d09","domain_uuid":"294036b0-2715-4877-b5f3-6833afbf71b5","extension":"172","accountcode":"account-4676","effective_caller_id_name":"Dario Hammes","effective_caller_id_number":"157","outbound_caller_id_name":"Abraham Heller","outbound_caller_id_number":"169","emergency_caller_id_name":"Mireya Will","emergency_caller_id_number":"114","directory_first_name":"Alvena Lemke","directory_last_name":"Will","directory_visible":"false","directory_exten_visible":"true","max_registrations":null,"limit_max":"2","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz09.com","toll_allow":"local","call_timeout":"30","call_group":"sales","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"herminio94@keebler.com","sip_bypass_media":"bypass-media-after-bridge","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"true","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"true","pivot":{"user_uuid":"d9eee3d2-73b6-41d2-aa8e-87aad28f3dbf","extension_uuid":"9be803a0-5b6e-4f88-973e-a55df27e0d09"},"voicemail":{"domain_uuid":"294036b0-2715-4877-b5f3-6833afbf71b5","voicemail_uuid":"11b82fe5-bc28-4400-a225-438dae065c4a","voicemail_id":"172","greeting_id":"0","voicemail_alternate_greet_id":"0","voicemail_mail_to":"shemar.steuber@runolfsdottir.com","voicemail_sms_to":"+1 (906) 407-0690","voicemail_transcription_enabled":"true","voicemail_attach_file":"\/path\/to\/file","voicemail_file":null,"voicemail_local_after_email":"false","voicemail_enabled":"false","voicemail_description":"Deserunt distinctio iusto omnis qui debitis. Enim itaque est omnis illo id debitis. Saepe sit eligendi corporis et. Exercitationem quis ullam illum sed.","voicemail_name_base64":null,"voicemail_tutorial":"string"}},{"extension_uuid":"87f2745e-4956-4f6a-aea8-4e0c1e34013e","domain_uuid":"294036b0-2715-4877-b5f3-6833afbf71b5","extension":"123","accountcode":"account-3558","effective_caller_id_name":"Mateo Abernathy","effective_caller_id_number":"174","outbound_caller_id_name":"Dr. Haylee Bartoletti Jr.","outbound_caller_id_number":"195","emergency_caller_id_name":"Virginie Waelchi","emergency_caller_id_number":"200","directory_first_name":"Romaine Mayer Sr.","directory_last_name":"Lowe","directory_visible":"true","directory_exten_visible":"false","max_registrations":null,"limit_max":"7","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz09.com","toll_allow":"local","call_timeout":"30","call_group":"sales","call_screen_enabled":"false","user_record":"outbound","hold_music":"local_stream:\/\/default","auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-tls-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"mpfeffer@metz.com","sip_bypass_media":"proxy-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"true","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":null,"pivot":{"user_uuid":"d9eee3d2-73b6-41d2-aa8e-87aad28f3dbf","extension_uuid":"87f2745e-4956-4f6a-aea8-4e0c1e34013e"},"voicemail":{"domain_uuid":"294036b0-2715-4877-b5f3-6833afbf71b5","voicemail_uuid":"63267702-3e90-4851-a933-048ca15abdcc","voicemail_id":"123","greeting_id":"0","voicemail_alternate_greet_id":"0","voicemail_mail_to":"virginia.sauer@yahoo.com","voicemail_sms_to":"1-475-877-2613","voicemail_transcription_enabled":"false","voicemail_attach_file":"\/path\/to\/file","voicemail_file":null,"voicemail_local_after_email":"false","voicemail_enabled":"false","voicemail_description":"Iusto sint ex est delectus ut. Qui facere cum omnis ducimus nisi. Ab omnis itaque vitae perspiciatis. Omnis repellat delectus et at dolor expedita voluptas.","voicemail_name_base64":null,"voicemail_tutorial":"string"}}}},{"user_uuid":"859e345e-b77e-4b90-968c-4b8749753319","domain_uuid":"0438502e-7dec-4db0-b82b-9ce7f1d3a66e","username":"admin","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":null,"add_date":null,"account_code":null,"extensions":{}}}}),
+            )
         ),
     )
      */
     public function getAll()
     {
         $resourceOptions = $this->parseResourceOptions();
-        // $class = Extension::class;
-        // $class::$staticMakeVisible = ['password'];
 
         $data = $this->userService->getAll($resourceOptions);
         $parsedData = $this->parseData($data, $resourceOptions, 'users');
@@ -234,11 +231,12 @@ class UserController extends AbstractBrunoController
         @OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
      */
-    public function getById(string $userId)
+    public function getById(string $user_uuid, GetUserRequest $request)
     {
         $resourceOptions = $this->parseResourceOptions();
 
-        $data = $this->userService->getById($userId, $resourceOptions);
+        $data = $this->userService->getById($user_uuid, $resourceOptions);
+
         $parsedData = $this->parseData($data, $resourceOptions, null);
 
         return $this->response($parsedData);

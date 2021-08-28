@@ -181,7 +181,6 @@ class UserService extends AbstractService
     public function getMe($options = [])
     {
         \Gruz\FPBX\Models\Extension::staticMakeVisible(['password']);
-        // \Gruz\FPBX\Models\Extension::staticSetVisible(['extension','password']);
         return $this->userRepository->getById(Auth::user()->user_uuid);
     }
 
