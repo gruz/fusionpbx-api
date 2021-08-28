@@ -30,7 +30,6 @@ class UserController extends AbstractBrunoController
         $this->userService = $userService;
     }
 
-
     /**
      *
      * User signup

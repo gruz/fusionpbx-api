@@ -116,26 +116,17 @@ abstract class AbstractModel extends BaseModel
             }
         }
         if (isset(static::$staticSetHidden)) {
-            $fields = Arr::get(static::$staticSetHidden, $class, []);
+            $fields = Arr::get(static::$staticSetHidden, $class, false);
             if (is_array($fields)) {
                 $this->hidden = $fields;
             }
         }
         if (isset(static::$staticSetVisible)) {
-            $fields = Arr::get(static::$staticSetVisible, $class, []);
+            $fields = Arr::get(static::$staticSetVisible, $class, false);
             if (is_array($fields)) {
                 $this->visible = $fields;
             }
         }
-        // if (isset(static::$staticAppends)) {
-        //     $this->appends = static::$staticAppends;
-        // }
-        // if (isset(static::$staticHidden)) {
-        //     $this->hidden = static::$staticHidden;
-        // }
-        // if (isset(static::$staticVisible)) {
-        //     $this->visible = static::$staticVisible;
-        // }
 
         $className = get_class($this);
         $className = explode('\\', $className);
