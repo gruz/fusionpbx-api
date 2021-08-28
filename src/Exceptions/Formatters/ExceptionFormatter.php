@@ -11,7 +11,10 @@ class ExceptionFormatter extends BaseFormatter
     public function format(JsonResponse $response, Throwable $e, array $reporterResponses)
     {
         // dd($e->getCode(), $e->getStatusCode());
-        $statusCode = $e->getStatusCode();
+        $statusCode = 500;
+        if (method_exists($e, 'getStatusCode')) {
+            $statusCode = $e->getStatusCode();
+        }
         if (empty($statusCode)) {
             $statusCode = 500;
         }
