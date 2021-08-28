@@ -10,21 +10,33 @@ class ExceptionFormatter extends BaseFormatter
 {
     public function format(JsonResponse $response, Throwable $e, array $reporterResponses)
     {
-        $response->setStatusCode(500);
-        $data = $response->getData(true);
+        // dd($e->getCode(), $e->getStatusCode());
+        $statusCode = $e->getStatusCode();
+        if (empty($statusCode)) {
+            $statusCode = 500;
+        }
+        $response->setStatusCode($statusCode);
+        $data = $this->formatData($response->getData(true), $e);
 
+        $response->setData($data);
+    }
+
+    protected function formatData($data, $e) {
         if ($this->debug) {
             $data = array_merge($data, [
                 'code'   => $e->getCode(),
                 'message'   => $e->getMessage(),
-                'exception' => explode(PHP_EOL, $e->__toString()),
                 'line'   => $e->getLine(),
-                'file'   => $e->getFile()
+                'file'   => $e->getFile(),
+                'exception' => explode(PHP_EOL, $e->__toString()),
             ]);
         } else {
-            $data['message'] = $this->config['server_error_production'];
+            $data = array_merge($data, [
+                'code'   => $e->getCode(),
+                'message'   => $e->getMessage(),
+            ]);
         }
 
-        $response->setData($data);
+        return $data;
     }
 }
