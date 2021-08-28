@@ -132,7 +132,9 @@ abstract class AbstractModel extends BaseModel
         $className = explode('\\', $className);
         $modelName = end($className);
         $stem = Str::snake($modelName);
-        $this->table = 'v_' . $stem . 's';
+        if (empty($this->table)) {
+            $this->table = 'v_' . $stem . 's';
+        }
         $this->primaryKey = $stem . '_uuid';
         $this->incrementing = false;
         $this->timestamps = false;
