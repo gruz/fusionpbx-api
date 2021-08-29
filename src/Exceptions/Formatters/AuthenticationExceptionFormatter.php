@@ -12,7 +12,7 @@ class AuthenticationExceptionFormatter extends ExceptionFormatter
     {
         $statusCode = 401;
         $response->setStatusCode($statusCode);
-        $data = $this->formatData($response->getData(true), $e);
+        $data = $this->formatData($response, $e);
 
         $response->setData($data);
     }
