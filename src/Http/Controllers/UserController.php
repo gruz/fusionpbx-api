@@ -227,6 +227,192 @@ class UserController extends AbstractBrunoController
         return $this->response($parsedData);
     }
 
+    /**
+     *
+     * User login
+     *
+     * Login user and return access token
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user/login",
+        @OA\RequestBody(
+            description="User information",
+            required=true,
+            @OA\JsonContent(
+                example={
+                    "domain_name" : "192.168.0.160",
+                    "username" : "admin",
+                    "password" : "admin"
+                }
+            ),
+        ),
+        @OA\Response(
+            response=200,
+            description="Login successfull",
+            @OA\JsonContent(
+                example={
+                    "access_token": "18|o7yAzJLTcRFECUUrBERn44ITisQTGDDJUY1KHdJ0"
+                }
+            ),
+        ),
+        @OA\Response(
+            response=422,
+            description="Bad domain",
+            @OA\JsonContent(
+                example={
+                    "errors": {
+                        {
+                            "status": "422",
+                            "code": 422,
+                            "title": "Validation error",
+                            "detail": "The selected domain name is invalid."
+                        }
+                    }
+                }
+            ),
+        ),
+        @OA\Response(
+            response=401,
+            description="Invalid credentials.",
+            @OA\JsonContent(
+                example={
+                    "status": "error",
+                    "code": 401,
+                    "message": "Invalid credentials.",
+                }
+            ),
+        ),
+    )
+     */
+    public function login(UserLoginRequest $request, UserService $userService)
+    {
+        $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw new UnauthorizedHttpException('Basic', __('Invalid credentials.'), null, 401);
+            // throw ValidationException::withMessages([
+            //     'username' => ['The provided credentials are incorrect.'],
+            // ]);
+        }
+
+        $token = $user->createToken($request->username)->plainTextToken;
+
+        return $this->response(['access_token' => $token]);
+    }
+
+    /**
+     *
+     * User logout
+     *
+     * Login user and return access token
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user/logout",
+        security={{"bearer_auth": {}}},
+        @OA\Response(
+            response=200,
+            description="Login successfull",
+            @OA\JsonContent(
+                example={"message":"Tokens Revoked"}
+            ),
+        ),
+    )
+     */
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+
+        return [
+            'message' => __('Tokens Revoked')
+        ];
+    }
+
+    /**
+     * User forgot password - request email link to reset password
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user/forgot-password",
+        x={"route-$path"="fpbx.user.forgot-password"},
+        @OA\RequestBody(
+            description="User information to reset his password",
+            required=true,
+            @OA\JsonContent(
+                ref="#/components/schemas/UserForgotPasswordSchema",
+                example={
+                    "Request email with link basic example": {
+                        "summary": "Request email with link basic example",
+                        "value": {
+                            "user_email":"your_user@email.com",
+                            "domain_name":"jimmie.biz"
+                        }
+                    },
+                }
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="Password resent link response",
+            @OA\JsonContent(
+                ref="#/components/schemas/UserCreateSchema",
+                example={
+                    "Password resent link basic example": {
+                        "username": "user_Destany.Windler",
+                        "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
+                    },
+                }
+            ),
+        ),
+        @OA\Response(
+            response=422,
+            description="Validation error - empty email",
+            @OA\JsonContent(
+                type="object",
+                @OA\Property(
+                    property="errors",
+                    type="array",
+                    example={{
+                        "status": "422",
+                        "code": 0,
+                        "title": "Validation error",
+                        "detail": "The user email is required."
+                    }},
+                    @OA\Items(
+                        @OA\Property(
+                          property="status",
+                          type="string",
+                          example="422"
+                       ),
+                       @OA\Property(
+                          property="code",
+                          type="number",
+                          example=0
+                       ),
+                       @OA\Property(
+                          property="title",
+                          type="string",
+                          example="Validation error"
+                       ),
+                       @OA\Property(
+                          property="detail",
+                          type="string",
+                          example="The user email is required."
+                       ),
+                    ),
+                )
+            ),
+        ),
+    )
+     */
+    public function forgotPassword(UserForgotPasswordRequestApi $request, UserPasswordService $userPasswordService)
+    {
+        $data = $request->only('user_email', 'domain_name');
+
+        return $this->response($userPasswordService->generateResetToken($data));
+    }
+
 
     /**
      * Creates a user inside a domain by a user with permissions to create. It's not a signup!
@@ -322,163 +508,5 @@ class UserController extends AbstractBrunoController
     public function delete($userId)
     {
         return $this->response($this->userService->delete($userId));
-    }
-
-    /**
-     * User forgot password - request email link to reset password
-     *
-    @OA\Post(
-        tags={"User"},
-        path="/user/forgot-password",
-        x={"route-$path"="fpbx.user.forgot-password"},
-        @OA\RequestBody(
-            description="User information to reset his password",
-            required=true,
-            @OA\JsonContent(
-                ref="#/components/schemas/UserForgotPasswordSchema",
-                example={
-                    "Request email with link basic example": {
-                        "summary": "Request email with link basic example",
-                        "value": {
-                            "user_email":"your_user@email.com",
-                            "domain_name":"jimmie.biz"
-                        }
-                    },
-                }
-            )
-        ),
-        @OA\Response(
-            response=200,
-            description="Password resent link response",
-            @OA\JsonContent(
-                ref="#/components/schemas/UserCreateSchema",
-                example={
-                    "Password resent link basic example": {
-                        "username": "user_Destany.Windler",
-                        "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
-                    },
-                }
-            ),
-        ),
-        @OA\Response(
-            response=422,
-            description="Validation error - empty email",
-            @OA\JsonContent(
-                type="object",
-                @OA\Property(
-                    property="errors",
-                    type="array",
-                    example={{
-                        "status": "422",
-                        "code": 0,
-                        "title": "Validation error",
-                        "detail": "The user email is required."
-                    }},
-                    @OA\Items(
-                        @OA\Property(
-                          property="status",
-                          type="string",
-                          example="422"
-                       ),
-                       @OA\Property(
-                          property="code",
-                          type="number",
-                          example=0
-                       ),
-                       @OA\Property(
-                          property="title",
-                          type="string",
-                          example="Validation error"
-                       ),
-                       @OA\Property(
-                          property="detail",
-                          type="string",
-                          example="The user email is required."
-                       ),
-                    ),
-                )
-            ),
-        ),
-    )
-     */
-    public function forgotPassword(UserForgotPasswordRequestApi $request, UserPasswordService $userPasswordService)
-    {
-        $data = $request->only('user_email', 'domain_name');
-
-        return $this->response($userPasswordService->generateResetToken($data));
-    }
-
-    /**
-     *
-     * User login
-     *
-     * Login user and return access token
-     *
-    @OA\Post(
-        tags={"User"},
-        path="/user/login",
-        @OA\RequestBody(
-            description="User information",
-            required=true,
-            @OA\JsonContent(
-                example={
-                    "domain_name" : "192.168.0.160",
-                    "username" : "admin",
-                    "password" : "admin"
-                }
-            ),
-        ),
-        @OA\Response(
-            response=200,
-            description="Login successfull",
-            @OA\JsonContent(
-                example={
-                    "access_token": "18|o7yAzJLTcRFECUUrBERn44ITisQTGDDJUY1KHdJ0"
-                }
-            ),
-        ),
-        @OA\Response(
-            response=422,
-            description="Bad domain",
-            @OA\JsonContent(
-                example={
-                    "errors": {
-                        {
-                            "status": "422",
-                            "code": 422,
-                            "title": "Validation error",
-                            "detail": "The selected domain name is invalid."
-                        }
-                    }
-                }
-            ),
-        ),
-        @OA\Response(
-            response=401,
-            description="Invalid credentials.",
-            @OA\JsonContent(
-                example={
-                    "status": "error",
-                    "code": 401,
-                    "message": "Invalid credentials.",
-                }
-            ),
-        ),
-    )
-     */
-    public function login(UserLoginRequest $request, UserService $userService)
-    {
-        $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw new UnauthorizedHttpException('Basic', __('Invalid credentials.'), null, 401);
-            // throw ValidationException::withMessages([
-            //     'username' => ['The provided credentials are incorrect.'],
-            // ]);
-        }
-
-        $token = $user->createToken($request->username)->plainTextToken;
-
-        return $this->response(['access_token' => $token]);
     }
 }
