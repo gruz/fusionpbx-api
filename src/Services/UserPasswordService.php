@@ -3,6 +3,7 @@
 namespace Gruz\FPBX\Services;
 
 use Gruz\FPBX\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Gruz\FPBX\Services\Fpbx\UserService;
 use Illuminate\Support\Facades\Password;
@@ -51,7 +52,19 @@ class UserPasswordService
     public function generateResetToken($data)
     {
         $userCredentials = $this->getUserCredentials($data)->toArray();
-        Password::sendResetLink($userCredentials);
+
+        $fieldsOnly = [
+            'user_uuid',
+            'domain_uuid',
+            'username',
+        ];
+        $userCredentialsOnly = [
+        ];
+        foreach ($fieldsOnly as $key) {
+            $userCredentialsOnly[$key] = Arr::get($userCredentials, $key);
+        }
+
+        Password::sendResetLink($userCredentialsOnly);
 
         return [
             'username' => $userCredentials['username'],
