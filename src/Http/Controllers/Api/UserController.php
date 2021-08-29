@@ -46,9 +46,8 @@ class UserController extends AbstractBrunoController
             @OA\MediaType(
                 mediaType="application/json",
                 @OA\Schema(ref="#/components/schemas/UserCreateSchema"),
-                @OA\Examples(example=200, summary="", value={"username":"alyson3.dietrich@howe.com","add_user":"admin","domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","add_date":"2021-08-25 07:21:12.125369+0000","user_enabled":"f6b78951340bd4813ea5a5a275e08d1220ad51c7","user_uuid":"a935de0c-539d-4443-8036-a8120aedda01","domain":{"domain_uuid":"8cffb9b5-41a4-4dfe-9ae5-619a4394634f","domain_parent_uuid":null,"domain_name":"mertz12.com","domain_enabled":true,"domain_description":"Created via Factory during tests"}}),
-                @OA\Examples(example=300, summary="", value={"name":1}),
-                @OA\Examples(example=400, summary="", value={"name":1})
+                @OA\Examples(example="User signup with extension", summary="", value={ "domain_name": "mertz12.com", "user_email": "alyson5.dietrich@howe.com", "password": ".Apantera1", "username": "alyson5.dietrich@howe.com", "reseller_reference_code": "Code01", "extensions": { { "extension": 1721, "password": ".Apantera1", "voicemail_password": "9563", "effective_caller_id_name": "William Reichel", "effective_caller_id_number": 141 } } }),
+                @OA\Examples(example="User signup with extension and contact", summary="", value={ "domain_name": "mertz12.com", "user_email": "alyson5.dietrich@howe.com", "password": ".Apantera1", "username": "alyson5.dietrich@howe.com", "reseller_reference_code": "Code01", "extensions": { { "extension": 1721, "password": ".Apantera1", "voicemail_password": "9563", "effective_caller_id_name": "William Reichel", "effective_caller_id_number": 141 } } }),
             )
         ),
         @OA\Response(
@@ -65,7 +64,8 @@ class UserController extends AbstractBrunoController
             response=422,
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="200", summary="User already exists", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The user email has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The username has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The extensions.0.extension has already been taken."}}}),
+                @OA\Examples(example="User already exists", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The user email has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The username has already been taken."},{"status":"422","code":422,"title":"Validation error","detail":"The extensions.0.extension has already been taken."}}}),
+                @OA\Examples(example="Bad data provided - validation fails", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"Password invalid. Min 6 symbols, case sensitive, at least one lowercase, one uppercase and one digit"},{"status":"422","code":422,"title":"Validation error","detail":"The extensions.0.password format is invalid."},{"status":"422","code":422,"title":"Validation error","detail":"Voicemail password must be between 4 and 10 digits"}}}),
             )
         ),
     )
@@ -354,16 +354,11 @@ class UserController extends AbstractBrunoController
         ),
         @OA\Response(
             response=200,
-            description="Password resent link response",
-            @OA\JsonContent(
-                ref="#/components/schemas/UserCreateSchema",
-                example={
-                    "Password resent link basic example": {
-                        "username": "user_Destany.Windler",
-                        "domain_uuid": "142ce990-6e16-11eb-8ad7-99f61fb0e7c6"
-                    },
-                }
-            ),
+            description="Password resent link sent",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="Password resent link sent", summary="Password resent link sent", value={"message":"Check your email"}),
+            )
         ),
         @OA\Response(
             response=403,
