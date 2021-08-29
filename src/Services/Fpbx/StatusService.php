@@ -9,7 +9,6 @@ namespace Gruz\FPBX\Services\Fpbx;
 
 // use Gruz\FPBX\Repositories\StatusRepository;
 
-// use Gruz\FPBX\Exceptions\StatusNotFoundException;
 // use Illuminate\Support\Facades\Auth;
 
 // use Carbon\Carbon;
@@ -65,7 +64,7 @@ class StatusService extends AbstractService
     //     $object = $this->findUserStatus($uuid);
 
     //     if (is_null($object)) {
-    //         throw new StatusNotFoundException();
+    //         throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => __('Status')]));
     //     }
 
     //     $this->database->beginTransaction();

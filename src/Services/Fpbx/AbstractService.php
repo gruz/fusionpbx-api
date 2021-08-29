@@ -8,7 +8,6 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use Gruz\FPBX\Repositories\AbstractRepository;
 use Illuminate\Database\DatabaseManager;
-use Gruz\FPBX\Exceptions\UserNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class AbstractService
@@ -52,15 +51,6 @@ abstract class AbstractService
         return $className;
     }
 
-    protected function throwNotFoundException()
-    {
-        preg_match('/.*\\\\(.*)Service$/', get_class($this), $matches);
-        $entity = $matches[1];
-        throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => $entity]));
-
-        // throw new $className;
-    }
-
     private function getBaseClassName($replace, $suffix)
     {
         preg_match('/.*\\\\(.*)Service$/', get_class($this), $matches);
@@ -75,7 +65,7 @@ abstract class AbstractService
         $user = $this->userRepository->getById($userId, $options);
 
         if (is_null($user)) {
-            throw new UserNotFoundException();
+            throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => 'User']));
         }
 
         return $user;
@@ -91,7 +81,9 @@ abstract class AbstractService
         $model = $this->repository->getById($id, $options);
 
         if (is_null($model)) {
-            $this->throwNotFoundException();
+            preg_match('/.*\\\\(.*)Service$/', get_class($this), $matches);
+            $entity = $matches[1];
+            throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => $entity]));
         }
 
         return $model;

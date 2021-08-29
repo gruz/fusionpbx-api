@@ -6,30 +6,6 @@ return [
     |—————————————————————————————————————
     */
 
-    \Gruz\FPBX\Exceptions\UserNotFoundException::class => [
-        'message' => 'User not found',
-        'code' => '1003',
-    ],
-    \Gruz\FPBX\Exceptions\DomainExistsException::class => [
-        'message' => 'Domain already exists',
-        'code' => '1005',
-    ],
-    \Gruz\FPBX\Exceptions\GroupNotFoundException::class => [
-        'message' => 'Group not found',
-        'code' => '1006',
-    ],
-    \Gruz\FPBX\Exceptions\InvalidGroupException::class => [
-        'message' => 'The group with ID :groupId is not a group',
-        'code' => '1007',
-    ],
-    \Gruz\FPBX\Exceptions\DomainNotFoundException::class => [
-        'message' => 'Domain not found',
-        'code' => '1009',
-    ],
-    \Gruz\FPBX\Exceptions\UserDisabledException::class => [
-        'message' => 'User disabled',
-        'code' => '1013',
-    ],
     \Gruz\FPBX\Exceptions\WrongPushtokenDataException::class => [
         'message' => 'Wrong Pushtoken input data',
         'code' => '1016',
@@ -49,14 +25,6 @@ return [
    \Gruz\FPBX\Exceptions\InvalidStatusOSException::class => [
         'message' => 'Invalid OS type passed: :os',
         'code' => '1021',
-    ],
-    \Gruz\FPBX\Exceptions\InvalidStatusException::class => [
-        'message' => 'Invalid status type passed: `:status` . Available statuses: `:available_statuses`',
-        'code' => '1022',
-    ],
-    \Gruz\FPBX\Exceptions\InvalidServiceListException::class => [
-        'message' => 'Invalid services list',
-        'code' => '1023',
     ],
     \Gruz\FPBX\Exceptions\Socket\InvalidJSONInput::class => [
         'message' => 'Invalid JSON data',
@@ -81,10 +49,6 @@ return [
     \Gruz\FPBX\Exceptions\Socket\NeedToLoginFirst::class => [
         'message' => 'Please, login first',
         'code' => '1029',
-    ],
-    \Gruz\FPBX\Exceptions\StatusNotFoundException::class => [
-        'message' => 'User status record not found',
-        'code' => '1030',
     ],
     \Gruz\FPBX\Exceptions\WrongStatusDataException::class => [
         'message' => 'Wrong status data',

@@ -3,15 +3,15 @@
 namespace Gruz\FPBX\Services;
 
 use Gruz\FPBX\Models\User;
-use Gruz\FPBX\Services\Fpbx\UserService;
-use Gruz\FPBX\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
-use Gruz\FPBX\Repositories\DomainRepository;
+use Gruz\FPBX\Services\Fpbx\UserService;
 use Illuminate\Support\Facades\Password;
-use Gruz\FPBX\Exceptions\UserDisabledException;
 use Illuminate\Auth\Events\PasswordReset;
-use Gruz\FPBX\Exceptions\DomainNotFoundException;
+use Gruz\FPBX\Repositories\UserRepository;
+use Gruz\FPBX\Repositories\DomainRepository;
 use Illuminate\Contracts\Auth\PasswordBroker;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class UserPasswordService
@@ -43,8 +43,11 @@ class UserPasswordService
      *                  User email for which password needs to be reset.
      *                  Domain name to which user belongs.
      * @return array|mixed
-     * @throws UnauthorizedHttpException|UserDisabledException
+     * @throws UnauthorizedHttpException
+     * @throws AccessDeniedHttpException
      */
+
+
     public function generateResetToken($data)
     {
         $userCredentials = $this->getUserCredentials($data)->toArray();
@@ -91,7 +94,8 @@ class UserPasswordService
      *
      * @param $data Contains user email and domain name to which user belongs
      * @return null|\Gruz\FPBX\Models\User
-     * @throws UnauthorizedHttpException|UserDisabledException
+     * @throws UnauthorizedHttpException
+     * @throws AccessDeniedHttpException
      */
     public function getUserCredentials($data)
     {
@@ -101,7 +105,7 @@ class UserPasswordService
             ->getWhere('domain_name', $data['domain_name'])->first();
 
         if (is_null($domain)) {
-            throw new DomainNotFoundException();
+            throw new  NotFoundHttpException(__(':entity not found', ['entity' => 'Domain']));
         }
 
         $attributes = [
@@ -114,12 +118,11 @@ class UserPasswordService
         if (!is_null($user)) {
 
             if ($user->user_enabled != 'true') {
-                throw new UserDisabledException();
+                throw new AccessDeniedHttpException(__('User disabled'));
             }
 
             return $user;
         }
-
 
         throw new UnauthorizedHttpException('Basic', __('User doesn\'t exists'));
     }
@@ -147,7 +150,7 @@ class UserPasswordService
             'user_email' => $user->user_email,
         ];
 
-        $status = $this->passwordBroker->sendResetLink($data, function($user, $token) {
+        $status = $this->passwordBroker->sendResetLink($data, function ($user, $token) {
             $this->ttoken = $token;
         });
 

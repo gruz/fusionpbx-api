@@ -3,10 +3,9 @@
 namespace Gruz\FPBX\Services;
 
 use Gruz\FPBX\Models\User;
-use Gruz\FPBX\Exceptions\UserNotFoundException;
-use Gruz\FPBX\Exceptions\DomainNotFoundException;
 use Gruz\FPBX\Repositories\DomainRepository;
 use Gruz\FPBX\Exceptions\WrongDestinationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PushService
 {
@@ -35,7 +34,7 @@ class PushService
 
         // We cannot create a user if there is not such a domain
         if ($domain->count() < 1) {
-            throw new DomainNotFoundException;
+            throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => __('Domain')]));
         }
 
         $domain = $domain->first();
@@ -54,7 +53,7 @@ class PushService
             ->get();
 
         if ($users->count() < 1) {
-            throw new UserNotFoundException;
+            throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => __('User')]));
         }
 
         foreach ($users as $user) {

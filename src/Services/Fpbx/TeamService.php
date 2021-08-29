@@ -5,10 +5,10 @@ namespace Gruz\FPBX\Services\Fpbx;
 use Exception;
 use Illuminate\Support\Arr;
 use Gruz\FPBX\Events\TeamWasCreated;
-use Gruz\FPBX\Exceptions\DomainExistsException;
 use Gruz\FPBX\Repositories\DomainRepository;
 use Gruz\FPBX\Repositories\DialplanRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class TeamService extends AbstractService
 {
@@ -83,7 +83,7 @@ class TeamService extends AbstractService
              */
             $domainRepository = $this->domainService->getRepository();
             if ($domainRepository->getWhere('domain_name', $data['domain_name'])->count() > 0) {
-                throw new DomainExistsException();
+                throw new ConflictHttpException(_('Domain already exists'));
             }
 
             $domainModel = $this->domainService->create($data, ['forceFillable' => ['domain_enabled']]);

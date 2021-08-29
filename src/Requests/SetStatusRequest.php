@@ -82,15 +82,7 @@ class SetStatusRequest extends FormRequest
         $data['user_status'] = 'offline';
       }
 
-      // ~ throw new InvalidStatusException(['status' => $data['status'], 'available_statuses' => implode(', ', array_keys(config('api.statuses')))]);
     }
-
-    /*
-        if (empty($data['services']))
-        {
-          throw new InvalidServiceListException();
-        }
-        */
 
     return $data;
   }
