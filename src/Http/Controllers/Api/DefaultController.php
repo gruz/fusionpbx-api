@@ -1,6 +1,6 @@
 <?php
 
-namespace Gruz\FPBX\Http\Controllers;
+namespace Gruz\FPBX\Http\Controllers\Api;
 
 use \Gruz\FPBX\Helpers\Version;
 use OpenApi\Annotations as OA;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gruz\FPBX\Http\Controllers;
+namespace Gruz\FPBX\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -61,7 +61,7 @@ class UserController extends AbstractBrunoController
         ),
 
         @OA\Response(
-            description="Application name and version",
+            description="User already exists",
             response=422,
             @OA\MediaType(
                 mediaType="application/json",
@@ -366,43 +366,22 @@ class UserController extends AbstractBrunoController
             ),
         ),
         @OA\Response(
+            response=403,
+            description="User disabled",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="User in domain exists, but disabled", summary="User in domain exists, but disabled", value={"status":"error","code":403,"message":"User disabled"}),
+            )
+        ),
+        @OA\Response(
             response=422,
-            description="Validation error - empty email",
-            @OA\JsonContent(
-                type="object",
-                @OA\Property(
-                    property="errors",
-                    type="array",
-                    example={{
-                        "status": "422",
-                        "code": 0,
-                        "title": "Validation error",
-                        "detail": "The user email is required."
-                    }},
-                    @OA\Items(
-                        @OA\Property(
-                          property="status",
-                          type="string",
-                          example="422"
-                       ),
-                       @OA\Property(
-                          property="code",
-                          type="number",
-                          example=0
-                       ),
-                       @OA\Property(
-                          property="title",
-                          type="string",
-                          example="Validation error"
-                       ),
-                       @OA\Property(
-                          property="detail",
-                          type="string",
-                          example="The user email is required."
-                       ),
-                    ),
-                )
-            ),
+            description="User created response",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="No domain found", summary="No domain found", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected domain name is invalid."}}}),
+                @OA\Examples(example="No email found", summary="No email found", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User not found"}}}),
+                @OA\Examples(example="No domain and email found", summary="No domain and email found", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected domain name is invalid."},{"status":"422","code":422,"title":"Validation error","detail":"The selected user email is invalid."}}}),
+            )
         ),
     )
      */

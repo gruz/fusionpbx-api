@@ -1,6 +1,6 @@
 <?php
 
-namespace Gruz\FPBX\Http\Controllers;
+namespace Gruz\FPBX\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Gruz\FPBX\Services\Fpbx\GroupService;

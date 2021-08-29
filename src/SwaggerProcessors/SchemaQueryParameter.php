@@ -32,11 +32,12 @@ class SchemaQueryParameter
     // const MODEL_ADD_INCLUDES = 'model-add-includes';
     const ROUTE_PATH = 'route-$path';
     const ROUTE_MIDDLEWARES = 'route-$middlewares';
-    const API_CONTROLLERS_PREFIX = 'Gruz\FPBX\\Http\\Controllers';
+    private $api_controllers_prefix;
     private $examplesPath;
 
     public function __invoke(Analysis $analysis)
     {
+        $this->api_controllers_prefix = config('fpbx.namespace');
         $this->examplesPath = __DIR__.'/../../resources/swagger/examples';
         $this->registerRoutes($analysis);
 
@@ -297,7 +298,7 @@ class SchemaQueryParameter
 
     private function getPathPrefix(AbstractAnnotation $annotation)
     {
-        $prefix = $annotation->_context->__get('namespace') === self::API_CONTROLLERS_PREFIX ? 'api/' . config('fpbx.api_version') : '';
+        $prefix = $annotation->_context->__get('namespace') === $this->api_controllers_prefix ? 'api/' . config('fpbx.api_version') : '';
 
         return $prefix;
     }
@@ -313,7 +314,7 @@ class SchemaQueryParameter
             return $middlewares;
         }
 
-        $isApi = $annotation->_context->__get('namespace') === self::API_CONTROLLERS_PREFIX;
+        $isApi = $annotation->_context->__get('namespace') === $this->api_controllers_prefix;
 
         if ($isApi) {
             $auth = false;
