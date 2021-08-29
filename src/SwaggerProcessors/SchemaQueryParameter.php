@@ -53,6 +53,7 @@ class SchemaQueryParameter
 
         $this->makeOperationIdRedocCompatible($analysis);
         $this->addExamplesFromFiles($analysis);
+        $this->attachCommonResponses($analysis);
     }
 
     protected function addExamplesFromFiles(Analysis $analysis)
@@ -64,6 +65,34 @@ class SchemaQueryParameter
             $this->attachRepsonseExamples($actionPath, $data);
         }
     }
+    protected function attachCommonResponses(Analysis $analysis) {
+        $paths = $this->getAvailablePaths($analysis);
+        foreach ($paths as $actionPath => $data) {
+            $method = $data['method'];
+            $path = $data['pathItem'];
+            $annotation = $path->$method;
+            if ($annotation->security !== UNDEFINED) {
+                foreach ($annotation->security as $security) {
+                    if (array_key_exists('bearer_auth', $security)) {
+                        $this->attcahUnauthenticatedResponse($annotation);
+                    }
+                }
+            }
+        }
+    }
+
+    protected function attcahUnauthenticatedResponse(AbstractAnnotation $annotation)
+    {
+        if (collect($annotation->responses)->where('response', 401)->count()) {
+            return;
+        }
+
+        $resp = new Response([]);
+        $resp->response = '401';
+        $resp->ref = '#/components/responses/Unauthenticated';
+        $annotation->responses[] = $resp;
+    }
+
 
     protected function buildSchemaFromModel(Schema $schema)
     {

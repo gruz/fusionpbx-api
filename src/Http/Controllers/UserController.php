@@ -119,10 +119,9 @@ class UserController extends AbstractBrunoController
     @OA\Get(
         tags={"User"},
         path="/user",
-        security={{"bearer_auth": {}}}, @OA\Response(response=401, ref="#/components/responses/Unauthenticated"),
+        security={{"bearer_auth": {}}},
         x={
             "route-$path"="fpbx.user.own",
-            "route-$middlewares"="api,auth:sanctum"
         },
         @OA\Parameter(ref="#/components/parameters/user_includes[]"),
         @OA\Response(
@@ -154,7 +153,7 @@ class UserController extends AbstractBrunoController
     @OA\Get(
         tags={"User"},
         path="/users",
-        security={{"bearer_auth": {}}}, @OA\Response(response=401, ref="#/components/responses/Unauthenticated"),
+        security={{"bearer_auth": {}}},
         @OA\Parameter(ref="#/components/parameters/user_includes[]"),
         @OA\Parameter(ref="#/components/parameters/limit"),
         @OA\Parameter(ref="#/components/parameters/page"),
@@ -185,7 +184,7 @@ class UserController extends AbstractBrunoController
     @OA\Get(
         tags={"User"},
         path="/user/{user_uuid}",
-        security={{"bearer_auth": {}}}, @OA\Response(response=401, ref="#/components/responses/Unauthenticated"),
+        security={{"bearer_auth": {}}},
         @OA\Parameter(ref="#/components/parameters/user_uuid"),
         @OA\Parameter(ref="#/components/parameters/user_includes[]"),
         @OA\Response(
