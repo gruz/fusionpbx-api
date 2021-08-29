@@ -67,9 +67,12 @@ class UserPasswordService
         Password::sendResetLink($userCredentialsOnly);
 
         return [
-            'username' => $userCredentials['username'],
-            'domain_uuid' => $userCredentials['domain_uuid'],
+            'message' => __('Check your email'),
         ];
+        // return [
+        //     'username' => $userCredentials['username'],
+        //     'domain_uuid' => $userCredentials['domain_uuid'],
+        // ];
     }
 
     /**
