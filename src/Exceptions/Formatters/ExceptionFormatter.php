@@ -14,7 +14,10 @@ class ExceptionFormatter extends BaseFormatter
         $statusCode = 500;
         if (method_exists($e, 'getStatusCode')) {
             $statusCode = $e->getStatusCode();
+        } elseif ( $e instanceof \Illuminate\Auth\Access\AuthorizationException) {
+            $statusCode = 403;
         }
+
         if (empty($statusCode)) {
             $statusCode = 500;
         }
