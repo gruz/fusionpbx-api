@@ -90,7 +90,6 @@ class UserService extends AbstractService
         return $models;
     }
 
-
     public function create($data, $options = [])
     {
         $data = $this->prepareData($data);
