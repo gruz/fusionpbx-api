@@ -3,11 +3,12 @@
 namespace Gruz\FPBX\Services\Fpbx;
 
 use Exception;
-use Gruz\FPBX\Models\AbstractModel;
+use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
-use Gruz\FPBX\Repositories\AbstractRepository;
+use Gruz\FPBX\Models\AbstractModel;
 use Illuminate\Database\DatabaseManager;
+use Gruz\FPBX\Repositories\AbstractRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class AbstractService
@@ -113,19 +114,29 @@ abstract class AbstractService
             config(['disable_fpbx_refresh' => true]);
         }
 
-        $this->database->beginTransaction();
+        $callerName = debug_backtrace()[1]['function'];
+
+        if ($callerName !== 'createMany') {
+            $this->database->beginTransaction();
+        }
 
         try {
             $model = $this->repository->create($data, $options);
 
-            $this->dispatchEvent('Created', $model, $options);
+            if (Arr::get($options, 'dispatchDefaultEvent', true)) {
+                $this->dispatchEvent('Created', $model, $options);
+            }
         } catch (Exception $e) {
-            $this->database->rollBack();
+            if ($callerName !== 'createMany') {
+                $this->database->rollBack();
+            }
 
             throw $e;
         }
 
-        $this->database->commit();
+        if ($callerName !== 'createMany') {
+            $this->database->commit();
+        }
 
         if (!$refreshDisabled) {
             config(['disable_fpbx_refresh' => false]);
@@ -144,6 +155,8 @@ abstract class AbstractService
         }
 
         $models = [];
+
+        $this->database->beginTransaction();
 
         try {
             foreach ($data as $key => $row) {
