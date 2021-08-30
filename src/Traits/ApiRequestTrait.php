@@ -14,6 +14,8 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 trait ApiRequestTrait
 {
+    protected $failedAuthorizationMessage;
+
     public $mapping = [
         "decimal" => "numeric",
         "text" => "string",
@@ -80,6 +82,11 @@ trait ApiRequestTrait
 
     protected function failedAuthorization()
     {
-        throw new HttpException(403);
+        throw new HttpException(403, $this->getFailedAuthorizationMessage());
+    }
+
+    private function getFailedAuthorizationMessage() {
+        // $this->failedAuthorizationMessage
+        return empty($this->failedAuthorizationMessage) ? __("This action is unauthorized.") : $this->failedAuthorizationMessage;
     }
 }
