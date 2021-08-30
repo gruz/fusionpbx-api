@@ -2,7 +2,7 @@
 
 return [
     'api_version' => 'v1',
-    'namespace' => 'Gruz\\FPBX\\Http\\Controllers\\Api',
+    'namespace' => 'Gruz\\FPBX\\Http\\Controllers',
     'debug' => [
         'swaggerProcessor' => false,
     ],

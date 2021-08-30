@@ -1,6 +1,6 @@
 <?php
 
-namespace Gruz\FPBX\Http\Controllers\Api;
+namespace Gruz\FPBX\Http\Controllers;
 
 use Gruz\FPBX\Requests\DomainSignupRequest;
 use Gruz\FPBX\Requests\DomainActivateRequest;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gruz\FPBX\Http\Controllers\Api;
+namespace Gruz\FPBX\Http\Controllers;
 
 use Gruz\FPBX\Services\Fpbx\ExtensionService;
 use Gruz\FPBX\Requests\CreateExtensionRequest;

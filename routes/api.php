@@ -21,8 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 $router = app(Router::class);
 
-// $router->post('/pushtoken', [\Gruz\FPBX\Http\Controllers\Api\Api\PushtokenController::class, 'create']);
-// $router->post('/status', [ \Gruz\FPBX\Http\Controllers\Api\Api\StatusController::class,  'setStatus']);
+// $router->post('/pushtoken', [\Gruz\FPBX\Http\Controllers\Api\PushtokenController::class, 'create']);
+// $router->post('/status', [ \Gruz\FPBX\Http\Controllers\Api\StatusController::class,  'setStatus']);
 
 // protected
 // Route::middleware(['auth:api'])->group(function () use ($router) {
