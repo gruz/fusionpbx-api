@@ -64,6 +64,10 @@ class FPBXAppServiceProvider extends ServiceProvider
                 $path. 'config.php' => config_path('fpbx.php'),
             ], 'config');
 
+            $this->publishes([
+                __DIR__.'/../../resources/views' => resource_path('views/vendor/fpbx'),
+            ], 'views');
+
             new LoadConstantsHelper('/' . config('l5-swagger.defaults.routes.docs') . '/' . config('l5-swagger.documentations.default.paths.docs_json'));
         }
 
@@ -79,7 +83,7 @@ class FPBXAppServiceProvider extends ServiceProvider
         $kernel->pushMiddleware(LowercaseRequestParams::class);
         $kernel->appendMiddlewareToGroup('api', CheckApiToken::class);
         $kernel->appendMiddlewareToGroup('api', \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class);
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'fpbx');
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'fpbx');
 
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
