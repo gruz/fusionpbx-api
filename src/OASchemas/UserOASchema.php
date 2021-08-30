@@ -76,6 +76,19 @@ namespace Gruz\FPBX\OASchemas;
         ),
     }),
 
+    @OA\Schema(schema="ResendActivation", allOf={
+        @OA\Schema(@OA\Property(
+            property="domain_name",
+            type="string",
+            description="Domain name"
+        )),
+        @OA\Schema(@OA\Property(
+            property="user_email",
+            type="email",
+            description="User email"
+        )),
+    }),
+
     @OA\Schema(schema="UserUpdatePasswordSchema", allOf={
         @OA\Schema(@OA\Property(
             property="token",
