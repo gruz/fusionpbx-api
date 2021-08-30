@@ -13,8 +13,13 @@ class PostponedAction extends Model
         'request' => 'json',
     ];
 
+    protected $fillable = [
+        'code',
+        'request',
+    ];
+
     protected $hidden = [
-        'hash',
+        'code',
         'id',
     ];
 
