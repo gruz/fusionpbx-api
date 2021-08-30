@@ -11,6 +11,12 @@ use Gruz\FPBX\Repositories\UserRepository;
 
 class UserService extends AbstractService
 {
+
+    /**
+     * @var UserRepository
+     */
+    protected $repository;
+
     private $userRepository;
 
     private $extensionService;
@@ -245,5 +251,11 @@ class UserService extends AbstractService
             $relatedModel = $service->create($row, ['forceFillable' => ['domain_uuid']]);
             $this->setRelation($userModel, $relatedModel);
         }
+    }
+
+    public function resendActivationLink($user_email, $domain_name) {
+        $this->repository->resendActivationLink($user_email, $domain_name);
+
+        return ['message' => __('Check your email')];
     }
 }

@@ -12,6 +12,7 @@ use Gruz\FPBX\Requests\UserActivateRequest;
 use Gruz\FPBX\Services\UserPasswordService;
 use Gruz\FPBX\Requests\UserSignupRequestApi;
 use Gruz\FPBX\Requests\UserForgotPasswordRequestApi;
+use Gruz\FPBX\Requests\UserResendActivationCodeRequestApi;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
@@ -104,7 +105,7 @@ class UserController extends AbstractBrunoController
             )
         ),
         @OA\Response(
-            description="User already exists",
+            description="User or activation code problems",
             response=422,
             @OA\MediaType(
                 mediaType="application/json",
@@ -121,6 +122,47 @@ class UserController extends AbstractBrunoController
         return $response;
     }
 
+    /**
+     * Resend activation code
+     *
+    @OA\Post(
+        tags={"User"},
+        path="/user/resend/activation",
+        x={"route-$path"="fpbx.user.resend.activation"},
+        @OA\RequestBody(
+            description="Request new activation link",
+            required=true,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Schema(ref="#/components/schemas/ResendActivation"),
+                @OA\Examples(example="User signup with extension", summary="", value={ "domain_name": "mertz12.com", "user_email": "alyson5.dietrich@howe.com"}),
+            )
+        ),
+        @OA\Response(
+            description="Application name and version",
+            response=200,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="200", summary="Success", value={"message":"User activated","user":{"user_uuid":"541f8e60-5ae0-11eb-bb80-b31e63f668c8","domain_uuid":"cd801673-f879-4ac6-8693-25e73d0721a1","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-30 14:08:36.342260+0000"}}),
+            )
+        ),
+        @OA\Response(
+            description="Domain, User not exists or aсtivated",
+            response=422,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="Domain not exists or inactive", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected domain name is invalid."}}}),
+                @OA\Examples(example="User not exists", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User not found"}}}),
+                @OA\Examples(example="User already enabled", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User already enabled"}}}),
+            )
+        ),
+    )
+     */
+    public function resend(UserResendActivationCodeRequestApi $request, UserService $userService)
+    {
+        return $this->response($userService->resendActivationLink($request->get('user_email'), $request->get('domain_name')));
+    }
+
 
     /**
      * Gets currently logged in user info
@@ -130,6 +172,7 @@ class UserController extends AbstractBrunoController
         path="/user",
         security={{"bearer_auth": {}}},
         x={
+            "route-$middlewares"="api,verified,auth:sanctum",
             "route-$path"="fpbx.user.own",
         },
         @OA\Parameter(ref="#/components/parameters/user_includes[]"),
@@ -245,6 +288,9 @@ class UserController extends AbstractBrunoController
     @OA\Post(
         tags={"User"},
         path="/user/login",
+        x={
+            "route-$middlewares"="api,guest"
+        },
         @OA\RequestBody(
             description="User information",
             required=true,
@@ -292,8 +338,16 @@ class UserController extends AbstractBrunoController
                 }
             ),
         ),
+        @OA\Response(
+            response=403,
+            description="User is disabled",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="User is disabled", summary="", value={"status":"error","code":403,"message":"User disabled"}),
+            )
+        ),
     )
-     */
+    */
     public function login(UserLoginRequest $request, UserService $userService)
     {
         $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));

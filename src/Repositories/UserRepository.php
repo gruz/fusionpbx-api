@@ -99,4 +99,15 @@ class UserRepository extends AbstractRepository
 
         return $userModel;
     }
+
+    public function resendActivationLink($user_email, $domain_name)
+    {
+        $userModel = $this->getUserByEmailAndDomain($user_email, $domain_name);
+        $code = mt_rand(100000,999999);
+        $userModel->user_enabled = $code . '::' . \Carbon\Carbon::now();
+        $userModel->save();
+        $userModel->sendEmailVerificationNotification();
+
+        return $userModel;
+    }
 }
