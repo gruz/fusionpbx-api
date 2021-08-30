@@ -16,7 +16,7 @@ class CreatePostponedActionsTable extends Migration
         Schema::create('postponed_actions', function (Blueprint $table) {
             $table->id();
             $table->json('request');
-            $table->uuid('hash');
+            $table->integer('code')->unique();
             $table->timestamps();
         });
     }
