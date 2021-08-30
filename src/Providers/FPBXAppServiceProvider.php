@@ -18,6 +18,7 @@ use Gruz\FPBX\Http\Middleware\L5SwaggerLoadConstants;
 use Gruz\FPBX\Http\Middleware\LowercaseRequestParams;
 use Gruz\FPBX\Console\Commands\RestoreDatabaseCommand;
 use Gruz\FPBX\Console\Commands\MakeTestDatabaseCommand;
+use Gruz\FPBX\Http\Middleware\Localization;
 
 class FPBXAppServiceProvider extends ServiceProvider
 {
@@ -73,7 +74,9 @@ class FPBXAppServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
         $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
-        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
+        $this->loadJsonTranslationsFrom(__DIR__.'/../../resources/lang');
+        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'fpbx');
 
         /**
          * @var \Illuminate\Foundation\Http\Kernel
@@ -82,6 +85,7 @@ class FPBXAppServiceProvider extends ServiceProvider
         $kernel->pushMiddleware(L5SwaggerLoadConstants::class);
         $kernel->pushMiddleware(LowercaseRequestParams::class);
         $kernel->appendMiddlewareToGroup('api', CheckApiToken::class);
+        $kernel->appendMiddlewareToGroup('api', Localization::class);
         $kernel->appendMiddlewareToGroup('api', \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class);
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'fpbx');
 
