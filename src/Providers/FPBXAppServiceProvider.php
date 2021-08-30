@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
+use Gruz\FPBX\Http\Middleware\Localization;
 use Gruz\FPBX\Http\Middleware\CheckApiToken;
 use Gruz\FPBX\Console\Commands\AddUserCommand;
 use Gruz\FPBX\Console\Commands\SendPushCommand;
@@ -18,7 +19,6 @@ use Gruz\FPBX\Http\Middleware\L5SwaggerLoadConstants;
 use Gruz\FPBX\Http\Middleware\LowercaseRequestParams;
 use Gruz\FPBX\Console\Commands\RestoreDatabaseCommand;
 use Gruz\FPBX\Console\Commands\MakeTestDatabaseCommand;
-use Gruz\FPBX\Http\Middleware\Localization;
 
 class FPBXAppServiceProvider extends ServiceProvider
 {
