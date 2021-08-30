@@ -76,7 +76,7 @@ namespace Gruz\FPBX\OASchemas;
         ),
     }),
 
-    @OA\Schema(schema="ResendActivation", allOf={
+    @OA\Schema(schema="EmailAndDomainRequest", allOf={
         @OA\Schema(@OA\Property(
             property="domain_name",
             type="string",

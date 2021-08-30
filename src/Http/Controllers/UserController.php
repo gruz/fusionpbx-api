@@ -134,16 +134,16 @@ class UserController extends AbstractBrunoController
             required=true,
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Schema(ref="#/components/schemas/ResendActivation"),
-                @OA\Examples(example="User signup with extension", summary="", value={ "domain_name": "mertz12.com", "user_email": "alyson5.dietrich@howe.com"}),
+                @OA\Schema(ref="#/components/schemas/EmailAndDomainRequest"),
+                @OA\Examples(example="Request domain and email", summary="", value={ "domain_name": "mertz12.com", "user_email": "alyson5.dietrich@howe.com"}),
             )
         ),
         @OA\Response(
-            description="Application name and version",
             response=200,
+            description="Activation link sent",
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="200", summary="Success", value={"message":"User activated","user":{"user_uuid":"541f8e60-5ae0-11eb-bb80-b31e63f668c8","domain_uuid":"cd801673-f879-4ac6-8693-25e73d0721a1","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-30 14:08:36.342260+0000"}}),
+                @OA\Examples(example="Activation link sent", summary="", value={"message":"Check your email"}),
             )
         ),
         @OA\Response(
@@ -289,7 +289,7 @@ class UserController extends AbstractBrunoController
         tags={"User"},
         path="/user/login",
         x={
-            "route-$middlewares"="api,guest"
+            "route-$middlewares"="api"
         },
         @OA\RequestBody(
             description="User information",
@@ -400,45 +400,30 @@ class UserController extends AbstractBrunoController
         path="/user/forgot-password",
         x={"route-$path"="fpbx.user.forgot-password"},
         @OA\RequestBody(
-            description="User information to reset his password",
+            description="Request new activation link",
             required=true,
-            @OA\JsonContent(
-                ref="#/components/schemas/UserForgotPasswordSchema",
-                example={
-                    "Request email with link basic example": {
-                        "summary": "Request email with link basic example",
-                        "value": {
-                            "user_email":"your_user@email.com",
-                            "domain_name":"jimmie.biz"
-                        }
-                    },
-                }
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Schema(ref="#/components/schemas/EmailAndDomainRequest"),
+                @OA\Examples(example="Request domain and email", summary="", value={ "domain_name": "mertz12.com", "user_email": "alyson5.dietrich@howe.com"}),
             )
         ),
         @OA\Response(
             response=200,
-            description="Password resent link sent",
+            description="Activation link sent",
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="Password resent link sent", summary="Password resent link sent", value={"message":"Check your email"}),
+                @OA\Examples(example="Activation link sent", summary="", value={"message":"Check your email"}),
             )
         ),
         @OA\Response(
-            response=403,
-            description="User disabled",
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Examples(example="User in domain exists, but disabled", summary="User in domain exists, but disabled", value={"status":"error","code":403,"message":"User disabled"}),
-            )
-        ),
-        @OA\Response(
+            description="Domain, User not exists or aсtivated",
             response=422,
-            description="User created response",
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="No domain found", summary="No domain found", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected domain name is invalid."}}}),
-                @OA\Examples(example="No email found", summary="No email found", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User not found"}}}),
-                @OA\Examples(example="No domain and email found", summary="No domain and email found", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected domain name is invalid."},{"status":"422","code":422,"title":"Validation error","detail":"The selected user email is invalid."}}}),
+                @OA\Examples(example="Domain not exists or inactive", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected domain name is invalid."}}}),
+                @OA\Examples(example="User not exists", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User not found"}}}),
+                @OA\Examples(example="User already enabled", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User already enabled"}}}),
             )
         ),
     )
