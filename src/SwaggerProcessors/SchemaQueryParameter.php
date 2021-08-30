@@ -75,14 +75,15 @@ class SchemaQueryParameter
             if ($annotation->security !== UNDEFINED) {
                 foreach ($annotation->security as $security) {
                     if (array_key_exists('bearer_auth', $security)) {
-                        $this->attcahUnauthenticatedResponse($annotation);
+                        $this->attachUnauthenticatedResponse($annotation);
+                        $this->attachUnverifiedEmailResponse($annotation);
                     }
                 }
             }
         }
     }
 
-    protected function attcahUnauthenticatedResponse(AbstractAnnotation $annotation)
+    protected function attachUnauthenticatedResponse(AbstractAnnotation $annotation)
     {
         if (collect($annotation->responses)->where('response', 401)->count()) {
             return;
@@ -91,6 +92,18 @@ class SchemaQueryParameter
         $resp = new Response([]);
         $resp->response = '401';
         $resp->ref = '#/components/responses/Unauthenticated';
+        $annotation->responses[] = $resp;
+    }
+
+    protected function attachUnverifiedEmailResponse(AbstractAnnotation $annotation)
+    {
+        if (collect($annotation->responses)->where('response', 403)->count()) {
+            return;
+        }
+
+        $resp = new Response([]);
+        $resp->response = '403';
+        $resp->ref = '#/components/responses/UnverifiedResponse';
         $annotation->responses[] = $resp;
     }
 
@@ -329,7 +342,7 @@ class SchemaQueryParameter
             }
             if ($auth) {
                 // $middlewares = ['auth:api'];
-                $middlewares = ['api', 'auth:sanctum'];
+                $middlewares = ['api', 'auth:sanctum', 'verified'];
             } else {
                 $middlewares = ['api'];
             }
