@@ -183,7 +183,7 @@ class UserService extends AbstractService
         return $this->userRepository->getById(Auth::user()->user_uuid, $options);
     }
 
-    public function activate($hash, $sendNotification = true)
+    public function activate($user_uuid, $sendNotification = true)
     {
         // Since there is no a field dedicated to activation, Gruz have decided to use the quazi-boolean user_enabled field.
         // FusionPBX recognizes non 'true' as FALSE. So our hash in the user_enabled field is treated as FALSE till user is activated.
@@ -191,7 +191,11 @@ class UserService extends AbstractService
         $this->database->beginTransaction();
 
         try {
-            $user = $this->userRepository->getWhere('user_enabled', $hash)->first();
+            /**
+             * @var \Gruz\FPBX\Models\User
+             */
+            $user = $this->userRepository->getById($user_uuid);
+            // getWhere('user_enabled', $hash)->first();
 
             $user->user_enabled = 'true';
 

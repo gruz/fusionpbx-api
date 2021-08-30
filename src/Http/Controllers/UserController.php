@@ -82,17 +82,17 @@ class UserController extends AbstractBrunoController
      *
     @OA\Get(
         tags={"User"},
-        path="/verify-email/{user_uuid}/{hash}",
-        x={"route-$path"="verification.verify"},
+        path="/user/activate/{user_uuid}/{user_enabled}",
+        x={"route-$path"="fpbx.user.activate"},
         @OA\Parameter(ref="#/components/parameters/user_uuid"),
         @OA\Parameter(
-            name="hash",
+            name="user_enabled",
             in="path",
-            description="User activation hash from verification emails",
+            description="User activation code from verification email",
             required=true,
             @OA\Schema(
-                type="string",
-                example="65db8e98584c1d9a83b1b64371d157049f470d75",
+                type="integer",
+                example="567134",
             )
         ),
         @OA\Response(
@@ -100,14 +100,23 @@ class UserController extends AbstractBrunoController
             response=200,
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="200", summary="Success", value={"message":"User activated","user":{"user_uuid":"973add20-16b8-467d-ad02-42ffd1cc4aa4","domain_uuid":"8c292d13-0e70-4a08-8f50-eb8bb4348ae4","username":"marisa36@watsica.net","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-23 17:15:21.262935+0000","account_code":null}}),
+                @OA\Examples(example="200", summary="Success", value={"message":"User activated","user":{"user_uuid":"541f8e60-5ae0-11eb-bb80-b31e63f668c8","domain_uuid":"cd801673-f879-4ac6-8693-25e73d0721a1","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"true","add_user":"admin","add_date":"2021-08-30 14:08:36.342260+0000"}}),
+            )
+        ),
+        @OA\Response(
+            description="User already exists",
+            response=422,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="User already enabled", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User already enabled"}}}),
+                @OA\Examples(example="Bad or expired validation code", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"Invalid or expired validation code"}}}),
             )
         ),
     )
      */
-    public function activate(string $id, string $hash, UserActivateRequest $request, UserService $userService)
+    public function activate(string $user_uuid, string $user_enabled, UserActivateRequest $request, UserService $userService)
     {
-        $response = $this->response($userService->activate($hash));
+        $response = $this->response($userService->activate($user_uuid, $user_enabled));
 
         return $response;
     }

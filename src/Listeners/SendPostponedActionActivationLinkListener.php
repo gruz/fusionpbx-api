@@ -10,10 +10,10 @@ class SendPostponedActionActivationLinkListener
 {
     public function handle($event)
     {
-        foreach ($event->users as $user) {
-            $email = Arr::get($user, 'user_email');
+        foreach ($event->rows as $model) {
+            $email = $model->request['user_email'];
             Notification::route('mail', $email)
-                ->notify(new DomainSignupNotification($event->model));
+                ->notify(new DomainSignupNotification($model));
         }
     }
 }

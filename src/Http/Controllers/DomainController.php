@@ -28,11 +28,6 @@ class DomainController extends AbstractBrunoController
      * and [Override a Default Setting for one domain](https://docs.fusionpbx.com/en/latest/advanced/domains.html#override-a-default-setting-for-one-domain)
      * to understand how override works.
      *
-     * Check examples as well.
-     * To add exampes here inside OA\MediaType add
-     * @OA\Examples(example=200, summary="", value={"name":1}),
-     * @OA\Examples(example=300, summary="", value={"name":1}),
-     * @OA\Examples(example=400, summary="", value={"name":1})
      *
     @OA\Post(
         tags={"Domain"},
@@ -54,42 +49,23 @@ class DomainController extends AbstractBrunoController
      */
     public function signup(DomainSignupRequest $request, PostponedActionService $postponedActionService)
     {
-        return $this->response($postponedActionService->create($request->all()), 201);
+        return $this->response($postponedActionService->createMany($request->all()), 201);
     }
 
     /**
-     * Activate user by email link. In cases it's and admin user, activate domain as well
-     *
-     * Whom to send activation link is determined by configuration [`TODO` Implement this logic ]:
-     * * Main domain admin user
-     * * A email determined by laravel configuration
-     * * The users mentioned as admin users when creating domain signup (passed with the signup request)
-     * * All FPBX users which have permission to create domain
-     * * All above
-     *
-     * Depending on configuration,
+     * Activate domain by code.
      *
     @OA\Get(
         tags={"Domain"},
-        path="/domain/activate/{hash}/{email}",
+        path="/domain/activate/{code}",
         @OA\Parameter(
-            name="hash",
+            name="code",
             in="path",
             required=true,
             @OA\Schema(
                 type="string",
-                format="uuid",
-                example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
-            )
-        ),
-        @OA\Parameter(
-            name="email",
-            in="path",
-            required=true,
-            @OA\Schema(
-                type="string",
-                format="email",
-                example="soma@insomnia.com",
+                format="integer",
+                example="537349",
             )
         ),
         @OA\Response(
@@ -97,15 +73,25 @@ class DomainController extends AbstractBrunoController
             response=200,
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="200", summary="Success", value={"domain_name":"mertz11.com","domain_description":"Created via Factory during tests","domain_enabled":true,"domain_uuid":"37c8cce2-5b5c-4e62-9adf-379f76e42909","message":"messages.team created"}),
+                @OA\Examples(example="200", summary="Success", value={"domain_name":"mertz22.com","domain_description":"Created via Factory during tests","domain_enabled":true,"domain_uuid":"cd801673-f879-4ac6-8693-25e73d0721a1","message":"Team created. Login using username <b>marisa36@watsica.net<\/b>, domain name <b>mertz22.com<\/b> and password <b>!uiS:9:<\/b>"}),
+            )
+        ),
+        @OA\Response(
+            description="Bad data",
+            response=422,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="Already activated", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"Domain already activated"}}}),
+                @OA\Examples(example="No activation code found", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected code is invalid."}}}),
+                @OA\Examples(example="Expired", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"Domain activation link expired"}}}),
             )
         ),
 
     )
      */
-    public function activate($hash, $email, DomainActivateRequest $request, PostponedActionService $postponedActionService)
+    public function activate($code, DomainActivateRequest $request, PostponedActionService $postponedActionService)
     {
-        return $this->response($postponedActionService->executeByHash($hash, $email), 201);
+        return $this->response($postponedActionService->executeByHash($code), 201);
     }
 
     /**

@@ -18,7 +18,7 @@ class DomainAlreadyEnabledRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $model = PostponedAction::where('hash', $value)->first();
+        $model = PostponedAction::where('code', $value)->first();
 
         if (empty($model)) {
             return false;
@@ -30,7 +30,7 @@ class DomainAlreadyEnabledRule implements Rule
         $domainService = app(DomainService::class);
 
 
-        $domainModel = $domainService->getDomainByName($model->request['domain_name']);
+        $domainModel = $domainService->getDomainByName($model->request['request']['domain_name']);
 
         if (empty($domainModel)) {
             return true;

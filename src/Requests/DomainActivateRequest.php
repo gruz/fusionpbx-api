@@ -19,20 +19,14 @@ class DomainActivateRequest extends FormRequest
 
     public function rules()
     {
-        $hash = $this->route('hash');
-
         $rules = [
-            'hash' => [
+            'code' => [
                 'bail',
                 'required',
-                'uuid',
-                'exists:\Gruz\FPBX\Models\PostponedAction',
+                'integer',
+                'exists:\Gruz\FPBX\Models\PostponedAction,code',
                 new DomainSignupHashExpiredRule(),
                 new DomainAlreadyEnabledRule(),
-            ],
-            'email' => [
-                'required',
-                new DomainSignupHashHasEmailExistsRule($hash),
             ],
         ];
 
@@ -42,8 +36,7 @@ class DomainActivateRequest extends FormRequest
     public function all($keys = null)
     {
         $data = parent::all($keys);
-        $data['hash'] = $this->route('hash');
-        $data['email'] = $this->route('email');
+        $data['code'] = $this->route('code');
         return $data;
     }
 }

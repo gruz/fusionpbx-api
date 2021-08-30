@@ -47,13 +47,14 @@ class DomainSignupNotification extends Notification implements ShouldQueue
             : $notifiable->email;
 
         $url = route('fpbx.get.domain.activate', [
-            'hash' => $this->model->hash,
-            'email' => $address,
+            'code' => $this->model->code,
         ]);
 
         return (new MailMessage)
             ->greeting(__('Domain signup verification'))
-            ->line(__('To finish your domain **:domain_name** registration process we must verify your email.', ['domain_name' => $this->model->request['domain_name']]))
+            ->line(__('To finish your domain **:domain_name** registration process we must verify your email.', ['domain_name' => $this->model->request['request']['domain_name']]))
+            ->line(__('Use validation code **:code**', ['code' => $this->model->code]))
+            ->line(__('or press the button below'))
             ->action(__('Verify your email'), $url)
             ->line(__('Thank you for using our service!'))
             ;

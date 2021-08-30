@@ -30,7 +30,9 @@ class UserRepository extends AbstractRepository
         // We will use a webpatser/laravel-uuid
         // $data['salt'] = Str::uuid();
         // $data['user_enabled'] = Str::uuid()->toString();
-        $data['user_enabled'] = sha1($data['user_email']);
+        // $data['user_enabled'] = sha1($data['user_email']);
+        $code = mt_rand(100000,999999);
+        $data['user_enabled'] = $code . '::' . \Carbon\Carbon::now();
 
         // ~ Normal laravel approach
         // $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);

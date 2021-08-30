@@ -16,7 +16,7 @@ class DomainSignupHashExpiredRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $model = PostponedAction::where('hash', $value)->first();
+        $model = PostponedAction::where('code', $value)->first();
 
         if (empty($model)) {
             return false;

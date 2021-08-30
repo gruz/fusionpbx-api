@@ -188,5 +188,7 @@
     "Balance" : "Balance",
     "Effective caller number": "Internal phone number",
     "Effective caller name": "Display Name",
-    "team created" : "Team created. Login using username <b>:username</b>, domain name <b>:domain_name</b> and password <b>:password</b>"
+    "team created" : "Team created. Login using username <b>:username</b>, domain name <b>:domain_name</b> and password <b>:password</b>",
+    "User already enabled" : "User already enabled",
+    "Invalid or expired validation code" : "Invalid or expired validation code"
 }

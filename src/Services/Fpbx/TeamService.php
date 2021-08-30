@@ -103,7 +103,7 @@ class TeamService extends AbstractService
 
             foreach ($usersModel as $userModel) {
                 if ($activatorEmail === $userModel->getAttribute('user_email')) {
-                    $this->userService->activate($userModel->getAttribute('user_enabled'), false);
+                    $this->userService->activate($userModel->getAttribute('user_uuid'), false);
                     break;
                 }
             }

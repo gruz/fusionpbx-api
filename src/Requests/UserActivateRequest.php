@@ -3,11 +3,15 @@
 namespace Gruz\FPBX\Requests;
 
 use Gruz\FPBX\Traits\ApiRequestTrait;
+use Gruz\FPBX\Rules\UserAlreadyEnabledRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Gruz\FPBX\Rules\UserSignupHashExpiredRule;
 
 class UserActivateRequest extends FormRequest
 {
     use ApiRequestTrait;
+
+    protected $stopOnFirstFailure = true;
 
     public function authorize()
     {
@@ -17,13 +21,16 @@ class UserActivateRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'id' => [
+            'user_uuid' => [
                 'required',
                 'uuid',
+                'exists:\Gruz\FPBX\Models\User',
             ],
-            'hash' => [
+            'user_enabled' => [
+                'bail',
                 'required',
-                'exists:\Gruz\FPBX\Models\User,user_enabled',
+                new UserAlreadyEnabledRule($this->user_uuid),
+                new UserSignupHashExpiredRule($this->user_uuid),
             ],
         ];
 
@@ -33,8 +40,8 @@ class UserActivateRequest extends FormRequest
     public function all($keys = null)
     {
         $data = parent::all($keys);
-        $data['hash'] = $this->route('hash');
-        $data['id'] = $this->route('id');
+        $data['user_uuid'] = $this->route('user_uuid');
+        $data['user_enabled'] = $this->route('user_enabled');
 
         return $data;
     }

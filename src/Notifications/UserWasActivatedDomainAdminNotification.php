@@ -42,15 +42,20 @@ class UserWasActivatedDomainAdminNotification extends Notification implements Sh
      */
     public function toMail($notifiable)
     {
-        $domain_uuid = $this->model->domain->getAttribute('domain_uuid');
+        // $domain_uuid = $this->model->domain->getAttribute('domain_uuid');
         $domain_name = $this->model->domain->getAttribute('domain_name');
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
             ->subject(__('Alert! New user was activated at :app_name', ['app_name' => config('app.name')]))
             ->greeting(__('A new user registered in domain **:domain_name**', ['domain_name' => $domain_name ]))
             ->line(__('Username') . ': **' . $this->model->username . '**')
-            ->line(__('Email') . ': **' . $this->model->user_email . '**')
-            ->line(__('Reseller code') . ': **' . $this->model->reseller_code . '**');
+            ->line(__('Email') . ': **' . $this->model->user_email . '**');
+
+        if (!empty($this->model->reseller_code)) {
+            $mailMessage->line(__('Reseller code') . ': **' . $this->model->reseller_code . '**');
+        }
+
+        return $mailMessage;
     }
 
     /**
