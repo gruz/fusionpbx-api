@@ -4,9 +4,10 @@ namespace Gruz\FPBX\Repositories;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Gruz\FPBX\Models\AbstractModel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Optimus\Genie\Repository as BaseRepository;
-use Gruz\FPBX\Models\AbstractModel;
 
 abstract class AbstractRepository extends BaseRepository
 {
@@ -170,5 +171,24 @@ abstract class AbstractRepository extends BaseRepository
         ], $options);
 
         $parent->$relationName()->save($child, $options);
+    }
+
+    /**
+     * Applies current domain_uuid to all models which have domain_uuid
+     * @param  array $options
+     * @return Builder
+     */
+    protected function createBaseBuilder(array $options = [])
+    {
+        $query = parent::createBaseBuilder($options);
+
+        if (Auth::user()) {
+            $model = $this->getModel();
+            if (in_array('domain_uuid', $model->getTableColumnNames(true))) {
+                $query->where('domain_uuid', Auth::user()->domain_uuid);
+            }
+        }
+
+        return $query;
     }
 }
