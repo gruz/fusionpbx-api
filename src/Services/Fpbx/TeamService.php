@@ -110,7 +110,7 @@ class TeamService extends AbstractService
 
             $activatorUserData = collect($usersData)->where('user_email', $activatorEmail)->first();
 
-            $domainModel->message = __('messages.team created', [
+            $domainModel->message = __('team created', [
                 'username' => $activatorUserData['username'],
                 'domain_name' => $data['domain_name'],
                 'password' => $activatorUserData['password']
