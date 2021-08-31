@@ -70,26 +70,26 @@ class ExtensionController extends AbstractBrunoController
     )
     */
 
-    /**
+/**
      * Extension create
      *
      * Creates an extension and attaches it to a user (optionally)
      *
-    @OA\Post(
+    @ OA\Post(
         tags={"Extension"},
         path="/extension",
-        @OA\RequestBody(
+        @ OA\RequestBody(
             required=true,
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 allOf={
-                    @OA\Schema(ref="#/components/schemas/Extension"),
-                    @OA\Schema(@OA\Property(
+                    @ OA\Schema(ref="#/components/schemas/Extension"),
+                    @ OA\Schema(@ OA\Property(
                         property="users",
                         type="array",
-                        @OA\Items(
+                        @ OA\Items(
                             allOf={
-                                @OA\Schema(
-                                    @OA\Property(
+                                @ OA\Schema(
+                                    @ OA\Property(
                                         property="user_uuid",
                                         type="string",
                                         format="uuid",
@@ -113,15 +113,15 @@ class ExtensionController extends AbstractBrunoController
                 }
             ),
         ),
-        @OA\Response(
+        @ OA\Response(
             response=200,
             description="Extension created response",
-            @OA\JsonContent(ref="#/components/schemas/Extension"),
+            @ OA\JsonContent(ref="#/components/schemas/Extension"),
         ),
-        @OA\Response(
+        @ OA\Response(
             response=400,
             description="`TODO Stub` Could not created domain",
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 example={
                     "messages": {
                         "Missing admin user",
@@ -142,13 +142,13 @@ class ExtensionController extends AbstractBrunoController
     /**
      * Updates an extension
      *
-    @OA\Put(
+    @ OA\Put(
         tags={"Extension"},
         path="/extension/{extension_uuid}",
-        @OA\Parameter(ref="#/components/parameters/uuid"),
-        @OA\RequestBody(
+        @ OA\Parameter(ref="#/components/parameters/uuid"),
+        @ OA\RequestBody(
             required=true,
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 ref="#/components/schemas/ExtensionCreateSchema",
                 example={
                     "Create a user": {},
@@ -163,12 +163,12 @@ class ExtensionController extends AbstractBrunoController
                 }
             ),
         ),
-        @OA\Response(
+        @ OA\Response(
             response=200,
             description="`TODO Stub` Success ...",
-            @OA\JsonContent(ref="#/components/schemas/Extension"),
+            @ OA\JsonContent(ref="#/components/schemas/Extension"),
         ),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
     */
     public function update($extensionId, UpdateExtensionRequest $request)
@@ -185,14 +185,14 @@ class ExtensionController extends AbstractBrunoController
     /**
      * Delets an extension
      *
-    @OA\Delete(
+    @ OA\Delete(
         tags={"Extension"},
         path="/extension/{extension_uuid}",
-        @OA\Parameter(ref="#/components/parameters/uuid"),
-        @OA\Response(
+        @ OA\Parameter(ref="#/components/parameters/uuid"),
+        @ OA\Response(
             response=200,
             description="`TODO Stub` Success ...",
-            @OA\JsonContent(
+            @ OA\JsonContent(
                 example={
                     "messages": {
                         "`TODO` Describe response",
@@ -200,7 +200,7 @@ class ExtensionController extends AbstractBrunoController
                 },
             ),
         ),
-        @OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )
     */
     public function delete($extensionId)
