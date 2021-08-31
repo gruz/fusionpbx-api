@@ -68,6 +68,11 @@ class User extends AbstractModel implements
         // "On Break", "Do Not Disturb", "Logged Out"] - user can edit it
     ];
 
+    protected $fillable = [
+        'api_key',
+        'password'
+    ];
+
     /**
      * The attributes that should not be assinable.
      * Only explicit assigns in repository.

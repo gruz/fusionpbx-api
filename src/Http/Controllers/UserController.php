@@ -2,8 +2,9 @@
 
 namespace Gruz\FPBX\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Gruz\FPBX\Requests\GetUuidRequest;
 use Gruz\FPBX\Requests\UserLoginRequest;
 use Gruz\FPBX\Services\Fpbx\UserService;
 use Gruz\FPBX\Requests\CreateUserRequest;
@@ -506,35 +507,56 @@ class UserController extends AbstractBrunoController
     /**
      * Update oneself or another user if having enough permissions
      *
-    @ OA\Put(
+    @OA\Put(
         tags={"User"},
-        path="/user/{user_uuid}",
-        @ OA\Parameter(ref="#/components/parameters/uuid"),
-        @ OA\RequestBody(
-            description="User information",
+        path="/user/{uuid}",
+        security={{"bearer_auth": {}}},
+        @OA\Parameter(ref="#/components/parameters/uuid"),
+        @OA\RequestBody(
+            description="User update",
             required=true,
-            @ OA\JsonContent(
-                ref="#/components/schemas/UserCreateSchema",
-                example={
-                    "Create a user": {},
-                    "Create a user basic example": {
-                        "summary" : "`TODO example`",
-                        "value": {
-                            "code": 403,
-                            "message": "登录失败",
-                            "data": null
-                        }
-                    },
-                }
-            ),
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Schema(allOf={
+                    @OA\Schema(@OA\Property(
+                        property="api_key",
+                        type="sting",
+                        description="Native FusionPBX API key which is not used in any way by this API",
+                        example="SomeKey"
+                    )),
+                    @OA\Schema(@OA\Property(
+                        property="password",
+                        type="string",
+                        description="Password",
+                        example=".MayPaswired"
+                    )),
+                }),
+                @OA\Examples(example="Set new password", summary="", value={
+                    "password" : ".Apantera1"
+                }),
+            )
         ),
-        @ OA\Response(response=200, description="`TODO Stub` Success ..."),
-        @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
+        @OA\Response(
+            response=200,
+            description="Password updated",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="Activation link sent", summary="", value={"user_uuid":"e20a1239-9bd2-4bb1-ac62-22a828e10f8b","domain_uuid":"9b6787d9-a0c6-484f-8e39-3f64f457db81","username":"jazlyn.hoppe@nitzsche.com","contact_uuid":null,"api_key":"a","user_enabled":"true","add_user":"admin","add_date":"2021-08-30 20:10:57.914963+0000"}),
+            )
+        ),
     )
      */
-    public function update($userId, Request $request)
+    public function update($userId, GetUuidRequest $request)
     {
-        $data = $request->get('user', []);
+        $user = $this->userService->getById($userId);
+        Gate::authorize('user_edit', $user);
+
+        $data = $request->all();
+
+        if (array_key_exists('password', $data)) {
+            $data['password'] = Hash::make($data['password']);
+        }
+
 
         return $this->response($this->userService->update($userId, $data));
     }
