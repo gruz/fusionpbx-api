@@ -5,11 +5,12 @@ namespace Gruz\FPBX\Requests;
 use Gruz\FPBX\Models\Domain;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
-use Gruz\FPBX\Rules\UserExistsInDomainRule;
+use Gruz\FPBX\Rules\UserEmailExistsInDomainRule;
 
 class UserForgotPasswordRequest extends FormRequest
 {
     protected $stopOnFirstFailure = true;
+
     public function authorize()
     {
         return true;
@@ -31,8 +32,8 @@ class UserForgotPasswordRequest extends FormRequest
             [
                 'required',
                 'email',
-                // Rule::exists(User::class, 'user_email')->where('user_enabled', 'true'),
-                new UserExistsInDomainRule($domain_name)
+                // Rule::exists(User::class, 'user_email')->where([['user_enabled', '=', 'true']]),
+                new UserEmailExistsInDomainRule($domain_name)
             ]
         ];
     }

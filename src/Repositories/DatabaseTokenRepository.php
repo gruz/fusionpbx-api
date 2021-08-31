@@ -115,4 +115,14 @@ class DatabaseTokenRepository extends OriginalDatabaseTokenRepository
 
         return $record && $this->tokenRecentlyCreated($record['created_at']);
     }
+
+    /**
+     * Create a new token for the user.
+     *
+     * @return string
+     */
+    public function createNewToken()
+    {
+        return $code = mt_rand(100000,999999);
+    }
 }

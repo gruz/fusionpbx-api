@@ -12,6 +12,7 @@ use Gruz\FPBX\Requests\UserActivateRequest;
 use Gruz\FPBX\Services\UserPasswordService;
 use Gruz\FPBX\Requests\UserSignupRequestApi;
 use Gruz\FPBX\Requests\UserForgotPasswordRequestApi;
+use Gruz\FPBX\Requests\UserSetForgottenPasswordRequest;
 use Gruz\FPBX\Requests\UserResendActivationCodeRequestApi;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -347,7 +348,7 @@ class UserController extends AbstractBrunoController
             )
         ),
     )
-    */
+     */
     public function login(UserLoginRequest $request, UserService $userService)
     {
         $user = $userService->getUserByUsernameAndDomain($request->get('username'), $request->get('domain_name'));
@@ -393,7 +394,7 @@ class UserController extends AbstractBrunoController
     }
 
     /**
-     * User forgot password - request email link to reset password
+     * User forgot password - request email with validation code to reset password
      *
     @OA\Post(
         tags={"User"},
@@ -423,7 +424,6 @@ class UserController extends AbstractBrunoController
                 mediaType="application/json",
                 @OA\Examples(example="Domain not exists or inactive", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The selected domain name is invalid."}}}),
                 @OA\Examples(example="User not exists", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User not found"}}}),
-                @OA\Examples(example="User already enabled", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"User already enabled"}}}),
             )
         ),
     )
@@ -433,6 +433,68 @@ class UserController extends AbstractBrunoController
         $data = $request->only('user_email', 'domain_name');
 
         return $this->response($userPasswordService->generateResetToken($data));
+    }
+
+    /**
+     * Post new password secured by validation code
+     *
+    @OA\Put(
+        tags={"User"},
+        path="/user/new-password",
+        x={"route-$path"="fpbx.user.new-password"},
+        @OA\RequestBody(
+            description="Request new activation link",
+            required=true,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Schema(allOf={
+                    @OA\Schema(ref="#/components/schemas/UsernameAndDomainRequest"),
+                    @OA\Schema(@OA\Property(
+                        property="code",
+                        type="integer",
+                        description="Validation code from email",
+                        example="343556"
+                    )),
+                    @OA\Schema(@OA\Property(
+                        property="password",
+                        type="string",
+                        description="Password",
+                        example=".MayPaswired"
+                    )),
+                }),
+                @OA\Examples(example="Set new password", summary="", value={
+                    "username":"alyson.dietrich@howe.com",
+                    "domain_name":"mertz26.com",
+                    "code" : 373929,
+                    "password" : ".Apantera1"
+                }),
+            )
+        ),
+        @OA\Response(
+            response=200,
+            description="Password updated",
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="Activation link sent", summary="", value={"message":"Password updated"}),
+            )
+        ),
+        @OA\Response(
+            description="Domain, User not exists or aсtivated",
+            response=422,
+            @OA\MediaType(
+                mediaType="application/json",
+                @OA\Examples(example="Bad or missing password", summary="", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The password must be at least 6 characters."},{"status":"422","code":422,"title":"Validation error","detail":"The password format is invalid."}}}),
+                @OA\Examples(example="Not found password request record", summary="", value={"errors":{{"status":"422","code":0,"title":"Validation error","detail":"Password reset request invalid"}}}),
+                @OA\Examples(example="Password request record expired", summary="", value={"errors":{{"status":"422","code":0,"title":"Validation error","detail":"Password reset request expired"}}}),
+            )
+        ),
+    )
+     */
+    public function newPassword(UserSetForgottenPasswordRequest $request, UserPasswordService $userPasswordService)
+    {
+        $data = $request->only('domain_name', 'username', 'code', 'password');
+
+        return $this->response($userPasswordService->userSetPassword($data));
     }
 
 

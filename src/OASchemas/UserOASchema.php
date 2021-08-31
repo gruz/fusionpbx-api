@@ -89,6 +89,19 @@ namespace Gruz\FPBX\OASchemas;
         )),
     }),
 
+    @OA\Schema(schema="UsernameAndDomainRequest", allOf={
+        @OA\Schema(@OA\Property(
+            property="domain_name",
+            type="string",
+            description="Domain name"
+        )),
+        @OA\Schema(@OA\Property(
+            property="username",
+            type="string",
+            description="Username"
+        )),
+    }),
+
     @OA\Schema(schema="UserUpdatePasswordSchema", allOf={
         @OA\Schema(@OA\Property(
             property="token",

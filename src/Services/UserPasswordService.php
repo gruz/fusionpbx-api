@@ -2,8 +2,7 @@
 
 namespace Gruz\FPBX\Services;
 
-use Gruz\FPBX\Models\User;
-use Illuminate\Support\Arr;
+use Gruz\FPBX\Models\PasswordReset as ModelsPasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Gruz\FPBX\Services\Fpbx\UserService;
 use Illuminate\Support\Facades\Password;
@@ -14,12 +13,10 @@ use Illuminate\Contracts\Auth\PasswordBroker;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class UserPasswordService
 {
-
-    private $userRepository;
-
     private $domainRepository;
 
     private $userService;
@@ -51,28 +48,36 @@ class UserPasswordService
 
     public function generateResetToken($data)
     {
-        $userCredentials = $this->getUserCredentials($data)->toArray();
+        /**
+         * @var \Gruz\FPBX\Models\User[]
+         */
+        $users = $this->getUserCredentials($data);
 
-        $fieldsOnly = [
-            'user_uuid',
-            'domain_uuid',
-            'username',
-        ];
-        $userCredentialsOnly = [
-        ];
-        foreach ($fieldsOnly as $key) {
-            $userCredentialsOnly[$key] = Arr::get($userCredentials, $key);
+        foreach ($users as $user) {
+            /**
+             * @var ModelsPasswordReset
+             */
+            $model = app(ModelsPasswordReset::class);
+
+            $model->where([
+                // ['email', $user->email],
+                ['domain_name', $user->domain_name],
+                ['username', $user->username],
+            ])->delete();
+
+            $model->email = $user->user_email;
+            $model->domain_name = $user->domain_name;
+            $model->username = $user->username;
+            $model->token = mt_rand(100000,999999);
+
+            $model->save();
+
+            $user->sendPasswordResetNotification($model->token);
         }
-
-        Password::sendResetLink($userCredentialsOnly);
 
         return [
             'message' => __('Check your email'),
         ];
-        // return [
-        //     'username' => $userCredentials['username'],
-        //     'domain_uuid' => $userCredentials['domain_uuid'],
-        // ];
     }
 
     /**
@@ -129,49 +134,49 @@ class UserPasswordService
             'user_email' => $data['user_email'],
         ];
 
-        $user = $this->userService->getByAttributes($attributes)->first();
+        $users = $this->userService->getByAttributes($attributes);
 
-        if (!is_null($user)) {
+        if (!is_null($users)) {
 
-            if ($user->user_enabled != 'true') {
-                throw new AccessDeniedHttpException(__('User disabled'));
-            }
+            // if ($user->user_enabled !== 'true') {
+            //     throw new AccessDeniedHttpException(__('User disabled'));
+            // }
 
-            return $user;
+            return $users;
         }
 
         throw new UnauthorizedHttpException('Basic', __('User doesn\'t exists'));
     }
 
-    /**
-     * Method to get user by email (user_email attribute).
-     *
-     * @param $email User email
-     * @return null|\Gruz\FPBX\Models\User
-     */
-    public function getUserByEmail($email)
+    public function userSetPassword($data)
     {
-        // Search by v_user table in user_email field
-        $user = $this->userRepository
-            ->getWhere('user_email', $email)
-            ->first();
+        $resetPasswordModel = ModelsPasswordReset::where([
+            'username' => $data['username'],
+            'token' => $data['code'],
+            'domain_name' => $data['domain_name'],
+        ])->first();
 
-        return $user;
-    }
+        if (!$resetPasswordModel) {
+            throw new  UnprocessableEntityHttpException(__('Password reset request invalid'));
+        }
 
-    public function userSetPassword(User $user, $password)
-    {
-        $data = [
-            'domain_uuid' => $user->getAttribute('domain_uuid'),
-            'user_email' => $user->user_email,
-        ];
+        $countTime = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
+        $expireDate = $resetPasswordModel->created_at->addMinutes($countTime);
 
-        $status = $this->passwordBroker->sendResetLink($data, function ($user, $token) {
-            $this->ttoken = $token;
-        });
+        $now = \Carbon\Carbon::now();
 
-        $status = $this->resetPassword($user->domain_name, $user->username, $password, $this->ttoken);
+        if ($now > $expireDate) {
+            throw new  UnprocessableEntityHttpException(__('Password reset request expired'));
+        }
 
-        return $status;
+        $userModel = $this->userService->getUserByUsernameAndDomain($data['username'], $data['domain_name']);
+
+        $userModel->user_enabled = 'true';
+        $userModel->password = Hash::make($data['password']);
+        $userModel->save();
+
+        $resetPasswordModel->delete();
+
+        return ['message' => __('Password updated')];
     }
 }

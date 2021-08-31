@@ -13,6 +13,7 @@ use Gruz\FPBX\Models\ExtensionUser;
 use Gruz\FPBX\Models\GroupPermission;
 use Laravel\Sanctum\HasApiTokens;
 use Gruz\FPBX\Notifications\ResetPassword;
+use Gruz\FPBX\Notifications\ResetPasswordNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
@@ -417,7 +418,8 @@ class User extends AbstractModel implements
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPassword($token, $this));
+        // $this->notify(new ResetPassword($token, $this));
+        $this->notify(new ResetPasswordNotification($token, $this));
     }
 
     /**
