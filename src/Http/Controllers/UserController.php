@@ -367,7 +367,7 @@ class UserController extends AbstractBrunoController
         path="/user/forgot-password",
         x={"route-$path"="fpbx.user.forgot-password"},
         @OA\RequestBody(
-            description="Request new activation link",
+            description="Request password link",
             required=true,
             @OA\MediaType(
                 mediaType="application/json",
@@ -377,10 +377,10 @@ class UserController extends AbstractBrunoController
         ),
         @OA\Response(
             response=200,
-            description="Activation link sent",
+            description="Password link sent",
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="Activation link sent", summary="", value={"message":"Check your email"}),
+                @OA\Examples(example="Password link sent", summary="", value={"message":"Check your email"}),
             )
         ),
         @OA\Response(
