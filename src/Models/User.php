@@ -12,8 +12,6 @@ use Gruz\FPBX\Models\AbstractModel;
 use Gruz\FPBX\Models\ExtensionUser;
 use Gruz\FPBX\Models\GroupPermission;
 use Laravel\Sanctum\HasApiTokens;
-use Gruz\FPBX\Notifications\ResetPassword;
-use Gruz\FPBX\Notifications\ResetPasswordNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
@@ -413,17 +411,5 @@ class User extends AbstractModel implements
         return $this->forceFill([
             'user_enabled' => 'true',
         ])->save();
-    }
-
-    /**
-     * Send the password reset notification.
-     *
-     * @param  string  $token
-     * @return void
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        // $this->notify(new ResetPassword($token, $this));
-        $this->notify(new ResetPasswordNotification($token, $this));
     }
 }

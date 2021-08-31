@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Lang;
 use Gruz\FPBX\Models\GroupPermission;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -37,6 +38,23 @@ class FPBXAuthServiceProvider extends ServiceProvider
         $this->registerGates();
 
         $this->remakeVeirificationEmail();
+        $this->remakePasswordResetEmail();
+    }
+
+    private function remakePasswordResetEmail() {
+        ResetPassword::toMailUsing(function ($notifiable, $token, $url) {
+            $mailMessage = (new MailMessage)
+                ->subject(Lang::get('Reset Password Notification'))
+                ->line(Lang::get('You are receiving this email because we received a password reset request for your account.'))
+                ->action(Lang::get('Reset Password'), $url)
+                ->line(__('Domain') . ': **' . $notifiable->domain_name . '**')
+                ->line(__('Username') . ': **' . $notifiable->username . '**')
+                ->line(__('Use validation code **:code**', ['code' => $token]))
+                ->line(Lang::get('This password reset code expire in :count minutes.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
+                ->line(Lang::get('If you did not request a password reset, no further action is required.'));
+
+            return $mailMessage;
+        });
     }
 
     private function remakeVeirificationEmail()

@@ -2,7 +2,6 @@
 
 namespace Gruz\FPBX\Services;
 
-use Gruz\FPBX\Models\PasswordReset as ModelsPasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Gruz\FPBX\Services\Fpbx\UserService;
 use Illuminate\Support\Facades\Password;
@@ -10,6 +9,8 @@ use Illuminate\Auth\Events\PasswordReset;
 use Gruz\FPBX\Repositories\UserRepository;
 use Gruz\FPBX\Repositories\DomainRepository;
 use Illuminate\Contracts\Auth\PasswordBroker;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Gruz\FPBX\Models\PasswordReset as ModelsPasswordReset;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -136,7 +137,8 @@ class UserPasswordService
 
         $users = $this->userService->getByAttributes($attributes);
 
-        if (!is_null($users)) {
+        // if (!is_null($users)) {
+        if ($users->count() > 0) {
 
             // if ($user->user_enabled !== 'true') {
             //     throw new AccessDeniedHttpException(__('User disabled'));
@@ -145,15 +147,15 @@ class UserPasswordService
             return $users;
         }
 
-        throw new UnauthorizedHttpException('Basic', __('User doesn\'t exists'));
+        throw new  NotFoundHttpException(__(':entity not found', ['entity' => 'User']));
     }
 
-    public function userSetPassword($data)
-    {
+    public function getPasswordResetRecord($domain_name, $username, $token ) {
+
         $resetPasswordModel = ModelsPasswordReset::where([
-            'username' => $data['username'],
-            'token' => $data['code'],
-            'domain_name' => $data['domain_name'],
+            'username' => $username,
+            'token' => $token,
+            'domain_name' => $domain_name,
         ])->first();
 
         if (!$resetPasswordModel) {
@@ -168,6 +170,13 @@ class UserPasswordService
         if ($now > $expireDate) {
             throw new  UnprocessableEntityHttpException(__('Password reset request expired'));
         }
+
+        return $resetPasswordModel;
+    }
+
+    public function userSetPassword($data)
+    {
+        $resetPasswordModel = $this->getPasswordResetRecord($data['domain_name'],  $data['username'], $data['code']);
 
         $userModel = $this->userService->getUserByUsernameAndDomain($data['username'], $data['domain_name']);
 
