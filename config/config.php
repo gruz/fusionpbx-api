@@ -8,6 +8,13 @@ return [
     ],
 
     /**
+     * Some routes names to be used by default for easier override
+     */
+    'routes' => [
+        'user_activate' => env('FPBX_ROUTES_USER_ACTIVATE', 'fpbx.user.activate'), // 'verification.verify'
+    ],
+
+    /**
      * If set, then any API request demands the token to be passed.
      * This can be useful if you have a web-admin panel which utilizes the API and want to block any world requests to the API
      * except the ones from the web-admin.

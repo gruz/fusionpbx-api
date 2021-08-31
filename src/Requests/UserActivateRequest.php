@@ -29,10 +29,13 @@ class UserActivateRequest extends FormRequest
             'user_enabled' => [
                 'bail',
                 'required',
-                new UserAlreadyEnabledRule($this->user_uuid),
-                new UserSignupHashExpiredRule($this->user_uuid),
             ],
         ];
+
+        if ($this->expectsJson()) {
+            $rules['user_enabled'][] = new UserAlreadyEnabledRule($this->user_uuid);
+            $rules['user_enabled'][] = new UserSignupHashExpiredRule($this->user_uuid);
+        }
 
         return $rules;
     }

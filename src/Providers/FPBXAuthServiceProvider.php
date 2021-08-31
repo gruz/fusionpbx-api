@@ -2,12 +2,15 @@
 
 namespace Gruz\FPBX\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Gruz\FPBX\Models\AbstractModel;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Lang;
 use Gruz\FPBX\Models\GroupPermission;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -36,16 +39,24 @@ class FPBXAuthServiceProvider extends ServiceProvider
         $this->remakeVeirificationEmail();
     }
 
-    private function remakeVeirificationEmail() {
+    private function remakeVeirificationEmail()
+    {
         VerifyEmail::createUrlUsing(function ($notifiable) {
-            $value = $notifiable->getAttribute('user_enabled');
-            $value = explode('::', $value);
-            $verificationCode = $value[0];
+            $time = Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60));
+            $code = mt_rand(100000, 999999);
+            $notifiable->user_enabled = $code . "::" . $time;
+            $notifiable->save();
 
-            return $url = route('fpbx.user.activate', [
-                'user_uuid' => $notifiable->getKey(),
-                'user_enabled' => $verificationCode
-            ]);
+            $routeName = config('fpbx.routes.user_activate');
+
+            return URL::temporarySignedRoute(
+                $routeName,
+                $time,
+                [
+                    'user_uuid' => $notifiable->getKey(),
+                    'user_enabled' => $code
+                ]
+            );
         });
 
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
@@ -58,11 +69,11 @@ class FPBXAuthServiceProvider extends ServiceProvider
                 ->line(__('or press the button below'))
                 ->action(Lang::get('Verify Email Address'), $url)
                 ->line(Lang::get('If you did not create an account, no further action is required.'));
-
         });
     }
 
-    private function registerGates() {
+    private function registerGates()
+    {
         /**
          * @var GroupPermission
          */
@@ -73,35 +84,34 @@ class FPBXAuthServiceProvider extends ServiceProvider
             //     continue;
             // }
             // if ($existingModel = $this->getModelFromPermissionName($permission_name)) {
-                // dump($permission_name, $existingModel);
-                Gate::define($permission_name, function (\Gruz\FPBX\Models\User $user, AbstractModel $model) use ($permission_name) {
+            // dump($permission_name, $existingModel);
+            Gate::define($permission_name, function (\Gruz\FPBX\Models\User $user, AbstractModel $model) use ($permission_name) {
 
-                    static $userPermissionsCollection = [];
+                static $userPermissionsCollection = [];
 
-                    if (empty($userPermissionsCollection[$user->user_uuid])) {
-                        $userPermissionsCollection[$user->user_uuid] = $user->permissions;
-                    }
+                if (empty($userPermissionsCollection[$user->user_uuid])) {
+                    $userPermissionsCollection[$user->user_uuid] = $user->permissions;
+                }
 
-                    $hasUserUUID = in_array('user_uuid', $model->getTableColumnNames(true));
+                $hasUserUUID = in_array('user_uuid', $model->getTableColumnNames(true));
 
-                    if ($hasUserUUID && $user->user_uuid === $model->user_uuid) {
-                        return true;
-                    }
+                if ($hasUserUUID && $user->user_uuid === $model->user_uuid) {
+                    return true;
+                }
 
-                    $count = $userPermissionsCollection[$user->user_uuid]
-                        ->where('permission_name', $permission_name)
-                        ->where('permission_assigned', 'true')
-                        ->count()
-                        ;
+                $count = $userPermissionsCollection[$user->user_uuid]
+                    ->where('permission_name', $permission_name)
+                    ->where('permission_assigned', 'true')
+                    ->count();
 
-                    return $count > 0;
-
-                });
+                return $count > 0;
+            });
             // }
         }
     }
 
-    private function getModelFromPermissionName($permission_name) {
+    private function getModelFromPermissionName($permission_name)
+    {
         static $models = [];
 
         if (empty($models)) {
@@ -120,7 +130,7 @@ class FPBXAuthServiceProvider extends ServiceProvider
 
         $permission_parts = explode('_', $permission_name);
 
-        while(!empty($permission_parts)) {
+        while (!empty($permission_parts)) {
             $tryModelName = implode('_', $permission_parts);
             if (array_key_exists($tryModelName, $models)) {
                 return $models[$tryModelName];
