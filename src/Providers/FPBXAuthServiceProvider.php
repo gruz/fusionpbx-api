@@ -49,7 +49,7 @@ class FPBXAuthServiceProvider extends ServiceProvider
                 ->action(Lang::get('Reset Password'), $url)
                 ->line(__('Domain') . ': **' . $notifiable->domain_name . '**')
                 ->line(__('Username') . ': **' . $notifiable->username . '**')
-                ->line(__('Use validation code **:code**', ['code' => $token]))
+                // ->line(__('Use validation code **:code**', ['code' => $token]))
                 ->line(Lang::get('This password reset code expire in :count minutes.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
                 ->line(Lang::get('If you did not request a password reset, no further action is required.'));
 
