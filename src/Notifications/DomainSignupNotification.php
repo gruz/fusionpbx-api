@@ -42,9 +42,9 @@ class DomainSignupNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $address = $notifiable instanceof \Illuminate\Notifications\AnonymousNotifiable
-            ? $notifiable->routeNotificationFor('mail')
-            : $notifiable->email;
+        // $address = $notifiable instanceof \Illuminate\Notifications\AnonymousNotifiable
+        //     ? $notifiable->routeNotificationFor('mail')
+        //     : $notifiable->email;
 
         $url = route('fpbx.get.domain.activate', [
             'code' => $this->model->code,
