@@ -2,12 +2,14 @@
 
 namespace Gruz\FPBX\Providers;
 
-use Gruz\FPBX\Models\AbstractModel;
-use Gruz\FPBX\Models\User;
 use Illuminate\Support\Str;
+use Gruz\FPBX\Models\AbstractModel;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Lang;
 use Gruz\FPBX\Models\GroupPermission;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class FPBXAuthServiceProvider extends ServiceProvider
@@ -29,7 +31,38 @@ class FPBXAuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        $this->registerGates();
 
+        $this->remakeVeirificationEmail();
+    }
+
+    private function remakeVeirificationEmail() {
+        VerifyEmail::createUrlUsing(function ($notifiable) {
+            $value = $notifiable->getAttribute('user_enabled');
+            $value = explode('::', $value);
+            $verificationCode = $value[0];
+
+            return $url = route('fpbx.user.activate', [
+                'user_uuid' => $notifiable->getKey(),
+                'user_enabled' => $verificationCode
+            ]);
+        });
+
+        VerifyEmail::toMailUsing(function ($notifiable, $url) {
+            $value = $notifiable->getAttribute('user_enabled');
+            $value = explode('::', $value);
+            $verificationCode = $value[0];
+            return (new MailMessage)
+                ->subject(Lang::get('Verify Email Address'))
+                ->line(__('Use validation code **:code**', ['code' => $verificationCode]))
+                ->line(__('or press the button below'))
+                ->action(Lang::get('Verify Email Address'), $url)
+                ->line(Lang::get('If you did not create an account, no further action is required.'));
+
+        });
+    }
+
+    private function registerGates() {
         /**
          * @var GroupPermission
          */
@@ -66,7 +99,6 @@ class FPBXAuthServiceProvider extends ServiceProvider
                 });
             // }
         }
-
     }
 
     private function getModelFromPermissionName($permission_name) {

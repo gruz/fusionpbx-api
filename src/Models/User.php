@@ -426,14 +426,4 @@ class User extends AbstractModel implements
         // $this->notify(new ResetPassword($token, $this));
         $this->notify(new ResetPasswordNotification($token, $this));
     }
-
-    /**
-     * Send the email verification notification.
-     *
-     * @return void
-     */
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new \Gruz\FPBX\Notifications\VerifyEmail);
-    }
 }
