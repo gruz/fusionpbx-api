@@ -5,7 +5,7 @@ namespace Gruz\FPBX\Requests;
 use Gruz\FPBX\Traits\ApiRequestTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetUserRequest extends FormRequest
+class GetUuidRequest extends FormRequest
 {
     use ApiRequestTrait;
 
@@ -17,7 +17,7 @@ class GetUserRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'user_uuid' => [
+            'uuid' => [
                 'required',
                 'uuid',
             ],
@@ -29,7 +29,7 @@ class GetUserRequest extends FormRequest
     public function all($keys = null)
     {
         $data = parent::all($keys);
-        $data['user_uuid'] = $this->route('user_uuid');
+        $data['uuid'] = $this->route('uuid');
 
         return $data;
     }

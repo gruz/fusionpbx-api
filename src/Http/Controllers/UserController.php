@@ -4,7 +4,6 @@ namespace Gruz\FPBX\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Gruz\FPBX\Requests\GetUserRequest;
 use Gruz\FPBX\Requests\UserLoginRequest;
 use Gruz\FPBX\Services\Fpbx\UserService;
 use Gruz\FPBX\Requests\CreateUserRequest;
@@ -86,7 +85,7 @@ class UserController extends AbstractBrunoController
         tags={"User"},
         path="/user/activate/{user_uuid}/{user_enabled}",
         x={"route-$path"="fpbx.user.activate"},
-        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\Parameter(ref="#/components/parameters/uuid"),
         @OA\Parameter(
             name="user_enabled",
             in="path",
@@ -206,6 +205,7 @@ class UserController extends AbstractBrunoController
     @OA\Get(
         tags={"User"},
         path="/users",
+        x={"route-$action"="getAll"},
         security={{"bearer_auth": {}}},
         @OA\Parameter(ref="#/components/parameters/user_includes[]"),
         @OA\Parameter(ref="#/components/parameters/limit"),
@@ -221,64 +221,29 @@ class UserController extends AbstractBrunoController
         ),
     )
      */
-    public function getAll()
-    {
-        $resourceOptions = $this->parseResourceOptions();
-
-        $data = $this->userService->getAll($resourceOptions);
-        $parsedData = $this->parseData($data, $resourceOptions, 'users');
-
-        return $this->response($parsedData);
-    }
 
     /**
      * Get user info by ID
      *
     @OA\Get(
         tags={"User"},
-        path="/user/{user_uuid}",
+        path="/user/{uuid}",
+        x={"route-$action"="getById"},
         security={{"bearer_auth": {}}},
-        @OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @OA\Parameter(ref="#/components/parameters/uuid"),
         @OA\Parameter(ref="#/components/parameters/user_includes[]"),
         @OA\Response(
             response=200,
             description="Get users",
             @OA\MediaType(
                 mediaType="application/json",
-                @OA\Examples(example="/user/{user_uuid}", summary="Get users basic info /user/{user_uuid}", value={"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"15bc0fc2-1652-4e05-aca6-328937099361","add_user":"admin","add_date":"2021-08-23 20:23:52.800667+0000","account_code":null}),
-                @OA\Examples(example="/user/{user_uuid}?includes[]=extensions",
-                    summary="Get users with data /user/{user_uuid}?includes[]=extensions",
+                @OA\Examples(example="/user/{uuid}", summary="", value={"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"15bc0fc2-1652-4e05-aca6-328937099361","add_user":"admin","add_date":"2021-08-23 20:23:52.800667+0000","account_code":null}),
+                @OA\Examples(example="/user/{uuid}?includes[]=extensions", summary="",
                     value={"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","username":"alyson.dietrich2@howe.com","contact_uuid":null,"api_key":null,"user_enabled":"15bc0fc2-1652-4e05-aca6-328937099361","add_user":"admin","add_date":"2021-08-23 20:23:52.800667+0000","account_code":null,"extensions":{{"extension_uuid":"4b5710f0-a2c1-4d5d-8cfa-a7aa63688f94","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","extension":"169","accountcode":"account-8364","effective_caller_id_name":"William Reichel","effective_caller_id_number":"141","outbound_caller_id_name":"Lelia Wolff","outbound_caller_id_number":"120","emergency_caller_id_name":"Dr. Darrel Tillman","emergency_caller_id_number":"180","directory_first_name":"Mr. Carmine Becker","directory_last_name":"Pollich","directory_visible":"false","directory_exten_visible":"true","max_registrations":null,"limit_max":"4","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz14.com","toll_allow":"international","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-tls-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"lwitting@yahoo.com","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"false","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"false","pivot":{"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","extension_uuid":"4b5710f0-a2c1-4d5d-8cfa-a7aa63688f94"}},{"extension_uuid":"2223ef11-d69c-4388-8e80-1a632db39ebe","domain_uuid":"f53332bd-a81f-476f-ab22-e3826a07599f","extension":"156","accountcode":"account-4644","effective_caller_id_name":"Mr. Albin Shields","effective_caller_id_number":"149","outbound_caller_id_name":"Oda Muller I","outbound_caller_id_number":"112","emergency_caller_id_name":"Felipa Kilback","emergency_caller_id_number":"108","directory_first_name":"Lonie Olson","directory_last_name":"Yost","directory_visible":"true","directory_exten_visible":"true","max_registrations":null,"limit_max":"5","limit_destination":"error\/user_busy","missed_call_app":"string","missed_call_data":"string","user_context":"mertz14.com","toll_allow":"domestic","call_timeout":"30","call_group":"billing","call_screen_enabled":"true","user_record":"all","hold_music":null,"auth_acl":"string","cidr":"string","sip_force_contact":"NDLB-connectile-dysfunction","nibble_account":null,"sip_force_expires":null,"mwi_account":"xondricka@hammes.org","sip_bypass_media":"bypass-media","unique_id":null,"dial_string":"\/location\/of\/the\/endpoint","dial_user":null,"dial_domain":null,"do_not_disturb":null,"forward_all_destination":null,"forward_all_enabled":null,"forward_busy_destination":null,"forward_busy_enabled":null,"forward_no_answer_destination":null,"forward_no_answer_enabled":null,"forward_user_not_registered_destination":null,"forward_user_not_registered_enabled":null,"follow_me_uuid":null,"follow_me_enabled":"string","follow_me_destinations":"string","enabled":"false","description":"Extension created while testing API","absolute_codec_string":"absolute\/codec\/string","force_ping":"true","pivot":{"user_uuid":"78fbfbed-9cfd-4c10-9c8e-912a3e06ec89","extension_uuid":"2223ef11-d69c-4388-8e80-1a632db39ebe"}}}}),
-            )
-        ),
-        @OA\Response(
-            response=422,
-            description="Bad UUID",
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Examples(example="Bad UUID", summary="Bad UUID", value={"errors":{{"status":"422","code":422,"title":"Validation error","detail":"The user uuid must be a valid UUID."}}}),
-            )
-        ),
-        @OA\Response(
-            response=404,
-            description="No user found",
-            @OA\MediaType(
-                mediaType="application/json",
-                @OA\Examples(example="No user found", summary="No user found", value={"status":"error","code":404,"message":"User not found"}),
             )
         ),
     )
      */
-    public function getById(string $user_uuid, GetUserRequest $request)
-    {
-        $resourceOptions = $this->parseResourceOptions();
-
-        $data = $this->userService->getById($user_uuid, $resourceOptions);
-
-        $parsedData = $this->parseData($data, $resourceOptions, null);
-
-        return $this->response($parsedData);
-    }
 
     /**
      *
@@ -544,7 +509,7 @@ class UserController extends AbstractBrunoController
     @ OA\Put(
         tags={"User"},
         path="/user/{user_uuid}",
-        @ OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @ OA\Parameter(ref="#/components/parameters/uuid"),
         @ OA\RequestBody(
             description="User information",
             required=true,
@@ -584,7 +549,7 @@ class UserController extends AbstractBrunoController
     @ OA\Delete(
         tags={"User"},
         path="/user/{user_uuid}",
-        @ OA\Parameter(ref="#/components/parameters/user_uuid"),
+        @ OA\Parameter(ref="#/components/parameters/uuid"),
         @ OA\Response(response=200, description="`TODO Stub` Success ..."),
         @ OA\Response(response=400, description="`TODO Stub` Could not ..."),
     )

@@ -32,6 +32,7 @@ class SchemaQueryParameter
     // const MODEL_ADD_INCLUDES = 'model-add-includes';
     const ROUTE_PATH = 'route-$path';
     const ROUTE_MIDDLEWARES = 'route-$middlewares';
+    const ROUTE_ACTION = 'route-$action';
     private $api_controllers_prefix;
     private $examplesPath;
 
@@ -80,6 +81,11 @@ class SchemaQueryParameter
                     }
                 }
             }
+
+            if (strpos($path->path, '{uuid}') !== false) {
+                $this->attachBadUuidResponse($annotation);
+                $this->attachEntityNotFoundResponse($annotation);
+            }
         }
     }
 
@@ -104,6 +110,30 @@ class SchemaQueryParameter
         $resp = new Response([]);
         $resp->response = '403';
         $resp->ref = '#/components/responses/UnverifiedResponse';
+        $annotation->responses[] = $resp;
+    }
+
+    protected function attachBadUuidResponse(AbstractAnnotation $annotation)
+    {
+        if (collect($annotation->responses)->where('response', 422)->count()) {
+            return;
+        }
+
+        $resp = new Response([]);
+        $resp->response = '422';
+        $resp->ref = '#/components/responses/BadUuidResponse';
+        $annotation->responses[] = $resp;
+    }
+
+    protected function attachEntityNotFoundResponse(AbstractAnnotation $annotation)
+    {
+        if (collect($annotation->responses)->where('response', 404)->count()) {
+            return;
+        }
+
+        $resp = new Response([]);
+        $resp->response = '404';
+        $resp->ref = '#/components/responses/EntityNotFoundResponse';
         $annotation->responses[] = $resp;
     }
 
@@ -275,10 +305,13 @@ class SchemaQueryParameter
             $action = $path->$method->_context->method;
 
             if (empty($action)) {
+                $action = Arr::get($path->$method->x, self::ROUTE_ACTION);
 
-                $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
-                // $path->description = 'NOT IMPLEMENTED YET';
-                continue;
+                if (empty($action)) {
+                    $path->{strtolower($method)}->summary = '[ TODO: NOT IMPLEMENTED YET, but described in OpenAnnotation ]' . $path->{strtolower($method)}->summary;
+                    // $path->description = 'NOT IMPLEMENTED YET';
+                    continue;
+                }
             }
             $controller = $this->getClassName($path->$method);
             $prefix = $this->getPathPrefix($path->$method);

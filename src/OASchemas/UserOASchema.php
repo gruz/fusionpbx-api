@@ -4,18 +4,6 @@ namespace Gruz\FPBX\OASchemas;
 
 /**
     @OA\Parameter(
-        name="user_uuid",
-        in="path",
-        description="User UUID",
-        required=true,
-        @OA\Schema(
-            type="string",
-            format="uuid",
-            example="541f8e60-5ae0-11eb-bb80-b31e63f668c8",
-        )
-    ),
-
-    @OA\Parameter(
         name="user_includes[]",
         description="Relations to be attached",
         allowReserved=true,
@@ -27,7 +15,17 @@ namespace Gruz\FPBX\OASchemas;
         schema="user_includes",
         type="array",
         @OA\Items(type="string",
-            enum = { "groups", "status", "domain", "permissions", "emails", "extensions", "extension.voicemail", "pushtokens" },
+            enum = {
+                "contacts",
+                "groups",
+                "status",
+                "domain",
+                "permissions",
+                "emails",
+                "extensions",
+                "extensions.voicemail",
+                "pushtokens"
+            },
         )
     ),
 
@@ -64,9 +62,7 @@ namespace Gruz\FPBX\OASchemas;
                 type="array",
                 @OA\Items(
                     allOf={
-                        @OA\Schema(
-                            ref="#/components/schemas/Extension",
-                        ),
+                        @OA\Schema(ref="#/components/schemas/Extension"),
                         @OA\Schema(ref="#/components/schemas/Voicemail"),
                     },
                     required={"extension", "password", "voicemail_password"}
