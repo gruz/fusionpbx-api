@@ -12,6 +12,7 @@ class Version
 
     public static function getPackageVersion()
     {
+        return 'none';
         $getGitTag = self::getGitTag();
 
         if (!empty($getGitTag)) {
