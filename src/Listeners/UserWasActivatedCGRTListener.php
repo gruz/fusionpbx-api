@@ -49,6 +49,10 @@ class UserWasActivatedCGRTListener
 
             $cGRTService->addSIPAccount($user, $client_added);
             $cGRTService->assignTariffPlan($client_added->tenant, $client_added->account_code);
+
+            if (config('fpbx.cgrt.welcome_bonus') > 0) {
+                $user->addCGRTBalance(config('fpbx.cgrt.welcome_bonus'), 'User welcome bonus');
+            }
         }
 
     }

@@ -218,5 +218,6 @@ return [
         'base_uri' => env('FPBX_CGRT_BASE_URI'),
         'username' => env('FPBX_CGRT_USERNAME'),
         'password' => env('FPBX_CGRT_PASSWORD'),
+        'welcome_bonus' => env('FPBX_CGRT_WELCOME_BONUS', 0),
     ],
 ];
