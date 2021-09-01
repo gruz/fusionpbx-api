@@ -18,9 +18,15 @@ class Version
             return $getGitTag;
         }
 
-        $packages = json_decode(file_get_contents(__DIR__ . '/../../../../composer/installed.json'));
-        $packages = collect($packages->packages);
+        $file = __DIR__ . '/../../../../composer/installed.json';
+        if (file_exists($file)) {
+            $packages = json_decode($file);
+            $packages = collect($packages->packages);
+            $version = $packages->where('name', 'gruz/fusionpbx-api')->first()->version;
+        } else {
+            $version = 'unknown version';
+        }
 
-        return $packages->where('name', 'gruz/fusionpbx-api')->first()->version;
+        return $version;
     }
 }
