@@ -182,7 +182,8 @@ abstract class AbstractRepository extends BaseRepository
     {
         $query = parent::createBaseBuilder($options);
 
-        if (Auth::user()) {
+        $ignoreCurrentDomain = Arr::get($options, 'ignoreCurrentDomain', false);
+        if (!$ignoreCurrentDomain && Auth::user()) {
             $model = $this->getModel();
             if (in_array('domain_uuid', $model->getTableColumnNames(true))) {
                 $query->where('domain_uuid', Auth::user()->domain_uuid);
