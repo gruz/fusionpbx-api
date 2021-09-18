@@ -69,7 +69,7 @@ class UserPasswordService
             $model->email = $user->user_email;
             $model->domain_name = $user->domain_name;
             $model->username = $user->username;
-            $model->token = mt_rand(100000,999999);
+            $model->token = mt_rand(100000, 999999);
 
             $model->save();
 
@@ -150,7 +150,8 @@ class UserPasswordService
         throw new  NotFoundHttpException(__(':entity not found', ['entity' => 'User']));
     }
 
-    public function getPasswordResetRecord($domain_name, $username, $token ) {
+    public function getPasswordResetRecord($domain_name, $username, $token)
+    {
 
         $resetPasswordModel = ModelsPasswordReset::where([
             'username' => $username,
@@ -162,7 +163,7 @@ class UserPasswordService
             throw new  UnprocessableEntityHttpException(__('Password reset request invalid'));
         }
 
-        $countTime = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
+        $countTime = config('auth.passwords.' . config('auth.defaults.passwords') . '.expire');
         $expireDate = $resetPasswordModel->created_at->addMinutes($countTime);
 
         $now = \Carbon\Carbon::now();
@@ -184,7 +185,11 @@ class UserPasswordService
         $userModel->password = Hash::make($data['password']);
         $userModel->save();
 
-        $resetPasswordModel->delete();
+        $resetPasswordModel->where([
+            // ['email', $user->email],
+            ['domain_name', $data['domain_name']],
+            ['username', $data['username']],
+        ])->delete();
 
         return ['message' => __('Password updated')];
     }
