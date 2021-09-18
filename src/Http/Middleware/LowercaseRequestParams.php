@@ -20,6 +20,11 @@ class LowercaseRequestParams extends TransformsRequest
             'user_email',
             'username',
         ];
+
+        if ($key === 'username' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            return $value;
+        }
+
         return in_array($key, $field_names) ? \strtolower($value) : $value;
     }
 }
