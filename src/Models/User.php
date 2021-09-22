@@ -159,61 +159,7 @@ class User extends AbstractModel implements
      */
     public function permissions(): HasManyThrough
     {
-        // Do not delete the comments below
-
-        // This code works as expected only because of an override Group_user->getKeyName method.
-        // Otherwise Laravel builds a wrong query
         return $this->hasManyThrough(GroupPermission::class, UserGroup::class, 'user_uuid', 'group_name', 'user_uuid');
-
-        // Other Gruz tries
-
-        // A good link to examine https://gist.github.com/alexweissman/cae6303d2476d18b4a10eeef38919fcf
-
-        // Returning a direct query result fits only partially, as a Relation has more methods.
-        // So because we want to have a Relation, we refused to use the code below
-        /*
-        return $permissions = \DB::table('v_group_permissions')
-                    ->select('v_group_permissions.permission_name')
-                    ->join('v_group_users', 'v_group_users.group_name', '=', 'v_group_permissions.group_name')
-                    ->where('v_group_users.user_uuid', '=', $this->user_uuid);
-                    //->get();
-        */
-
-        /*
-         * It was a try to use a Custom relation package relations
-         * https://github.com/johnnyfreeman/laravel-custom-relation
-         * At least `2017-06-10 03:17:49` it demanded a fork
-         * https://github.com/36864/laravel-custom-relation
-         *
-         * So composer.json should include for the code below to work
-          "require": {
-              "johnnyfreeman/laravel-custom-relation": "dev-master"
-          },
-          "repositories": [
-              {
-                  "type": "vcs",
-                  "url":  "git@github.com:36864/laravel-custom-relation.git"
-              }
-          ],
-         *
-         * But the code didn't work, as returned null when trying to use ->with(['permissions'])
-        return $this->custom(
-            GroupPermission::class,
-
-            // add constraints
-            function ($relation) {
-                $relation->getQuery()
-                    //->select('v_group_permissions.permission_name')
-                    ->join('v_group_users', 'v_group_users.group_name', '=', 'v_group_permissions.group_name')
-                    ->where('v_group_users.user_uuid', '=', $this->user_uuid);
-            },
-
-            // add eager constraints
-            function ($relation, $models) {
-                //$relation->getQuery()->whereIn('role_user.user_id', $relation->getKeys($models));
-            }
-        );
-         * */
     }
 
     public function getDomainAdmins()
@@ -222,9 +168,7 @@ class User extends AbstractModel implements
         $admins = User::where([
             'domain_uuid' => $this->domain_uuid,
             'user_enabled' => 'true'
-            //])->with('permissions')->where('permission_name', 'in', ['user_add', 'user_edit']);
         ])
-            // ->where('user_enabled', '!=', 'true')
             ->whereHas('permissions', function ($query) {
 
                 $query->whereIn('permission_name', ['user_add', 'user_edit']);

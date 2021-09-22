@@ -2,6 +2,8 @@
 
 namespace Gruz\FPBX\Services\Fpbx;
 
+use Gruz\FPBX\Models\Domain;
+
 class DomainService extends AbstractService
 {
     public function getDomainsArray($use_uuid_as_key = false)
@@ -41,7 +43,7 @@ class DomainService extends AbstractService
         return parent::getByAttributes($attributes, $options);
     }
 
-    public function getDomainByName($domain_name, $status = null)
+    public function getDomainByName($domain_name, $status = null) : Domain
     {
         return $this->getRepository()->getDomainByName($domain_name, $status);
     }

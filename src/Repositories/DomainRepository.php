@@ -2,11 +2,12 @@
 
 namespace Gruz\FPBX\Repositories;
 
+use Gruz\FPBX\Models\Domain;
 use Gruz\FPBX\Repositories\AbstractRepository;
 
 class DomainRepository extends AbstractRepository
 {
-    public function getDomainByName($domain_name, $status = null)
+    public function getDomainByName($domain_name, $status = null) : Domain
     {
         /**
          * @var \Gruz\FPBX\Models\Domain
