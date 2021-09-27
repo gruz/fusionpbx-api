@@ -25,6 +25,7 @@ abstract class AbstractModel extends BaseModel
     public static $staticMakeHidden;
     public static $staticSetHidden;
     public static $staticSetVisible;
+    public static $staticMakeFillable;
     // public static $staticVisible;
 
     private static function staticUpdateFieldsAttributes(&$attrName, $fields, $replace = false) {
@@ -34,6 +35,21 @@ abstract class AbstractModel extends BaseModel
             $fields = array_merge($fieldsOld, $fields);
         }
         $attrName[$class] = $fields;
+    }
+
+    /**
+     * The function is intended to be called statically to instruct model to overide fillabled fields
+     *
+     * E.g. before creating a user
+     * ```
+     * \Gruz\FPBX\Models\Extension::staticMakeFillable(['user_uuid']);
+     * ```
+     * @param array $fields
+     * @return void
+     */
+    public static function staticMakeFillable(array $fields)
+    {
+        self::staticUpdateFieldsAttributes(static::$staticMakeFillable, $fields);
     }
 
     /**
@@ -103,6 +119,12 @@ abstract class AbstractModel extends BaseModel
     public function __construct(array $attributes = [])
     {
         $class = get_called_class();
+        if (isset(static::$staticMakeFillable)) {
+            $fields = Arr::get(static::$staticMakeFillable, $class, []);
+            if (!empty($fields)) {
+                $this->fillable(array_merge($this->getFillable(), $fields));
+            }
+        }
         if (isset(static::$staticMakeVisible)) {
             $fields = Arr::get(static::$staticMakeVisible, $class, []);
             if (!empty($fields)) {
