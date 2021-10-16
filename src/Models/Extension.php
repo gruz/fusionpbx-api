@@ -127,4 +127,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
     {
         return $this->hasOne(Voicemail::class, ['voicemail_id', 'domain_uuid'], ['extension', 'domain_uuid']);
     }
+
+    public function domain() : HasOne
+    {
+        return $this->hasOne(Domain::class, 'domain_uuid', 'domain_uuid');
+    }
 }

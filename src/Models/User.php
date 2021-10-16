@@ -189,7 +189,7 @@ class User extends AbstractModel implements
 
     public function extensions(): BelongsToMany
     {
-        return $this->belongsToMany(Extension::class, ExtensionUser::class, 'user_uuid', 'extension_uuid');
+        return $this->belongsToMany(app(Extension::class), ExtensionUser::class, 'user_uuid', 'extension_uuid');
     }
 
     public function contacts(): BelongsToMany
