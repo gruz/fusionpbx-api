@@ -38,7 +38,7 @@ class ValidationRulesService
         return $password_rules;
     }
 
-    public function getExtensionRules($domain_name = null)
+    public function getExtensionRules($domain_name = null, $column = null)
     {
         $rule =
             [
@@ -50,7 +50,7 @@ class ValidationRulesService
             ];
 
         if (!empty($domain_name)) {
-            $rule[] = Rule::unique(Extension::class)->where(function ($query) use ($domain_name) {
+            $rule[] = Rule::unique(Extension::class, $column)->where(function ($query) use ($domain_name) {
                 $domain = Domain::where('domain_name', $domain_name)->first();
                 if (empty($domain)) {
                     return false;
