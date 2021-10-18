@@ -347,13 +347,42 @@ class CGRTService
 
     public function getClient($account_code)
     {
+        return $this->request('users/get_client_account', [
+            "client_account_code" => $account_code,
+        ]);
+
+    }
+
+    public function getOrders($account_code)
+    {
+        return $this->request('users/order_list', [
+            "client_account_code" => $account_code,
+        ]);
+    }
+
+    public function getBalanceHistory($account_code)
+    {
+        return $this->request('users/get_balance_history', [
+            "client_account_code" => $account_code,
+        ]);
+    }
+
+    public function getInvoices($account_code, $period_start = null, $period_end = null)
+    {
         $data = [
             "client_account_code" => $account_code,
+            "period_start" => empty($period_start) ? '2020-01-01' : $period_start,
+            "period_end" => empty($period_end) ? now()->addDay(1)->format('Y-m-d') : $period_end,
         ];
 
-        $responseJson = $this->request('users/get_client_account', $data);
+        return $this->request('users/get_client_invoices', $data);
+    }
 
-        return $responseJson;
+    public function getClientDid($account_code, $period_start = null, $period_end = null)
+    {
+        return $this->request('users/get_client_did', [
+            "client_account_code" => $account_code,
+        ]);
     }
 
     public function request($endpoint, $data = null, $method = 'post')
@@ -375,8 +404,12 @@ class CGRTService
                     break;
             }
         } catch (\Throwable $th) {
-            event(new CGRTFailedEvent($request, $th->getMessage()), \Auth::user());
-            return false;
+            if ($endpoint === 'users/get_client_invoices' && $th->getCode() === 412) {
+                $responseJson = json_decode($th->getResponse()->getBody()->getContents())->results;
+            } else {
+                event(new CGRTFailedEvent($request, $th->getMessage()), \Auth::user());
+                return false;
+            }
         }
 
         return $responseJson;

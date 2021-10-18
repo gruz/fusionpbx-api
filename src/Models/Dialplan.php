@@ -11,7 +11,7 @@ class Dialplan extends AbstractModel
 
     public function details()
     {
-        return $this->hasMany(DialplanDetails::class, 'dialplan_uuid', 'dialplan_uuid');
+        return $this->hasMany(DialplanDetail::class, 'dialplan_uuid', 'dialplan_uuid');
     }
 
 }
