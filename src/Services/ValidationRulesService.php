@@ -38,7 +38,7 @@ class ValidationRulesService
         return $password_rules;
     }
 
-    public function getExtensionRules($domain_name = null, $column = null)
+    public function getExtensionRules($domain_name = null, $column = 'extension')
     {
         $rule =
             [
