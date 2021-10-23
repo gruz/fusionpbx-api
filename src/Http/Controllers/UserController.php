@@ -2,6 +2,7 @@
 
 namespace Gruz\FPBX\Http\Controllers;
 
+use Gruz\FPBX\Models\PasswordReset;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Gruz\FPBX\Requests\GetUuidRequest;
@@ -15,6 +16,7 @@ use Gruz\FPBX\Requests\UserForgotPasswordRequestApi;
 use Gruz\FPBX\Requests\UserSetForgottenPasswordRequest;
 use Gruz\FPBX\Requests\UserResendActivationCodeRequestApi;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * @OA\Schema()
@@ -406,21 +408,25 @@ class UserController extends AbstractBrunoController
      *
     @OA\Put(
         tags={"User"},
-        path="/user/new-password",
+        path="/user/new-password/{token}",
         x={"route-$path"="fpbx.user.new-password"},
+        @OA\Parameter(
+            name="code",
+            in="path",
+            description="Code sent in the password forgot message",
+            required=true,
+            @OA\Schema(
+                type="string",
+                format="integer",
+                example="659866",
+            )
+        ),
         @OA\RequestBody(
-            description="Request new activation link",
+            description="Set new password via code sent in the password forgot email",
             required=true,
             @OA\MediaType(
                 mediaType="application/json",
                 @OA\Schema(allOf={
-                    @OA\Schema(ref="#/components/schemas/UsernameAndDomainRequest"),
-                    @OA\Schema(@OA\Property(
-                        property="code",
-                        type="integer",
-                        description="Validation code from email",
-                        example="343556"
-                    )),
                     @OA\Schema(@OA\Property(
                         property="password",
                         type="string",
@@ -429,8 +435,6 @@ class UserController extends AbstractBrunoController
                     )),
                 }),
                 @OA\Examples(example="Set new password", summary="", value={
-                    "username":"alyson.dietrich@howe.com",
-                    "domain_name":"mertz26.com",
                     "code" : 373929,
                     "password" : ".Apantera1"
                 }),
@@ -456,11 +460,29 @@ class UserController extends AbstractBrunoController
         ),
     )
      */
-    public function newPassword(UserSetForgottenPasswordRequest $request, UserPasswordService $userPasswordService)
-    {
-        $data = $request->only('domain_name', 'username', 'code', 'password');
 
-        return $this->response($userPasswordService->userSetPassword($data));
+    public function newPassword(PasswordReset $token, UserSetForgottenPasswordRequest $request, UserPasswordService $userPasswordService)
+    {
+        $countTime = config('auth.passwords.' . config('auth.defaults.passwords') . '.expire');
+        $expireDate = $token->created_at->addMinutes($countTime);
+
+        $now = \Carbon\Carbon::now();
+
+        if ($now > $expireDate) {
+            throw new  UnprocessableEntityHttpException(__('Password reset request expired'));
+        }
+
+        $data = [
+            'domain_name' => $token->domain_name,
+            'username' => $token->username,
+            'password' => $request->get('password'),
+        ];
+
+        $response = $userPasswordService->userSetPassword($data);
+
+        $token->delete();
+
+        return $this->response($response);
     }
 
 

@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Gruz\FPBX\Repositories\UserRepository;
 use Gruz\FPBX\Repositories\DomainRepository;
-use Illuminate\Contracts\Auth\PasswordBroker;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Gruz\FPBX\Models\PasswordReset as ModelsPasswordReset;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -25,13 +23,11 @@ class UserPasswordService
     public function __construct(
         UserRepository $userRepository,
         DomainRepository $domainRepository,
-        UserService $userService,
-        PasswordBroker $passwordBroker
+        UserService $userService
     ) {
         $this->userRepository = $userRepository;
         $this->domainRepository = $domainRepository;
         $this->userService = $userService;
-        $this->passwordBroker = $passwordBroker;
     }
 
     /**
@@ -150,46 +146,17 @@ class UserPasswordService
         throw new  NotFoundHttpException(__(':entity not found', ['entity' => 'User']));
     }
 
-    public function getPasswordResetRecord($domain_name, $username, $token)
-    {
-
-        $resetPasswordModel = ModelsPasswordReset::where([
-            'username' => $username,
-            'token' => $token,
-            'domain_name' => $domain_name,
-        ])->first();
-
-        if (!$resetPasswordModel) {
-            throw new  UnprocessableEntityHttpException(__('Password reset request invalid'));
-        }
-
-        $countTime = config('auth.passwords.' . config('auth.defaults.passwords') . '.expire');
-        $expireDate = $resetPasswordModel->created_at->addMinutes($countTime);
-
-        $now = \Carbon\Carbon::now();
-
-        if ($now > $expireDate) {
-            throw new  UnprocessableEntityHttpException(__('Password reset request expired'));
-        }
-
-        return $resetPasswordModel;
-    }
-
     public function userSetPassword($data)
     {
-        $resetPasswordModel = $this->getPasswordResetRecord($data['domain_name'],  $data['username'], $data['code']);
-
         $userModel = $this->userService->getUserByUsernameAndDomain($data['username'], $data['domain_name']);
+
+        if (!$userModel) {
+            throw new  UnprocessableEntityHttpException(__('Password reset request invalid'));
+        }
 
         $userModel->user_enabled = 'true';
         $userModel->password = Hash::make($data['password']);
         $userModel->save();
-
-        $resetPasswordModel->where([
-            // ['email', $user->email],
-            ['domain_name', $data['domain_name']],
-            ['username', $data['username']],
-        ])->delete();
 
         return ['message' => __('Password updated')];
     }
