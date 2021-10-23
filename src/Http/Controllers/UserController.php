@@ -463,14 +463,7 @@ class UserController extends AbstractBrunoController
 
     public function newPassword(PasswordReset $token, UserSetForgottenPasswordRequest $request, UserPasswordService $userPasswordService)
     {
-        $countTime = config('auth.passwords.' . config('auth.defaults.passwords') . '.expire');
-        $expireDate = $token->created_at->addMinutes($countTime);
-
-        $now = \Carbon\Carbon::now();
-
-        if ($now > $expireDate) {
-            throw new  UnprocessableEntityHttpException(__('Password reset request expired'));
-        }
+        $token->checkExpired();
 
         $data = [
             'domain_name' => $token->domain_name,
