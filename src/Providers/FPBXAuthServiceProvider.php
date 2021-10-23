@@ -42,19 +42,33 @@ class FPBXAuthServiceProvider extends ServiceProvider
     }
 
     private function remakePasswordResetEmail() {
-        ResetPassword::toMailUsing(function ($notifiable, $token, $url) {
-            $mailMessage = (new MailMessage)
-                ->subject(Lang::get('Reset Password Notification'))
-                ->line(Lang::get('You are receiving this email because we received a password reset request for your account.'))
-                ->action(Lang::get('Reset Password'), $url)
-                ->line(__('Domain') . ': **' . $notifiable->domain_name . '**')
-                ->line(__('Username') . ': **' . $notifiable->username . '**')
-                // ->line(__('Use validation code **:code**', ['code' => $token]))
-                ->line(Lang::get('This password reset code expire in :count minutes.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
-                ->line(Lang::get('If you did not request a password reset, no further action is required.'));
 
-            return $mailMessage;
-        });
+        /**
+         * @var User $user
+         */
+        // ResetPassword::createUrlUsing(function ($user, string $token) {
+        //     return url(route('password.reset', [
+        //             'token' => $token,
+        //             'email' => $user->getEmailForPasswordReset(),
+        //             // 'domain_name' => $user->getDomainNameForPasswordReset()
+        //             'domain_name' => $user->domain->getAttribute('domain_name'),
+        //         ], false));
+        // });
+
+        // ResetPassword::toMailUsing(function ($notifiable, $url) {
+        //     dd($url);
+        //     $mailMessage = (new MailMessage)
+        //         ->subject(Lang::get('Reset Password Notification'))
+        //         ->line(Lang::get('You are receiving this email because we received a password reset request for your account.'))
+        //         ->action(Lang::get('Reset Password'), $url)
+        //         ->line(__('Domain') . ': **' . $notifiable->domain_name . '**')
+        //         ->line(__('Username') . ': **' . $notifiable->username . '**')
+        //         // ->line(__('Use validation code **:code**', ['code' => $token]))
+        //         ->line(Lang::get('This password reset code expire in :count minutes.', ['count' => config('auth.passwords.'.config('auth.defaults.passwords').'.expire')]))
+        //         ->line(Lang::get('If you did not request a password reset, no further action is required.'));
+
+        //     return $mailMessage;
+        // });
     }
 
     private function remakeVeirificationEmail()

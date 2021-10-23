@@ -24,7 +24,6 @@
                 "Gruz\\FPBX\\Providers\\FPBXAppServiceProvider",
                 "Gruz\\FPBX\\Providers\\FPBXEventServiceProvider",
                 "Gruz\\FPBX\\Providers\\FPBXHelperServiceProvider",
-                "Gruz\\FPBX\\Providers\\FPBXPasswordResetServiceProvider",
                 "Gruz\\FPBX\\Providers\\FPBXRouteServiceProvider"
             ]
         }
