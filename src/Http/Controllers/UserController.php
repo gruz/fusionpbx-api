@@ -435,7 +435,6 @@ class UserController extends AbstractBrunoController
                     )),
                 }),
                 @OA\Examples(example="Set new password", summary="", value={
-                    "code" : 373929,
                     "password" : ".Apantera1"
                 }),
             )
