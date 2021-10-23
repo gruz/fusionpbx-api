@@ -10,6 +10,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as LaravelExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -47,6 +48,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
+        if ($e instanceof ModelNotFoundException && $e->getModel() === \Gruz\FPBX\Models\PasswordReset::class) {
+            $e = new NotFoundHttpException(__('Password reset link is invalid'));
+        }
+
         $useNativeHandler = true;
         while (true) {
             $route = Route::getCurrentRoute();
