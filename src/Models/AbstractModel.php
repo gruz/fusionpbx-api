@@ -6,7 +6,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Index;
-use Gruz\FPBX\Traits\UuidsTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +16,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 
 abstract class AbstractModel extends BaseModel
 {
-    use UuidsTrait;
     use \Awobaz\Compoships\Compoships;
 
     // public static $staticAppends;
@@ -413,6 +411,10 @@ abstract class AbstractModel extends BaseModel
                 }
             }
         });
+        static::creating(function ($model) {
+            $model->{$model->getKeyName()} = Str::uuid()->toString();
+        });
+
     }
 
     protected static function boot()

@@ -154,7 +154,9 @@ class UserService extends AbstractService
             $groupName = $isAdmin
                 ? config('fpbx.default.user.group.admin')
                 : config('fpbx.default.user.group.public');
-            $relatedModel = Group::where('group_name', $groupName)->first();
+
+            $relatedModel = Group::withoutGlobalScope('tenant')->where('group_name', $groupName)->first();
+
             $this->setRelation($userModel, $relatedModel, ['group_name' => $groupName]);
 
             $extensionsData = Arr::get($data, 'extensions', []);
