@@ -115,27 +115,35 @@ class FPBXAuthServiceProvider extends ServiceProvider
         /**
          * @var GroupPermission
          */
+
         $model = app(GroupPermission::class);
         $permissions = $model->select('permission_name')->groupBy('permission_name')->orderBy('permission_name')->get()->pluck('permission_name')->toArray();
+
         foreach ($permissions as $permission_name) {
             // if (strpos($permission_name,'user') !== 0) {
             //     continue;
             // }
             // if ($existingModel = $this->getModelFromPermissionName($permission_name)) {
             // dump($permission_name, $existingModel);
+            
             Gate::define($permission_name, function (\Gruz\FPBX\Models\User $user, AbstractModel $model) use ($permission_name) {
+                // if ('user_edit' === $permission_name) {
+                //     $a = 1;
+                //     // $user->load('permissions');
+                //     // dd($user->toArray());
+                // }
 
                 static $userPermissionsCollection = [];
 
                 if (empty($userPermissionsCollection[$user->user_uuid])) {
-                    $userPermissionsCollection[$user->user_uuid] = $user->permissions;
+                    $userPermissionsCollection[$user->user_uuid] = $user->permissions()->get();
                 }
 
                 $hasUserUUID = in_array('user_uuid', $model->getTableColumnNames(true));
 
-                if ($hasUserUUID && $user->user_uuid === $model->user_uuid) {
-                    return true;
-                }
+                // if ($hasUserUUID && $user->user_uuid === $model->user_uuid) {
+                //     // return true;
+                // }
 
                 $count = $userPermissionsCollection[$user->user_uuid]
                     ->where('permission_name', $permission_name)
