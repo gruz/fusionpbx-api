@@ -28,8 +28,8 @@ if (!function_exists('encrypt_password_with_salt')) {
     {
         if (!empty($password) && !is_null($password)) {
             $data['salt'] = is_null($salt) || empty($salt)
-                                ? \Str::uuid()->toString()
-                                : $salt;
+                ? \Str::uuid()->toString()
+                : $salt;
             $data['password'] = md5($data['salt'] . $password);
 
             return $data;
@@ -69,5 +69,12 @@ if (!function_exists('get_composer_json_namespaces')) {
         $storage = $namespaces;
 
         return $namespaces;
+    }
+}
+
+if (!function_exists('get_current_domain')) {
+    function get_current_domain() : \Gruz\FPBX\Models\Domain
+    {
+        return app(\App\Services\DomainService::class)->getDomainFromRequest();
     }
 }
