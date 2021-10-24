@@ -115,7 +115,7 @@ class User extends AbstractModel implements
      */
     public function getEmailAttribute()
     {
-        return $this->attributes['user_email'];
+        return \Arr::get($this->attributes, 'user_email');
     }
 
     /**
