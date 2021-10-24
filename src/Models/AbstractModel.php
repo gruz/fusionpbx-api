@@ -9,6 +9,7 @@ use Doctrine\DBAL\Schema\Index;
 use Gruz\FPBX\Traits\UuidsTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Builder;
 use Gruz\FPBX\Services\FreeSwitchHookService;
 use Gruz\FPBX\Exceptions\MissingDomainUuidException;
 use Illuminate\Database\Eloquent\Model as BaseModel;
@@ -393,6 +394,24 @@ abstract class AbstractModel extends BaseModel
 
     //     return $fieldType;
     // }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('tenant', function (Builder $builder) {
+            $model = $builder->getModel();
+            if ($model instanceof \Gruz\FPBX\Models\Domain) {
+                return;
+            }
+            if ($model instanceof \Gruz\FPBX\Models\GroupPermission) {
+                return;
+            }
+            if (in_array('domain_uuid', $model->getTableColumnNames(true))) {
+                // dd(get_current_domain());
+
+                $builder->where($model->getTable() . '.domain_uuid', get_current_domain()->domain_uuid);
+            }
+        });
+    }
 
     protected static function boot()
     {
