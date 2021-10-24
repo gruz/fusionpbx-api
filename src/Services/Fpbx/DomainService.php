@@ -3,6 +3,7 @@
 namespace Gruz\FPBX\Services\Fpbx;
 
 use Gruz\FPBX\Models\Domain;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 class DomainService extends AbstractService
 {
@@ -43,8 +44,36 @@ class DomainService extends AbstractService
         return parent::getByAttributes($attributes, $options);
     }
 
-    public function getDomainByName($domain_name, $status = null) : Domain
+    /**
+     * 
+     * @param mixed $domain_name 
+     * @param bool|string $status True or false
+     * @return Domain 
+     * @throws BindingResolutionException 
+     */
+    public function getDomainByName($domain_name, $status = null): Domain
     {
         return $this->getRepository()->getDomainByName($domain_name, $status);
+    }
+
+    public function getDomainFromRequest()
+    {
+        static $storage = [];
+        $skey = __FUNCTION__ . serialize(func_get_args());
+        if (array_key_exists($skey, $storage)) {
+            return $storage[$skey];
+        }
+
+        $domain_uuid = request()->get('domain_uuid');
+
+        if ($domain_uuid) {
+            $domainModel = $this->getByAttributes(['domain_uuid' => $domain_uuid]);
+        } else {
+            $domainModel = false;
+        }
+
+        $storage[$skey] = $domainModel;
+
+        return $domainModel;
     }
 }

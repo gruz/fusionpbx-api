@@ -73,8 +73,8 @@ if (!function_exists('get_composer_json_namespaces')) {
 }
 
 if (!function_exists('get_current_domain')) {
-    function get_current_domain() : \Gruz\FPBX\Models\Domain
+    function get_current_domain()
     {
-        return app(\App\Services\DomainService::class)->getDomainFromRequest();
+        return app(\Gruz\FPBX\Services\Fpbx\DomainService::class)->getDomainFromRequest();
     }
 }

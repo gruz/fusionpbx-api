@@ -29,7 +29,8 @@ abstract class AbstractModel extends BaseModel
     public static $staticMakeFillable;
     // public static $staticVisible;
 
-    private static function staticUpdateFieldsAttributes(&$attrName, $fields, $replace = false) {
+    private static function staticUpdateFieldsAttributes(&$attrName, $fields, $replace = false)
+    {
         $class = get_called_class();
         if (!$replace) {
             $fieldsOld = Arr::get($attrName, $class, []);
@@ -406,9 +407,10 @@ abstract class AbstractModel extends BaseModel
                 return;
             }
             if (in_array('domain_uuid', $model->getTableColumnNames(true))) {
-                // dd(get_current_domain());
+                if ($domainModel = get_current_domain()) {
 
-                $builder->where($model->getTable() . '.domain_uuid', get_current_domain()->domain_uuid);
+                    $builder->where($model->getTable() . '.domain_uuid', $domainModel->domain_uuid);
+                }
             }
         });
     }

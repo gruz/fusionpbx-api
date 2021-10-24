@@ -1,3 +1,41 @@
+NOTE for myself to describe in docs
+
+The API will try to use `domain_uuid` to determine active FPBX domain will try to add a global scope to all Eloquent queries.
+
+Check `\Gruz\FPBX\Services\Fpbx\DomainService::getDomainFromRequest` and `Gruz\FPBX\Models\AbstractModel::booted`
+
+A good practice may be to override `getDomainFromRequest` to determine active FPBX domain based on http request. 
+
+```php
+namespace App\Services;
+
+use Gruz\FPBX\Services\Fpbx\DomainService as FpbxDomainService;
+
+class DomainService extends FpbxDomainService {
+
+    public function getDomainFromRequest() {
+        $host = request()->getHost();
+
+
+        $domainModel = $this->getDomainByName($domain_name, true);
+        if (empty($domain_name)) {
+            $domainModel = $this->getSystemDomain();
+        }
+
+        return $domainModel;
+    }
+}
+```
+
+And don't forget to register your service in `AppServiceProvider::register`
+
+```php
+$this->app->bind(\Gruz\FPBX\Services\Fpbx\DomainService::class, \App\Services\DomainService::class);
+```
+
+
+
+
 - [Fusionpbx API](#fusionpbx-api)
   - [Installation](#installation)
     - [Prepare FusionPBX installation](#prepare-fusionpbx-installation)
