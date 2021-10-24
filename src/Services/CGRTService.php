@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Gruz\FPBX\Models\User;
 use Illuminate\Support\Arr;
 use Gruz\FPBX\Events\CGRTFailedEvent;
+use Gruz\FPBX\Services\Fpbx\UserSettingService;
 
 /**
  * ^api/ ^ login/ [name='login']
@@ -193,9 +194,15 @@ class CGRTService
 
         $tenant = $this->getTenant($user->domainName);
 
-        $cgrt_username = $user->username;
-        $cgrt_username = \Str::substr($user->username . '_' . $tenant, 0, 29);
-        $cgrt_username = str_replace(' ', '_', $cgrt_username);
+        // $cgrt_username = $user->username;
+        // $cgrt_username = \Str::substr($user->username . '_' . $tenant, 0, 29);
+        // $cgrt_username = str_replace(' ', '_', $cgrt_username);
+        $cgrt_username = uniqid();
+
+        $note = trim(implode(PHP_EOL, [
+            $reseller_code ? 'Reseller code: ' . $reseller_code : null,
+            ' FPBX UserID: ' . $user->user_uuid
+        ]));
 
         $data = array_merge(config('fpbx.cgrt.default.client_add'), [
             "tenant" => $tenant,
@@ -206,7 +213,7 @@ class CGRTService
             "cgrt_username" => $cgrt_username,
             // "company_name" => "Test Company",
             // "address_line_1" => "49 Any Street",
-            "address_line_2" => $reseller_code ? 'Reseller code: ' . $reseller_code : null,
+            "address_line_2" => $note,
             // "city" => "New York",
             // "state_province" => "New York",
             // "postcode_zip" => null,
@@ -350,7 +357,6 @@ class CGRTService
         return $this->request('users/get_client_account', [
             "client_account_code" => $account_code,
         ]);
-
     }
 
     public function getOrders($account_code)
@@ -413,5 +419,55 @@ class CGRTService
         }
 
         return $responseJson;
+    }
+
+    public function processNewUser(User $user)
+    {
+        $client_added = $this->addClient($user);
+
+        if ($client_added) {
+            $account_code = $client_added->account_code;
+            $user->extensions()->update(['accountcode' => $account_code]);
+
+            $userSettings = [
+                [
+                    "user_uuid" => $user->user_uuid,
+                    "domain_uuid" => $user->domain_uuid,
+                    "user_setting_category" => "payment",
+                    "user_setting_subcategory" => "account_code",
+                    "user_setting_name" => "text",
+                    "user_setting_value" => $account_code,
+                    "user_setting_order" => 0,
+                    "user_setting_enabled" => true,
+                    "user_setting_description" => 'CGRT account code',
+                ],
+                [
+                    "user_uuid" => $user->user_uuid,
+                    "domain_uuid" => $user->domain_uuid,
+                    "user_setting_category" => "payment",
+                    "user_setting_subcategory" => "cgrt_username",
+                    "user_setting_name" => "text",
+                    "user_setting_value" => $client_added->cgrt_username,
+                    "user_setting_order" => 0,
+                    "user_setting_enabled" => true,
+                    "user_setting_description" => 'CGRT username',
+                ],
+            ];
+
+            /**
+             * @var UserSettingService
+             */
+            $userSettingService = app(UserSettingService::class);
+            $userSettingService->createMany($userSettings, ['forceFillable' => ['domain_uuid', 'user_uuid']]);
+            $user->refresh();
+
+            $this->addSIPAccount($user, $client_added);
+            $this->assignTariffPlan($client_added->tenant, $client_added->account_code);
+
+
+            if (config('fpbx.cgrt.welcome_bonus') > 0) {
+                $user->addCGRTBalance(config('fpbx.cgrt.welcome_bonus'), 'User welcome bonus');
+            }
+        }
     }
 }

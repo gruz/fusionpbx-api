@@ -8,12 +8,13 @@ use Gruz\FPBX\Models\Contact;
 use Gruz\FPBX\Models\Extension;
 use Gruz\FPBX\Models\ContactUser;
 use Gruz\FPBX\Models\UserSetting;
+use Laravel\Sanctum\HasApiTokens;
 use Gruz\FPBX\Models\AbstractModel;
 use Gruz\FPBX\Models\ExtensionUser;
-use Gruz\FPBX\Models\GroupPermission;
-use Laravel\Sanctum\HasApiTokens;
+use Gruz\FPBX\Services\CGRTService;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
+use Gruz\FPBX\Models\GroupPermission;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -40,6 +41,7 @@ class User extends AbstractModel implements
     use Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
     use HasFactory;
     // ~ use HasCustomRelations;
+
 
     public $timestamps = true;
 
@@ -253,7 +255,8 @@ class User extends AbstractModel implements
         return $this->domain()->first()->getAttribute('domain_name');
     }
 
-    public function account_code() {
+    public function account_code()
+    {
         return $this->hasOne(UserSetting::class, 'user_uuid', 'user_uuid')->where(
             [
                 ["user_setting_category", "payment"],
@@ -264,18 +267,30 @@ class User extends AbstractModel implements
 
     public function getAccountCode()
     {
-        return optional($this->account_code)->user_setting_value;
+        $account_code = optional($this->account_code)->user_setting_value;
+
+        if (!$account_code && config('fpbx.cgrt.enabled')) {
+            /**
+             * @var CGRTService
+             */
+            $client = app(CGRTService::class);
+            $client->processNewUser($this);
+            $account_code = optional($this->account_code)->user_setting_value;
+        }
+
+        return $account_code;
     }
 
-    public function getCGRTBalanceAttribute() {
+    public function getCGRTBalanceAttribute()
+    {
         if (!config('fpbx.cgrt.enabled')) {
             return null;
         }
 
         /**
-         * @var \Gruz\FPBX\Services\CGRTService
+         * @var CGRTService
          */
-        $client = app(\Gruz\FPBX\Services\CGRTService::class);
+        $client = app(CGRTService::class);
         $account_code = $this->getAccountCode();
 
         if (null === $account_code) {
@@ -287,15 +302,16 @@ class User extends AbstractModel implements
         return $balance;
     }
 
-    public function addCGRTBalance($amount, $description = null) {
+    public function addCGRTBalance($amount, $description = null)
+    {
         if (!config('fpbx.cgrt.enabled')) {
             return null;
         }
 
         /**
-         * @var \Gruz\FPBX\Services\CGRTService
+         * @var CGRTService
          */
-        $client = app(\Gruz\FPBX\Services\CGRTService::class);
+        $client = app(CGRTService::class);
         $account_code = $this->getAccountCode();
 
         $balance = $client->addCreditBalance($account_code, $amount, $description);
@@ -303,15 +319,16 @@ class User extends AbstractModel implements
         return $balance;
     }
 
-    public function getCGRTCurrencyAttribute() {
+    public function getCGRTCurrencyAttribute()
+    {
         if (!config('fpbx.cgrt.enabled')) {
             return null;
         }
 
         /**
-         * @var \Gruz\FPBX\Services\CGRTService
+         * @var CGRTService
          */
-        $client = app(\Gruz\FPBX\Services\CGRTService::class);
+        $client = app(CGRTService::class);
         $account_code = $this->getAccountCode();
 
         $currency_code = optional($client->getClient($account_code))->currency_code;
