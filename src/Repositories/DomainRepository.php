@@ -9,6 +9,12 @@ class DomainRepository extends AbstractRepository
 {
     public function getDomainByName($domain_name, $status = null) : Domain
     {
+        static $storage = [];
+        $skey = __FUNCTION__ . serialize(func_get_args());
+        if (array_key_exists($skey, $storage)) {
+            return $storage[$skey];
+        }
+
         /**
          * @var \Gruz\FPBX\Models\Domain
          */
@@ -21,6 +27,7 @@ class DomainRepository extends AbstractRepository
             $domainModel->where('domain_enabled', $status);
         }
 
-        return $domainModel->first();
+        $storage[$skey] = $domainModel->first();
+        return $storage[$skey];
     }
 }
