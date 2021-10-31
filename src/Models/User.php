@@ -302,6 +302,28 @@ class User extends AbstractModel implements
         return $balance;
     }
 
+    public function getCGRTDIDs()
+    {
+        if (!config('fpbx.cgrt.enabled')) {
+            return null;
+        }
+
+        /**
+         * @var CGRTService
+         */
+        $client = app(CGRTService::class);
+
+        $account_code = $this->getAccountCode();
+
+        if (null === $account_code) {
+            return collect();
+        }
+
+        $dids = $client->getClientDids($account_code);
+
+        return collect($dids);
+    }
+
     public function addCGRTBalance($amount, $description = null)
     {
         if (!config('fpbx.cgrt.enabled')) {
