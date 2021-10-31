@@ -384,7 +384,7 @@ class CGRTService
         return $this->request('users/get_client_invoices', $data);
     }
 
-    public function getClientDid($account_code, $period_start = null, $period_end = null)
+    public function getClientDids($account_code, $period_start = null, $period_end = null)
     {
         return $this->request('users/get_client_did', [
             "client_account_code" => $account_code,
