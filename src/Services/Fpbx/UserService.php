@@ -65,12 +65,7 @@ class UserService extends AbstractService
 
     public function createMany($data, $options = [])
     {
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
-
+        $this->fpbxRefreshBeginTransaction();
         $this->database->beginTransaction();
 
         $models = [];
@@ -87,11 +82,7 @@ class UserService extends AbstractService
         }
 
         $this->database->commit();
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
 
         return $models;
     }
@@ -100,11 +91,7 @@ class UserService extends AbstractService
     {
         $data = $this->prepareData($data);
 
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
+        $this->fpbxRefreshBeginTransaction();
 
         $this->database->beginTransaction();
 
@@ -177,10 +164,7 @@ class UserService extends AbstractService
 
         $this->database->commit();
 
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
 
         return $userModel;
     }

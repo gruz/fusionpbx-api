@@ -69,12 +69,7 @@ class TeamService extends AbstractService
     {
         $data = $this->prepareData($data);
 
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
-
+        $this->fpbxRefreshBeginTransaction();
         $this->database->beginTransaction();
 
         try {
@@ -125,11 +120,7 @@ class TeamService extends AbstractService
         }
 
         $this->database->commit();
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
 
         return $domainModel;
     }

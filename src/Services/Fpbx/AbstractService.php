@@ -108,11 +108,7 @@ abstract class AbstractService
 
     public function create($data, $options = [])
     {
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
+        $this->fpbxRefreshBeginTransaction();
 
         $callerName = debug_backtrace()[1]['function'];
 
@@ -138,22 +134,14 @@ abstract class AbstractService
             $this->database->commit();
         }
 
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
 
         return $model;
     }
 
     public function createMany($data, $options = [])
     {
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
-
+        $this->fpbxRefreshBeginTransaction();
         $models = [];
 
         $this->database->beginTransaction();
@@ -175,21 +163,14 @@ abstract class AbstractService
 
         $this->database->commit();
 
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
 
         return $models;
     }
 
     public function update($id, array $data, $options = [])
     {
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
+        $this->fpbxRefreshBeginTransaction();
 
         $model = $this->getById($id);
 
@@ -207,21 +188,14 @@ abstract class AbstractService
 
         $this->database->commit();
 
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
 
         return $model;
     }
 
     public function delete($id, $options = [])
     {
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
+        $this->fpbxRefreshBeginTransaction();
 
         $model = $this->getById($id);
 
@@ -239,19 +213,12 @@ abstract class AbstractService
 
         $this->database->commit();
 
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
     }
 
     public function createAttachedMany(AbstractModel $parentModel, string $childRepositoryClassName, array $childData, string $pivotRepositoryClassName, $options = [])
     {
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
+        $this->fpbxRefreshBeginTransaction();
 
         $this->database->beginTransaction();
 
@@ -265,10 +232,7 @@ abstract class AbstractService
 
         $this->database->commit();
 
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
     }
 
     public function getByAttributes(array $attributes, $options = [])
@@ -297,18 +261,11 @@ abstract class AbstractService
     }
 
     public function setRelation(AbstractModel $parent, AbstractModel $child, $options = []) {
-        $refreshDisabled = config('disable_fpbx_refresh');
-
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => true]);
-        }
+        $this->fpbxRefreshBeginTransaction();
 
         $result = $this->repository->setRelation($parent, $child, $options);
 
-        if (!$refreshDisabled) {
-            config(['disable_fpbx_refresh' => false]);
-            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
-        }
+        $this->fpbxRefreshEndTransaction();
 
         return $result;
     }
@@ -321,5 +278,24 @@ abstract class AbstractService
         }
 
         return $data;
+    }
+
+    protected $refreshDisabled;
+
+    protected function fpbxRefreshBeginTransaction() {
+        $this->refreshDisabled = config('disable_fpbx_refresh');
+
+        if (!$this->refreshDisabled) {
+            config(['disable_fpbx_refresh' => true]);
+        }
+    }
+
+
+    protected function fpbxRefreshEndTransaction()
+    {
+        if (!$this->refreshDisabled) {
+            config(['disable_fpbx_refresh' => false]);
+            app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
+        }
     }
 }
