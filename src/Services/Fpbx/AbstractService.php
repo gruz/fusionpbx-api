@@ -8,6 +8,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Events\Dispatcher;
 use Gruz\FPBX\Models\AbstractModel;
 use Illuminate\Database\DatabaseManager;
+use Gruz\FPBX\Services\Fpbx\DomainService;
 use Gruz\FPBX\Repositories\AbstractRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -66,7 +67,7 @@ abstract class AbstractService
         $user = $this->userRepository->getById($userId, $options);
 
         if (is_null($user)) {
-            throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => 'User']));
+            throw new  NotFoundHttpException(__(':entity not found', ['entity' => 'User']));
         }
 
         return $user;
@@ -84,7 +85,7 @@ abstract class AbstractService
         if (is_null($model)) {
             preg_match('/.*\\\\(.*)Service$/', get_class($this), $matches);
             $entity = $matches[1];
-            throw new  NotFoundHttpException(__(':entity not found', [ 'entity' => $entity]));
+            throw new  NotFoundHttpException(__(':entity not found', ['entity' => $entity]));
         }
 
         return $model;
@@ -260,7 +261,8 @@ abstract class AbstractService
         return $data;
     }
 
-    public function setRelation(AbstractModel $parent, AbstractModel $child, $options = []) {
+    public function setRelation(AbstractModel $parent, AbstractModel $child, $options = [])
+    {
         $this->fpbxRefreshBeginTransaction();
 
         $result = $this->repository->setRelation($parent, $child, $options);
@@ -282,7 +284,8 @@ abstract class AbstractService
 
     protected $refreshDisabled;
 
-    protected function fpbxRefreshBeginTransaction() {
+    protected function fpbxRefreshBeginTransaction()
+    {
         $this->refreshDisabled = config('disable_fpbx_refresh');
 
         if (!$this->refreshDisabled) {
@@ -297,5 +300,21 @@ abstract class AbstractService
             config(['disable_fpbx_refresh' => false]);
             app(\Gruz\FPBX\Services\FreeSwitchHookService::class)->reload();
         }
+    }
+
+    protected function getDomainUUIDFomData($data)
+    {
+        $domain_uuid = Arr::get($data, 'domain_uuid', null);
+
+        if (empty($domain_uuid)) {
+            $domainService = app(DomainService::class);
+            $domainModel = $domainService->getByAttributes([
+                'domain_name' => $data['domain_name'],
+                'domain_enabled' => true,
+            ])->first();
+            $domain_uuid = $domainModel->domain_uuid;
+        }
+
+        return $domain_uuid;
     }
 }

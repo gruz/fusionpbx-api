@@ -60,6 +60,8 @@ class UserService extends AbstractService
             $data['add_user'] = config('fpbx.default.user.creatorName');
         }
 
+        $data['domain_uuid'] = $this->getDomainUUIDFomData($data);
+
         return $data;
     }
 
@@ -96,17 +98,6 @@ class UserService extends AbstractService
         $this->database->beginTransaction();
 
         try {
-            $domain_uuid = Arr::get($data, 'domain_uuid', null);
-
-            if (empty($domain_uuid)) {
-                $domainModel = $this->domainService->getByAttributes([
-                    'domain_name' => $data['domain_name'],
-                    'domain_enabled' => true,
-                ])->first();
-                $domain_uuid = $domainModel->domain_uuid;
-            }
-
-            $data['domain_uuid'] = $domain_uuid;
             $userModel = $this->repository->create($data);
 
             $this->addRelations($userModel, $data, 'contacts', $this->contactService);
