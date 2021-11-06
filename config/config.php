@@ -220,4 +220,16 @@ return [
         'password' => env('FPBX_CGRT_PASSWORD'),
         'welcome_bonus' => env('FPBX_CGRT_WELCOME_BONUS', 0),
     ],
+
+    /**
+     * Hardcoded values from FPBX
+     */
+    // /app/dialplan_inbound/app_config.php
+    'app' => [
+        'dialplan_inbound' => [
+            0 => [
+                'uuid' => 'c03b422e-13a8-bd1b-e42b-b6b9b4d27ce4',
+            ]
+        ]
+    ]
 ];

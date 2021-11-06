@@ -1,10 +1,18 @@
+Edit FPBX setting and allow self-connectio by ip
+https://i.imgur.com/od5N2Zo.png
+Then restart freeswitch
+systemctl restart freeswitch.service
+Configure DB connection of FusionPBX to watch own IP
+https://i.imgur.com/cToP2ca.png
+
+=========
 NOTE for myself to describe in docs
 
 The API will try to use `domain_uuid` to determine active FPBX domain will try to add a global scope to all Eloquent queries.
 
 Check `\Gruz\FPBX\Services\Fpbx\DomainService::getDomainFromRequest` and `Gruz\FPBX\Models\AbstractModel::booted`
 
-A good practice may be to override `getDomainFromRequest` to determine active FPBX domain based on http request. 
+A good practice may be to override `getDomainFromRequest` to determine active FPBX domain based on http request.
 
 ```php
 namespace App\Services;
@@ -95,7 +103,7 @@ The command setup here will be needed for Laravel API configuration.
 
 ##### Run by SSH from Laravel API server
 
-Let's assume you place the hook into `/var/www/hook/fpbx_hook.php` at 
+Let's assume you place the hook into `/var/www/hook/fpbx_hook.php` at
 your FusionPBX server. And you have FusionPBX placed in `/var/www/fusionpbx`.
 
 Setup passwordless ssh access to be able to run from your Laravel API server a command like
@@ -123,7 +131,7 @@ FPBX_HOOK='ssh -t root@192.168.0.160 sudo -u www-data php /var/www/hook/fpbx_hoo
 
 ##### Run as a CURL request protected by hash
 
-The idea is to provide an URL to run the hook. Something like 
+The idea is to provide an URL to run the hook. Something like
 `https://192.168.0.160:445/fpbx_hook.php?hash=464ab3451cf0ccdeda1f0b61300639498b6ebca06e3e8da6d6974b5540a634de`
 
 
@@ -194,7 +202,7 @@ PHP_VERSION=$(php --version | head -1 | awk '{print $2}' | cut -d. -f 1-2)
 So if you open the link above with the correct hash it should show something like
 
 ```
-+OK cache flushed +OK [Success] 
++OK cache flushed +OK [Success]
 ```
 
 If it works, don't forget to add the following line to your laravel .env file:
@@ -248,7 +256,7 @@ Or try it in online [swagger editor](https://editor.swagger.io/?url=https://raw.
 
 When running the project the docs are available under:
 * yourdomain.com/docs/api
-* 
+*
 
 ## Testing
 
