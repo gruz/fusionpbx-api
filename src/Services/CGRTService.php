@@ -373,7 +373,7 @@ class CGRTService
         ]);
     }
 
-    public function getInvoices($account_code, $period_start = null, $period_end = null)
+    public function get_client_invoices($account_code, $period_start = null, $period_end = null)
     {
         $data = [
             "client_account_code" => $account_code,
@@ -384,10 +384,17 @@ class CGRTService
         return $this->request('users/get_client_invoices', $data);
     }
 
-    public function getClientDids($account_code, $period_start = null, $period_end = null)
+    public function get_client_did($account_code)
     {
         return $this->request('users/get_client_did', [
             "client_account_code" => $account_code,
+        ]);
+    }
+
+    public function get_did_details($did_number)
+    {
+        return $this->request('users/get_did_details', [
+            "did_number" => $did_number,
         ]);
     }
 

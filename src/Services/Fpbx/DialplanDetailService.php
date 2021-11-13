@@ -13,6 +13,10 @@ class DialplanDetailService extends AbstractService
             // 'dialplan_detail_enabled' => true,
         ], ['includes' => ['transferExtension']])->first();
 
+        if (!$dialplanDetails) {
+            return false;
+        }
+
         // In this case dialplan is treated as enabled in FPBX when null value is set
         if (!in_array($dialplanDetails->dialplan_detail_enabled, [null, true, 'true'])) {
             return false;
