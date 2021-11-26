@@ -319,7 +319,14 @@ class User extends AbstractModel implements
             return collect();
         }
 
-        $dids = $client->getClientDids($account_code);
+        $dids = $client->get_client_did($account_code);
+
+        // $dids[1] = clone($dids[0]);
+        // $dids[1]->did_number++;
+        // $dids[1]->state = 'TX';
+        // $dids[2] = clone($dids[1]);
+        // $dids[2]->did_number++;
+        // $dids[2]->state = 'TX';
 
         return collect($dids);
     }
