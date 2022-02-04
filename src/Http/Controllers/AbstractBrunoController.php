@@ -37,7 +37,7 @@ abstract class AbstractBrunoController extends LaravelController
         return $entity;
     }
 
-    public function getById(string $uuid, GetUuidRequest $request)
+    public function getById(string $uuid, /* GetUuidRequest $request */ )
     {
         $resourceOptions = $this->parseResourceOptions();
 
