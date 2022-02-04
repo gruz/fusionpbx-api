@@ -3,22 +3,16 @@
 namespace Gruz\FPBX\SwaggerProcessors;
 
 use OpenApi\Analysis;
+use OpenApi\Generator;
 use Illuminate\Support\Arr;
-use const OpenApi\UNDEFINED;
-use OpenApi\Annotations\Items;
 use OpenApi\Annotations\Schema;
 use OpenApi\Annotations\Examples;
 use OpenApi\Annotations\Property;
 use OpenApi\Annotations\Response;
 use OpenApi\Annotations\MediaType;
 use OpenApi\Annotations\Operation;
-use OpenApi\Annotations\Parameter;
 use Gruz\FPBX\Models\AbstractModel;
-use OpenApi\Annotations\Components;
-use OpenApi\Processors\OperationId;
 use Illuminate\Support\Facades\File;
-use OpenApi\Annotations\JsonContent;
-use OpenApi\Annotations\RequestBody;
 use Illuminate\Support\Facades\Storage;
 use OpenApi\Annotations\AbstractAnnotation;
 
@@ -48,7 +42,7 @@ class SchemaQueryParameter
         $schemas = $analysis->getAnnotationsOfType(Schema::class, true);
 
         foreach ($schemas as $schema) {
-            if ($schema->schema !== UNDEFINED) {
+            if ($schema->schema !== Generator::UNDEFINED) {
                 $this->buildSchemaFromModel($schema);
             }
         }
@@ -73,7 +67,7 @@ class SchemaQueryParameter
             $method = $data['method'];
             $path = $data['pathItem'];
             $annotation = $path->$method;
-            if ($annotation->security !== UNDEFINED) {
+            if ($annotation->security !== Generator::UNDEFINED) {
                 foreach ($annotation->security as $security) {
                     if (array_key_exists('bearer_auth', $security)) {
                         $this->attachUnauthenticatedResponse($annotation);
@@ -151,7 +145,7 @@ class SchemaQueryParameter
         $defaults = $model->getAttributes();
 
         $propertiesBag = &$schema->properties;
-        $propertiesBag = $propertiesBag === UNDEFINED ? [] : $propertiesBag;
+        $propertiesBag = $propertiesBag === Generator::UNDEFINED ? [] : $propertiesBag;
 
         $alreadyDescribedProperties = collect($propertiesBag)->pluck('property')->toArray();
 
@@ -186,7 +180,7 @@ class SchemaQueryParameter
             $alreadyDescribedProperties[] = $columnName;
 
             // if ($model->is_nullable($columnName)) {
-            //     $annotation->_context->nested->required = $annotation->_context->nested->required === UNDEFINED ? [] : $annotation->_context->nested->required;
+            //     $annotation->_context->nested->required = $annotation->_context->nested->required === Generator::UNDEFINED ? [] : $annotation->_context->nested->required;
             //     $annotation->_context->nested->required[] = $columnName;
             // }
         }
@@ -245,7 +239,7 @@ class SchemaQueryParameter
         $allOperations = $analysis->getAnnotationsOfType(Operation::class);
 
         foreach ($allOperations as $operation) {
-            if ($operation->operationId !== UNDEFINED) {
+            if ($operation->operationId !== Generator::UNDEFINED) {
                 continue;
             }
             $context = $operation->_context;
@@ -282,7 +276,7 @@ class SchemaQueryParameter
         foreach ($analysis->openapi->paths as $path) {
             // d($path);
             foreach ($availableMethods as $method) {
-                if ($path->$method !== UNDEFINED) {
+                if ($path->$method !== Generator::UNDEFINED) {
                     $availablePaths[$path->path . '/' . $method] = [
                         'method' => $method,
                         'pathItem' => $path,
@@ -324,7 +318,7 @@ class SchemaQueryParameter
                 'action' => $action,
             ];
 
-            if ($path->$method->x !== UNDEFINED) {
+            if ($path->$method->x !== Generator::UNDEFINED) {
                 if ($name = Arr::get($path->$method->x, self::ROUTE_PATH)) {
                     $route['name'] = $name;
                 }
@@ -365,7 +359,7 @@ class SchemaQueryParameter
         if ($isApi) {
             $auth = false;
 
-            if ($annotation->security !== UNDEFINED) {
+            if ($annotation->security !== Generator::UNDEFINED) {
                 foreach ($annotation->security as $security) {
                     if (array_key_exists('bearer_auth', $security)) {
                         $auth = true;
@@ -406,7 +400,7 @@ class SchemaQueryParameter
         $method = $data['method'];
 
         $responses = $path->$method->responses;
-        if (UNDEFINED === $responses) {
+        if (Generator::UNDEFINED === $responses) {
             $responses = [];
         }
         $responses = array_merge($responses, $responseExamples);
@@ -470,7 +464,7 @@ class SchemaQueryParameter
         $path = $data['pathItem'];
         $method = $data['method'];
 
-        if (UNDEFINED === $path->$method->requestBody) {
+        if (Generator::UNDEFINED === $path->$method->requestBody) {
             return;
         }
 
