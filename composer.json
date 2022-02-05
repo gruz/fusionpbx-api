@@ -37,7 +37,7 @@
         "gruz/bruno": "^6.0",
         "gruz/genie": "^3.3",
         "optimus/heimdal": "^3.0",
-        "darkaonline/l5-swagger": "~8.1",
+        "darkaonline/l5-swagger": "^8.1",
         "doctrine/dbal": "^3.1",
         "laravel/ui": "^3.3"
     },
