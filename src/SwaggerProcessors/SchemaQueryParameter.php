@@ -273,6 +273,10 @@ class SchemaQueryParameter
             'patch',
         ];
 
+        if (Generator::UNDEFINED === $analysis->openapi->paths) {
+            return $availablePaths;
+        }
+
         foreach ($analysis->openapi->paths as $path) {
             // d($path);
             foreach ($availableMethods as $method) {
